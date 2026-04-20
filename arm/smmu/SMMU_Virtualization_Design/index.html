@@ -1,0 +1,2976 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../SMMU_SVA_Design/">
+      
+      
+        <link rel="next" href="../SMMUv3_MultiDie_Heterogeneous_SoC_Design/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>SMMU 虚拟化设计 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#arm-smmu" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SMMU 虚拟化设计
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../src/packages/sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 虚拟化中的核心问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 两阶段翻译架构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 两阶段翻译架构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 翻译阶段定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 翻译模式分类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-linux-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Linux 驱动中的 Domain 类型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 虚拟化场景详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 虚拟化场景详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 场景总览
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-passthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 场景一：设备直通（Passthrough）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-viommu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 场景二：vIOMMU（嵌套翻译）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 场景对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. VMID 管理机制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. VMID 管理机制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 VMID 在虚拟化中的角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 VMID 分配与释放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 VMID 位宽
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-vmid-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 VMID 与 TLB 无效化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-el2-e2h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. EL2 与 E2H 模式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. EL2 与 E2H 模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-hyp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 HYP 特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-e2h-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 E2H 对 TLB 无效化的影响
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-strws2-stage-reject-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 STRW（S2 Stage Reject Write）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Stage 2 地址翻译详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Stage 2 地址翻译详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Stage 2 页表格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Stage 2 页表遍历
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-stage-1-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Stage 1 + Stage 2 属性合并
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 虚拟化中的 TLB 管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 虚拟化中的 TLB 管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-vm-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 VM 切换时的 TLB 行为
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-stage-2-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Stage 2 TLB 无效化命令路由
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 虚拟化故障处理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 虚拟化故障处理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Stage 2 故障
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 故障事件中的 Stage 标识
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-secure-el2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Secure-EL2 虚拟化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Secure-EL2 虚拟化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-secure-el2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Secure-EL2 支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 VMID 分区
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 虚拟化扩展特性
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 虚拟化扩展特性">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-smmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 与虚拟化相关的 SMMU 特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 特性说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 跨版本虚拟化特性对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-hypervisor-e2hc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Hypervisor 上下文与 E2HC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Hypervisor 上下文与 E2HC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-smmuv2-hypervisor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 SMMUv2 中的 Hypervisor 上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-smmuv3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 SMMUv3 中的等效机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 虚拟化场景下的设备直通完整流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 虚拟化场景下的设备直通完整流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 端到端流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-gpa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 GPA 映射变更处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-smmuv3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. SMMUv3 复位与虚拟化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. SMMUv3 复位与虚拟化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-el2-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 初始化时的 EL2 TLB 清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-cr2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 CR2 寄存器初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 总结
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. 总结">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-smmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 SMMU 虚拟化核心要点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 关键数据结构汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../src/packages/sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 虚拟化中的核心问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 两阶段翻译架构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 两阶段翻译架构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 翻译阶段定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 翻译模式分类
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-linux-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Linux 驱动中的 Domain 类型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 虚拟化场景详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 虚拟化场景详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 场景总览
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-passthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 场景一：设备直通（Passthrough）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-viommu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 场景二：vIOMMU（嵌套翻译）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 场景对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. VMID 管理机制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. VMID 管理机制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 VMID 在虚拟化中的角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 VMID 分配与释放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 VMID 位宽
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-vmid-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 VMID 与 TLB 无效化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-el2-e2h" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. EL2 与 E2H 模式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. EL2 与 E2H 模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-hyp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 HYP 特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-e2h-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 E2H 对 TLB 无效化的影响
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-strws2-stage-reject-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 STRW（S2 Stage Reject Write）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Stage 2 地址翻译详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Stage 2 地址翻译详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Stage 2 页表格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Stage 2 页表遍历
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-stage-1-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Stage 1 + Stage 2 属性合并
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 虚拟化中的 TLB 管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 虚拟化中的 TLB 管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-vm-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 VM 切换时的 TLB 行为
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-stage-2-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Stage 2 TLB 无效化命令路由
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 虚拟化故障处理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 虚拟化故障处理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-stage-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Stage 2 故障
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 故障事件中的 Stage 标识
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-secure-el2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Secure-EL2 虚拟化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Secure-EL2 虚拟化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-secure-el2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Secure-EL2 支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-vmid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 VMID 分区
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 虚拟化扩展特性
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 虚拟化扩展特性">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-smmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 与虚拟化相关的 SMMU 特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 特性说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 跨版本虚拟化特性对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-hypervisor-e2hc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Hypervisor 上下文与 E2HC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Hypervisor 上下文与 E2HC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-smmuv2-hypervisor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 SMMUv2 中的 Hypervisor 上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-smmuv3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 SMMUv3 中的等效机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 虚拟化场景下的设备直通完整流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 虚拟化场景下的设备直通完整流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 端到端流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-gpa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 GPA 映射变更处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-smmuv3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. SMMUv3 复位与虚拟化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. SMMUv3 复位与虚拟化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-el2-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 初始化时的 EL2 TLB 清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-cr2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 CR2 寄存器初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 总结
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. 总结">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-smmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 SMMU 虚拟化核心要点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 关键数据结构汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="arm-smmu">ARM SMMU 虚拟化场景应用与设计<a class="headerlink" href="#arm-smmu" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>ARM SMMU 在虚拟化场景中扮演着关键角色，它通过两阶段地址翻译（Two-Stage Translation）机制，使 Hypervisor 能够隔离和控制 Guest OS 对物理内存的访问，同时支持设备直通（Passthrough）和半虚拟化等多种虚拟化模式。</p>
+<h3 id="11">1.1 虚拟化中的核心问题<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>在虚拟化环境中，Guest OS 使用的是<strong>虚拟地址（VA）</strong>，通过自己的页表翻译为<strong>中间物理地址（IPA）</strong>。Guest OS 以为 IPA 就是最终的物理地址（PA），但实际上 Hypervisor 通过第二阶段页表将 IPA 再次翻译为真正的<strong>物理地址（PA）</strong>。</p>
+<pre class="mermaid"><code>graph LR
+    subgraph NoVirt["无虚拟化"]
+        VA1["VA"] --&gt;|"Stage 1&lt;br/&gt;(OS 页表)"| PA1["PA"]
+    end
+
+    subgraph WithVirt["有虚拟化"]
+        VA2["VA"] --&gt;|"Stage 1&lt;br/&gt;(Guest 页表)"| IPA["IPA"] --&gt;|"Stage 2&lt;br/&gt;(Hypervisor 页表)"| PA2["PA"]
+    end</code></pre>
+<hr />
+<h2 id="2">2. 两阶段翻译架构<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 翻译阶段定义<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph Stages["SMMU 两阶段翻译"]
+        direction LR
+
+        subgraph Stage1["Stage 1 (Guest 管理)"]
+            direction TB
+            S1_IN["输入: VA&lt;br/&gt;(设备虚拟地址)"]
+            S1_PT["Guest 页表&lt;br/&gt;(由 Guest OS 维护)"]
+            S1_OUT["输出: IPA&lt;br/&gt;(中间物理地址)"]
+            S1_IN --&gt; S1_PT --&gt; S1_OUT
+        end
+
+        subgraph Stage2["Stage 2 (Hypervisor 管理)"]
+            direction TB
+            S2_IN["输入: IPA"]
+            S2_PT["Hypervisor 页表&lt;br/&gt;(由 KVM 维护)"]
+            S2_OUT["输出: PA&lt;br/&gt;(真实物理地址)"]
+            S2_IN --&gt; S2_PT --&gt; S2_OUT
+        end
+
+        S1_OUT --&gt; S2_IN
+    end</code></pre>
+<h3 id="22">2.2 翻译模式分类<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<p>SMMU 支持四种翻译模式，由 STE 中的 <code>Config</code> 字段决定（<code>arm-smmu-v3.h:204-208</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>Config 值</th>
+<th>模式</th>
+<th>说明</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0b000</td>
+<td>Abort</td>
+<td>中止所有事务</td>
+<td>安全隔离</td>
+</tr>
+<tr>
+<td>0b100</td>
+<td>S1+S2 Bypass</td>
+<td>两阶段均旁路</td>
+<td>调试</td>
+</tr>
+<tr>
+<td>0b101</td>
+<td>S1 Translation</td>
+<td>仅 Stage 1</td>
+<td>非 virtual化 S1 域</td>
+</tr>
+<tr>
+<td>0b110</td>
+<td>S2 Translation</td>
+<td>仅 Stage 2</td>
+<td>设备直通</td>
+</tr>
+<tr>
+<td>0b111</td>
+<td>S1+S2 Translation</td>
+<td>嵌套翻译</td>
+<td>vIOMMU / 嵌套虚拟化</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-linux-domain">2.3 Linux 驱动中的 Domain 类型<a class="headerlink" href="#23-linux-domain" title="Permanent link">&para;</a></h3>
+<p>Linux 驱动定义了四种 Domain 阶段类型（<code>arm-smmu-v3.h:702-707</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>枚举值</th>
+<th>说明</th>
+<th>虚拟化场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stage 1</td>
+<td><code>ARM_SMMU_DOMAIN_S1</code></td>
+<td>VA → PA</td>
+<td>非虚拟化 / Host DMA</td>
+</tr>
+<tr>
+<td><strong>Stage 2</strong></td>
+<td><code>ARM_SMMU_DOMAIN_S2</code></td>
+<td><strong>IPA → PA</strong></td>
+<td><strong>设备直通</strong></td>
+</tr>
+<tr>
+<td><strong>Nested</strong></td>
+<td><code>ARM_SMMU_DOMAIN_NESTED</code></td>
+<td><strong>VA → IPA → PA</strong></td>
+<td><strong>vIOMMU</strong></td>
+</tr>
+<tr>
+<td>Bypass</td>
+<td><code>ARM_SMMU_DOMAIN_BYPASS</code></td>
+<td>直接透传</td>
+<td>调试</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3">3. 虚拟化场景详解<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 场景总览<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph Hypervisor["Hypervisor (Host)"]
+        KVM["KVM"]
+        HOST_SMMU_DRV["Host SMMUv3 驱动"]
+        HOST_IOMMU["Host IOMMU 子系统"]
+        VFIO["VFIO / vfio-pci"]
+    end
+
+    subgraph GuestVM["Guest VM"]
+        GUEST_OS["Guest OS (Linux)"]
+        GUEST_DRV["Guest SMMU 驱动"]
+        GUEST_IOMMU["Guest IOMMU 子系统"]
+        GUEST_DEV_DRV["Guest 设备驱动"]
+    end
+
+    subgraph Hardware["硬件"]
+        SMMU["SMMU (TBU + TCU)"]
+        DEV["PCIe 设备&lt;br/&gt;(直通给 Guest)"]
+        MEM["物理内存"]
+    end
+
+    KVM --&gt; HOST_IOMMU
+    HOST_IOMMU --&gt; HOST_SMMU_DRV
+    HOST_SMMU_DRV --&gt; SMMU
+    VFIO --&gt; HOST_IOMMU
+
+    GUEST_DEV_DRV --&gt; GUEST_IOMMU
+    GUEST_IOMMU --&gt; GUEST_DRV
+    GUEST_DRV -.-&gt;|"IOCTL / virtio"| HOST_SMMU_DRV
+
+    DEV --&gt; SMMU
+    SMMU --&gt; MEM</code></pre>
+<h3 id="32-passthrough">3.2 场景一：设备直通（Passthrough）<a class="headerlink" href="#32-passthrough" title="Permanent link">&para;</a></h3>
+<p>设备直通是将物理设备直接分配给 Guest VM 使用，Hypervisor 通过 Stage 2 翻译控制设备对物理内存的访问。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant QEMU as QEMU / Virt Manager
+    participant VFIO as VFIO
+    participant IOMMU as Host IOMMU
+    participant SMMU as SMMU 硬件
+    participant DEV as 直通设备
+
+    QEMU-&gt;&gt;VFIO: 分配设备给 VM
+    VFIO-&gt;&gt;IOMMU: 创建 S2 Domain
+    Note over IOMMU: arm_smmu_domain_alloc()&lt;br/&gt;stage = ARM_SMMU_DOMAIN_S2
+    IOMMU-&gt;&gt;IOMMU: 分配 VMID
+    Note over IOMMU: arm_smmu_bitmap_alloc(vmid_map)
+    IOMMU-&gt;&gt;SMMU: 配置 Stage 2 页表
+    Note over SMMU: VTTBR = Guest GPA→HPA 映射表&lt;br/&gt;VTCR = 翻译控制参数&lt;br/&gt;VMID = 分配的 ID
+    IOMMU-&gt;&gt;SMMU: 写入 STE (Config=S2_TRANS)
+    VFIO-&gt;&gt;DEV: 使能设备
+
+    Note over DEV: 设备发起 DMA
+    DEV-&gt;&gt;SMMU: DMA 事务 (IPA)
+    SMMU-&gt;&gt;SMMU: Stage 2 翻译 IPA → PA
+    SMMU-&gt;&gt;SMMU: 访问物理内存
+
+    Note over QEMU: VM 退出 / 内存热插拔
+    QEMU-&gt;&gt;VFIO: 通知 GPA 映射变更
+    VFIO-&gt;&gt;IOMMU: 更新 Stage 2 页表
+    IOMMU-&gt;&gt;SMMU: TLB 无效化
+    Note over SMMU: CMDQ_OP_TLBI_S2_IPA&lt;br/&gt;或 CMDQ_OP_TLBI_S12_VMALL</code></pre>
+<p><strong>Stage 2 配置数据结构</strong>（<code>arm-smmu-v3.h:601-605</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_s2_cfg</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">u16</span><span class="w">     </span><span class="n">vmid</span><span class="p">;</span><span class="w">      </span><span class="c1">// 虚拟机标识符</span>
+<span class="w">    </span><span class="n">u64</span><span class="w">     </span><span class="n">vttbr</span><span class="p">;</span><span class="w">     </span><span class="c1">// Stage 2 页表基址</span>
+<span class="w">    </span><span class="n">u64</span><span class="w">     </span><span class="n">vtcr</span><span class="p">;</span><span class="w">      </span><span class="c1">// Stage 2 翻译控制寄存器</span>
+<span class="p">};</span>
+</code></pre></div>
+<p><strong>Stage 2 页表初始化流程</strong>（<code>arm-smmu-v3.c:2138-2161</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    START["arm_smmu_domain_finalise_s2()"]
+    START --&gt; ALLOC_VMID["从 vmid_map 分配 VMID&lt;br/&gt;arm_smmu_bitmap_alloc()"]
+    ALLOC_VMID --&gt; EXTRACT["从 pgtbl_cfg 提取 VTCR 参数&lt;br/&gt;tsz, sl, irgn, orgn, sh, tg, ps"]
+    EXTRACT --&gt; BUILD["构建 VTCR 编码值&lt;br/&gt;FIELD_PREP(STRTAB_STE_2_VTCR_*, ...)"]
+    BUILD --&gt; STORE["存储到 s2_cfg&lt;br/&gt;cfg-&gt;vmid, cfg-&gt;vttbr, cfg-&gt;vtcr"]
+    STORE --&gt; DONE["完成"]</code></pre>
+<h3 id="33-viommu">3.3 场景二：vIOMMU（嵌套翻译）<a class="headerlink" href="#33-viommu" title="Permanent link">&para;</a></h3>
+<p>vIOMMU 允许 Guest OS 直接管理自己的 IOMMU（包括 Stage 1 翻译），同时 Hypervisor 通过 Stage 2 保证隔离。这是最完整的虚拟化 IOMMU 方案。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph GuestWorld["Guest 世界"]
+        direction TB
+        G_OS["Guest OS"]
+        G_IOMMU["Guest IOMMU 驱动"]
+        G_PT["Guest IOVA 页表&lt;br/&gt;(Stage 1: VA→IPA)"]
+        G_DOM["Guest IOMMU Domain&lt;br/&gt;(Stage 1)"]
+    end
+
+    subgraph HostWorld["Host 世界"]
+        direction TB
+        H_KVM["KVM"]
+        H_IOMMU["Host SMMU 驱动"]
+        H_PT["Host GPA 页表&lt;br/&gt;(Stage 2: IPA→PA)"]
+        H_DOM["Host IOMMU Domain&lt;br/&gt;(Nested: S1+S2)"]
+    end
+
+    subgraph HW["硬件"]
+        DEV["直通设备"]
+        SMMU_HW["SMMU"]
+        MEM["物理内存"]
+    end
+
+    G_OS --&gt; G_IOMMU --&gt; G_DOM --&gt; G_PT
+    G_IOMMU -.-&gt;|"配置 CD/STE&lt;br/&gt;(Stage 1 参数)"| H_IOMMU
+
+    H_KVM --&gt; H_IOMMU --&gt; H_DOM --&gt; H_PT
+
+    DEV --&gt;|"DMA (VA)"| SMMU_HW
+    SMMU_HW --&gt;|"Stage 1 查询 G_PT&lt;br/&gt;VA→IPA"| SMMU_HW
+    SMMU_HW --&gt;|"Stage 2 查询 H_PT&lt;br/&gt;IPA→PA"| SMMU_HW
+    SMMU_HW --&gt; MEM</code></pre>
+<p><strong>嵌套域使能流程</strong>（<code>arm-smmu-v3.c:2733-2746</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    REQ["请求使能嵌套翻译&lt;br/&gt;arm_smmu_enable_nesting()"]
+    REQ --&gt; LOCK["获取 init_mutex"]
+    LOCK --&gt; CHECK{"smmu 已关联?"}
+    CHECK --&gt;|"是"| REJECT["返回 -EPERM&lt;br/&gt;(已初始化不可更改)"]
+    CHECK --&gt;|"否"| SET["设置 stage =&lt;br/&gt;ARM_SMMU_DOMAIN_NESTED"]
+    SET --&gt; UNLOCK["释放 init_mutex"]
+    UNLOCK --&gt; DONE["完成&lt;br/&gt;(待 attach 时完成实际配置)"]</code></pre>
+<p><strong>嵌套模式下 STE 配置</strong>（<code>arm-smmu-v3.c:1255-1378</code>）：</p>
+<p>当 Domain 阶段为 <code>NESTED</code> 时，STE 同时配置 Stage 1 和 Stage 2 参数：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph STE_Nested["STE 嵌套配置"]
+        direction TB
+        subgraph Word0["STE Word 0"]
+            N_CFG["Config = S1+S2 Translation"]
+            N_S1CTXPTR["S1 Context Pointer&lt;br/&gt;(指向 CD Table)"]
+        end
+        subgraph Word1["STE Word 1"]
+            N_STRW["STRW = EL2&lt;br/&gt;(E2H 模式)"]
+            N_S1C["S1 缓存属性"]
+            N_EATS["EATS = TRANS"]
+        end
+        subgraph Word2["STE Word 2"]
+            N_S2VMID["S2VMID"]
+            N_VTCR["VTCR&lt;br/&gt;(S2 页表格式)"]
+            N_S2PTW["S2PTW = 1"]
+            N_S2AA64["S2AA64 = 1"]
+            N_S2R["S2R = 1"]
+        end
+        subgraph Word3["STE Word 3"]
+            N_S2TTB["S2TTB&lt;br/&gt;(Stage 2 页表基址)"]
+        end
+    end</code></pre>
+<h3 id="34">3.4 场景对比<a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph Passthrough["设备直通 (S2 Only)"]
+        direction TB
+        P_DEV["直通设备"]
+        P_DMA["DMA: IPA"]
+        P_S2["Stage 2: IPA→PA&lt;br/&gt;(Hypervisor 管理)"]
+        P_MEM["物理内存"]
+        P_DEV --&gt; P_DMA --&gt; P_S2 --&gt; P_MEM
+        P_NOTE["Guest 感知: 设备可直接访问&lt;br/&gt;Guest 无需 IOMMU 驱动&lt;br/&gt;性能最优, 隔离依赖 S2"]
+    end
+
+    subgraph Viommu["vIOMMU (Nested S1+S2)"]
+        direction TB
+        V_DEV["直通设备"]
+        V_DMA["DMA: VA"]
+        V_S1["Stage 1: VA→IPA&lt;br/&gt;(Guest OS 管理)"]
+        V_S2["Stage 2: IPA→PA&lt;br/&gt;(Hypervisor 管理)"]
+        V_MEM["物理内存"]
+        V_DEV --&gt; V_DMA --&gt; V_S1 --&gt; V_S2 --&gt; V_MEM
+        V_NOTE["Guest 感知: 完整 IOMMU 控制&lt;br/&gt;Guest 运行 IOMMU 驱动&lt;br/&gt;灵活性最高, 性能有开销"]
+    end
+
+    subgraph Emulated["模拟设备 (纯软件)"]
+        direction TB
+        E_DEV["模拟设备&lt;br/&gt;(virtio)"]
+        E_VIRTIO["virtio 数据通路&lt;br/&gt;(经由 Hypervisor)"]
+        E_S1["Stage 1: IOVA→PA&lt;br/&gt;(Host S1 Domain)"]
+        E_MEM["物理内存"]
+        E_DEV --&gt; E_VIRTIO --&gt; E_S1 --&gt; E_MEM
+        E_NOTE["Guest 感知: 标准 virtio 设备&lt;br/&gt;无需直通, 可迁移&lt;br/&gt;性能中等"]
+    end</code></pre>
+<hr />
+<h2 id="4-vmid">4. VMID 管理机制<a class="headerlink" href="#4-vmid" title="Permanent link">&para;</a></h2>
+<h3 id="41-vmid">4.1 VMID 在虚拟化中的角色<a class="headerlink" href="#41-vmid" title="Permanent link">&para;</a></h3>
+<p>VMID（Virtual Machine Identifier）用于区分不同 Guest VM 的 Stage 2 地址空间。SMMU 使用 VMID 为每个 VM 维护独立的 TLB 条目，避免 VM 切换时的全局 TLB 刷新。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph VMs["多个虚拟机"]
+        VM1["VM 1&lt;br/&gt;VMID=1"]
+        VM2["VM 2&lt;br/&gt;VMID=2"]
+        VM3["VM 3&lt;br/&gt;VMID=3"]
+    end
+
+    subgraph SMMU_TLB["SMMU TLB"]
+        subgraph Entry1["TLB 条目 1"]
+            T1_IPA["IPA → PA"]
+            T1_VMID1["VMID=1"]
+        end
+        subgraph Entry2["TLB 条目 2"]
+            T2_IPA["IPA → PA"]
+            T2_VMID2["VMID=2"]
+        end
+        subgraph Entry3["TLB 条目 3"]
+            T3_IPA["IPA → PA"]
+            T3_VMID3["VMID=3"]
+        end
+    end
+
+    VM1 --&gt;|"DMA"| Entry1
+    VM2 --&gt;|"DMA"| Entry2
+    VM3 --&gt;|"DMA"| Entry3</code></pre>
+<h3 id="42-vmid">4.2 VMID 分配与释放<a class="headerlink" href="#42-vmid" title="Permanent link">&para;</a></h3>
+<p>Linux 驱动使用位图管理 VMID（<code>arm-smmu-v3.h:664-665</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Alloc["VMID 分配"]
+        A_REQ["创建 S2 Domain"] --&gt; A_CALL["arm_smmu_domain_finalise_s2()"]
+        A_CALL --&gt; A_BITMAP["arm_smmu_bitmap_alloc(vmid_map, vmid_bits)"]
+        A_BITMAP --&gt; A_CHECK{"有空闲 VMID?"}
+        A_CHECK --&gt;|"是"| A_ASSIGN["分配 VMID"]
+        A_CHECK --&gt;|"否"| A_FAIL["返回 -ENOSPC"]
+    end
+
+    subgraph Free["VMID 释放"]
+        F_REQ["销毁 Domain"] --&gt; F_CALL["arm_smmu_domain_free()"]
+        F_CALL --&gt; F_FREE["arm_smmu_bitmap_free(vmid_map, vmid)"]
+    end
+
+    subgraph Reserved["保留"]
+        R_INIT["SMMU 初始化"] --&gt; R_SET["set_bit(0, vmid_map)&lt;br/&gt;VMID 0 用于 Bypass STE"]
+    end</code></pre>
+<h3 id="43-vmid">4.3 VMID 位宽<a class="headerlink" href="#43-vmid" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>IDR0.VMID16</th>
+<th>VMID 位宽</th>
+<th>可用 VMID 数量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本配置</td>
+<td>0</td>
+<td>8-bit</td>
+<td>256</td>
+</tr>
+<tr>
+<td>扩展配置</td>
+<td>1</td>
+<td>16-bit</td>
+<td>65536</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Linux 驱动特性检测</strong>（<code>arm-smmu-v3.c:3513</code>）：
+<div class="highlight"><pre><span></span><code><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">vmid_bits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reg</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">IDR0_VMID16</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+</code></pre></div></p>
+<h3 id="44-vmid-tlb">4.4 VMID 与 TLB 无效化<a class="headerlink" href="#44-vmid-tlb" title="Permanent link">&para;</a></h3>
+<p>VMID 是 TLB 无效化的关键索引参数：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph TLBI_VMID["基于 VMID 的 TLB 无效化命令"]
+        direction TB
+        VMALL["CMDQ_OP_TLBI_S12_VMALL&lt;br/&gt;无效化 VMID 下&lt;br/&gt;所有 S1+S2 条目"]
+        S2_IPA["CMDQ_OP_TLBI_S2_IPA&lt;br/&gt;按 VMID + IPA&lt;br/&gt;无效化 S2 条目"]
+        EL2_ALL["CMDQ_OP_TLBI_EL2_ALL&lt;br/&gt;无效化所有&lt;br/&gt;EL2 上下文条目"]
+    end</code></pre>
+<hr />
+<h2 id="5-el2-e2h">5. EL2 与 E2H 模式<a class="headerlink" href="#5-el2-e2h" title="Permanent link">&para;</a></h2>
+<h3 id="51-hyp">5.1 HYP 特性<a class="headerlink" href="#51-hyp" title="Permanent link">&para;</a></h3>
+<p><code>IDR0.HYP</code> 标志表示 SMMU 支持 Hypervisor 模式（<code>arm-smmu-v3.h:35</code>）。当 CPU 运行在 EL2 并启用 E2H（EL2 Host Extension）时，SMMU 的行为会发生变化。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph EL2_Support["HYP / E2H 特性"]
+        direction TB
+        subgraph Detection["特性检测"]
+            D_IDR0["IDR0.HYP = 1&lt;br/&gt;SMMU 支持 Hypervisor"]
+            D_CPU["CPU: ARM64_HAS_VIRT_HOST_EXTN&lt;br/&gt;CPU 支持 E2H"]
+            D_AND["两者同时满足"]
+            D_AND --&gt; D_FEAT["设置 ARM_SMMU_FEAT_E2H"]
+        end
+
+        subgraph CR2_E2H["CR2 寄存器配置"]
+            C_E2H["CR2.E2H = 1&lt;br/&gt;使能 EL2 Host 模式"]
+        end
+
+        subgraph Impact["影响"]
+            I_STRW["STE.STRW = EL2&lt;br/&gt;(而非 NSEL1)"]
+            I_TLBI["TLBI 使用 EL2 命令&lt;br/&gt;CMD_TLBI_EL2_*"]
+            I_RESET["复位时执行&lt;br/&gt;CMD_TLBI_EL2_ALL"]
+        end
+    end</code></pre>
+<h3 id="52-e2h-tlb">5.2 E2H 对 TLB 无效化的影响<a class="headerlink" href="#52-e2h-tlb" title="Permanent link">&para;</a></h3>
+<p>当 <code>ARM_SMMU_FEAT_E2H</code> 置位时，Linux 驱动使用 EL2 特定的 TLBI 命令：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph NoE2H["无 E2H (标准模式)"]
+        NE_TLBI_ASID["CMDQ_OP_TLBI_NH_ASID"]
+        NE_TLBI_VA["CMDQ_OP_TLBI_NH_VA"]
+    end
+
+    subgraph WithE2H["有 E2H (EL2 Host 模式)"]
+        WE_TLBI_ASID["CMDQ_OP_TLBI_EL2_ASID"]
+        WE_TLBI_VA["CMDQ_OP_TLBI_EL2_VA"]
+    end</code></pre>
+<p><strong>Linux 驱动中的条件路由</strong>（<code>arm-smmu-v3.c:944-954</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// ASID 级别无效化</span>
+<span class="p">.</span><span class="n">opcode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">features</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ARM_SMMU_FEAT_E2H</span><span class="w"> </span><span class="o">?</span>
+<span class="w">    </span><span class="nl">CMDQ_OP_TLBI_EL2_ASID</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CMDQ_OP_TLBI_NH_ASID</span><span class="p">,</span>
+
+<span class="c1">// VA 级别无效化</span>
+<span class="p">.</span><span class="n">opcode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">features</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ARM_SMMU_FEAT_E2H</span><span class="w"> </span><span class="o">?</span>
+<span class="w">    </span><span class="nl">CMDQ_OP_TLBI_EL2_VA</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">CMDQ_OP_TLBI_NH_VA</span><span class="p">,</span>
+</code></pre></div>
+<h3 id="53-strws2-stage-reject-write">5.3 STRW（S2 Stage Reject Write）<a class="headerlink" href="#53-strws2-stage-reject-write" title="Permanent link">&para;</a></h3>
+<p>STE 中的 STRW 字段控制 Stage 2 的属性交互（<code>arm-smmu-v3.h:236-238</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>STRW 值</th>
+<th>含义</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NSEL1</code> (0)</td>
+<td>Non-secure EL1</td>
+<td>标准 Stage 1+S2</td>
+</tr>
+<tr>
+<td><code>EL2</code> (2)</td>
+<td>EL2 Host</td>
+<td>E2H 模式</td>
+</tr>
+</tbody>
+</table>
+<p>在 PCIe 模式下（MMU-600AE/700），无论 STRW 实际值如何，DTI 事务属性始终按 <code>EL1-S2</code> 计算。</p>
+<hr />
+<h2 id="6-stage-2">6. Stage 2 地址翻译详解<a class="headerlink" href="#6-stage-2" title="Permanent link">&para;</a></h2>
+<h3 id="61-stage-2">6.1 Stage 2 页表格式<a class="headerlink" href="#61-stage-2" title="Permanent link">&para;</a></h3>
+<p>Stage 2 使用 ARM LPAE（Large Physical Address Extension）页表格式，由 <code>arm_64_lpae_s2_cfg</code> 结构描述：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph VTCR_Params["VTCR 参数"]
+        direction TB
+        V_T0SZ["S2T0SZ (bits 5:0)&lt;br/&gt;IPA 地址空间大小"]
+        V_SL["S2SL0 (bits 7:6)&lt;br/&gt;起始级别"]
+        V_IRGN["S2IR0 (bits 9:8)&lt;br/&gt;Inner 缓存属性"]
+        V_ORGN["S2OR0 (bits 11:10)&lt;br/&gt;Outer 缓存属性"]
+        V_SH["S2SH0 (bits 13:12)&lt;br/&gt;Shareability"]
+        V_TG["S2TG (bits 15:14)&lt;br/&gt;粒度 (4K/16K/64K)"]
+        V_PS["S2PS (bits 18:16)&lt;br/&gt;PA 大小"]
+    end</code></pre>
+<h3 id="62-stage-2">6.2 Stage 2 页表遍历<a class="headerlink" href="#62-stage-2" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph S2_Walk["Stage 2 页表遍历"]
+        IPA_IN["输入: IPA"] --&gt; S2_L0["L0 表&lt;br/&gt;(S2TTB 基址)"]
+        S2_L0 --&gt;|"L0 Descriptor"| S2_L1["L1 表"]
+        S2_L1 --&gt;|"L1 Descriptor"| S2_L2["L2 表"]
+        S2_L2 --&gt;|"L2 Descriptor"| S2_L3["L3 表"]
+        S2_L3 --&gt;|"L3 Descriptor"| PA_OUT["输出: PA + 属性"]
+    end
+
+    subgraph S2Attrs["Stage 2 输出属性"]
+        SA_P["输出 PA"]
+        SA_SH["Shareability"]
+        SA_MemAttr["内存类型&lt;br/&gt;(Device/Normal)"]
+        SA_AP["访问权限&lt;br/&gt;(可被 S1 覆盖)"]
+        SA_NS["Non-Secure 标志"]
+    end</code></pre>
+<h3 id="63-stage-1-stage-2">6.3 Stage 1 + Stage 2 属性合并<a class="headerlink" href="#63-stage-1-stage-2" title="Permanent link">&para;</a></h3>
+<p>当两个阶段同时启用时，最终的事务属性由两个阶段的输出属性合并决定：</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph S1_Attrs["Stage 1 输出属性"]
+        S1_SH["Shareability"]
+        S1_MemAttr["内存类型"]
+        S1_AP["访问权限"]
+    end
+
+    subgraph S2_Attrs["Stage 2 输出属性"]
+        S2_SH["Shareability"]
+        S2_MemAttr["内存类型"]
+        S2_AP["访问权限"]
+        S2_NS["NS 标志"]
+    end
+
+    subgraph Final["最终属性"]
+        F_SH["合并 Shareability"]
+        F_MemAttr["S2 可覆盖 S1&lt;br/&gt;(取决于 FWB)"]
+        F_AP["取更严格权限&lt;br/&gt;(S1 ∩ S2)"]
+        F_NS["取 S2.NS"]
+    end
+
+    S1_SH &amp; S2_SH --&gt; F_SH
+    S1_MemAttr &amp; S2_MemAttr --&gt; F_MemAttr
+    S1_AP &amp; S2_AP --&gt; F_AP
+    S2_NS --&gt; F_NS</code></pre>
+<hr />
+<h2 id="7-tlb">7. 虚拟化中的 TLB 管理<a class="headerlink" href="#7-tlb" title="Permanent link">&para;</a></h2>
+<h3 id="71-vm-tlb">7.1 VM 切换时的 TLB 行为<a class="headerlink" href="#71-vm-tlb" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant KVM as KVM
+    participant SMMU_DRV as SMMU 驱动
+    participant SMMU as SMMU 硬件
+
+    Note over KVM: 调度切换: VM_A → VM_B
+
+    KVM-&gt;&gt;SMMU_DRV: 通知 VM 切换
+    SMMU_DRV-&gt;&gt;SMMU: CMD_SYNC (保证之前命令完成)
+
+    alt VMID 不同 (VM_A.vmid ≠ VM_B.vmid)
+        Note over SMMU: TLB 自动按 VMID 区分&lt;br/&gt;无需全局刷新
+        Note over SMMU: 新 VM 的 TLB Miss&lt;br/&gt;触发 Stage 2 页表遍历
+    else VMID 相同 (VM 重用)
+        SMMU_DRV-&gt;&gt;SMMU: CMDQ_OP_TLBI_S12_VMALL
+        Note over SMMU: 刷新该 VMID 下所有 TLB 条目
+    end</code></pre>
+<h3 id="72-stage-2-tlb">7.2 Stage 2 TLB 无效化命令路由<a class="headerlink" href="#72-stage-2-tlb" title="Permanent link">&para;</a></h3>
+<p>Linux 驱动根据 Domain 阶段选择不同的 TLBI 命令（<code>arm-smmu-v3.c:1856-1944</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    TLBI_REQ["需要 TLB 无效化"]
+
+    TLBI_REQ --&gt; CHECK{"Domain 阶段?"}
+
+    CHECK --&gt;|"S1"| S1_PATH["CMD_TLBI_EL2_ASID&lt;br/&gt;或 CMD_TLBI_EL2_VA&lt;br/&gt;(E2H 模式)"]
+    CHECK --&gt;|"S2 或 NESTED"| S2_PATH{"无效化范围?"}
+
+    S2_PATH --&gt;|"全部"| S2_ALL["CMDQ_OP_TLBI_S12_VMALL&lt;br/&gt;按 VMID 刷新全部"]
+    S2_PATH --&gt;|"指定 IPA"| S2_IPA["CMDQ_OP_TLBI_S2_IPA&lt;br/&gt;按 VMID + IPA 刷新"]
+
+    S1_PATH --&gt; SYNC["CMD_SYNC"]
+    S2_ALL --&gt; SYNC
+    S2_IPA --&gt; SYNC
+    SYNC --&gt; DONE["完成"]</code></pre>
+<hr />
+<h2 id="8">8. 虚拟化故障处理<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="81-stage-2">8.1 Stage 2 故障<a class="headerlink" href="#81-stage-2" title="Permanent link">&para;</a></h3>
+<p>当 Stage 2 翻译失败时，SMMU 生成事件并写入 Event Queue。在当前 Linux 驱动中，Stage 2 故障被视为致命错误（<code>arm-smmu-v3.c:1479-1481</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* Stage-2 is always pinned at the moment */</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">evt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EVTQ_1_S2</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EFAULT</span><span class="p">;</span>
+</code></pre></div>
+<pre class="mermaid"><code>graph TB
+    subgraph S2_Fault["Stage 2 故障处理"]
+        DMA_REQ["设备 DMA 请求 (VA 或 IPA)"]
+        S1_OK["Stage 1 成功 (VA→IPA)"]
+        S2_FAIL["Stage 2 失败 (IPA→PA)"]
+        EVT_Q["Event Queue&lt;br/&gt;F_TRANSLATION / F_PERM&lt;br/&gt;S2=1"]
+        IRQ["MSI 中断"]
+        DRV["SMMU 驱动"]
+        KILL["返回 -EFAULT&lt;br/&gt;终止设备"]
+
+        DMA_REQ --&gt; S1_OK --&gt; S2_FAIL --&gt; EVT_Q --&gt; IRQ --&gt; DRV --&gt; KILL
+    end</code></pre>
+<h3 id="82-stage">8.2 故障事件中的 Stage 标识<a class="headerlink" href="#82-stage" title="Permanent link">&para;</a></h3>
+<p>Event Queue 条目中 <code>EVTQ_1_S2</code> 位（bit 39）标识故障发生在 Stage 2：</p>
+<table>
+<thead>
+<tr>
+<th>S2 位</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Stage 1 故障</td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>Stage 2 故障</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-secure-el2">9. Secure-EL2 虚拟化<a class="headerlink" href="#9-secure-el2" title="Permanent link">&para;</a></h2>
+<h3 id="91-secure-el2">9.1 Secure-EL2 支持<a class="headerlink" href="#91-secure-el2" title="Permanent link">&para;</a></h3>
+<p>MMU-700（SMMUv3.2）引入了 Secure-EL2 支持（<code>SEL2=1</code>），允许安全世界也运行 Hypervisor：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph SecureWorld["安全世界"]
+        S_EL3["EL3 (Secure Monitor)"]
+        S_EL2["Secure EL2&lt;br/&gt;(Secure Hypervisor)"]
+        S_EL1["Secure EL1/0&lt;br/&gt;(Secure Guest OS)"]
+        S_TBU["Secure TBU"]
+        S_TCU["Secure TCU"]
+    end
+
+    subgraph NonSecureWorld["非安全世界"]
+        NS_EL2["Non-Secure EL2&lt;br/&gt;(Hypervisor)"]
+        NS_EL1["Non-Secure EL1/0&lt;br/&gt;(Guest OS)"]
+        NS_TBU["Non-Secure TBU"]
+        NS_TCU["Non-Secure TCU"]
+    end
+
+    S_EL3 &lt;--&gt;|"安全状态切换"| S_EL2
+    S_EL2 --&gt;|"两阶段翻译"| S_EL1
+    S_EL1 --&gt; S_TBU &lt;--&gt; S_TCU
+
+    NS_EL2 --&gt;|"两阶段翻译"| NS_EL1
+    NS_EL1 --&gt; NS_TBU &lt;--&gt; NS_TCU
+
+    S_TCU -.-&gt;|"隔离"| NS_TCU
+    S_TBU -.-&gt;|"隔离"| NS_TBU</code></pre>
+<h3 id="92-vmid">9.2 VMID 分区<a class="headerlink" href="#92-vmid" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>VMID 空间</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Secure VMID</td>
+<td>安全世界使用，独立于 Non-Secure</td>
+</tr>
+<tr>
+<td>Non-Secure VMID</td>
+<td>非安全世界使用</td>
+</tr>
+<tr>
+<td>两者可以相同值</td>
+<td>但在 SMMU 内部是独立管理的</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10">10. 虚拟化扩展特性<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<h3 id="101-smmu">10.1 与虚拟化相关的 SMMU 特性<a class="headerlink" href="#101-smmu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph Features["虚拟化相关特性"]
+        direction TB
+
+        subgraph Core["核心特性"]
+            S2P["Stage 2 翻译&lt;br/&gt;(IDR0.S2P)"]
+            HYP["Hypervisor 模式&lt;br/&gt;(IDR0.HYP)"]
+            VMID16["16-bit VMID&lt;br/&gt;(IDR0.VMID16)"]
+            E2H["EL2 Host 扩展&lt;br/&gt;(CR2.E2H)"]
+        end
+
+        subgraph Enhanced["增强特性"]
+            PTM["Paired TLB Maint.&lt;br/&gt;(CR2.PTM)"]
+            RECINVSID["Record Inv. SID&lt;br/&gt;(CR2.RECINVSID)"]
+            RIL["Range Inv. (BTM)&lt;br/&gt;(IDR3.RIL)"]
+            VMW["VMID Wildcard&lt;br/&gt;(IDR0.VMW)"]
+            XNX["EL0/EL1 执行控制&lt;br/&gt;(IDR3.XNX)"]
+        end
+
+        subgraph S3P2["SMMUv3.2 独有"]
+            SEL2["Secure-EL2&lt;br/&gt;(S_IDR1.SEL2)"]
+            HTTU["HW 页表更新&lt;br/&gt;(访问/脏位)"]
+            BBML["Break-Before-Make&lt;br/&gt;Level 2"]
+        end
+    end</code></pre>
+<h3 id="102">10.2 特性说明<a class="headerlink" href="#102" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>说明</th>
+<th>虚拟化价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PTM</strong> (Paired TLB Maintenance)</td>
+<td>与 CPU TLB 维护操作配对执行，确保 CPU 侧和 SMMU 侧的 TLB 同步</td>
+<td>避免 CPU 和 SMMU 的 TLB 不一致</td>
+</tr>
+<tr>
+<td><strong>RECINVSID</strong> (Record Invalidation SID)</td>
+<td>记录触发无效化的 StreamID，帮助调试</td>
+<td>便于追踪 VM 的 TLB 维护来源</td>
+</tr>
+<tr>
+<td><strong>VMW</strong> (VMID Wildcard)</td>
+<td>VMID 通配符匹配，一条命令可同时无效化多个 VMID 的 TLB</td>
+<td>加速 VM 批量切换</td>
+</tr>
+<tr>
+<td><strong>RIL</strong> (Range Invalidaton)</td>
+<td>范围无效化，一次命令覆盖连续地址范围</td>
+<td>减少大块内存变更时的无效化命令数量</td>
+</tr>
+<tr>
+<td><strong>XNX</strong> (Execute-never at S2)</td>
+<td>Stage 2 级别的执行权限控制</td>
+<td>防止 Guest 设备在 S2 阶段执行非授权内存</td>
+</tr>
+</tbody>
+</table>
+<h3 id="103">10.3 跨版本虚拟化特性对比<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>SMMUv2</th>
+<th>MMU-600AE (v3.1)</th>
+<th>MMU-700 (v3.2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stage 2 翻译</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>嵌套 S1+S2</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>8-bit VMID</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>16-bit VMID</td>
+<td>Yes (opt)</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Hyp (EL2)</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>E2H</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>PTM</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>RECINVSID</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>VMID Wildcard</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Range Inv. (RIL)</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>XNX</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Secure-EL2</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>HTTU</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>DVM 版本</td>
+<td>N/A</td>
+<td>DVMv8.1</td>
+<td>DVMv8.4</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-hypervisor-e2hc">11. Hypervisor 上下文与 E2HC<a class="headerlink" href="#11-hypervisor-e2hc" title="Permanent link">&para;</a></h2>
+<h3 id="111-smmuv2-hypervisor">11.1 SMMUv2 中的 Hypervisor 上下文<a class="headerlink" href="#111-smmuv2-hypervisor" title="Permanent link">&para;</a></h3>
+<p>在 SMMUv2 中，有两种特殊的上下文 Bank（<code>arm-smmu-v3.h</code> 中相关继承）：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph SMMUv2_Banks["SMMUv2 上下文 Bank"]
+        direction TB
+        STD_CB["标准 Context Bank&lt;br/&gt;(SMMU_CBn)&lt;br/&gt;Guest Stage 1&lt;br/&gt;或 Host Stage 1"]
+        HYPC["HYPC Bank&lt;br/&gt;(Hypervisor Context)&lt;br/&gt;匹配 Non-secure EL2&lt;br/&gt;地址翻译体制"]
+        E2HC["E2HC Bank&lt;br/&gt;(E2H Context)&lt;br/&gt;使用 CD 中的 ASID&lt;br/&gt;和关联上下文的 VMID"]
+    end</code></pre>
+<h3 id="112-smmuv3">11.2 SMMUv3 中的等效机制<a class="headerlink" href="#112-smmuv3" title="Permanent link">&para;</a></h3>
+<p>在 SMMUv3 中，上下文 Bank 被 Context Descriptor 替代，Hypervisor 上下文通过以下方式实现：</p>
+<ul>
+<li><strong>STRW 字段</strong>：设为 <code>EL2</code> 表示使用 Hypervisor 上下文</li>
+<li><strong>E2H 模式</strong>：CR2.E2H=1 使 SMMU 在 EL2 Host 模式下运行</li>
+<li><strong>独立的 ASID/VMID</strong>：CD 中的 ASID 与 STE 中的 VMID 配合</li>
+</ul>
+<hr />
+<h2 id="12">12. 虚拟化场景下的设备直通完整流程<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<h3 id="121">12.1 端到端流程<a class="headerlink" href="#121" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Setup["设置阶段"]
+        U1["QEMU 启动 VM&lt;br/&gt;配置 -device vfio-pci"]
+        U2["VFIO 打开设备&lt;br/&gt;获取设备 FD"]
+        U3["VFIO 创建容器&lt;br/&gt;IOMMU Group"]
+        U4["VFIO 设置 IOMMU&lt;br/&gt;vfio_iommu_type1_attach_group()"]
+        U5["Host IOMMU 创建 S2 Domain&lt;br/&gt;arm_smmu_domain_alloc(S2)"]
+        U6["分配 VMID&lt;br/&gt;arm_smmu_bitmap_alloc()"]
+        U7["KVM 设置 Stage 2 页表&lt;br/&gt;GPA→HPA 映射"]
+        U8["配置 SMMU STE&lt;br/&gt;Config=S2_TRANS&lt;br/&gt;VTTBR/VTCR/VMID"]
+        U9["映射设备 IRQ&lt;br/&gt;通过 GIC 直通"]
+
+        U1 --&gt; U2 --&gt; U3 --&gt; U4 --&gt; U5 --&gt; U6 --&gt; U7 --&gt; U8 --&gt; U9
+    end
+
+    subgraph Runtime["运行阶段"]
+        R1["Guest 设备驱动初始化"]
+        R2["设备发起 DMA (GPA)"]
+        R3["SMMU Stage 2 翻译&lt;br/&gt;GPA→PA"]
+        R4["设备访问物理内存"]
+
+        R1 --&gt; R2 --&gt; R3 --&gt; R4
+    end
+
+    subgraph Teardown["销毁阶段"]
+        T1["VM 关闭"]
+        T2["VFIO 释放设备"]
+        T3["Host IOMMU 释放 Domain&lt;br/&gt;TLB 无效化&lt;br/&gt;VMID 释放"]
+
+        T1 --&gt; T2 --&gt; T3
+    end</code></pre>
+<h3 id="122-gpa">12.2 GPA 映射变更处理<a class="headerlink" href="#122-gpa" title="Permanent link">&para;</a></h3>
+<p>当 Guest 内存布局发生变化（如内存分配、释放、 ballooning）时：</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GOS as Guest OS
+    participant KVM as KVM
+    participant VFIO as VFIO / IOMMU
+    participant SMMU as SMMU
+
+    GOS-&gt;&gt;KVM: 内存操作&lt;br/&gt;(alloc/free/balloon)
+    KVM-&gt;&gt;KVM: 更新 Stage 2 页表
+
+    KVM-&gt;&gt;VFIO: 通知 GPA 映射变更
+    VFIO-&gt;&gt;SMMU: 更新 Stage 2 IO 页表
+
+    alt 部分更新
+        SMMU-&gt;&gt;SMMU: CMDQ_OP_TLBI_S2_IPA&lt;br/&gt;(按 IPA 范围无效化)
+    else 全量更新
+        SMMU-&gt;&gt;SMMU: CMDQ_OP_TLBI_S12_VMALL&lt;br/&gt;(按 VMID 全量无效化)
+    end
+
+    SMMU-&gt;&gt;SMMU: CMDQ_OP_CMD_SYNC&lt;br/&gt;(等待完成)
+    SMMU--&gt;&gt;VFIO: 完成
+    VFIO--&gt;&gt;KVM: 完成</code></pre>
+<hr />
+<h2 id="13-smmuv3">13. SMMUv3 复位与虚拟化<a class="headerlink" href="#13-smmuv3" title="Permanent link">&para;</a></h2>
+<h3 id="131-el2-tlb">13.1 初始化时的 EL2 TLB 清理<a class="headerlink" href="#131-el2-tlb" title="Permanent link">&para;</a></h3>
+<p>SMMU 初始化时，如果支持 HYP 特性，会先清理 EL2 相关的 TLB 条目（<code>arm-smmu-v3.c:3336-3343</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">features</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ARM_SMMU_FEAT_HYP</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">cmd</span><span class="p">.</span><span class="n">opcode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CMDQ_OP_TLBI_EL2_ALL</span><span class="p">;</span>
+<span class="w">    </span><span class="n">arm_smmu_cmdq_issue_cmd_with_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cmd</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">cmd</span><span class="p">.</span><span class="n">opcode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CMDQ_OP_TLBI_NSNH_ALL</span><span class="p">;</span>
+<span class="n">arm_smmu_cmdq_issue_cmd_with_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cmd</span><span class="p">);</span>
+</code></pre></div>
+<pre class="mermaid"><code>flowchart TD
+    INIT["SMMU 初始化"]
+    INIT --&gt; CHECK_HYP{"支持 HYP?"}
+    CHECK_HYP --&gt;|"是"| EL2_INV["CMDQ_OP_TLBI_EL2_ALL&lt;br/&gt;清理所有 EL2 TLB 条目"]
+    CHECK_HYP --&gt;|"否"| NS_INV
+    EL2_INV --&gt; NS_INV["CMDQ_OP_TLBI_NSNH_ALL&lt;br/&gt;清理所有 Non-Secure TLB 条目"]
+    NS_INV --&gt; DONE["TLB 干净, 可安全使用"]</code></pre>
+<h3 id="132-cr2">13.2 CR2 寄存器初始化<a class="headerlink" href="#132-cr2" title="Permanent link">&para;</a></h3>
+<p>SMMU 初始化时配置 CR2 寄存器（<code>arm-smmu-v3.c:3305-3311</code>）：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph CR2_Init["CR2 初始化"]
+        PTM_BIT["CR2.PTM = 1&lt;br/&gt;Paired TLB Maint"]
+        RECINVSID_BIT["CR2.RECINVSID = 1&lt;br/&gt;记录无效化 SID"]
+        E2H_BIT["CR2.E2H = 1&lt;br/&gt;EL2 Host 模式&lt;br/&gt;(仅当 FEAT_E2H)"]
+    end</code></pre>
+<hr />
+<h2 id="14">14. 总结<a class="headerlink" href="#14" title="Permanent link">&para;</a></h2>
+<h3 id="141-smmu">14.1 SMMU 虚拟化核心要点<a class="headerlink" href="#141-smmu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>mindmap
+  root((SMMU 虚拟化))
+    两阶段翻译
+      Stage 1: Guest 管理 VA→IPA
+      Stage 2: Hypervisor 管理 IPA→PA
+      嵌套模式: S1+S2 同时启用
+    VMID 管理
+      8/16-bit VMID
+      位图分配/释放
+      VMID 0 保留给 Bypass
+      TLB 按 VMID 自动区分
+    EL2 / E2H
+      Hypervisor 上下文模式
+      STRW 字段控制
+      EL2 TLBI 命令
+      PTM 配对 TLB 维护
+    设备直通
+      S2 Domain + VFIO
+      GPA→HPA 映射
+      中断直通 (GIC)
+    vIOMMU
+      Nested Domain
+      Guest 管理自己的 IOMMU
+      CD/STE 由 Guest 配置
+    安全扩展
+      Secure-EL2 (SMMUv3.2)
+      安全/非安全 VMID 分区
+      HTTU / BBML / FWB</code></pre>
+<h3 id="142">14.2 关键数据结构汇总<a class="headerlink" href="#142" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>数据结构</th>
+<th>文件位置</th>
+<th>虚拟化用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>arm_smmu_s2_cfg</code></td>
+<td><code>arm-smmu-v3.h:601</code></td>
+<td>Stage 2 配置 (VMID, VTTBR, VTCR)</td>
+</tr>
+<tr>
+<td><code>arm_smmu_domain.stage</code></td>
+<td><code>arm-smmu-v3.h:717</code></td>
+<td>Domain 阶段 (S2/Nested)</td>
+</tr>
+<tr>
+<td><code>arm_smmu_domain.s2_cfg</code></td>
+<td><code>arm-smmu-v3.h:720</code></td>
+<td>Domain 中的 S2 配置</td>
+</tr>
+<tr>
+<td><code>vmid_map</code></td>
+<td><code>arm-smmu-v3.h:665</code></td>
+<td>VMID 位图分配器</td>
+</tr>
+<tr>
+<td><code>STRW</code> 字段</td>
+<td><code>arm-smmu-v3.h:236</code></td>
+<td>EL2 上下文选择</td>
+</tr>
+<tr>
+<td><code>S2VMID</code> 字段</td>
+<td><code>arm-smmu-v3.h:243</code></td>
+<td>STE 中的 VMID</td>
+</tr>
+<tr>
+<td><code>VTCR</code> 字段</td>
+<td><code>arm-smmu-v3.h:244</code></td>
+<td>STE 中的 S2 控制寄存器</td>
+</tr>
+<tr>
+<td><code>S2TTB</code> 字段</td>
+<td><code>arm-smmu-v3.h:257</code></td>
+<td>STE 中的 S2 页表基址</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

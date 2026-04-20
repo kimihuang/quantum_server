@@ -1,0 +1,3874 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../SMMU_Architecture_and_Design/">
+      
+      
+        <link rel="next" href="../SMMU_Virtualization_Design/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>SMMU SVA 设计 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#arm-smmu-svashared-virtual-addressing" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SMMU SVA 设计
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../src/packages/sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 SVA 要解决的核心问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 SVA 的技术基石
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 版本支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pasid-substreamid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. PASID 与 SubstreamID
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. PASID 与 SubstreamID">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 核心概念
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ssid-axi5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 SSID 在 AXI5 总线上的传输
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-s1dss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 S1DSS 字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-s1cdmax-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 S1CDMax 与 CD 表格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-atsaddress-translation-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ATS（Address Translation Service）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ATS（Address Translation Service）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-ats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 ATS 工作原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-atc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 ATC 无效化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-atc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 ATC 无效化范围计算
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-eatsendianness-ats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 EATS（Endianness / ATS 控制）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-split-stage-atsmmu-700" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Split-Stage ATS（MMU-700 独有）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pripage-request-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. PRI（Page Request Interface）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. PRI（Page Request Interface）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 PRI 工作原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-pri-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 PRI Queue 条目格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 PRI 响应码
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-linux-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Linux PRI 处理流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-priq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 PRIQ 溢出处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-stall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Stall 模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Stall 模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-stall-vs-terminate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Stall vs Terminate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-stall-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Stall 模型对 SVA 的意义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-stall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Stall 容量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-cmd_resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 CMD_RESUME 命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cdcontext-descriptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. CD（Context Descriptor）与进程绑定
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. CD（Context Descriptor）与进程绑定">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-cd-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 CD 的 SVA 角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 共享 CD 的创建流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-asid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 ASID 共享与冲突处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 CD 的五种写入场景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 CD 的原子写入协议
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-mmu-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. MMU Notifier 与地址空间同步
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. MMU Notifier 与地址空间同步">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 核心问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-mmu-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 MMU Notifier 机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-arm_smmu_mmu_notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 arm_smmu_mmu_notifier 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-invalidate_range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 invalidate_range 回调
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 release 回调（进程退出）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-mmu-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 MMU Notifier 的生命周期
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-sva-bindunbind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. SVA Bind/Unbind 流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. SVA Bind/Unbind 流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-bond" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Bond 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-bind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 完整 Bind 流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-unbind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Unbind 流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 SVA 使能与禁用
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. SVA 特性检测与前提条件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. SVA 特性检测与前提条件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 硬件特性检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-master-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Master 级 SVA 支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-iopf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 IOPF 支持检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-iopfio-page-fault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. IOPF（I/O Page Fault）框架
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. IOPF（I/O Page Fault）框架">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-iopf-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 IOPF 与 SVA 的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-iopf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 IOPF 注册流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-lti-laflowmmu-700" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 LTI 接口的 LAFLOW（MMU-700）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-httuhardware-translation-table-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. HTTU（Hardware Translation Table Update）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. HTTU（Hardware Translation Table Update）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-httu-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 HTTU 与 SVA 的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-httu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 HTTU 实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-s2affdstage-2-access-flag-fault-disable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 S2AFFD（Stage 2 Access Flag Fault Disable）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-sva-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. SVA 中的 TLB 管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. SVA 中的 TLB 管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-asid-vmid-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 ASID 与 VMID 在 SVA 中的角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-sva-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 SVA TLB 无效化场景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-btmbroadcast-tlb-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 BTM（Broadcast TLB Maintenance）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. 端到端 SVA 数据流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. 端到端 SVA 数据流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-dmaatc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 正常 DMA（ATC 命中）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-dma-ats-atc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 DMA + ATS 查询（ATC 未命中）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#133-dma-stall-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 DMA + 翻译故障（Stall + PRI）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#134" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 进程退出清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-sva-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. SVA Linux 驱动源码结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. SVA Linux 驱动源码结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 文件职责
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 关键全局变量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 关键函数调用关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. 总结
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="15. 总结">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#151-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15.1 SVA 设计要点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#152-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15.2 SVA 前提条件清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../src/packages/sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 SVA 要解决的核心问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 SVA 的技术基石
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 版本支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-pasid-substreamid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. PASID 与 SubstreamID
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. PASID 与 SubstreamID">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 核心概念
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-ssid-axi5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 SSID 在 AXI5 总线上的传输
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-s1dss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 S1DSS 字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-s1cdmax-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 S1CDMax 与 CD 表格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-atsaddress-translation-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ATS（Address Translation Service）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ATS（Address Translation Service）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-ats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 ATS 工作原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-atc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 ATC 无效化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-atc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 ATC 无效化范围计算
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-eatsendianness-ats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 EATS（Endianness / ATS 控制）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-split-stage-atsmmu-700" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Split-Stage ATS（MMU-700 独有）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-pripage-request-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. PRI（Page Request Interface）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. PRI（Page Request Interface）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 PRI 工作原理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-pri-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 PRI Queue 条目格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 PRI 响应码
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-linux-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Linux PRI 处理流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-priq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 PRIQ 溢出处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-stall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Stall 模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Stall 模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-stall-vs-terminate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Stall vs Terminate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-stall-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Stall 模型对 SVA 的意义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-stall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Stall 容量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-cmd_resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 CMD_RESUME 命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cdcontext-descriptor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. CD（Context Descriptor）与进程绑定
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. CD（Context Descriptor）与进程绑定">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-cd-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 CD 的 SVA 角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 共享 CD 的创建流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-asid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 ASID 共享与冲突处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 CD 的五种写入场景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-cd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 CD 的原子写入协议
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-mmu-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. MMU Notifier 与地址空间同步
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. MMU Notifier 与地址空间同步">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 核心问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-mmu-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 MMU Notifier 机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-arm_smmu_mmu_notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 arm_smmu_mmu_notifier 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-invalidate_range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 invalidate_range 回调
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 release 回调（进程退出）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-mmu-notifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 MMU Notifier 的生命周期
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-sva-bindunbind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. SVA Bind/Unbind 流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. SVA Bind/Unbind 流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-bond" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Bond 结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-bind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 完整 Bind 流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-unbind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Unbind 流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 SVA 使能与禁用
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. SVA 特性检测与前提条件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. SVA 特性检测与前提条件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 硬件特性检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-master-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Master 级 SVA 支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-iopf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 IOPF 支持检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-iopfio-page-fault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. IOPF（I/O Page Fault）框架
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. IOPF（I/O Page Fault）框架">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-iopf-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 IOPF 与 SVA 的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-iopf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 IOPF 注册流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-lti-laflowmmu-700" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 LTI 接口的 LAFLOW（MMU-700）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-httuhardware-translation-table-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. HTTU（Hardware Translation Table Update）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. HTTU（Hardware Translation Table Update）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-httu-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 HTTU 与 SVA 的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-httu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 HTTU 实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#113-s2affdstage-2-access-flag-fault-disable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 S2AFFD（Stage 2 Access Flag Fault Disable）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-sva-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. SVA 中的 TLB 管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. SVA 中的 TLB 管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-asid-vmid-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 ASID 与 VMID 在 SVA 中的角色
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#122-sva-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 SVA TLB 无效化场景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#123-btmbroadcast-tlb-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 BTM（Broadcast TLB Maintenance）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. 端到端 SVA 数据流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. 端到端 SVA 数据流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#131-dmaatc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 正常 DMA（ATC 命中）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#132-dma-ats-atc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 DMA + ATS 查询（ATC 未命中）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#133-dma-stall-pri" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 DMA + 翻译故障（Stall + PRI）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#134" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 进程退出清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-sva-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. SVA Linux 驱动源码结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. SVA Linux 驱动源码结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 文件职责
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 关键全局变量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 关键函数调用关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. 总结
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="15. 总结">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#151-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15.1 SVA 设计要点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#152-sva" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15.2 SVA 前提条件清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="arm-smmu-svashared-virtual-addressing">ARM SMMU SVA（Shared Virtual Addressing）专题<a class="headerlink" href="#arm-smmu-svashared-virtual-addressing" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>SVA（Shared Virtual Addressing，共享虚拟地址）允许设备直接使用 CPU 进程的虚拟地址发起 DMA 访问，消除了为设备维护独立 IOVA 映射的需要。这是通过 PCIe ATS + PASID + PRI 和 SMMU Stall 模式的协同工作实现的。</p>
+<h3 id="11-sva">1.1 SVA 要解决的核心问题<a class="headerlink" href="#11-sva" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph WithoutSVA["传统模式（无 SVA）"]
+        direction TB
+        CPU_PROC["CPU 进程&lt;br/&gt;VA 页表"]
+        DEV_IOVA["设备&lt;br/&gt;IOVA 映射"]
+        SW_SYNC["软件同步&lt;br/&gt;手动维护 IOVA→VA 映射&lt;br/&gt;双份页表"]
+        CPU_PROC &lt;--&gt; SW_SYNC &lt;--&gt; DEV_IOVA
+    end
+
+    subgraph WithSVA["SVA 模式"]
+        direction TB
+        SHARED_PG["共享页表&lt;br/&gt;进程 VA 页表"]
+        CPU_ACC["CPU 访问"]
+        DEV_ACC["设备 DMA&lt;br/&gt;直接使用 VA"]
+        SHARED_PG --&gt; CPU_ACC
+        SHARED_PG --&gt; DEV_ACC
+    end</code></pre>
+<h3 id="12-sva">1.2 SVA 的技术基石<a class="headerlink" href="#12-sva" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph Foundations["SVA 四大技术基石"]
+        PASID["PASID&lt;br/&gt;(Process Address Space ID)&lt;br/&gt;20-bit SubstreamID&lt;br/&gt;标识进程地址空间"]
+        ATS["ATS&lt;br/&gt;(Address Translation Service)&lt;br/&gt;PCIe 地址预翻译&lt;br/&gt;设备本地 ATC 缓存"]
+        PRI["PRI&lt;br/&gt;(Page Request Interface)&lt;br/&gt;PCIe 页面请求&lt;br/&gt;支持按需分页"]
+        STALL["Stall 模型&lt;br/&gt;事务暂停等待&lt;br/&gt;软件故障处理"]
+    end
+
+    PASID &amp; ATS &amp; PRI &amp; STALL --&gt; SVA["SVA&lt;br/&gt;共享虚拟地址"]</code></pre>
+<h3 id="13">1.3 版本支持<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>SMMUv2 (IHI0062D)</th>
+<th>MMU-600AE (v3.1)</th>
+<th>MMU-700 (v3.2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PASID / SubstreamID</td>
+<td>不支持</td>
+<td>20-bit SSID</td>
+<td>20-bit SSID</td>
+</tr>
+<tr>
+<td>ATS</td>
+<td>不支持</td>
+<td>Full ATS</td>
+<td>Full + Split-stage ATS</td>
+</tr>
+<tr>
+<td>PRI</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>Stall 模型</td>
+<td>仅故障模型</td>
+<td>Stall + Force</td>
+<td>Stall + Force</td>
+</tr>
+<tr>
+<td>HTTU (访问/脏位)</td>
+<td>可选 (HAFDBS)</td>
+<td>不支持</td>
+<td>支持 (sup_httu)</td>
+</tr>
+<tr>
+<td>CD2L (两级 CD 表)</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>S1DSS (Substream 控制)</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>EATS (ATS 控制)</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>52-bit VA</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持 (VAX=01)</td>
+</tr>
+<tr>
+<td>LTI (本地翻译接口)</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>PPS (PRI 中含 PASID)</td>
+<td>N/A</td>
+<td>始终 (PPS=1)</td>
+<td>始终 (PPS=1)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-pasid-substreamid">2. PASID 与 SubstreamID<a class="headerlink" href="#2-pasid-substreamid" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 核心概念<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p>在 SMMUv3 中，每个设备事务携带 <strong>StreamID</strong>（标识设备）和可选的 <strong>SubstreamID / SSID</strong>（标识设备上的进程地址空间）。当 SSID 作为 PASID（Process Address Space ID）使用时，它将设备事务关联到特定的 CPU 进程。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph Transaction["设备事务标识"]
+        SID["StreamID&lt;br/&gt;标识设备&lt;br/&gt;(BDF)"]
+        SSID["SubstreamID&lt;br/&gt;= PASID&lt;br/&gt;标识进程地址空间"]
+    end
+
+    subgraph Lookup["SMMU 查找路径"]
+        SID --&gt; STRTAB["Stream Table&lt;br/&gt;按 SID 索引"]
+        STRTAB --&gt; STE["STE"]
+        STE --&gt; CD_SEL{"S1DSS?"}
+
+        CD_SEL --&gt;|"SSID0&lt;br/&gt;(无 PASID)"| CD0["CD[0]&lt;br/&gt;非 PASID 流量"]
+        CD_SEL --&gt;|"SSID&lt;br/&gt;(有 PASID)"| CD_N["CD[PASID]&lt;br/&gt;进程页表"]
+    end
+
+    subgraph Process["进程侧"]
+        PROC["CPU 进程&lt;br/&gt;mm_struct"]
+        PROC --&gt;|"ASID = PASID"| CD_N
+        PROC --&gt;|"pgd → TTBR"| CD_N
+    end</code></pre>
+<h3 id="22-ssid-axi5">2.2 SSID 在 AXI5 总线上的传输<a class="headerlink" href="#22-ssid-axi5" title="Permanent link">&para;</a></h3>
+<p>MMU-600AE/700 的 TBU 通过 AXI5 Untranslated_Transactions 扩展信号传递 SSID：</p>
+<table>
+<thead>
+<tr>
+<th>信号</th>
+<th>说明</th>
+<th>宽度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>armmussid_s</code></td>
+<td>SubstreamID 值 (=PASID)</td>
+<td>TBUCFG_SSID_WIDTH (1/8/20-bit)</td>
+</tr>
+<tr>
+<td><code>armmussidv_s</code></td>
+<td>SubstreamID 有效</td>
+<td>1-bit</td>
+</tr>
+<tr>
+<td><code>armmusid_s</code></td>
+<td>StreamID</td>
+<td>SID_WIDTH</td>
+</tr>
+<tr>
+<td><code>armmuatst_s</code></td>
+<td>ATS 已翻译标志</td>
+<td>1-bit</td>
+</tr>
+</tbody>
+</table>
+<p>这些信号同时存在于 AR（读）和 AW（写）通道。</p>
+<h3 id="23-s1dss">2.3 S1DSS 字段<a class="headerlink" href="#23-s1dss" title="Permanent link">&para;</a></h3>
+<p>STE 中的 <code>S1DSS</code> 字段控制 SubstreamID 的处理方式（<code>arm-smmu-v3.h:216-219</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>S1DSS 值</th>
+<th>含义</th>
+<th>SVA 用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0 (TERMINATE)</td>
+<td>终止带 SSID 的事务</td>
+<td>安全隔离</td>
+</tr>
+<tr>
+<td>0x1 (BYPASS)</td>
+<td>旁路 Stage 1，忽略 SSID</td>
+<td>调试</td>
+</tr>
+<tr>
+<td><strong>0x2 (SSID0)</strong></td>
+<td><strong>SSID=0 使用 CD[0]，SSID&gt;0 使用 CD[SSID]</strong></td>
+<td><strong>SVA 核心配置</strong></td>
+</tr>
+</tbody>
+</table>
+<p>SVA 模式下，STE 的 S1DSS 设为 <code>SSID0</code>（<code>arm-smmu-v3.c:1335</code>），这意味着：
+- <strong>CD[0]</strong>：保留给非 PASID 流量（普通 DMA，无进程绑定）
+- <strong>CD[1..N]</strong>：按 PASID 索引，每个 PASID 对应一个进程的 CD</p>
+<h3 id="24-s1cdmax-cd">2.4 S1CDMax 与 CD 表格式<a class="headerlink" href="#24-s1cdmax-cd" title="Permanent link">&para;</a></h3>
+<p>STE 的 <code>S1CDMax</code> 字段定义 CD 表的最大 PASID 范围（<code>arm-smmu-v3.h:214</code>）：</p>
+<ul>
+<li><strong>S1CDMax = 0</strong>：STE.S1ContextPtr 指向单个 CD（不支持 PASID）</li>
+<li><strong>S1CDMax &gt; 0</strong>：STE.S1ContextPtr 指向 CD 表，支持 PASID</li>
+</ul>
+<p><code>S1Fmt</code> 字段决定 CD 表格式（<code>arm-smmu-v3.h:210-212</code>）：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph Linear["线性 CD 表&lt;br/&gt;S1FMT=0 (LINEAR)"]
+        LCD["CD[0] --- CD[1] --- CD[2] --- ... --- CD[N]"]
+    end
+
+    subgraph TwoLevel["两级 CD 表&lt;br/&gt;S1FMT=2 (64K_L2)"]
+        L1_CD["L1 CD Table&lt;br/&gt;最多 1024 L1 条目"]
+        L2_0["L2 Table 0&lt;br/&gt;1024 CD"]
+        L2_1["L2 Table 1&lt;br/&gt;1024 CD"]
+        L2_N["L2 Table N&lt;br/&gt;1024 CD"]
+
+        L1_CD --&gt;|"L1 Desc 0"| L2_0
+        L1_CD --&gt;|"L1 Desc 1"| L2_1
+        L1_CD --&gt;|"L1 Desc N"| L2_N
+    end</code></pre>
+<p><strong>Linux 驱动中的 CD 表分配</strong>（<code>arm-smmu-v3.c:1117-1164</code>）：
+- 当 <code>max_contexts &lt;= 1024</code>（即 S1CDMax 较小）时使用<strong>线性 CD 表</strong>
+- 当 <code>max_contexts &gt; 1024</code> 且支持 <code>FEAT_2_LVL_CDTAB</code> 时使用<strong>两级 CD 表</strong>
+- 两级 CD 表的 L2 表按需分配（lazy allocation）</p>
+<hr />
+<h2 id="3-atsaddress-translation-service">3. ATS（Address Translation Service）<a class="headerlink" href="#3-atsaddress-translation-service" title="Permanent link">&para;</a></h2>
+<h3 id="31-ats">3.1 ATS 工作原理<a class="headerlink" href="#31-ats" title="Permanent link">&para;</a></h3>
+<p>ATS 允许 PCIe 设备在发起 DMA 之前预查询地址翻译结果，并将结果缓存到设备本地的 ATC（Address Translation Cache）中，从而减少 SMMU 翻译延迟。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as PCIe 设备
+    participant ATC as 设备 ATC 缓存
+    participant RC as Root Complex
+    participant SMMU as SMMU (TCU)
+    participant PT as 页表
+
+    Note over DEV: 设备要 DMA 访问 VA
+
+    DEV-&gt;&gt;ATC: 查询本地 ATC
+
+    alt ATC 命中
+        Note over ATC: 直接使用缓存的 PA
+        DEV-&gt;&gt;SMMU: DMA (PA)
+    else ATC 未命中
+        DEV-&gt;&gt;RC: ATS Translation Request&lt;br/&gt;(PASID, VA)
+        RC-&gt;&gt;SMMU: 经 DTI-ATS 转发
+
+        SMMU-&gt;&gt;SMMU: 查找 STE (by StreamID)
+        SMMU-&gt;&gt;SMMU: 查找 CD (by PASID/SSID)
+        SMMU-&gt;&gt;PT: 页表遍历 (VA→PA)
+
+        alt 翻译成功
+            SMMU--&gt;&gt;RC: ATS Completion (Success, PA+属性)
+            RC--&gt;&gt;DEV: 返回 PA
+            DEV-&gt;&gt;ATC: 缓存 (PASID, VA→PA)
+            DEV-&gt;&gt;SMMU: DMA (使用缓存的 PA)
+        else 翻译失败
+            SMMU--&gt;&gt;RC: ATS Completion (Failure)
+            RC--&gt;&gt;DEV: 返回错误码
+            Note over DEV: 走 PRI 或 Stall 路径
+        end
+    end</code></pre>
+<h3 id="32-atc">3.2 ATC 无效化<a class="headerlink" href="#32-atc" title="Permanent link">&para;</a></h3>
+<p>当进程页表变更时，必须同步无效化设备 ATC 中的陈旧条目。Linux 驱动通过 <code>CMDQ_OP_ATC_INV</code> 命令实现（<code>arm-smmu-v3.c:1711-1792</code>）。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph ATCInv["ATC 无效化命令"]
+        direction TB
+        subgraph CmdFormat["CMDQ_OP_ATC_INV (0x40)"]
+            A_SID["SID (bits 63:32)"]
+            A_SSID["SSID (bits 31:12)"]
+            A_SSV["Substream Valid (bit 9)"]
+            A_SIZE["Size (bits 5:0)"]
+            A_ADDR["Addr (bits 63:12)"]
+        end
+    end
+
+    subgraph Semantics["语义"]
+        S_GLOBAL["SSV=0, Size=ALL&lt;br/&gt;无效化 SID 下所有 ATC&lt;br/&gt;(含所有 PASID)"]
+        S_PASID_ALL["SSV=1, Size=ALL&lt;br/&gt;无效化 SID+PASID 下所有 ATC"]
+        S_PASID_RANGE["SSV=1, Size=N&lt;br/&gt;无效化 SID+PASID 下&lt;br/&gt;指定地址范围的 ATC"]
+    end</code></pre>
+<p><strong>ATS 与 PASID 的交互问题</strong>（<code>arm-smmu-v3.c:1720-1733</code>）：</p>
+<blockquote>
+<p>当 S1DSS=SSID0 时，非 PASID 流量（SSID 无效）使用 CD[0]，产生的 ATC 条目不带 PASID 标签。无效化时如果 SSV=0（不带 PASID），会同时清除该 SID 下所有 PASID 标签的 ATC 条目，存在过度无效化的问题。</p>
+</blockquote>
+<h3 id="33-atc">3.3 ATC 无效化范围计算<a class="headerlink" href="#33-atc" title="Permanent link">&para;</a></h3>
+<p>Linux 驱动使用"向上取整到 2 的幂"策略计算无效化范围（<code>arm-smmu-v3.c:1746-1774</code>）：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph Example["示例：无效化页 [8, 11]"]
+        START["page_start = 0b1000 (8)"]
+        END["page_end = 0b1011 (11)"]
+        XOR["XOR = 0b1000 ^ 0b1011 = 0b0011"]
+        FLS["fls(0b0011) = 2"]
+        SPAN["span = 1 &lt;&lt; 2 = 4"]
+        RESULT["实际无效化: [8, 11] — 恰好覆盖"]
+        START --&gt; XOR --&gt; FLS --&gt; SPAN --&gt; RESULT
+    end
+
+    subgraph OverInval["示例：无效化页 [7, 10]"]
+        START2["page_start = 0b0111 (7)"]
+        END2["page_end = 0b1010 (10)"]
+        XOR2["XOR = 0b0111 ^ 0b1010 = 0b1101"]
+        FLS2["fls(0b1101) = 4"]
+        SPAN2["span = 1 &lt;&lt; 4 = 16"]
+        RESULT2["实际无效化: [0, 15] — 过度无效化"]
+        START2 --&gt; XOR2 --&gt; FLS2 --&gt; SPAN2 --&gt; RESULT2
+    end</code></pre>
+<h3 id="34-eatsendianness-ats">3.4 EATS（Endianness / ATS 控制）<a class="headerlink" href="#34-eatsendianness-ats" title="Permanent link">&para;</a></h3>
+<p>STE 中的 <code>EATS</code> 字段控制 ATS 相关行为（<code>arm-smmu-v3.h:231-234</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>EATS 值</th>
+<th>含义</th>
+<th>SVA 用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 (ABT)</td>
+<td>中止 ATS 事务</td>
+<td>禁用 ATS</td>
+</tr>
+<tr>
+<td>1 (TRANS)</td>
+<td>执行 ATS 翻译</td>
+<td><strong>SVA 标准配置</strong></td>
+</tr>
+<tr>
+<td>2 (S1CHK)</td>
+<td>仅 S1 ATS 检查</td>
+<td>调试</td>
+</tr>
+</tbody>
+</table>
+<p>SVA 模式下 EATS 设为 <code>TRANS</code>（<code>arm-smmu-v3.c:1368-1369</code>）。</p>
+<h3 id="35-split-stage-atsmmu-700">3.5 Split-Stage ATS（MMU-700 独有）<a class="headerlink" href="#35-split-stage-atsmmu-700" title="Permanent link">&para;</a></h3>
+<p>SMMUv3.2 支持分阶段 ATS，Guest 执行 S1 翻译，Host 执行 S2 翻译：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph FullATS["Full ATS&lt;br/&gt;(MMU-600AE)"]
+        FA_VA["VA"] --&gt;|"S1+S2"| FA_PA["PA"]
+    end
+
+    subgraph SplitATS["Split-Stage ATS&lt;br/&gt;(MMU-700, NS1ATS=1)"]
+        SA_VA["VA"] --&gt;|"S1 only&lt;br/&gt;(Guest)"| SA_IPA["IPA"]
+        SA_IPA --&gt;|"S2&lt;br/&gt;(TBU)"| SA_PA["PA"]
+    end</code></pre>
+<hr />
+<h2 id="4-pripage-request-interface">4. PRI（Page Request Interface）<a class="headerlink" href="#4-pripage-request-interface" title="Permanent link">&para;</a></h2>
+<h3 id="41-pri">4.1 PRI 工作原理<a class="headerlink" href="#41-pri" title="Permanent link">&para;</a></h3>
+<p>PRI 是 PCIe 协议定义的页面请求接口，允许设备在 ATC 未命中且翻译失败时向软件发起页面请求，实现按需分页（Demand Paging）。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as PCIe 设备
+    participant SMMU as SMMU
+    participant PRIQ as PRI Queue
+    participant SW as 软件驱动
+
+    DEV-&gt;&gt;SMMU: DMA 事务 (使用 ATC 缓存的 PA)
+
+    alt PA 对应的页不存在
+        Note over SMMU: Stall 模式下暂停事务
+        SMMU-&gt;&gt;PRIQ: 写入 PRI 条目
+        Note over PRIQ: SID, SSID(PASID),&lt;br/&gt;PRG_IDX, 地址, 权限
+        PRIQ-&gt;&gt;SW: MSI 中断
+
+        SW-&gt;&gt;PRIQ: 读取 PRI 条目
+        SW-&gt;&gt;SW: 处理缺页&lt;br/&gt;(填充页表)
+        SW-&gt;&gt;SMMU: CMDQ_OP_PRI_RESP
+        Note over SMMU: 响应: Success/Fail/Deny
+        SMMU-&gt;&gt;DEV: 通知设备
+        DEV-&gt;&gt;SMMU: 重新发起 DMA
+    end</code></pre>
+<h3 id="42-pri-queue">4.2 PRI Queue 条目格式<a class="headerlink" href="#42-pri-queue" title="Permanent link">&para;</a></h3>
+<p>Linux 驱动中定义的 PRIQ 字段（<code>arm-smmu-v3.h:399-414</code>）：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph PRIEntry["PRI Queue 条目 (16B)"]
+        direction TB
+        subgraph Word0["Word 0"]
+            P_SID["SID (bits 31:0)"]
+            P_SSID["SSID (bits 51:32)"]
+            P_PERM_PRIV["Priv (bit 58)"]
+            P_PERM_EXEC["Exec (bit 59)"]
+            P_PERM_READ["Read (bit 60)"]
+            P_PERM_WRITE["Write (bit 61)"]
+            P_PRG_LAST["Last (bit 62)"]
+            P_SSID_V["SSID_V (bit 63)"]
+        end
+        subgraph Word1["Word 1"]
+            P_PRG_IDX["PRG_IDX (bits 8:0)"]
+            P_ADDR["Addr (bits 63:12)"]
+        end
+    end</code></pre>
+<h3 id="43-pri">4.3 PRI 响应码<a class="headerlink" href="#43-pri" title="Permanent link">&para;</a></h3>
+<p>定义于 <code>arm-smmu-v3.h:423-427</code>：</p>
+<table>
+<thead>
+<tr>
+<th>响应码</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PRI_RESP_DENY</code></td>
+<td>0</td>
+<td>拒绝请求</td>
+</tr>
+<tr>
+<td><code>PRI_RESP_FAIL</code></td>
+<td>1</td>
+<td>处理失败</td>
+</tr>
+<tr>
+<td><code>PRI_RESP_SUCC</code></td>
+<td>2</td>
+<td>成功完成</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-linux-pri">4.4 Linux PRI 处理流程<a class="headerlink" href="#44-linux-pri" title="Permanent link">&para;</a></h3>
+<p>当前驱动中的 PRI 处理（<code>arm-smmu-v3.c:1585-1643</code>）为<strong>日志 + 拒绝</strong>模式：</p>
+<pre class="mermaid"><code>flowchart TD
+    IRQ["PRIQ MSI 中断"]
+    IRQ --&gt; THREAD["arm_smmu_priq_thread()"]
+    THREAD --&gt; LOOP["循环读取 PRIQ 条目"]
+    LOOP --&gt; PPR["arm_smmu_handle_ppr()"]
+    PPR --&gt; PARSE["解析 SID, SSID, PRG_IDX,&lt;br/&gt;权限, 地址"]
+    PARSE --&gt; LOG["dev_info() 打印请求信息"]
+    LOG --&gt; LAST{"PRG_LAST?"}
+    LAST --&gt;|"是"| RESP["发送 PRI_RESP_DENY&lt;br/&gt;CMDQ_OP_PRI_RESP"]
+    LAST --&gt;|"否"| SKIP["跳过 (等待后续条目)"]
+    RESP --&gt; MORE{"PRIQ 还有条目?"}
+    SKIP --&gt; MORE
+    MORE --&gt;|"是"| LOOP
+    MORE --&gt;|"否"| SYNC["同步 overflow 标志"]
+    SYNC --&gt; DONE["完成"]
+
+    style RESP fill:#f96,stroke:#333</code></pre>
+<blockquote>
+<p><strong>注意</strong>：当前驱动实现中，PRI 请求总是返回 <code>DENY</code>。完整的按需分页支持需要与 IOPF（I/O Page Fault）框架集成，通过 <code>iopf_queue</code> 机制将页面错误分发给设备驱动处理。</p>
+</blockquote>
+<h3 id="45-priq">4.5 PRIQ 溢出处理<a class="headerlink" href="#45-priq" title="Permanent link">&para;</a></h3>
+<p>当 PRI Queue 溢出时（<code>arm-smmu-v3.c:1634-1635</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">queue_sync_prod_in</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">-</span><span class="n">EOVERFLOW</span><span class="p">)</span>
+<span class="w">    </span><span class="n">dev_err</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRIQ overflow detected -- requests lost</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>SMMU 硬件在 PRIQ 溢出时自动生成 PRI 响应（MMU-600AE/700 中 PPS=1，始终包含 PASID）。</p>
+<hr />
+<h2 id="5-stall">5. Stall 模型<a class="headerlink" href="#5-stall" title="Permanent link">&para;</a></h2>
+<h3 id="51-stall-vs-terminate">5.1 Stall vs Terminate<a class="headerlink" href="#51-stall-vs-terminate" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph StallModel["Stall 模型 (IDR0.STALL_MODEL=0)"]
+        direction TB
+        S_FAULT["翻译故障"]
+        S_PAUSE["事务暂停&lt;br/&gt;(不丢失)"]
+        S_NOTIFY["写入 EVTQ + MSI"]
+        S_WAIT["等待软件处理"]
+        S_RESUME["CMDQ_OP_RESUME&lt;br/&gt;Resume/Retry 或 Abort"]
+        S_FAULT --&gt; S_PAUSE --&gt; S_NOTIFY --&gt; S_WAIT --&gt; S_RESUME
+    end
+
+    subgraph TermModel["Terminate 模型 (IDR0.STALL_MODEL=2)"]
+        direction TB
+        T_FAULT["翻译故障"]
+        T_ABRT["事务立即中止"]
+        T_NOTIFY["写入 EVTQ + MSI"]
+        T_FAULT --&gt; T_ABRT --&gt; T_NOTIFY
+    end</code></pre>
+<h3 id="52-stall-sva">5.2 Stall 模型对 SVA 的意义<a class="headerlink" href="#52-stall-sva" title="Permanent link">&para;</a></h3>
+<p>Stall 模型是 SVA 按需分页的硬件基础：</p>
+<ol>
+<li><strong>事务不丢失</strong>：设备发出的 DMA 事务被暂停在 SMMU 中，不会丢失</li>
+<li><strong>软件有机会修复</strong>：软件可以处理缺页（分配页面、更新页表），然后恢复事务</li>
+<li><strong>支持 Hit-Under-Miss</strong>：同一设备上其他不冲突的事务可以继续处理</li>
+</ol>
+<h3 id="53-stall">5.3 Stall 容量<a class="headerlink" href="#53-stall" title="Permanent link">&para;</a></h3>
+<p>SMMU 的 Stall 容量由 <code>IDR5.STALL_MAX</code> 定义（<code>arm-smmu-v3.h:57</code>），在 MMU-600AE/700 中为 <code>TCUCFG_XLATE_SLOTS</code>。超过容量时，新的事务将被终止。</p>
+<h3 id="54-cmd_resume">5.4 CMD_RESUME 命令<a class="headerlink" href="#54-cmd_resume" title="Permanent link">&para;</a></h3>
+<p>软件通过 <code>CMDQ_OP_RESUME</code> 恢复 stalled 事务（<code>arm-smmu-v3.h:357-362</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>响应值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RESUME_0_RESP_RETRY</code> (1)</td>
+<td>重新翻译（页表已修复）</td>
+</tr>
+<tr>
+<td><code>RESUME_0_RESP_ABORT</code> (2)</td>
+<td>中止事务</td>
+</tr>
+<tr>
+<td><code>RESUME_0_RESP_TERM</code> (0)</td>
+<td>终止（同 Abort）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-cdcontext-descriptor">6. CD（Context Descriptor）与进程绑定<a class="headerlink" href="#6-cdcontext-descriptor" title="Permanent link">&para;</a></h2>
+<h3 id="61-cd-sva">6.1 CD 的 SVA 角色<a class="headerlink" href="#61-cd-sva" title="Permanent link">&para;</a></h3>
+<p>SVA 模式下，每个绑定到设备的进程对应一个 CD，其中包含该进程的完整翻译上下文。</p>
+<pre class="mermaid"><code>classDiagram
+    class arm_smmu_ctx_desc {
+        +asid : u16
+        +ttbr : u64
+        +tcr : u64
+        +mair : u64
+        +refs : refcount_t
+        +mm : mm_struct*
+    }
+
+    class CPU_Context["CPU 上下文 (同一进程)"] {
+        TTBR0_EL1 : pgd 物理地址
+        TCR_EL1 : 翻译控制
+        MAIR_EL1 : 内存属性
+        ASID : 地址空间 ID
+    }
+
+    class CD_Mapping["CD 字段映射"]
+        CD_ASID["CD.ASID = CPU.ASID = PASID"]
+        CD_TTBR["CD.TTBR0 = CPU.TTBR0_EL1 = mm→pgd"]
+        CD_TCR["CD.TCR = 从 CPU.TCR_EL1 提取"]
+        CD_MAIR["CD.MAIR = 从 CPU.MAIR_EL1 读取"]
+    end
+
+    arm_smmu_ctx_desc --&gt; CD_Mapping
+    CPU_Context --&gt; CD_Mapping</code></pre>
+<h3 id="62-cd">6.2 共享 CD 的创建流程<a class="headerlink" href="#62-cd" title="Permanent link">&para;</a></h3>
+<p><code>arm_smmu_alloc_shared_cd()</code> 函数为 SVA 创建共享 CD（<code>arm-smmu-v3-sva.c:92-177</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    START["arm_smmu_alloc_shared_cd(mm)"]
+    START --&gt; GRAB["mmgrab(mm)&lt;br/&gt;防止进程退出"]
+    GRAB --&gt; GET_ASID["arm64_mm_context_get(mm)&lt;br/&gt;获取 CPU ASID"]
+    GET_ASID --&gt; CHECK_ASID{"ASID 有效?"}
+    CHECK_ASID --&gt;|"否"| ERR1["返回 -ESRCH"]
+    CHECK_ASID --&gt;|"是"| ALLOC_CD["kzalloc(sizeof(cd))"]
+    ALLOC_CD --&gt; SHARE["arm_smmu_share_asid(mm, asid)"]
+
+    SHARE --&gt; CHECK_XA{"asid_xa 中&lt;br/&gt;已有此 ASID?"}
+    CHECK_XA --&gt;|"无"| INSERT["xa_insert(asid_xa)"]
+    CHECK_XA --&gt;|"有, 同一 mm"| REUSE["增加引用计数, 返回"]
+    CHECK_XA --&gt;|"有, 不同 mm"| REPLACE["分配新 ASID&lt;br/&gt;更新旧 CD&lt;br/&gt;无效化旧 ASID TLB"]
+
+    REPLACE --&gt; INSERT
+    INSERT --&gt; BUILD_TCR["构建 TCR:&lt;br/&gt;T0SZ, TG, IRGN, ORGN, SH,&lt;br/&gt;EPD1, IPS, AA64"]
+    BUILD_TCR --&gt; SET_TTBR["cd→ttbr = virt_to_phys(mm→pgd)"]
+    SET_TTBR --&gt; SET_MAIR["cd→mair = read_sysreg(mair_el1)"]
+    SET_MAIR --&gt; SET_ASID["cd→asid = asid&lt;br/&gt;cd→mm = mm"]
+    SET_ASID --&gt; DONE["返回 cd"]</code></pre>
+<h3 id="63-asid">6.3 ASID 共享与冲突处理<a class="headerlink" href="#63-asid" title="Permanent link">&para;</a></h3>
+<p>当 CPU 分配的 ASID 在 SMMU 侧已被其他（非 SVA）Context Descriptor 使用时，需要替换（<code>arm-smmu-v3-sva.c:44-90</code>）：</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant CPU as CPU 子系统
+    participant SVA as SVA 驱动
+    participant XA as asid_xa
+    participant SMMU as SMMU 硬件
+
+    CPU-&gt;&gt;SVA: 进程 mm, ASID=X
+    SVA-&gt;&gt;XA: xa_load(asid_xa, X)
+
+    alt ASID X 未被使用
+        XA--&gt;&gt;SVA: NULL
+        Note over SVA: 直接使用 ASID=X
+    else ASID X 已被 SVA CD 使用 (同一 mm)
+        XA--&gt;&gt;SVA: cd (同一进程)
+        Note over SVA: 增加 cd→refs, 复用
+    else ASID X 被非 SVA CD 使用 (不同 mm)
+        XA--&gt;&gt;SVA: cd (不同进程的私有 CD)
+        SVA-&gt;&gt;XA: xa_alloc() 分配新 ASID=Y
+        SVA-&gt;&gt;SMMU: 更新旧 CD (ASID=X→Y)
+        Note over SMMU: 旧 CD 仍有效&lt;br/&gt;但使用新 ASID=Y
+        SVA-&gt;&gt;SMMU: CMD_TLBI 无效化 ASID=X
+        SVA-&gt;&gt;XA: xa_erase(asid_xa, X)
+        Note over SVA: ASID=X 现在可用
+    end</code></pre>
+<h3 id="64-cd">6.4 CD 的五种写入场景<a class="headerlink" href="#64-cd" title="Permanent link">&para;</a></h3>
+<p><code>arm_smmu_write_ctx_desc()</code> 处理五种 CD 写入场景（<code>arm-smmu-v3.c:1038-1115</code>）：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph Cases["arm_smmu_write_ctx_desc() 的五种场景"]
+        C1["(1) 安装主 CD&lt;br/&gt;SSID=0, 正常 DMA&lt;br/&gt;cd_live=false, cd!=quiet"]
+        C2["(2) 安装次级 CD&lt;br/&gt;SSID&gt;0, PASID 流量&lt;br/&gt;cd_live=false, cd!=quiet"]
+        C3["(3) 更新 CD 的 ASID&lt;br/&gt;cd_live=true&lt;br/&gt;原子更新 ASID"]
+        C4["(4) 静默 CD&lt;br/&gt;cd == &amp;quiet_cd&lt;br/&gt;设置 EPD0 禁用翻译"]
+        C5["(5) 移除次级 CD&lt;br/&gt;cd == NULL&lt;br/&gt;清零 CD 条目"]
+    end</code></pre>
+<p><strong>quiet_cd 的特殊用途</strong>（<code>arm-smmu-v3.c:77-81</code>）：</p>
+<blockquote>
+<p><code>quiet_cd</code> 是一个全零的 <code>arm_smmu_ctx_desc</code>，用于进程退出时静默 CD。它不清除 V 位（避免 C_BAD_CD 事件），而是设置 <code>EPD0</code> 禁用翻译，使所有事务产生故障但不触发无效 CD 错误。</p>
+</blockquote>
+<h3 id="65-cd">6.5 CD 的原子写入协议<a class="headerlink" href="#65-cd" title="Permanent link">&para;</a></h3>
+<p>SMMU 规范保证 64 位原子读取（<code>arm-smmu-v3.c:1103-1111</code>），Linux 驱动利用这一特性：</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant SW as 软件驱动
+    participant MEM as 内存 (CD)
+    participant HW as SMMU 硬件
+
+    Note over SW: 安装新 CD (场景 1/2)
+    SW-&gt;&gt;MEM: 先写入 CD[1..7]&lt;br/&gt;(TTBR, MAIR 等)
+    SW-&gt;&gt;MEM: arm_smmu_sync_cd()&lt;br/&gt;确保写入可见
+    SW-&gt;&gt;MEM: 原子写入 CD[0]&lt;br/&gt;(含 V=1 位)
+
+    Note over HW: 读取 CD
+    HW-&gt;&gt;MEM: 原子读取 CD[0]
+    alt V=1
+        HW-&gt;&gt;MEM: 读取 CD[1..7]
+        Note over HW: 使用完整 CD
+    else V=0
+        Note over HW: CD 无效, 产生 C_BAD_CD
+    end
+
+    Note over SW: 更新 ASID (场景 3)
+    SW-&gt;&gt;MEM: 原子写入 CD[0]&lt;br/&gt;(仅修改 ASID 字段)
+    SW-&gt;&gt;HW: TLB 无效化旧 ASID
+    Note over HW: 短暂窗口内&lt;br/&gt;新旧 ASID 均有效</code></pre>
+<hr />
+<h2 id="7-mmu-notifier">7. MMU Notifier 与地址空间同步<a class="headerlink" href="#7-mmu-notifier" title="Permanent link">&para;</a></h2>
+<h3 id="71">7.1 核心问题<a class="headerlink" href="#71" title="Permanent link">&para;</a></h3>
+<p>当 CPU 进程修改自己的页表（如 <code>munmap</code>、<code>mprotect</code>、<code>mremap</code>）时，SMMU 侧的 TLB 和设备 ATC 中可能缓存了旧的翻译结果，需要同步更新。</p>
+<h3 id="72-mmu-notifier">7.2 MMU Notifier 机制<a class="headerlink" href="#72-mmu-notifier" title="Permanent link">&para;</a></h3>
+<p>Linux 的 MMU Notifier 机制允许内核子系统（如 SMMU 驱动）注册回调，在进程地址空间发生变化时收到通知。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph CPU_MM["CPU 内存管理"]
+        MUNMAP["munmap()"]
+        MPROTECT["mprotect()"]
+        MREMAP["mremap()"]
+        EXIT["进程 exit"]
+    end
+
+    subgraph Notifier["MMU Notifier"]
+        INV_RANGE["invalidate_range()&lt;br/&gt;地址范围变更"]
+        RELEASE["release()&lt;br/&gt;进程退出"]
+        FREE["free_notifier()&lt;br/&gt;释放资源"]
+    end
+
+    subgraph SMMU_Action["SMMU 同步动作"]
+        TLBI["TLB 无效化&lt;br/&gt;CMD_TLBI_*"]
+        ATC_INV["ATC 无效化&lt;br/&gt;CMD_ATC_INV"]
+        QUIET["静默 CD&lt;br/&gt;写入 quiet_cd"]
+    end
+
+    MUNMAP &amp; MPROTECT &amp; MREMAP --&gt; INV_RANGE
+    EXIT --&gt; RELEASE
+    INV_RANGE --&gt; TLBI &amp; ATC_INV
+    RELEASE --&gt; QUIET &amp; TLBI &amp; ATC_INV</code></pre>
+<h3 id="73-arm_smmu_mmu_notifier">7.3 arm_smmu_mmu_notifier 结构<a class="headerlink" href="#73-arm_smmu_mmu_notifier" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>classDiagram
+    class arm_smmu_mmu_notifier {
+        +mn : mmu_notifier
+        +cd : arm_smmu_ctx_desc*
+        +cleared : bool
+        +refs : refcount_t
+        +list : list_head
+        +domain : arm_smmu_domain*
+    }
+
+    class arm_smmu_mmu_notifier_ops {
+        &lt;&lt;interface&gt;&gt;
+        +invalidate_range(mn, mm, start, end)
+        +release(mn, mm)
+        +free_notifier(mn)
+    }
+
+    class mmu_notifier {
+        &lt;&lt;Linux 内核&gt;&gt;
+        +mm : mm_struct*
+        +ops : mmu_notifier_ops*
+    }
+
+    arm_smmu_mmu_notifier --&gt; mmu_notifier
+    arm_smmu_mmu_notifier ..|&gt; arm_smmu_mmu_notifier_ops
+    arm_smmu_mmu_notifier --&gt; arm_smmu_ctx_desc</code></pre>
+<h3 id="74-invalidate_range">7.4 invalidate_range 回调<a class="headerlink" href="#74-invalidate_range" title="Permanent link">&para;</a></h3>
+<p>当进程地址范围变更时（<code>arm-smmu-v3-sva.c:189-208</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    INV["invalidate_range(mm, start, end)"]
+    INV --&gt; CALC["计算 size = end - start"]
+    CALC --&gt; CHECK_BTM{"支持 BTM?"}
+
+    CHECK_BTM --&gt;|"否"| TLBI["arm_smmu_tlb_inv_range_asid()&lt;br/&gt;start, size, cd→asid"]
+    CHECK_BTM --&gt;|"是"| SKIP_TLBI["跳过 TLB 无效化&lt;br/&gt;(硬件自动跟踪)"]
+
+    TLBI --&gt; ATC["arm_smmu_atc_inv_domain()&lt;br/&gt;ssid=mm→pasid, start, size"]
+    SKIP_TLBI --&gt; ATC
+
+    ATC --&gt; DONE["完成"]</code></pre>
+<h3 id="75-release">7.5 release 回调（进程退出）<a class="headerlink" href="#75-release" title="Permanent link">&para;</a></h3>
+<p>当进程退出时（<code>arm-smmu-v3-sva.c:210-232</code>）：</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant MM as 内核 mm
+    participant MN as arm_smmu_mmu_notifier
+    participant SMMU as SMMU 驱动
+    participant HW as SMMU 硬件
+
+    MM-&gt;&gt;MN: release(mm)
+    MN-&gt;&gt;SMMU: 获取 sva_lock
+
+    alt 已 cleared
+        Note over MN: 已处理过, 跳过
+        MN-&gt;&gt;SMMU: 释放锁
+    else 未 cleared
+        Note over SMMU: DMA 可能仍在运行
+        Note over SMMU: 保持 CD 有效避免 C_BAD_CD
+        Note over SMMU: 但禁用翻译
+
+        SMMU-&gt;&gt;HW: arm_smmu_write_ctx_desc()&lt;br/&gt;写入 quiet_cd&lt;br/&gt;(设置 EPD0, 禁用翻译)
+        SMMU-&gt;&gt;HW: arm_smmu_tlb_inv_asid()&lt;br/&gt;无效化 ASID
+        SMMU-&gt;&gt;HW: arm_smmu_atc_inv_domain()&lt;br/&gt;无效化 ATC
+
+        MN-&gt;&gt;MN: cleared = true
+        MN-&gt;&gt;SMMU: 释放锁
+    end</code></pre>
+<h3 id="76-mmu-notifier">7.6 MMU Notifier 的生命周期<a class="headerlink" href="#76-mmu-notifier" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Get["arm_smmu_mmu_notifier_get()"]
+        G_CHECK["遍历 domain→mmu_notifiers&lt;br/&gt;查找已有 {domain, mm}"]
+        G_CHECK --&gt; FOUND{"找到?"}
+        FOUND --&gt;|"是"| G_REUSE["增加 refs, 返回"]
+        FOUND --&gt;|"否"| G_ALLOC_CD["arm_smmu_alloc_shared_cd(mm)"]
+        G_ALLOC_CD --&gt; G_ALLOC_MN["kzalloc(smmu_mn)"]
+        G_ALLOC_MN --&gt; G_REG["mmu_notifier_register(mn, mm)"]
+        G_REG --&gt; G_WRITE_CD["arm_smmu_write_ctx_desc(domain, pasid, cd)"]
+        G_WRITE_CD --&gt; G_ADD["list_add(&amp;mn→list, &amp;domain→mmu_notifiers)"]
+        G_ADD --&gt; G_DONE["返回 smmu_mn"]
+    end
+
+    subgraph Put["arm_smmu_mmu_notifier_put()"]
+        P_DEC["refcount_dec_and_test()"]
+        P_DEC --&gt; P_LAST{"引用归零?"}
+        P_LAST --&gt;|"否"| P_KEEP["保留"]
+        P_LAST --&gt;|"是"| P_DEL["list_del()"]
+        P_DEL --&gt; P_RM_CD["arm_smmu_write_ctx_desc(domain, pasid, NULL)"]
+        P_RM_CD --&gt; P_CHECK{"已 cleared?"}
+        P_CHECK --&gt;|"是"| P_FREE_MN["mmu_notifier_put(mn)&lt;br/&gt;调用 free_notifier()"]
+        P_CHECK --&gt;|"否"| P_INV["TLB + ATC 无效化"]
+        P_INV --&gt; P_FREE_MN
+        P_FREE_MN --&gt; P_FREE_CD["arm_smmu_free_shared_cd(cd)"]
+    end</code></pre>
+<hr />
+<h2 id="8-sva-bindunbind">8. SVA Bind/Unbind 流程<a class="headerlink" href="#8-sva-bindunbind" title="Permanent link">&para;</a></h2>
+<h3 id="81-bond">8.1 Bond 结构<a class="headerlink" href="#81-bond" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>classDiagram
+    class arm_smmu_bond {
+        +sva : iommu_sva
+        +mm : mm_struct*
+        +smmu_mn : arm_smmu_mmu_notifier*
+        +list : list_head
+        +refs : refcount_t
+    }
+
+    class arm_smmu_master {
+        +sva_enabled : bool
+        +iopf_enabled : bool
+        +ssid_bits : unsigned int
+        +bonds : list_head
+    }
+
+    class arm_smmu_mmu_notifier {
+        +cd : arm_smmu_ctx_desc*
+        +domain : arm_smmu_domain*
+    }
+
+    arm_smmu_bond --&gt; arm_smmu_mmu_notifier
+    arm_smmu_bond --&gt; arm_smmu_mmu_notifier : "1:1 per {dev,mm}"
+    arm_smmu_master "1" --&gt; "*" arm_smmu_bond : "bonds list"</code></pre>
+<h3 id="82-bind">8.2 完整 Bind 流程<a class="headerlink" href="#82-bind" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    REQ["iommu_sva_bind(dev, mm)"]
+    REQ --&gt; WRAPPER["arm_smmu_sva_bind(dev, mm)"]
+
+    WRAPPER --&gt; CHECK_STAGE{"domain→stage == S1?"}
+    CHECK_STAGE --&gt;|"否"| ERR_INVAL["返回 -EINVAL&lt;br/&gt;(SVA 仅支持 S1)"]
+    CHECK_STAGE --&gt;|"是"| LOCK["mutex_lock(&amp;sva_lock)"]
+
+    LOCK --&gt; INNER["__arm_smmu_sva_bind(dev, mm)"]
+    INNER --&gt; CHECK_EN{"master→sva_enabled?"}
+    CHECK_EN --&gt;|"否"| ERR_NODEV["返回 -ENODEV"]
+    CHECK_EN --&gt;|"是"| SEARCH["遍历 master→bonds"]
+
+    SEARCH --&gt; FOUND{"已有 {dev,mm} 绑定?"}
+    FOUND --&gt;|"是"| INC_REFS["增加 bond→refs&lt;br/&gt;返回已有 handle"]
+    FOUND --&gt;|"否"| ALLOC_BOND["kzalloc(bond)"]
+
+    ALLOC_BOND --&gt; ALLOC_PASID["iommu_sva_alloc_pasid(mm)&lt;br/&gt;为进程分配 PASID"]
+    ALLOC_PASID --&gt; GET_MN["arm_smmu_mmu_notifier_get(domain, mm)"]
+
+    GET_MN --&gt; GET_CD["→ arm_smmu_alloc_shared_cd(mm)"]
+    GET_CD --&gt; REG_MN["→ mmu_notifier_register(mn, mm)"]
+    REG_MN --&gt; WRITE_CD["→ arm_smmu_write_ctx_desc(pasid, cd)"]
+    WRITE_CD --&gt; ADD_LIST["list_add(&amp;bond→list, &amp;master→bonds)"]
+
+    ADD_LIST --&gt; UNLOCK["mutex_unlock(&amp;sva_lock)"]
+    INC_REFS --&gt; UNLOCK
+    UNLOCK --&gt; DONE["返回 iommu_sva handle"]</code></pre>
+<h3 id="83-unbind">8.3 Unbind 流程<a class="headerlink" href="#83-unbind" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    REQ["iommu_sva_unbind(handle)"]
+    REQ --&gt; CONVERT["sva_to_bond(handle)"]
+    CONVERT --&gt; LOCK["mutex_lock(&amp;sva_lock)"]
+    LOCK --&gt; DEC["refcount_dec_and_test(bond→refs)"]
+    DEC --&gt; LAST{"引用归零?"}
+    LAST --&gt;|"否"| UNLOCK["mutex_unlock(&amp;sva_lock)"]
+    LAST --&gt;|"是"| DEL_LIST["list_del(&amp;bond→list)"]
+    DEL_LIST --&gt; PUT_MN["arm_smmu_mmu_notifier_put(smmu_mn)"]
+    PUT_MN --&gt; UNLOCK
+    UNLOCK --&gt; FREE["kfree(bond)"]</code></pre>
+<h3 id="84-sva">8.4 SVA 使能与禁用<a class="headerlink" href="#84-sva" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Enable["arm_smmu_master_enable_sva()"]
+        E_LOCK["mutex_lock(&amp;sva_lock)"]
+        E_IOPF["arm_smmu_master_sva_enable_iopf()"]
+        E_IOPF --&gt; E_CHECK{"支持 IOPF?"}
+        E_CHECK --&gt;|"否"| E_OK["跳过"]
+        E_CHECK --&gt;|"是"| E_IOPF_EN{"iopf_enabled?"}
+        E_IOPF_EN --&gt;|"否"| E_IOPF_SKIP["返回 -EINVAL"]
+        E_IOPF_EN --&gt;|"是"| E_IOPF_ADD["iopf_queue_add_device()&lt;br/&gt;+ iommu_register_device_fault_handler()"]
+        E_OK &amp; E_IOPF_ADD --&gt; E_SET["master→sva_enabled = true"]
+        E_SET --&gt; E_ULOCK["mutex_unlock(&amp;sva_lock)"]
+    end
+
+    subgraph Disable["arm_smmu_master_disable_sva()"]
+        D_LOCK["mutex_lock(&amp;sva_lock)"]
+        D_CHECK{"bonds 列表为空?"}
+        D_CHECK --&gt;|"否"| D_BUSY["返回 -EBUSY&lt;br/&gt;(仍有活跃绑定)"]
+        D_CHECK --&gt;|"是"| D_IOPF["arm_smmu_master_sva_disable_iopf()"]
+        D_IOPF --&gt; D_SET["master→sva_enabled = false"]
+        D_SET --&gt; D_ULOCK["mutex_unlock(&amp;sva_lock)"]
+    end</code></pre>
+<hr />
+<h2 id="9-sva">9. SVA 特性检测与前提条件<a class="headerlink" href="#9-sva" title="Permanent link">&para;</a></h2>
+<h3 id="91">9.1 硬件特性检测<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<p><code>arm_smmu_sva_supported()</code> 检查 SMMU 是否支持 SVA（<code>arm-smmu-v3-sva.c:406-449</code>）：</p>
+<pre class="mermaid"><code>flowchart TD
+    START["arm_smmu_sva_supported(smmu)"]
+    START --&gt; FEAT{"特性掩码匹配?"}
+
+    FEAT --&gt; COH["FEAT_COHERENCY 必需"]
+    COH --&gt; VAX{"vabits_actual == 52?"}
+    VAX --&gt;|"是"| VAX_FEAT["还需要 FEAT_VAX"]
+    VAX --&gt;|"否"| PG
+    VAX_FEAT --&gt; PG
+    PG{"pgsize_bitmap&lt;br/&gt;包含 PAGE_SIZE?"}
+    PG --&gt;|"否"| FAIL1["返回 false"]
+    PG --&gt;|"是"| OAS
+
+    OAS["获取 CPU PARANGE&lt;br/&gt;计算最小 OAS"]
+    OAS --&gt; OAS_CHECK{"smmu→oas &gt;= CPU OAS?"}
+    OAS_CHECK --&gt;|"否"| FAIL2["返回 false&lt;br/&gt;(SMMU PA 不足)"]
+    OAS_CHECK --&gt;|"是"| ASID
+
+    ASID["获取 CPU ASID 位宽"]
+    ASID --&gt; ASID_CHECK{"smmu→asid_bits &gt;= CPU asid_bits?"}
+    ASID_CHECK --&gt;|"否"| FAIL3["返回 false&lt;br/&gt;(SMMU ASID 不足)"]
+    ASID_CHECK --&gt;|"是"| OK["返回 true"]</code></pre>
+<h3 id="92-master-sva">9.2 Master 级 SVA 支持<a class="headerlink" href="#92-master-sva" title="Permanent link">&para;</a></h3>
+<p><code>arm_smmu_master_sva_supported()</code> 检查设备是否支持 SVA（<code>arm-smmu-v3-sva.c:460-467</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>smmu→features &amp; FEAT_SVA</code></td>
+<td>SMMU 必须支持 SVA</td>
+</tr>
+<tr>
+<td><code>master→ssid_bits &gt; 0</code></td>
+<td>设备必须有 SSID 支持（PASID 能力）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-iopf">9.3 IOPF 支持检测<a class="headerlink" href="#93-iopf" title="Permanent link">&para;</a></h3>
+<p><code>arm_smmu_master_iopf_supported()</code> 检查设备是否支持 I/O Page Fault（<code>arm-smmu-v3-sva.c:451-458</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>master→num_streams == 1</code></td>
+<td>当前驱动不跟踪多 Stream 设备的 SID</td>
+</tr>
+<tr>
+<td><code>master→stall_enabled</code></td>
+<td>必须启用 Stall 模式</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-iopfio-page-fault">10. IOPF（I/O Page Fault）框架<a class="headerlink" href="#10-iopfio-page-fault" title="Permanent link">&para;</a></h2>
+<h3 id="101-iopf-sva">10.1 IOPF 与 SVA 的关系<a class="headerlink" href="#101-iopf-sva" title="Permanent link">&para;</a></h3>
+<p>IOPF 框架是 Linux 内核的 I/O 页面错误处理基础设施，与 SVA 紧密配合：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph IOPF_Framework["IOPF 框架"]
+        IOPF_QUEUE["iopf_queue&lt;br/&gt;(per-SMMU)"]
+        IOPF_HANDLER["iommu_queue_iopf()&lt;br/&gt;(设备 fault handler)"]
+        IOPF_PROD["页面错误生产者"]
+        IOPF_CONS["页面错误消费者&lt;br/&gt;(设备驱动)"]
+    end
+
+    subgraph SMMU_Side["SMMU 侧"]
+        EVTQ["Event Queue&lt;br/&gt;stalled 事件"]
+        EVTQ_IRQ["EVTQ MSI 中断"]
+    end
+
+    subgraph DeviceDriver["设备驱动"]
+        FAULT_HANDLER["设备 fault handler&lt;br/&gt;(注册到 IOMMU)"]
+        FAULT_WORK["处理缺页&lt;br/&gt;(填充页表)"]
+    end
+
+    EVTQ --&gt;|"翻译故障"| EVTQ_IRQ --&gt; IOPF_PROD
+    IOPF_PROD --&gt; IOPF_QUEUE
+    IOPF_QUEUE --&gt; IOPF_HANDLER
+    IOPF_HANDLER --&gt; FAULT_HANDLER
+    FAULT_HANDLER --&gt; FAULT_WORK</code></pre>
+<h3 id="102-iopf">10.2 IOPF 注册流程<a class="headerlink" href="#102-iopf" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    INIT["SMMU 初始化"]
+    INIT --&gt; ALLOC_Q["iopf_queue_alloc()&lt;br/&gt;per-SMMU 分配"]
+    ALLOC_Q --&gt; STORE["smmu→evtq→iopf = queue"]
+
+    DEV_EN["设备启用 SVA"]
+    DEV_EN --&gt; CHECK{"master→iopf_supported?"}
+    CHECK --&gt;|"否"| SKIP["跳过 IOPF"]
+    CHECK --&gt;|"是"| ADD_DEV["iopf_queue_add_device(iopf, dev)"]
+    ADD_DEV --&gt; REG_HANDLER["iommu_register_device_fault_handler()&lt;br/&gt;dev, iommu_queue_iopf, dev"]
+    REG_HANDLER --&gt; READY["IOPF 就绪"]</code></pre>
+<h3 id="103-lti-laflowmmu-700">10.3 LTI 接口的 LAFLOW（MMU-700）<a class="headerlink" href="#103-lti-laflowmmu-700" title="Permanent link">&para;</a></h3>
+<p>MMU-700 的 LTI（Local Translation Interface）通过 <code>LAFLOW</code> 信号显式定义翻译流程类型：</p>
+<table>
+<thead>
+<tr>
+<th>LAFLOW 值</th>
+<th>含义</th>
+<th>SVA 关联</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 (Stall)</td>
+<td>使用 SMMU Stall 故障流程</td>
+<td><strong>SVA 按需分页路径</strong></td>
+</tr>
+<tr>
+<td>1 (ATST)</td>
+<td>事务已通过 ATS 翻译</td>
+<td>ATS 缓存命中路径</td>
+</tr>
+<tr>
+<td>2 (NoStall)</td>
+<td>即使启用 Stall 也不暂停</td>
+<td>立即返回故障</td>
+</tr>
+<tr>
+<td>3 (PRI)</td>
+<td>故障可通过 PRI 解决</td>
+<td>PCIe 端点 PRI 路径</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-httuhardware-translation-table-update">11. HTTU（Hardware Translation Table Update）<a class="headerlink" href="#11-httuhardware-translation-table-update" title="Permanent link">&para;</a></h2>
+<h3 id="111-httu-sva">11.1 HTTU 与 SVA 的关系<a class="headerlink" href="#111-httu-sva" title="Permanent link">&para;</a></h3>
+<p>HTTU 允许 SMMU 硬件自动更新页表中的访问标志（Access Flag）和脏位（Dirty Bit），这对于 SVA 场景尤为重要，因为进程的页表由 CPU 和设备共享访问。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph WithoutHTTU["无 HTTU"]
+        W_CPU["CPU 写/读页面"]
+        W_SW["软件扫描&lt;br/&gt;标记 Access/Dirty"]
+        W_SW --&gt; W_SYNC["同步到 SMMU"]
+    end
+
+    subgraph WithHTTU["有 HTTU (MMU-700)"]
+        H_CPU["CPU 写/读页面"]
+        H_DEV["设备 DMA 写/读&lt;br/&gt;(SVA 模式)"]
+        H_HW["SMMU 硬件自动&lt;br/&gt;更新页表 AF/DB"]
+        H_CPU --&gt; H_HW
+        H_DEV --&gt; H_HW
+    end</code></pre>
+<h3 id="112-httu">11.2 HTTU 实现<a class="headerlink" href="#112-httu" title="Permanent link">&para;</a></h3>
+<ul>
+<li>MMU-600AE：<strong>不支持</strong> HTTU (<code>IDR0.HTTU = 0b00</code>)</li>
+<li>MMU-700：支持 HTTU（<code>sup_httu=1</code> 时，<code>IDR0.HTTU = 0b10</code>，支持 Access + Dirty）</li>
+</ul>
+<p>HTTU 使用 <strong>128-bit 原子写事务</strong>更新页表条目，最大 2 个 outstanding HTTU 写操作。</p>
+<h3 id="113-s2affdstage-2-access-flag-fault-disable">11.3 S2AFFD（Stage 2 Access Flag Fault Disable）<a class="headerlink" href="#113-s2affdstage-2-access-flag-fault-disable" title="Permanent link">&para;</a></h3>
+<p>MMU-600AE/700 支持 S2AFFD，允许在 Stage 2 禁用访问标志故障，这对于嵌套虚拟化中的 SVA 场景有用。</p>
+<hr />
+<h2 id="12-sva-tlb">12. SVA 中的 TLB 管理<a class="headerlink" href="#12-sva-tlb" title="Permanent link">&para;</a></h2>
+<h3 id="121-asid-vmid-sva">12.1 ASID 与 VMID 在 SVA 中的角色<a class="headerlink" href="#121-asid-vmid-sva" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph Identifiers["SVA 地址空间标识"]
+        ASID["ASID&lt;br/&gt;标识进程&lt;br/&gt;= PASID&lt;br/&gt;Stage 1 TLB 索引"]
+        VMID["VMID&lt;br/&gt;标识虚拟机&lt;br/&gt;Stage 2 TLB 索引"]
+        PASID_TAG["PASID&lt;br/&gt;= SSID&lt;br/&gt;设备事务携带&lt;br/&gt;选择 CD"]
+    end
+
+    ASID --- PASID_TAG</code></pre>
+<h3 id="122-sva-tlb">12.2 SVA TLB 无效化场景<a class="headerlink" href="#122-sva-tlb" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    TRIGGER["TLB 无效化触发"]
+    TRIGGER --&gt; SCENE{"场景?"}
+
+    SCENE --&gt;|"进程页表变更&lt;br/&gt;(munmap 等)"| RANGE["arm_smmu_tlb_inv_range_asid()&lt;br/&gt;按 ASID + 地址范围"]
+    SCENE --&gt;|"进程退出"| ALL_ASID["arm_smmu_tlb_inv_asid()&lt;br/&gt;按 ASID 全量"]
+    SCENE --&gt;|"CD 安装/更新"| SYNC_CD["arm_smmu_sync_cd()&lt;br/&gt;CMDQ_OP_CFGI_CD"]
+    SCENE --&gt;|"ASID 冲突替换"| INV_OLD["arm_smmu_tlb_inv_asid()&lt;br/&gt;无效化旧 ASID"]
+    SCENE --&gt;|"BTM 不支持时"| BTM_FALLBACK["按地址范围无效化"]
+
+    RANGE --&gt; ATC["同时: arm_smmu_atc_inv_domain()"]
+    ALL_ASID --&gt; ATC2["同时: arm_smmu_atc_inv_domain()"]
+    INV_OLD --&gt; ATC3["无效化旧 ASID 的 ATC"]</code></pre>
+<h3 id="123-btmbroadcast-tlb-maintenance">12.3 BTM（Broadcast TLB Maintenance）<a class="headerlink" href="#123-btmbroadcast-tlb-maintenance" title="Permanent link">&para;</a></h3>
+<p>当 SMMU 支持 BTM（<code>FEAT_BTM</code>）时，内核通过 DVM 广播机制自动同步 SMMU TLB，软件无需手动发送 TLBI 命令：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph NoBTM["无 BTM"]
+        CPU_INV["CPU TLB 无效化"]
+        SMMU_INV["软件手动发送&lt;br/&gt;SMMU TLBI 命令"]
+    end
+
+    subgraph WithBTM["有 BTM"]
+        CPU_INV2["CPU TLB 无效化"]
+        DVM["DVM 广播&lt;br/&gt;自动同步 SMMU TLB"]
+        CPU_INV2 --&gt; DVM
+    end</code></pre>
+<hr />
+<h2 id="13-sva">13. 端到端 SVA 数据流<a class="headerlink" href="#13-sva" title="Permanent link">&para;</a></h2>
+<h3 id="131-dmaatc">13.1 正常 DMA（ATC 命中）<a class="headerlink" href="#131-dmaatc" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant PROC as 进程
+    participant DEV as 设备
+    participant ATC as 设备 ATC
+    participant TBU as TBU
+    participant TCU as TCU
+
+    PROC-&gt;&gt;TCU: bind (安装 CD)
+    DEV-&gt;&gt;ATC: DMA 请求 (PASID, VA)
+    ATC-&gt;&gt;ATC: 查找缓存
+    Note over ATC: 命中! PA 已缓存
+    DEV-&gt;&gt;TBU: DMA (PA)
+    TBU-&gt;&gt;TCU: 直接访问内存</code></pre>
+<h3 id="132-dma-ats-atc">13.2 DMA + ATS 查询（ATC 未命中）<a class="headerlink" href="#132-dma-ats-atc" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as 设备
+    participant ATC as 设备 ATC
+    participant SMMU as SMMU
+    participant CD as Context Descriptor
+    participant PT as 进程页表
+
+    DEV-&gt;&gt;ATC: DMA 请求 (PASID, VA)
+    ATC-&gt;&gt;ATC: 查找缓存
+    Note over ATC: 未命中
+
+    DEV-&gt;&gt;SMMU: ATS Translation Request&lt;br/&gt;(PASID, VA)
+    SMMU-&gt;&gt;CD: 按 PASID 查找 CD
+    CD--&gt;&gt;SMMU: TTBR, TCR, MAIR
+    SMMU-&gt;&gt;PT: 页表遍历
+    PT--&gt;&gt;SMMU: PA + 属性
+    SMMU--&gt;&gt;DEV: ATS Completion (PA)
+    DEV-&gt;&gt;ATC: 缓存 (PASID, VA→PA)
+    DEV-&gt;&gt;SMMU: DMA (PA)</code></pre>
+<h3 id="133-dma-stall-pri">13.3 DMA + 翻译故障（Stall + PRI）<a class="headerlink" href="#133-dma-stall-pri" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as 设备
+    participant SMMU as SMMU
+    participant EVTQ as Event Queue
+    participant PRIQ as PRI Queue
+    participant SW as 软件
+
+    DEV-&gt;&gt;SMMU: DMA (PASID, VA)
+    Note over SMMU: 翻译失败
+    Note over SMMU: Stall 事务
+
+    par Stall 路径
+        SMMU-&gt;&gt;EVTQ: F_TRANSLATION 事件
+        EVTQ-&gt;&gt;SW: EVTQ MSI 中断
+    and PRI 路径 (PCIe)
+        SMMU-&gt;&gt;PRIQ: PRI 条目
+        PRIQ-&gt;&gt;SW: PRIQ MSI 中断
+    end
+
+    SW-&gt;&gt;SW: 处理缺页
+    SW-&gt;&gt;SMMU: 更新页表 + TLBI
+
+    alt Stall 恢复
+        SW-&gt;&gt;SMMU: CMD_RESUME (Retry)
+        SMMU-&gt;&gt;DEV: 恢复事务
+    else PRI 响应
+        SW-&gt;&gt;SMMU: CMD_PRI_RESP (Success)
+        SMMU-&gt;&gt;DEV: 通知设备重试
+    end</code></pre>
+<h3 id="134">13.4 进程退出清理<a class="headerlink" href="#134" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant PROC as 进程
+    participant MM as 内核 mm
+    participant MN as MMU Notifier
+    participant SMMU_DRV as SMMU 驱动
+    participant SMMU as SMMU 硬件
+    participant BOND as SVA Bond
+
+    PROC-&gt;&gt;MM: do_exit()
+    MM-&gt;&gt;MN: mmu_notifier→release()
+
+    MN-&gt;&gt;SMMU_DRV: arm_smmu_mm_release()
+    Note over SMMU_DRV: DMA 可能仍在运行
+
+    SMMU_DRV-&gt;&gt;SMMU: 写入 quiet_cd&lt;br/&gt;(EPD0=1, V 保持)
+    Note over SMMU: CD 仍有效, 但翻译已禁用
+
+    SMMU_DRV-&gt;&gt;SMMU: CMD_TLBI by ASID
+    SMMU_DRV-&gt;&gt;SMMU: CMD_ATC_INV
+
+    Note over SMMU: 后续 DMA 产生故障&lt;br/&gt;但不触发 C_BAD_CD
+
+    MN-&gt;&gt;SMMU_DRV: arm_smmu_mmu_notifier_put()
+    SMMU_DRV-&gt;&gt;SMMU: 写入 NULL CD&lt;br/&gt;(清除 V 位)
+    SMMU_DRV-&gt;&gt;SMMU_DRV: arm_smmu_free_shared_cd(cd)
+    SMMU_DRV-&gt;&gt;BOND: kfree(bond)</code></pre>
+<hr />
+<h2 id="14-sva-linux">14. SVA Linux 驱动源码结构<a class="headerlink" href="#14-sva-linux" title="Permanent link">&para;</a></h2>
+<h3 id="141">14.1 文件职责<a class="headerlink" href="#141" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>arm-smmu-v3/
+├── arm-smmu-v3.h           # SVA 相关定义
+│   ├── PRIQ 寄存器/条目格式
+│   ├── ATC_INV 命令定义
+│   ├── CD 字段定义 (ASID, TTBR, TCR, MAIR)
+│   ├── STE SVA 字段 (S1DSS, EATS, S1CDMax, S1Fmt)
+│   ├── arm_smmu_ctx_desc 结构
+│   ├── arm_smmu_master (sva_enabled, iopf_enabled, bonds)
+│   ├── arm_smmu_domain (mmu_notifiers)
+│   └── SVA API 原型/桩函数
+│
+├── arm-smmu-v3.c           # SVA 集成点
+│   ├── asid_xa / asid_lock (全局 ASID 管理)
+│   ├── quiet_cd (进程退出静默)
+│   ├── arm_smmu_write_ctx_desc() (CD 写入, 5种场景)
+│   ├── arm_smmu_alloc_cd_tables() (CD 表分配)
+│   ├── arm_smmu_get_cd_ptr() (CD 指针查找, 支持两级)
+│   ├── arm_smmu_free_asid() (ASID 释放)
+│   ├── arm_smmu_tlb_inv_asid() (ASID TLBI, E2H 路由)
+│   ├── arm_smmu_tlb_inv_range_asid() (范围 TLBI)
+│   ├── arm_smmu_atc_inv_to_cmd() (ATC 无效化命令构建)
+│   ├── arm_smmu_atc_inv_domain() (按域 ATC 无效化)
+│   ├── arm_smmu_handle_ppr() (PRI 请求处理)
+│   ├── arm_smmu_priq_thread() (PRIQ 中断线程)
+│   ├── STE 编程 (S1DSS=SSID0, EATS=TRANS, S1CDMax)
+│   ├── dev_feature_enable/disable (IOPF/SVA 特性)
+│   ├── iommu_ops (sva_bind/unbind/get_pasid)
+│   ├── SVA 特性检测与初始化
+│   └── SVA 清理 (iopf_queue_free, notifier_synchronize)
+│
+└── arm-smmu-v3-sva.c       # SVA 核心实现
+    ├── arm_smmu_share_asid() (ASID 冲突处理)
+    ├── arm_smmu_alloc_shared_cd() (共享 CD 创建)
+    ├── arm_smmu_free_shared_cd() (共享 CD 释放)
+    ├── arm_smmu_mm_invalidate_range() (地址变更回调)
+    ├── arm_smmu_mm_release() (进程退出回调)
+    ├── arm_smmu_mmu_notifier_ops (回调函数表)
+    ├── arm_smmu_mmu_notifier_get/put() (Notifier 生命周期)
+    ├── __arm_smmu_sva_bind() (绑定核心逻辑)
+    ├── arm_smmu_sva_bind/unbind() (绑定/解绑 API)
+    ├── arm_smmu_sva_get_pasid() (获取 PASID)
+    ├── arm_smmu_sva_supported() (SVA 特性检测)
+    ├── arm_smmu_master_sva_supported/enabled() (设备级检测)
+    ├── arm_smmu_master_enable/disable_sva() (SVA 使能/禁用)
+    ├── arm_smmu_master_sva_enable/disable_iopf() (IOPF 管理)
+    └── arm_smmu_sva_notifier_synchronize() (退出同步)
+</code></pre></div>
+<h3 id="142">14.2 关键全局变量<a class="headerlink" href="#142" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>定义位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>arm_smmu_asid_xa</code></td>
+<td><code>arm-smmu-v3.c:74</code></td>
+<td>全局 ASID xarray，映射 ASID → ctx_desc</td>
+</tr>
+<tr>
+<td><code>arm_smmu_asid_lock</code></td>
+<td><code>arm-smmu-v3.c:75</code></td>
+<td>ASID 操作互斥锁</td>
+</tr>
+<tr>
+<td><code>quiet_cd</code></td>
+<td><code>arm-smmu-v3.c:81</code></td>
+<td>全零 CD，用于进程退出时静默</td>
+</tr>
+<tr>
+<td><code>sva_lock</code></td>
+<td><code>arm-smmu-v3-sva.c:38</code></td>
+<td>SVA bind/unbind 互斥锁</td>
+</tr>
+</tbody>
+</table>
+<h3 id="143">14.3 关键函数调用关系<a class="headerlink" href="#143" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    subgraph API["IOMMU SVA API"]
+        BIND["iommu_sva_bind()"]
+        UNBIND["iommu_sva_unbind()"]
+        GET_PASID["iommu_sva_get_pasid()"]
+    end
+
+    subgraph Core["SVA 核心 (arm-smmu-v3-sva.c)"]
+        SVA_BIND["arm_smmu_sva_bind()"]
+        SVA_UNBIND["arm_smmu_sva_unbind()"]
+        SVA_PASID["arm_smmu_sva_get_pasid()"]
+        __BIND["__arm_smmu_sva_bind()"]
+        MN_GET["arm_smmu_mmu_notifier_get()"]
+        MN_PUT["arm_smmu_mmu_notifier_put()"]
+        ALLOC_CD["arm_smmu_alloc_shared_cd()"]
+        FREE_CD["arm_smmu_free_shared_cd()"]
+        SHARE_ASID["arm_smmu_share_asid()"]
+        INV_RANGE["arm_smmu_mm_invalidate_range()"]
+        MM_RELEASE["arm_smmu_mm_release()"]
+    end
+
+    subgraph Integration["SMMU 集成 (arm-smmu-v3.c)"]
+        WRITE_CD["arm_smmu_write_ctx_desc()"]
+        FREE_ASID["arm_smmu_free_asid()"]
+        TLBI_ASID["arm_smmu_tlb_inv_asid()"]
+        TLBI_RANGE["arm_smmu_tlb_inv_range_asid()"]
+        ATC_INV["arm_smmu_atc_inv_domain()"]
+        GET_CD_PTR["arm_smmu_get_cd_ptr()"]
+    end
+
+    BIND --&gt; SVA_BIND --&gt; __BIND
+    __BIND --&gt; MN_GET --&gt; ALLOC_CD --&gt; SHARE_ASID
+    ALLOC_CD --&gt; WRITE_CD
+    MN_GET --&gt; WRITE_CD
+
+    UNBIND --&gt; SVA_UNBIND
+    SVA_UNBIND --&gt; MN_PUT
+    MN_PUT --&gt; WRITE_CD
+    MN_PUT --&gt; FREE_CD --&gt; FREE_ASID
+    MN_PUT --&gt; TLBI_ASID
+    MN_PUT --&gt; ATC_INV
+
+    INV_RANGE --&gt; TLBI_RANGE
+    INV_RANGE --&gt; ATC_INV
+    MM_RELEASE --&gt; WRITE_CD
+    MM_RELEASE --&gt; TLBI_ASID
+    MM_RELEASE --&gt; ATC_INV
+
+    WRITE_CD --&gt; GET_CD_PTR
+    GET_PASID --&gt; SVA_PASID</code></pre>
+<hr />
+<h2 id="15">15. 总结<a class="headerlink" href="#15" title="Permanent link">&para;</a></h2>
+<h3 id="151-sva">15.1 SVA 设计要点<a class="headerlink" href="#151-sva" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>mindmap
+  root((SMMU SVA))
+    核心理念
+      设备直接使用进程 VA
+      共享 CPU 页表
+      消除 IOVA 映射维护
+    技术基石
+      PASID (SubstreamID)
+      ATS (预翻译 + ATC)
+      PRI (按需分页)
+      Stall (故障暂停恢复)
+    关键数据结构
+      CD (进程翻译上下文)
+      CD Table (PASID 索引)
+      Bond (设备-进程绑定)
+      MMU Notifier (地址同步)
+    同步机制
+      MMU Notifier 回调
+      TLB 无效化 (按 ASID)
+      ATC 无效化 (按 SID+PASID)
+      BTM (DVM 广播)
+    进程生命周期
+      Bind: 分配 PASID + 安装 CD
+      运行: MMU Notifier 同步
+      退出: quiet_cd + 清理
+    硬件要求
+      COHERENCY (必需)
+      SSID 支持 (必需)
+      ATS (推荐)
+      PRI + Stall (按需分页)
+      HTTU (MMU-700, 推荐)
+      E2H (虚拟化场景)</code></pre>
+<h3 id="152-sva">15.2 SVA 前提条件清单<a class="headerlink" href="#152-sva" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>条件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMMU 硬件</td>
+<td><code>FEAT_COHERENCY</code></td>
+<td>必须支持硬件缓存一致性</td>
+</tr>
+<tr>
+<td>SMMU 硬件</td>
+<td><code>FEAT_SVA</code></td>
+<td>通过 <code>arm_smmu_sva_supported()</code> 检测</td>
+</tr>
+<tr>
+<td>SMMU 硬件</td>
+<td><code>ssid_bits &gt; 0</code></td>
+<td>必须支持 SubstreamID</td>
+</tr>
+<tr>
+<td>SMMU 硬件</td>
+<td><code>oas &gt;= CPU PARANGE</code></td>
+<td>SMMU 输出地址不小于 CPU</td>
+</tr>
+<tr>
+<td>SMMU 硬件</td>
+<td><code>asid_bits &gt;= CPU ASID bits</code></td>
+<td>SMMU ASID 不小于 CPU</td>
+</tr>
+<tr>
+<td>SMMU 硬件</td>
+<td><code>pgsize_bitmap &amp; PAGE_SIZE</code></td>
+<td>支持与 CPU 相同的页大小</td>
+</tr>
+<tr>
+<td>设备</td>
+<td>ATS 能力</td>
+<td>PCIe ATS 扩展</td>
+</tr>
+<tr>
+<td>设备</td>
+<td>PRI 能力</td>
+<td>PCIe PRI 扩展 (按需分页)</td>
+</tr>
+<tr>
+<td>设备</td>
+<td>PASID 能力</td>
+<td>PCIe PASID 扩展</td>
+</tr>
+<tr>
+<td>驱动</td>
+<td><code>CONFIG_ARM_SMMU_V3_SVA</code></td>
+<td>内核编译选项</td>
+</tr>
+<tr>
+<td>驱动</td>
+<td>Stage 1 Domain</td>
+<td>SVA 仅支持 S1 阶段</td>
+</tr>
+<tr>
+<td>驱动</td>
+<td>IOPF 注册</td>
+<td>Stall 模式下单 Stream 设备</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

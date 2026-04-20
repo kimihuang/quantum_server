@@ -1,0 +1,2437 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../SMMU_Virtualization_Design/">
+      
+      
+        <link rel="next" href="../../../src/packages/sort_app/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>SMMUv3 多芯异构 SoC 设计 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#die-smmuv3-soc" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SMMUv3 多芯异构 SoC 设计
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../src/packages/sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 系统概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 系统概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 目标架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 设计约束
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-die-soc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 从 Die SoC 架构设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 从 Die SoC 架构设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-die-tbu-tcu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 问题一：从 Die TBU-TCU 互连拓扑
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 问题二：从 Die 与主存的数据通路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-die-cmn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 问题三：从 Die 无 CMN 的缓存一致性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-dvm-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 问题四：DVM 跨 Die 传播
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 问题五：从 Die 的中断路由
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 问题六：从 Die 地址空间映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-die-stream-table-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 问题七：从 Die Stream Table 与主 Die 的统一
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 软件架构设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 软件架构设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-smmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 问题八：SMMU 实例发现与初始化顺序
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 问题九：队列内存分配与 DMA 一致性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-die-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 问题十：跨 Die TLB 无效化策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-sva-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 问题十一：SVA 在从 Die 的支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 问题十二：从 Die 故障处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 问题十三：性能优化 — 从 Die 翻译缓存命中率
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 问题十四：驱动架构改造
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 问题十五：错误恢复与容错
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 端到端数据通路分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 端到端数据通路分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 正常 DMA 写通路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 翻译故障处理通路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 延迟分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 总结
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 总结">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 问题与方案汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 设计原则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../src/packages/sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 系统概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 系统概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 目标架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 设计约束
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-die-soc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 从 Die SoC 架构设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 从 Die SoC 架构设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-die-tbu-tcu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 问题一：从 Die TBU-TCU 互连拓扑
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 问题二：从 Die 与主存的数据通路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-die-cmn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 问题三：从 Die 无 CMN 的缓存一致性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-dvm-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 问题四：DVM 跨 Die 传播
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 问题五：从 Die 的中断路由
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 问题六：从 Die 地址空间映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-die-stream-table-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 问题七：从 Die Stream Table 与主 Die 的统一
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 软件架构设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 软件架构设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-smmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 问题八：SMMU 实例发现与初始化顺序
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 问题九：队列内存分配与 DMA 一致性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-die-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 问题十：跨 Die TLB 无效化策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-sva-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 问题十一：SVA 在从 Die 的支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 问题十二：从 Die 故障处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-die" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 问题十三：性能优化 — 从 Die 翻译缓存命中率
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 问题十四：驱动架构改造
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 问题十五：错误恢复与容错
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 端到端数据通路分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 端到端数据通路分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 正常 DMA 写通路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 翻译故障处理通路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 延迟分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 总结
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 总结">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 问题与方案汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 设计原则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="die-smmuv3-soc">主从异构 Die SMMUv3 SoC 架构设计<a class="headerlink" href="#die-smmuv3-soc" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 系统概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 目标架构<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>本文档分析一种主从异构 Die 的 SoC 设计方案：</p>
+<ul>
+<li><strong>主 Die</strong>：CPU 集群 + SMMU TCU + TBU + CMN (Coherent Mesh Network) + 主存控制器 + GIC</li>
+<li><strong>从 Die</strong>：SMMU TCU + TBU + 设备端点（PCIe/加速器），<strong>无 CMN、无 CPU、无本地内存控制器</strong></li>
+</ul>
+<pre class="mermaid"><code>graph TB
+    subgraph PrimaryDie["主 Die (Primary Die)"]
+        direction TB
+        CPU["CPU 集群"]
+        CMN["CMN-700&lt;br/&gt;Coherent Mesh Network"]
+        TCU_P["SMMU TCU (主)"]
+        TBU_P["SMMU TBU (主)"]
+        GIC["GIC (中断控制器)"]
+        DRAM_C["DRAM 控制器"]
+        DRAM["主存 DDR"]
+    end
+
+    subgraph SecondaryDie["从 Die (Secondary Die)"]
+        direction TB
+        TCU_S["SMMU TCU (从)"]
+        TBU_S["SMMU TBU (从)"]
+        DEV_PCIE["PCIe EP / NIC"]
+        DEV_ACC["加速器集群"]
+        DEV_NET["网络引擎"]
+    end
+
+    subgraph D2D_Link["Die-to-Die 互连"]
+        D2D["Die-to-Die Bridge&lt;br/&gt;(PCIe / CXL / 自定义)"]
+    end
+
+    CPU &lt;--&gt; CMN
+    TCU_P &lt;--&gt; CMN
+    TBU_P &lt;--&gt; CMN
+    DRAM_C &lt;--&gt; CMN
+    GIC &lt;--&gt; CMN
+    CMN &lt;--&gt; D2D
+
+    D2D --&gt; TBU_S
+    TBU_S --&gt; TCU_S
+    TCU_S --&gt; D2D
+
+    DEV_PCIE --&gt; TBU_S
+    DEV_ACC --&gt; TBU_S
+    DEV_NET --&gt; TBU_S
+
+    DRAM_C --&gt; DRAM</code></pre>
+<h3 id="12">1.2 设计约束<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>从 Die 无 CMN</td>
+<td>无法直接参与 CMN coherence domain</td>
+</tr>
+<tr>
+<td>从 Die 无 CPU</td>
+<td>所有翻译配置必须由主 Die CPU 完成</td>
+</tr>
+<tr>
+<td>从 Die 无本地内存</td>
+<td>所有 DMA 最终访问主 Die 主存</td>
+</tr>
+<tr>
+<td>Die-to-Die 带宽有限</td>
+<td>D2D 互连带宽远低于片内互连</td>
+</tr>
+<tr>
+<td>Die-to-Die 延迟高</td>
+<td>D2D 互连延迟远高于片内（通常 10x~50x）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-die-soc">2. 从 Die SoC 架构设计<a class="headerlink" href="#2-die-soc" title="Permanent link">&para;</a></h2>
+<h3 id="21-die-tbu-tcu">2.1 问题一：从 Die TBU-TCU 互连拓扑<a class="headerlink" href="#21-die-tbu-tcu" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 没有主 Die 的 CMN，TBUs 和 TCU 之间需要独立的互连方案。</p>
+<p><strong>分析</strong>：</p>
+<p>SMMUv3 的 DTI (Distributed Translation Interface) 是基于 AXI4/AXI5-Stream 协议的点对点连接。在单 Die 内，DTI switch 可以将多个 TBU 聚合后连接到 TCU。但在从 Die 上，需要考虑 TCU 放置位置对性能的影响。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph OptionA["方案 A：TCU 集中在从 Die"]
+        direction TB
+        A_TBU1["TBU 1"]
+        A_TBU2["TBU 2"]
+        A_TBUN["TBU N"]
+        A_DTI_SW["DTI Switch"]
+        A_TCU["TCU (从 Die)"]
+        A_D2D["D2D Bridge"]
+
+        A_TBU1 &amp; A_TBU2 &amp; A_TBUN --&gt; A_DTI_SW --&gt; A_TCU --&gt; A_D2D
+    end
+
+    subgraph OptionB["方案 B：从 Die 无 TCU"]
+        direction TB
+        B_TBU1["TBU 1"]
+        B_TBU2["TBU 2"]
+        B_TBUN["TBU N"]
+        B_DTI_SW["DTI Switch"]
+        B_D2D["D2D Bridge"]
+        B_TCU["TCU (主 Die)"]
+
+        B_TBU1 &amp; B_TBU2 &amp; B_TBUN --&gt; B_DTI_SW --&gt; B_D2D --&gt; B_TCU
+    end</code></pre>
+<p><strong>方案对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>方案 A（从 Die 有 TCU）</th>
+<th>方案 B（从 Die 无 TCU）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>翻译延迟</td>
+<td>TLB 命中时本地完成，无 D2D 开销</td>
+<td>每次翻译都需跨 Die</td>
+</tr>
+<tr>
+<td>D2D 带宽</td>
+<td>仅页表遍历未命中时访问 D2D</td>
+<td>所有翻译请求都占用 D2D</td>
+</tr>
+<tr>
+<td>配置表访问</td>
+<td>CD/STE 可缓存在从 Die 配置缓存</td>
+<td>配置缓存集中在主 Die</td>
+</tr>
+<tr>
+<td>硬件成本</td>
+<td>从 Die 需要 TCU（面积/功耗）</td>
+<td>从 Die 仅需 TBU+DTI</td>
+</tr>
+<tr>
+<td>DTI 互连</td>
+<td>片内 DTI Switch（低延迟）</td>
+<td>D2D 互连替代 DTI（需协议适配）</td>
+</tr>
+<tr>
+<td>可扩展性</td>
+<td>从 Die 可独立工作</td>
+<td>依赖主 Die TCU 容量</td>
+</tr>
+</tbody>
+</table>
+<p><strong>推荐方案</strong>：<strong>方案 A</strong>。从 Die 放置独立 TCU，理由：
+1. 页表遍历是内存密集型操作，每次跨 Die 的代价太高
+2. 配置缓存本地化可显著减少 D2D 事务
+3. TCU 支持本地 PRIQ/EVTQ 处理，减少跨 Die 中断</p>
+<h3 id="22-die">2.2 问题二：从 Die 与主存的数据通路<a class="headerlink" href="#22-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 设备 DMA 的最终目标是主 Die 主存，翻译后的物理地址访问需跨 Die。</p>
+<p><strong>分析</strong>：</p>
+<p>SMMU 翻译完成后，设备发出的 DMA 事务携带的是物理地址（PA）。该 PA 访问的路径取决于内存系统拓扑。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph Path1["路径 1：经 D2D 到主存"]
+        P1_DEV["从 Die 设备"]
+        P1_TBU["从 Die TBU"]
+        P1_TCU["从 Die TCU&lt;br/&gt;翻译 VA→PA"]
+        P1_D2D_OUT["D2D Bridge (出)"]
+        P1_CMN["主 Die CMN"]
+        P1_DRAM["主存"]
+
+        P1_DEV --&gt; P1_TBU --&gt; P1_TCU
+        P1_TCU --&gt;|"DMA (PA)"| P1_D2D_OUT --&gt; P1_CMN --&gt; P1_DRAM
+    end
+
+    subgraph Path2["路径 2：D2D Bridge 集成 snoop"]
+        P2_DEV["从 Die 设备"]
+        P2_TBU["从 Die TBU"]
+        P2_TCU["从 Die TCU&lt;br/&gt;翻译 VA→PA"]
+        P2_D2D["D2D Bridge&lt;br/&gt;(带 cache coherent 接口)"]
+        P2_CMN["主 Die CMN"]
+        P2_DRAM["主存"]
+
+        P2_DEV --&gt; P2_TBU --&gt; P2_TCU
+        P2_TCU --&gt;|"DMA (PA)"| P2_D2D --&gt; P2_CMN --&gt; P2_DRAM
+    end</code></pre>
+<p><strong>方案</strong>：D2D Bridge 需要支持将翻译后的 DMA 事务路由到主 Die 内存系统。D2D Bridge 可采用：
+- <strong>PCIe/CXL 协议</strong>：翻译后 PA 作为 PCIe/CXL 地址，由主 Die RC 解析
+- <strong>自定义协议</strong>：D2D Bridge 直接桥接到主 Die CMN 的 RN-F（Fully coherent Requesting Node）端口</p>
+<h3 id="23-die-cmn">2.3 问题三：从 Die 无 CMN 的缓存一致性<a class="headerlink" href="#23-die-cmn" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 没有 CMN，无法直接参与主 Die 的 coherence domain。但 SMMUv3 硬件缓存一致性要求 TCU 页表遍历能观察到 CPU 对页表的修改。</p>
+<p><strong>分析</strong>：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph CoherentDomain["缓存一致性域"]
+        CPU["CPU"]
+        CMN_P["主 Die CMN"]
+        L3["系统 L3/LLC Cache"]
+        DRAM_P["主存"]
+    end
+
+    subgraph SecondaryDie["从 Die"]
+        TCU_S["从 Die TCU&lt;br/&gt;页表遍历"]
+        TBU_S["从 Die TBU"]
+    end
+
+    subgraph D2D["D2D Bridge"]
+        SNODE["从 Die 作为&lt;br/&gt;snoop participant?"]
+    end
+
+    CPU &lt;--&gt; CMN_P &lt;--&gt; L3 &lt;--&gt; DRAM_P
+    TBU_S --&gt; TCU_S
+    TCU_S --&gt;|"页表读"| D2D --&gt; CMN_P
+
+    D2D -.-&gt;|"方案 A: snoop filter"| SNODE
+    SNODE -.-&gt;|"窥探 CPU 写"| CMN_P</code></pre>
+<p><strong>方案矩阵</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>说明</th>
+<th>一致性</th>
+<th>延迟</th>
+<th>复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A: D2D Bridge 作为 snoop participant</strong></td>
+<td>从 Die TCU 通过 D2D Bridge 加入 CMN snoop domain</td>
+<td>强一致</td>
+<td>页表读需跨 Die 等待 snoop</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>B: 非一致性 + 软件维护</strong></td>
+<td>TCU 页表遍历不保证强一致，软件通过 CMD_TLBI + DVM 同步</td>
+<td>最终一致（依赖软件）</td>
+<td>页表读直接读内存</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>C: D2D Bridge 带 local cache + snoop</strong></td>
+<td>D2D Bridge 侧缓存页表条目，并参与 snoop</td>
+<td>强一致</td>
+<td>缓存命中时低延迟</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+<p><strong>推荐方案</strong>：<strong>方案 A</strong>，从 Die TCU 的 QTW/DVM 接口通过 D2D Bridge 参与主 Die 的 coherence domain。理由：
+1. SVA 等特性要求 FEAT_COHERENCY，TCU 必须看到 CPU 对页表的实时修改
+2. DVM 同步需要 TCU 能接收 CPU 发出的 DVM 广播</p>
+<h3 id="24-dvm-die">2.4 问题四：DVM 跨 Die 传播<a class="headerlink" href="#24-dvm-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：CPU 在主 Die 发出的 DVM TLB 无效化广播需要到达从 Die 的 TBU。</p>
+<p><strong>分析</strong>：</p>
+<p>DVM (Distributed Virtual Memory) 是 ARM 的 TLB 同步机制。在主 Die 中，CPU 的 DVM 事务通过 CMN 广播到所有 TBU。从 Die 的 TBU 需要也能接收到 DVM 事务。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant CPU as 主 Die CPU
+    participant CMN as 主 Die CMN
+    participant D2D as D2D Bridge
+    participant TCU_S as 从 Die TCU
+    participant TBU_S as 从 Die TBU
+
+    CPU-&gt;&gt;CMN: TLBI 指令&lt;br/&gt;(DVM 事务)
+    CMN-&gt;&gt;D2D: 转发 DVM 到从 Die&lt;br/&gt;(通过 QTW/DVM 接口)
+
+    alt 支持 BTM
+        D2D-&gt;&gt;TCU_S: DVM 无效化请求
+        TCU_S-&gt;&gt;TCU_S: 处理 DVM
+        TCU_S-&gt;&gt;TBU_S: DTI 通知无效化
+        TCU_S--&gt;&gt;D2D: DVM Complete
+    else 不支持 BTM
+        D2D-&gt;&gt;TCU_S: DVM 无效化请求
+        TCU_S-&gt;&gt;TCU_S: 处理 DVM
+        TCU_S--&gt;&gt;D2D: DVM Complete
+        Note over TBU_S: 需软件通过 CMD_TLBI 同步
+    end
+
+    D2D--&gt;&gt;CMN: DVM Complete
+    CMN--&gt;&gt;CPU: TLBI 完成</code></pre>
+<p><strong>方案</strong>：
+- <strong>硬件路径</strong>：D2D Bridge 的 QTW/DVM 接口连接从 Die TCU，使 CPU DVM 能跨 Die 传播
+- <strong>BTM 支持</strong>：从 Die TCU 启用 <code>sup_btm</code>，接收 DVM 后自动无效化本地 TLB
+- <strong>后备方案</strong>：若硬件不支持跨 Die DVM，驱动需要在 <code>arm_smmu_tlb_inv_asid()</code> 中额外发送跨 Die CMD_TLBI</p>
+<h3 id="25-die">2.5 问题五：从 Die 的中断路由<a class="headerlink" href="#25-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 的 TBU/TCU 产生的中断（EVTQ/PRIQ/GERROR）和设备 MSI 需要路由到主 Die 的 GIC。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph SecDie["从 Die 中断源"]
+        EVTQ_S["EVTQ 中断"]
+        PRIQ_S["PRIQ 中断"]
+        GERR_S["GERROR 中断"]
+        DEV_MSI["设备 MSI"]
+    end
+
+    subgraph Routing["中断路由"]
+        WIRE["线连中断&lt;br/&gt;(wire)"]
+        MSI_FWD["MSI 转发&lt;br/&gt;(经 D2D)"]
+    end
+
+    subgraph PrimaryDie["主 Die"]
+        GIC["GIC"]
+        CPU_P["CPU"]
+    end
+
+    EVTQ_S &amp; PRIQ_S &amp; GERR_S --&gt; WIRE --&gt; GIC
+    DEV_MSI --&gt; MSI_FWD --&gt; D2D_MSIB["D2D MSI Bridge"] --&gt; GIC
+    GIC --&gt; CPU_P</code></pre>
+<p><strong>方案</strong>：
+- <strong>TCU 线连中断</strong>：从 Die TCU 的 EVTQ/PRIQ/GERROR 中断信号通过专用线连直接连接到主 Die GIC（需要足够的 Die-to-Die 中断线）
+- <strong>设备 MSI 转发</strong>：从 Die 设备的 MSI 通过 D2D Bridge 的 MSI 转发机制到达主 Die GIC
+- <strong>MMU-700 专用 MSI 接口</strong>：若从 Die 使用 MMU-700，可利用 TCU 专用 MSI 接口通过 D2D 发送 MSI 数据包</p>
+<h3 id="26-die">2.6 问题六：从 Die 地址空间映射<a class="headerlink" href="#26-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die TCU/TBU 的 MMIO 寄存器和队列内存需要被主 Die CPU 访问。</p>
+<p><strong>分析</strong>：</p>
+<pre class="mermaid"><code>graph LR
+    subgraph SysAddrMap["系统地址映射"]
+        MAIN_REGION["主 Die SMMU 寄存器&lt;br/&gt;0xXXX_XXXX"]
+        SEC_REGION["从 Die SMMU 寄存器&lt;br/&gt;0xYYY_YYYY&lt;br/&gt;(经 D2D 映射)"]
+        MAIN_Q["主 Die 队列内存&lt;br/&gt;0xAAA_AAAA"]
+        SEC_Q["从 Die 队列内存&lt;br/&gt;0xBBB_BBBB&lt;br/&gt;(经 D2D 映射)"]
+    end
+
+    subgraph Access["CPU 访问路径"]
+        CPU_P["主 Die CPU"]
+        SEC_CFG["从 Die TCU Page0/1 寄存器"]
+        SEC_DRAM["从 Die 队列内存&lt;br/&gt;(在主存中分配)"]
+    end
+
+    CPU_P --&gt;|"MMIO read/write&lt;br/&gt;经 D2D"| SEC_CFG
+    CPU_P --&gt;|"DMA read/write&lt;br/&gt;经 D2D"| SEC_DRAM</code></pre>
+<p><strong>方案</strong>：
+- <strong>寄存器访问</strong>：从 Die TCU 的 MMIO 寄存器通过 D2D Bridge 映射到主 Die 系统地址空间，CPU 可直接读写
+- <strong>队列内存</strong>：从 Die TCU 的 CMDQ/EVTQ/PRIQ 内存分配在主 Die 主存中，从 Die TCU 通过 D2D DMA 访问这些队列。这是可行的，因为 SMMUv3 规范明确支持队列在任意可寻址内存位置
+- <strong>页表和配置表</strong>：同理，Stream Table 和 CD Table 分配在主存中</p>
+<h3 id="27-die-stream-table-die">2.7 问题七：从 Die Stream Table 与主 Die 的统一<a class="headerlink" href="#27-die-stream-table-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 的设备有独立的 StreamID 空间，需要与主 Die 的 IOMMU 子系统统一管理。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph StreamID_Space["StreamID 地址空间"]
+        subgraph PrimaryIDs["主 Die StreamID"]
+            PID1["SID 0x001 (主 Die 设备 A)"]
+            PID2["SID 0x002 (主 Die 设备 B)"]
+        end
+        subgraph SecondaryIDs["从 Die StreamID"]
+            SID1["SID 0x100 (从 Die PCIe EP)"]
+            SID2["SID 0x101 (从 Die 加速器)"]
+            SID3["SID 0x102 (从 Die 网络引擎)"]
+        end
+    end
+
+    subgraph StreamTables["Stream Table"]
+        PST["主 Die Stream Table"]
+        SST["从 Die Stream Table"]
+        PST --&gt; PID1 &amp; PID2
+        SST --&gt; SID1 &amp; SID2 &amp; SID3
+    end
+
+    subgraph Driver["Linux SMMUv3 驱动"]
+        SMU_P["arm_smmu_device (主)"]
+        SMU_S["arm_smmu_device (从)"]
+        IOMMU["IOMMU 子系统"]
+    end
+
+    IOMMU --&gt; SMU_P &amp; SMU_S
+    SMU_P --&gt; PST
+    SMU_S --&gt; SST</code></pre>
+<p><strong>方案</strong>：
+- 从 Die TCU 注册为独立的 <code>arm_smmu_device</code> 实例
+- ACPI IORT 表或 Device Tree 中描述从 Die SMMU 及其 StreamID 范围
+- Linux 驱动通过 <code>arm_smmu_device_probe()</code> 分别初始化主/从 Die SMMU
+- 每个 <code>arm_smmu_device</code> 有独立的 Stream Table、CMDQ、EVTQ</p>
+<hr />
+<h2 id="3">3. 软件架构设计<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-smmu">3.1 问题八：SMMU 实例发现与初始化顺序<a class="headerlink" href="#31-smmu" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die SMMU 的发现方式、初始化依赖（D2D 就绪、主存访问通路）和启动顺序。</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph BootSeq["启动顺序"]
+        B1["1. 主 Die CPU Boot"]
+        B2["2. CMN 初始化"]
+        B3["3. D2D Bridge 初始化&lt;br/&gt;建立主从 Die 链路"]
+        B4["4. 主 Die TCU 探测与初始化"]
+        B5["5. 从 Die TCU 探测&lt;br/&gt;(经 D2D 访问 MMIO)"]
+        B6["6. 从 Die TBU 状态检查"]
+        B7["7. 主 Die SMMU 驱动 probe"]
+        B8["8. 从 Die SMMU 驱动 probe"]
+        B9["9. 队列分配 (主存)"]
+        B10["10. Stream Table 配置"]
+        B11["11. CR0 使能 (先主后从)"]
+        B12["12. 设备发现与附加"]
+
+        B1 --&gt; B2 --&gt; B3 --&gt; B4 --&gt; B5
+        B5 --&gt; B6 --&gt; B7 --&gt; B8
+        B8 --&gt; B9 --&gt; B10 --&gt; B11 --&gt; B12
+    end</code></pre>
+<p><strong>方案</strong>：
+- <strong>ACPI IORT</strong>：在 IORT 表中添加从 Die SMMU 节点，包含其经 D2D 映射的 MMIO 基地址
+- <strong>Device Tree</strong>：添加从 Die SMMU 的 <code>compatible = "arm,smmu-v3"</code> 节点
+- <strong>初始化依赖</strong>：确保 D2D Bridge 在 SMMU probe 之前完成初始化
+- <strong>从 Die TCU 时钟/复位</strong>：通过 D2D Bridge 的侧带信号或独立的复位控制器管理</p>
+<h3 id="32-dma">3.2 问题九：队列内存分配与 DMA 一致性<a class="headerlink" href="#32-dma" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die SMMU 的 CMDQ/EVTQ/PRIQ 分配在主存中，从 Die TCU 通过 D2D 访问，存在 DMA 一致性问题。</p>
+<p><strong>分析</strong>：</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant CPU as 主 Die CPU
+    participant DRAM as 主存
+    participant D2D as D2D Bridge
+    participant TCU_S as 从 Die TCU
+
+    Note over CPU: 写入 CMDQ 条目
+    CPU-&gt;&gt;DRAM: 写入 CMDQ[prod]
+    Note over DRAM: 数据在 CPU cache 中
+
+    Note over TCU_S: 读取 CMDQ 条目
+    TCU_S-&gt;&gt;D2D: DMA 读 CMDQ[prod]
+    D2D-&gt;&gt;DRAM: DMA 读
+
+    alt DMA 一致性无保证
+        Note over TCU_S: 读到旧数据!
+    else DMA 一致性有保证
+        Note over DRAM: CPU 写已刷出到内存
+        Note over TCU_S: 读到最新数据
+    end</code></pre>
+<p><strong>方案</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>说明</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DMA coherent 内存分配</strong></td>
+<td>使用 <code>dmam_alloc_coherent()</code>，CPU 侧 uncached</td>
+<td>默认方案，性能有损失</td>
+</tr>
+<tr>
+<td><strong>DMA write combining</strong></td>
+<td>使用 <code>dma_alloc_writecombine()</code>，CPU 侧 buffered write</td>
+<td>D2D Bridge 支持 WC 时可用</td>
+</tr>
+<tr>
+<td><strong>显式 cache 管理</strong></td>
+<td>普通分配 + <code>dma_sync_*()</code> 系列调用</td>
+<td>性能最优但复杂度高</td>
+</tr>
+<tr>
+<td><strong>从 Die 侧本地 cache</strong></td>
+<td>D2D Bridge 侧为队列内存维护 snoop filter</td>
+<td>需硬件支持</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键代码路径</strong>（<code>arm-smmu-v3.c</code>）：
+<div class="highlight"><pre><span></span><code><span class="c1">// 队列分配使用 DMA coherent API</span>
+<span class="n">cdcfg</span><span class="o">-&gt;</span><span class="n">cdtab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dmam_alloc_coherent</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">l1size</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cdcfg</span><span class="o">-&gt;</span><span class="n">cdtab_dma</span><span class="p">,</span><span class="w"> </span><span class="n">GFP_KERNEL</span><span class="p">);</span>
+</code></pre></div></p>
+<p>若从 Die TCU 的内存接口不是 cache coherent 的，需要确保：
+1. 驱动在 <code>arm_smmu_cmdq_issue_cmdlist()</code> 后调用 <code>dma_wmb()</code> 或 <code>dma_sync_single_for_device()</code>
+2. TCU 读取队列前，D2D Bridge 需要发起 snoop 获取最新数据</p>
+<h3 id="33-die-tlb">3.3 问题十：跨 Die TLB 无效化策略<a class="headerlink" href="#33-die-tlb" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：Linux 驱动的 TLB 无效化逻辑需要覆盖从 Die 的 TBU。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph TLBI_Paths["TLB 无效化路径"]
+        direction TB
+        subgraph TLBI_CMD["软件发起 CMD_TLBI"]
+            DRIVER["Linux SMMU 驱动"]
+            CMDQ_P["主 Die CMDQ"]
+            CMDQ_S["从 Die CMDQ"]
+        end
+
+        subgraph TLBI_DVM["DVM 硬件广播"]
+            CPU_TLBI["CPU TLBI 指令"]
+            CMN_BCAST["CMN DVM 广播"]
+            D2D_DVM["D2D DVM 转发"]
+            TCU_S_DVM["从 Die TCU 接收"]
+            TBU_S_DVM["从 Die TBU 无效化"]
+        end
+    end
+
+    DRIVER --&gt; CMDQ_P &amp; CMDQ_S
+
+    CPU_TLBI --&gt; CMN_BCAST --&gt; D2D_DVM --&gt; TCU_S_DVM --&gt; TBU_S_DVM</code></pre>
+<p><strong>方案矩阵</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>机制</th>
+<th>覆盖范围</th>
+<th>软件改动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A: 双 CMDQ</strong></td>
+<td>驱动同时向主/从 Die CMDQ 发送 TLBI</td>
+<td>所有从 Die TBU</td>
+<td>需要维护两个 CMDQ</td>
+</tr>
+<tr>
+<td><strong>B: 跨 Die DVM</strong></td>
+<td>CPU DVM 经 CMN→D2D 传播到从 Die</td>
+<td>所有从 Die TBU (BTM)</td>
+<td>驱动无需改动</td>
+</tr>
+<tr>
+<td><strong>C: A + B 组合</strong></td>
+<td>DVM 自动 + CMDQ 兜底</td>
+<td>最完整</td>
+<td>D2D 不可用时 fallback</td>
+</tr>
+</tbody>
+</table>
+<p><strong>推荐</strong>：<strong>方案 C</strong>。
+- 正常路径：CPU DVM 自动传播，无需驱动干预（BTM 模式）
+- 兜底路径：驱动在 <code>arm_smmu_tlb_inv_asid()</code> 中向从 Die CMDQ 发送额外 TLBI
+- 从 Die TCU 的 <code>sup_btm</code> 必须为 HIGH</p>
+<h3 id="34-sva-die">3.4 问题十一：SVA 在从 Die 的支持<a class="headerlink" href="#34-sva-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 设备是否支持 SVA，以及 MMU Notifier + ATC 无效化如何跨 Die 工作。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph SVA_Scenario["从 Die SVA 场景"]
+        PROC["主 Die CPU 进程"]
+        CD_P["主 Die CD (进程页表)"]
+        CD_S["从 Die CD (进程页表副本)"]
+        TBU_S["从 Die TBU"]
+        ATC_S["设备 ATC"]
+    end
+
+    PROC --&gt;|"页表变更"| CD_P
+    CD_P -.-&gt;|"需要同步?"| CD_S
+
+    TBU_S --&gt;|"DMA (VA)"| ATC_S
+    ATC_S --&gt;|"TLB Miss"| CD_S</code></pre>
+<p><strong>问题分析</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>子问题</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CD 同步</td>
+<td>从 Die TCU 的 CD 缓存需要与主 Die 保持一致</td>
+</tr>
+<tr>
+<td>MMU Notifier 回调</td>
+<td><code>invalidate_range</code> 需要同时无效化从 Die 的 TLB 和 ATC</td>
+</tr>
+<tr>
+<td>ATC 无效化</td>
+<td>CMD_ATC_INV 需要到达从 Die TBU（ATS 事务的 ATC 在设备本地）</td>
+</tr>
+<tr>
+<td>PRI/Stall</td>
+<td>从 Die TCU 的 EVTQ/PRIQ 在主存中，主 Die CPU 可以处理</td>
+</tr>
+</tbody>
+</table>
+<p><strong>方案</strong>：
+- <strong>CD 配置缓存同步</strong>：CD 缓存在从 Die TCU 中，当 CPU 更新 CD 时，驱动发送 <code>CMD_CFGI_CD</code> 到从 Die CMDQ
+- <strong>MMU Notifier 集成</strong>：在 <code>arm_smmu_tlb_inv_range_asid()</code> 中同时向主/从 Die 发送 TLBI + ATC_INV
+- <strong>ATC 无效化</strong>：<code>arm_smmu_atc_inv_domain()</code> 向从 Die TBU 所在 SID 发送 CMD_ATC_INV（ATC 无效化通过 SMMU 命令完成，ATS response 通知设备，无需跨 Die 直接操作设备 ATC）</p>
+<h3 id="35-die">3.5 问题十二：从 Die 故障处理<a class="headerlink" href="#35-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die 的 EVTQ 在主存中，但 PRIQ 和 Stall 模式的处理需要考虑 D2D 延迟。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as 从 Die 设备
+    participant TBU_S as 从 Die TBU
+    participant TCU_S as 从 Die TCU
+    participant D2D as D2D Bridge
+    participant DRAM as 主存
+    participant CPU as 主 Die CPU
+    participant GIC as 主 Die GIC
+
+    DEV-&gt;&gt;TBU_S: DMA (VA)
+    TBU_S-&gt;&gt;TCU_S: 翻译请求
+    TCU_S-&gt;&gt;TCU_S: 翻译失败, Stall
+
+    TCU_S-&gt;&gt;DRAM: 写入 EVTQ 条目&lt;br/&gt;(经 D2D, 高延迟!)
+    TCU_S-&gt;&gt;GIC: EVTQ MSI 中断
+
+    CPU-&gt;&gt;CPU: MSI handler
+    CPU-&gt;&gt;DRAM: 读取 EVTQ
+
+    Note over CPU: 处理故障
+    CPU-&gt;&gt;DRAM: 写入 CMD_RESUME 到 CMDQ&lt;br/&gt;(经 D2D)
+    DRAM-&gt;&gt;D2D-&gt;&gt;TCU_S: TCU 读取 CMDQ
+    TCU_S-&gt;&gt;TBU_S: Resume 事务</code></pre>
+<p><strong>关键问题</strong>：从 Die 故障处理的 <strong>全路径延迟</strong> 包括：
+1. TCU 写 EVTQ 到主存（D2D 往返）
+2. CPU 读 EVTQ（可能 cache miss）
+3. CPU 处理 + 写 CMD_RESUME（D2D 往返）
+4. TCU 读 CMDQ（D2D 往返）</p>
+<p><strong>方案</strong>：
+- <strong>增大 STALL_MAX</strong>：从 Die TCU 的 <code>STALL_MAX</code> 应适当增大，容忍更长的故障处理延迟
+- <strong>优先使用 PRI</strong>：对于支持 PRI 的 PCIe 设备，优先使用 PRI 路径而非 Stall（PRI 不阻塞事务，设备可以继续其他工作）
+- <strong>MSI 使用专用线连</strong>：避免 EVTQ/PRIQ MSI 经 D2D 的额外延迟</p>
+<h3 id="36-die">3.6 问题十三：性能优化 — 从 Die 翻译缓存命中率<a class="headerlink" href="#36-die" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：从 Die TBU 的 TLB 命中率直接影响 DMA 性能，每次跨 Die 翻译代价很高。</p>
+<pre class="mermaid"><code>graph TB
+    subgraph PerfOpt["性能优化层次"]
+        direction TB
+
+        subgraph L1["Layer 1: 减少 TLB Miss"]
+            HUM["Hit-Under-Miss"]
+            MICRO["增大 MicroTLB"]
+            MTLB_DIR["MTLB Direct Indexing"]
+            PREFETCH["配置预取 CMD_PREFETCH_CFG"]
+            STASH["StashTranslation"]
+        end
+
+        subgraph L2["Layer 2: 减少页表遍历跨 Die"]
+            WCACHE["增大 Walk Cache"]
+            S1DSS["S1DSS=SSID0&lt;br/&gt;保留 CD[0]"]
+        end
+
+        subgraph L3["Layer 3: 减少 D2D 事务"]
+            LOCAL_CD["CD 缓存在从 Die TCU"]
+            LOCAL_CFG["配置缓存在从 Die TCU"]
+            BTM_DVM["BTM 减少 CMD_TLBI"]
+        end
+
+        subgraph L4["Layer 4: 软件层优化"]
+            IOVA_CONTIG["IOVA 连续分配"]
+            LARGE_PG["大页映射 (2MB/1GB)"]
+            ATC_MGMT["主动 ATC 预热"]
+        end
+    end</code></pre>
+<p><strong>详细优化方案</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>优化</th>
+<th>层级</th>
+<th>说明</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增大从 Die MicroTLB</td>
+<td>L1</td>
+<td>增加 TBU 本地 TLB 容量</td>
+<td>减少 TCU 请求</td>
+</tr>
+<tr>
+<td>MTLB Direct Indexing</td>
+<td>L1</td>
+<td>外部直接管理 MTLB 条目</td>
+<td>适用于固定映射</td>
+</tr>
+<tr>
+<td>StashTranslation</td>
+<td>L1</td>
+<td>预热 TBU 翻译缓存</td>
+<td>消除冷启动 Miss</td>
+</tr>
+<tr>
+<td>增大从 Die Walk Cache</td>
+<td>L2</td>
+<td>增加 TCU 页表遍历缓存</td>
+<td>减少主存访问</td>
+</tr>
+<tr>
+<td>本地配置缓存</td>
+<td>L3</td>
+<td>从 Die TCU 本地缓存 STE/CD</td>
+<td>避免每次跨 Die 读取</td>
+</tr>
+<tr>
+<td>BTM + DVM</td>
+<td>L3</td>
+<td>硬件自动同步 TLB</td>
+<td>减少跨 Die CMD_TLBI</td>
+</tr>
+<tr>
+<td>IOVA 连续分配</td>
+<td>L4</td>
+<td>驱动侧连续分配 IOVA</td>
+<td>提高 ATC/TLB 效率</td>
+</tr>
+<tr>
+<td>大页映射</td>
+<td>L4</td>
+<td>使用 2MB/1GB 大页</td>
+<td>减少页表级数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="37">3.7 问题十四：驱动架构改造<a class="headerlink" href="#37" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：Linux SMMUv3 驱动需要感知从 Die 的存在，并对跨 Die 操作做适配。</p>
+<pre class="mermaid"><code>classDiagram
+    class arm_smmu_device {
+        +dev : device*
+        +base : void __iomem*
+        +features : u32
+        +cmdq : arm_smmu_cmdq
+        +evtq : arm_smmu_evtq
+        +priq : arm_smmu_priq
+        +strtab_cfg : arm_smmu_strtab_cfg
+    }
+
+    class smmu_die_info {
+        &lt;&lt;新增&gt;&gt;
+        +die_id : unsigned int
+        +is_remote : bool
+        +d2d_link : d2d_link_handle
+        +peer_smmus : arm_smmu_device*[]
+        +dvm_capable : bool
+        +coherent : bool
+        +latency_ns : unsigned int
+    }
+
+    class smmu_d2d_notifier {
+        &lt;&lt;新增&gt;&gt;
+        +d2d_up : bool
+        +d2d_cb : callback
+    }
+
+    class arm_smmu_device_ops {
+        &lt;&lt;新增&gt;&gt;
+        +tlbi_cross_die()
+        +atc_inv_cross_die()
+        +cfgi_cross_die()
+        +query_peer_health()
+    }
+
+    arm_smmu_device --&gt; smmu_die_info
+    arm_smmu_device --&gt; smmu_d2d_notifier
+    arm_smmu_device --&gt; arm_smmu_device_ops</code></pre>
+<p><strong>关键驱动改造点</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>函数/模块</th>
+<th>改造内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>arm_smmu_device_probe()</code></td>
+<td>增加 D2D 附属设备探测逻辑</td>
+</tr>
+<tr>
+<td><code>arm_smmu_cmdq_issue_cmd()</code></td>
+<td>对跨 Die CMDQ 操作增加超时容忍</td>
+</tr>
+<tr>
+<td><code>arm_smmu_tlb_inv_asid()</code></td>
+<td>向 peer SMMU 的 CMDQ 额外发送 TLBI</td>
+</tr>
+<tr>
+<td><code>arm_smmu_atc_inv_domain()</code></td>
+<td>向 peer SMMU 的 CMDQ 额外发送 ATC_INV</td>
+</tr>
+<tr>
+<td><code>arm_smmu_write_ctx_desc()</code></td>
+<td>向 peer SMMU 的 CMDQ 发送 CFGI_CD</td>
+</tr>
+<tr>
+<td><code>arm_smmu_evtq_thread()</code></td>
+<td>处理从 Die TCU 写入的 EVTQ 条目</td>
+</tr>
+<tr>
+<td><code>arm_smmu_priq_thread()</code></td>
+<td>处理从 Die TCU 写入的 PRIQ 条目</td>
+</tr>
+<tr>
+<td>IORT/OF 解析</td>
+<td>增加 from Die SMMU 节点的解析</td>
+</tr>
+<tr>
+<td><code>arm_smmu_device_reset()</code></td>
+<td>增加从 Die TCU 复位逻辑</td>
+</tr>
+<tr>
+<td>Device hotplug</td>
+<td>支持从 Die 设备热插拔</td>
+</tr>
+</tbody>
+</table>
+<h3 id="38">3.8 问题十五：错误恢复与容错<a class="headerlink" href="#38" title="Permanent link">&para;</a></h3>
+<p><strong>问题</strong>：D2D 链路故障时，从 Die SMMU 的行为和恢复策略。</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph FaultScenarios["故障场景"]
+        F1["D2D 链路断开&lt;br/&gt;(从 Die TCU 失联)"]
+        F2["D2D 链路降级&lt;br/&gt;(带宽/延迟恶化)"]
+        F3["从 Die TCU 复位&lt;br/](内部故障)"]
+        F4["主 Die GIC 丢失中断&lt;br/&gt;(从 Die 中断丢失)"]
+    end
+
+    subgraph Recovery["恢复策略"]
+        R1["F1: 从 Die 设备 DMA 暂停&lt;br/&gt;STL-like 保护模式&lt;br/&gt;等待 D2D 恢复"]
+        R2["F2: 降级运行&lt;br/&gt;禁用 ATS, 增大本地缓存&lt;br/&gt;减少跨 Die 事务"]
+        R3["F3: 完全重新初始化&lt;br/&gt;重新 probe 从 Die SMMU&lt;br/&gt;重新附加所有设备"]
+        R4["F4: 轮询模式&lt;br/&gt;禁用 MSI, 改用轮询&lt;br/&gt;EVTQ/PRIQ"]
+    end
+
+    F1 --&gt; R1
+    F2 --&gt; R2
+    F3 --&gt; R3
+    F4 --&gt; R4</code></pre>
+<p><strong>详细容错方案</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>故障</th>
+<th>检测方式</th>
+<th>恢复动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D2D 完全断开</td>
+<td>GERROR.SFM_ERR / CMDQ 超时</td>
+<td>将从 Die 设备置于 bypass/abort 模式</td>
+</tr>
+<tr>
+<td>D2D 间歇性故障</td>
+<td>CMDQ cons 不推进 / GERROR</td>
+<td>重试 + 增大超时</td>
+</tr>
+<tr>
+<td>从 Die TCU 死锁</td>
+<td>CMD_SYNC 超时</td>
+<td>GERROR 处理 + TCU 复位</td>
+</tr>
+<tr>
+<td>队列溢出</td>
+<td>EVTQ/PRIQ overflow 标志</td>
+<td>增大队列 / 降低设备负载</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4">4. 端到端数据通路分析<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-dma">4.1 正常 DMA 写通路<a class="headerlink" href="#41-dma" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as 从 Die 设备
+    participant TBU_S as 从 Die TBU
+    participant TCU_S as 从 Die TCU
+    participant D2D as D2D Bridge
+    participant CMN as 主 Die CMN
+    participant DRAM as 主存
+    participant CPU as 主 Die CPU
+
+    DEV-&gt;&gt;TBU_S: DMA Write (VA)
+    Note over TBU_S: MicroTLB Miss
+    TBU_S-&gt;&gt;TCU_S: DTI 翻译请求 (StreamID, VA)
+    Note over TCU_S: 配置缓存命中 (STE/CD)
+
+    alt Walk Cache 命中
+        Note over TCU_S: Walk Cache 命中, 直接得到 PA
+    else Walk Cache 未命中
+        TCU_S-&gt;&gt;D2D: 页表遍历读请求
+        D2D-&gt;&gt;CMN: Coherent 读请求
+        CMN-&gt;&gt;DRAM: 读页表
+        DRAM--&gt;&gt;CMN--&gt;&gt;D2D--&gt;&gt;TCU_S: 页表条目
+        Note over TCU_S: 缓存到 Walk Cache
+    end
+
+    TCU_S--&gt;&gt;TBU_S: 翻译结果 (PA + 属性)
+    Note over TBU_S: 缓存到 MicroTLB
+    TBU_S-&gt;&gt;D2D: DMA Write (PA, data)
+    D2D-&gt;&gt;CMN: Coherent Write
+    CMN-&gt;&gt;DRAM: 写入数据
+
+    Note over CPU: CPU 直接从 DRAM 读取&lt;br/&gt;(CMN 保证一致性)</code></pre>
+<h3 id="42">4.2 翻译故障处理通路<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant DEV as 从 Die 设备
+    participant TBU_S as 从 Die TBU
+    participant TCU_S as 从 Die TCU
+    participant D2D as D2D Bridge
+    participant DRAM as 主存
+    participant CPU as 主 Die CPU
+    participant GIC as GIC
+
+    DEV-&gt;&gt;TBU_S: DMA (VA)
+    TBU_S-&gt;&gt;TCU_S: 翻译请求
+    Note over TCU_S: 翻译失败!
+    TCU_S-&gt;&gt;TBU_S: Stall 事务
+
+    par 写入 EVTQ (经 D2D)
+        TCU_S-&gt;&gt;D2D: DMA Write EVTQ 条目
+        D2D-&gt;&gt;DRAM: 写入主存 EVTQ
+    and 发送 MSI (线连)
+        TCU_S-&gt;&gt;GIC: EVTQ MSI (专用线连)
+    end
+
+    GIC-&gt;&gt;CPU: 中断
+    CPU-&gt;&gt;DRAM: 读 EVTQ
+    Note over CPU: 处理缺页&lt;br/&gt;(填充页表)
+
+    CPU-&gt;&gt;DRAM: 写 CMD_RESUME 到 CMDQ
+    Note over DRAM: 需要等待 TCU 从 CMDQ 读取
+
+    TCU_S-&gt;&gt;D2D: DMA Read CMDQ
+    D2D-&gt;&gt;DRAM: 读 CMDQ
+    DRAM--&gt;&gt;D2D--&gt;&gt;TCU_S: CMD_RESUME (Retry)
+    TCU_S-&gt;&gt;TBU_S: 恢复事务
+    TBU_S-&gt;&gt;TCU_S: 重新翻译
+    Note over TCU_S: 翻译成功</code></pre>
+<h3 id="43">4.3 延迟分析<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TB
+    subgraph LatencyComp["DMA 延迟组成"]
+        direction TB
+        L1["L1: 设备→TBU (片内)"]
+        L2["L2: TBU→TCU (片内 DTI)"]
+        L3["L3: TCU 配置/Walk Cache"]
+        L4["L4: 页表遍历 (跨 D2D 到主存)"]
+        L5["L5: TCU→TBU (翻译结果回传)"]
+        L6["L6: TBU→D2D→CMN→主存 (DMA 数据)"]
+
+        L1 &amp; L2 &amp; L5 ~ L1ns["~1ns (片内)"]
+        L4 ~ L4ns["~100ns (跨 Die)"]
+        L6 ~ L6ns["~100ns (跨 Die)"]
+    end</code></pre>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>典型延迟</th>
+<th>优化后</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备 → TBU（片内）</td>
+<td>~1ns</td>
+<td>—</td>
+<td>低</td>
+</tr>
+<tr>
+<td>TBU → TCU（片内 DTI）</td>
+<td>~2-5ns</td>
+<td>—</td>
+<td>低</td>
+</tr>
+<tr>
+<td>TCU 配置/Walk Cache</td>
+<td>~5-10ns</td>
+<td>增大缓存</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>页表遍历（跨 D2D）</strong></td>
+<td><strong>~50-200ns</strong></td>
+<td><strong>Walk Cache + Stash</strong></td>
+<td><strong>高</strong></td>
+</tr>
+<tr>
+<td>翻译结果回传（片内）</td>
+<td>~2-5ns</td>
+<td>—</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>DMA 数据（跨 D2D）</strong></td>
+<td><strong>~50-200ns</strong></td>
+<td><strong>不可避免的瓶颈</strong></td>
+<td><strong>高</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>结论</strong>：性能瓶颈在跨 Die 的页表遍历和 DMA 数据传输。优化重点是最大化从 Die 本地缓存命中率。</p>
+<hr />
+<h2 id="5">5. 总结<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 问题与方案汇总<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>mindmap
+  root((主从异构 Die SMMU))
+    从 Die 硬件架构
+      TBU-TCU 互连拓扑
+        推荐: 从 Die 放置独立 TCU
+      数据通路到主存
+        D2D Bridge 路由 PA
+      缓存一致性
+        D2D Bridge 参与 snoop
+      DVM 跨 Die 传播
+        QTW/DVM 接口 + BTM
+      中断路由
+        TCU 线连 + MSI 转发
+      地址空间映射
+        MMIO 经 D2D + 队列在主存
+      StreamID 统一管理
+        独立 arm_smmu_device
+    软件架构
+      发现与初始化顺序
+        D2D 先于 SMMU probe
+      队列 DMA 一致性
+        dmam_alloc_coherent
+      跨 Die TLB 无效化
+        DVM + 双 CMDQ 兜底
+      SVA 支持
+        CD 同步 + 跨 Die TLBI/ATC_INV
+      故障处理延迟
+        增大 STALL_MAX + PRI 优先
+      性能优化
+        StashTranslation + 大页 + Walk Cache
+      驱动改造
+        peer_smmu + cross_die 操作
+      错误恢复
+        bypass/abort fallback + 轮询模式</code></pre>
+<h3 id="52">5.2 设计原则<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>最小化跨 Die 事务</strong></td>
+<td>每次跨 Die 都有高延迟代价，尽量在从 Die 本地完成</td>
+</tr>
+<tr>
+<td><strong>本地缓存最大化</strong></td>
+<td>增大从 Die TBU/TCU 的缓存容量，减少对主存和主 Die 的访问</td>
+</tr>
+<tr>
+<td><strong>一致性优先</strong></td>
+<td>SMMUv3 的硬件缓存一致性是 SVA 等特性的前提，不可妥协</td>
+</tr>
+<tr>
+<td><strong>优雅降级</strong></td>
+<td>D2D 故障时从 Die 设备应安全降级而非导致系统崩溃</td>
+</tr>
+<tr>
+<td><strong>驱动透明化</strong></td>
+<td>对设备驱动和 IOMMU 上层尽量透明，跨 Die 复杂性封装在 SMMU 驱动层</td>
+</tr>
+<tr>
+<td><strong>异步处理</strong></td>
+<td>利用 SMMUv3 的队列化架构，软件与硬件异步交互，容忍高延迟</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
