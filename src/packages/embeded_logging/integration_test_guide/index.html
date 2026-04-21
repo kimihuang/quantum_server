@@ -1,0 +1,2294 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../design/">
+      
+      
+        <link rel="next" href="../bug/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>elog_integration_test_guide - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#elog" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              elog_integration_test_guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../spec_research/mpam/MPAM_research/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  spec_research
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_feature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_integration_test_guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_integration_test_guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 构建准备
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 架构概览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 基础功能测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 基础功能测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-elogd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 启动/停止 elogd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-elogcat-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 elogcat dump 模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-elogcat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 elogcat 实时跟踪模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 多 buffer 隔离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 管理命令测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 管理命令测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 清空 buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 查看 buffer 统计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 设置 buffer 大小
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 编译配置测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 编译配置测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 小内存配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 裁剪功能配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 调试输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 单元测试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 集成测试 (自动化)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 压力测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 压力测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 高频写入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-buffer-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 buffer 溢出 (小 buffer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 并发生产者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 多 reader 同时消费
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 守护进程稳定性测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 守护进程稳定性测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 优雅关闭
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 客户端断开/重连
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-socket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 残留 socket 清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 刷盘验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 二进制/事件日志测试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 回归测试检查清单
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-socket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Socket 路径速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_bug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../google_esh/examples/emulation/armv8A-64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_esh_armv8A-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    spec_research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    spec_research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../spec_research/mpam/MPAM_research/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 构建准备
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 架构概览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 基础功能测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 基础功能测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-elogd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 启动/停止 elogd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-elogcat-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 elogcat dump 模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-elogcat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 elogcat 实时跟踪模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 多 buffer 隔离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 管理命令测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 管理命令测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 清空 buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 查看 buffer 统计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 设置 buffer 大小
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 编译配置测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 编译配置测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 小内存配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 裁剪功能配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 调试输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 单元测试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 集成测试 (自动化)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 压力测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 压力测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 高频写入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-buffer-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 buffer 溢出 (小 buffer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 并发生产者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-reader" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 多 reader 同时消费
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 守护进程稳定性测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 守护进程稳定性测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 优雅关闭
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 客户端断开/重连
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-socket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 残留 socket 清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 刷盘验证
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 二进制/事件日志测试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 回归测试检查清单
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-socket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Socket 路径速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="elog">elog 集成测试操作文档<a class="headerlink" href="#elog" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 构建准备<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/lion/workdir/sourcecode/quantum_main/src/packages/embeded_logging
+mkdir<span class="w"> </span>-p<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Debug
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</code></pre></div>
+<p>构建产物：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build/libelog.so</code></td>
+<td>日志库</td>
+</tr>
+<tr>
+<td><code>build/elogd</code></td>
+<td>守护进程</td>
+</tr>
+<tr>
+<td><code>build/elogcat</code></td>
+<td>日志查看 CLI</td>
+</tr>
+<tr>
+<td><code>build/elog_app</code></td>
+<td>示例应用</td>
+</tr>
+<tr>
+<td><code>build/elog_test</code></td>
+<td>单元测试</td>
+</tr>
+<tr>
+<td><code>build/elog_integration_test</code></td>
+<td>集成测试</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2">2. 架构概览<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>  elog_app (日志生产者)
+       |
+       | SOCK_DGRAM (/var/run/elogdw)
+       v
+     elogd (守护进程, 4 个线程)
+       |-- listener:  接收日志 → 写入 ring buffer
+       |-- cmd:       管理命令 (clear/stats/exit)
+       |-- flusher:   500ms 周期刷盘 → /var/log/elog_*.log
+       |-- reader:    SOCK_SEQPACKET 推送到 elogcat
+       v
+  elogcat (日志消费者)
+</code></pre></div>
+<p>六个独立 ring buffer：<code>main</code>(256KB) <code>radio</code>(64KB) <code>events</code>(256KB) <code>system</code>(64KB) <code>crash</code>(1MB) <code>kernel</code>(64KB)</p>
+<hr />
+<h2 id="3">3. 基础功能测试<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-elogd">3.1 启动/停止 elogd<a class="headerlink" href="#31-elogd" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 默认路径启动 (需要 root)</span>
+sudo<span class="w"> </span>./build/elogd
+
+<span class="c1"># 自定义路径启动 (不需要 root)</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/elog_test
+./build/elogd<span class="w"> </span>-w/tmp/elog_test/w.sock<span class="w"> </span>-c/tmp/elog_test/c.sock<span class="w"> </span>-r/tmp/elog_test/r.sock
+
+<span class="c1"># 优雅停止 (SIGTERM/SIGINT)</span>
+<span class="nb">kill</span><span class="w"> </span>-TERM<span class="w"> </span>&lt;pid&gt;
+</code></pre></div>
+<p>验证：进程启动后创建 3 个 socket 文件，监听端口正常。</p>
+<h3 id="32-elogcat-dump">3.2 elogcat dump 模式<a class="headerlink" href="#32-elogcat-dump" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 启动 elogd</span>
+sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># 在另一个终端启动示例应用写入日志</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+
+<span class="c1"># dump 全部日志</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d
+
+<span class="c1"># 只看最近 10 条</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-t<span class="w"> </span><span class="m">10</span>
+
+<span class="c1"># 清理</span>
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>%1
+</code></pre></div>
+<p>验证项：
+- 日志格式正确：<code>时间戳 级别 PID TID TAG: 消息</code>
+- 6 种级别颜色区分 (V/D/I/W/E/F)
+- tag 过滤 (<code>-s app</code>) 只显示指定 tag
+- 多 buffer 订阅 (<code>-b main -b crash</code>) 只显示指定 buffer</p>
+<h3 id="33-elogcat">3.3 elogcat 实时跟踪模式<a class="headerlink" href="#33-elogcat" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># 终端 1: 实时跟踪</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-b<span class="w"> </span>main
+
+<span class="c1"># 终端 2: 写日志</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span>
+
+<span class="c1"># 验证 Ctrl+C 能正常终止</span>
+<span class="c1"># (已修复 bug: sigaction 替代 signal, 不设 SA_RESTART)</span>
+</code></pre></div>
+<p>验证项：
+- 日志实时输出
+- <code>Ctrl+C</code> 能立即终止 elogcat
+- <code>--pid &lt;PID&gt;</code> 只显示指定进程的日志</p>
+<h3 id="34-buffer">3.4 多 buffer 隔离<a class="headerlink" href="#34-buffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+
+<span class="c1"># 只看 main buffer</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>main
+
+<span class="c1"># 只看 events buffer</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>events
+
+<span class="c1"># 只看 kernel buffer</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>kernel
+</code></pre></div>
+<p>验证：每个 buffer 只包含对应路由的日志，无交叉。</p>
+<hr />
+<h2 id="4">4. 管理命令测试<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-buffer">4.1 清空 buffer<a class="headerlink" href="#41-buffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 先写入日志</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+
+<span class="c1"># 确认有日志</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+
+<span class="c1"># 清空全部</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-c
+
+<span class="c1"># 确认已清空</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d
+<span class="c1"># 应无输出</span>
+</code></pre></div>
+<h3 id="42-buffer">4.2 查看 buffer 统计<a class="headerlink" href="#42-buffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-g
+</code></pre></div>
+<p>预期输出包含每个 buffer 的 <code>capacity=</code> <code>count=</code> 等字段。</p>
+<h3 id="43-buffer">4.3 设置 buffer 大小<a class="headerlink" href="#43-buffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-G<span class="w"> </span><span class="m">131072</span>
+<span class="c1"># 返回确认信息</span>
+</code></pre></div>
+<hr />
+<h2 id="5">5. 编译配置测试<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<p>通过 cmake 参数覆盖默认配置，验证不同配置组合下的功能：</p>
+<h3 id="51">5.1 小内存配置<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_BUFFER_SIZE=8192 -DELOG_MAX_MSG_LEN=128 -DELOG_MAX_TAG_LEN=16&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</code></pre></div>
+<p>测试项：
+- 短 tag 和短消息正常工作
+- buffer 溢出时 overwrite 行为正确 (旧日志被覆盖)
+- 日志截断处理正确</p>
+<h3 id="52">5.2 裁剪功能配置<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 关闭事件日志</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_EVENT_ENABLE=0&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+
+<span class="c1"># 关闭统计</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_STATS_ENABLE=0&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+
+<span class="c1"># 关闭裁剪</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_PRUNE_ENABLE=0&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+
+<span class="c1"># 全部关闭 (最小化构建)</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_EVENT_ENABLE=0 -DELOG_STATS_ENABLE=0 -DELOG_PRUNE_ENABLE=0 -DELOG_COLOR_ENABLE=0 -DELOG_TIMESTAMP_ENABLE=0&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</code></pre></div>
+<h3 id="53">5.3 调试输出<a class="headerlink" href="#53" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 开启全部调试输出</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_DBG_ALL&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+
+<span class="c1"># 开启指定模块</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_DBG_RING -DELOG_DBG_LISTENER -DELOG_DBG_READER&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+</code></pre></div>
+<p>启动 elogd 后观察 stdout 调试输出：
+- <code>[RING]</code> ring buffer 操作
+- <code>[LISTEN]</code> 日志接收/路由
+- <code>[READER]</code> reader 客户端管理
+- <code>[FLUSH]</code> 刷盘操作
+- <code>[CLIENT]</code> 客户端连接/发送
+- <code>[EVENT]</code> 事件编解码
+- <code>[PRUNE]</code> 裁剪决策</p>
+<hr />
+<h2 id="6">6. 单元测试<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>build
+
+<span class="c1"># 通过 CTest 运行</span>
+ctest<span class="w"> </span>--output-on-failure
+
+<span class="c1"># 或直接运行</span>
+./elog_test
+</code></pre></div>
+<p>9 个测试套件：elog(buf/format/stats/prune/event/port/reader/elogd)。</p>
+<hr />
+<h2 id="7">7. 集成测试 (自动化)<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>build
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./elog_integration_test
+</code></pre></div>
+<p>自动执行 15 个端到端测试 (fork elogd + 写日志 + 读验证)：</p>
+<table>
+<thead>
+<tr>
+<th>测试</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_e2e_basic</code></td>
+<td>基本写入/读取，验证消息内容</td>
+</tr>
+<tr>
+<td><code>test_e2e_level_filter</code></td>
+<td>6 种日志级别正确传递</td>
+</tr>
+<tr>
+<td><code>test_e2e_header_fields</code></td>
+<td>header 字段 (level/log_id/tag) 正确</td>
+</tr>
+<tr>
+<td><code>test_e2e_multi_entries</code></td>
+<td>连续 10 条消息顺序和完整性</td>
+</tr>
+<tr>
+<td><code>test_e2e_cmd_stats</code></td>
+<td>cmd socket stats 命令响应</td>
+</tr>
+<tr>
+<td><code>test_e2e_multi_buffer</code></td>
+<td>main/radio/system 三 buffer 隔离</td>
+</tr>
+<tr>
+<td><code>test_e2e_log_mask</code></td>
+<td>reader 按 buffer bitmask 过滤</td>
+</tr>
+<tr>
+<td><code>test_e2e_events_kernel</code></td>
+<td>events + kernel buffer 端到端</td>
+</tr>
+<tr>
+<td><code>test_e2e_buffer_stats</code></td>
+<td>stats 命令返回全部 6 个 buffer</td>
+</tr>
+<tr>
+<td><code>test_concurrent_writers</code></td>
+<td>4 进程 x 50 条并发写</td>
+</tr>
+<tr>
+<td><code>test_concurrent_readers</code></td>
+<td>2 个 reader 同时订阅不同 buffer</td>
+</tr>
+<tr>
+<td><code>test_concurrent_write_read</code></td>
+<td>写+读并发无崩溃无丢失</td>
+</tr>
+<tr>
+<td><code>test_concurrent_write_cmd</code></td>
+<td>写+stats 命令并发无崩溃</td>
+</tr>
+<tr>
+<td><code>test_concurrent_multi_buffer</code></td>
+<td>多进程写不同 buffer 隔离</td>
+</tr>
+<tr>
+<td><code>test_e2e_binary_event</code></td>
+<td>二进制事件含嵌入 NUL 完整保留</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8">8. 压力测试<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="81">8.1 高频写入<a class="headerlink" href="#81" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">10000</span>
+
+<span class="c1"># 检查是否丢失/乱序</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-t<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;round&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-5
+</code></pre></div>
+<h3 id="82-buffer-buffer">8.2 buffer 溢出 (小 buffer)<a class="headerlink" href="#82-buffer-buffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-DELOG_BUFFER_SIZE=2048 -DELOG_DBG_RING&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span>
+
+sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">5000</span>
+
+<span class="c1"># 观察调试输出中的 overwrite 日志</span>
+<span class="c1"># 确认 buffer 满后旧条目被覆盖, 无崩溃</span>
+</code></pre></div>
+<h3 id="83">8.3 并发生产者<a class="headerlink" href="#83" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># 4 个进程同时写日志</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="k">done</span>
+<span class="nb">wait</span>
+
+<span class="c1"># 检查总数</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+<span class="c1"># 应 &gt;= 4*500 = 2000 (受 buffer 容量限制, 可能更少)</span>
+</code></pre></div>
+<h3 id="84-reader">8.4 多 reader 同时消费<a class="headerlink" href="#84-reader" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># 3 个 elogcat 同时订阅</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>main<span class="w"> </span>&gt;<span class="w"> </span>/tmp/out1.txt<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>main<span class="w"> </span>&gt;<span class="w"> </span>/tmp/out2.txt<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>main<span class="w"> </span>&gt;<span class="w"> </span>/tmp/out3.txt<span class="w"> </span><span class="p">&amp;</span>
+<span class="nb">wait</span>
+
+<span class="c1"># 比较输出一致性</span>
+diff<span class="w"> </span>/tmp/out1.txt<span class="w"> </span>/tmp/out2.txt
+diff<span class="w"> </span>/tmp/out2.txt<span class="w"> </span>/tmp/out3.txt
+</code></pre></div>
+<hr />
+<h2 id="9">9. 守护进程稳定性测试<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<h3 id="91">9.1 优雅关闭<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">PID</span><span class="o">=</span><span class="nv">$!</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-TERM<span class="w"> </span><span class="nv">$PID</span>
+<span class="nb">wait</span><span class="w"> </span><span class="nv">$PID</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;exit code: </span><span class="nv">$?</span><span class="s2">&quot;</span>
+<span class="c1"># 应为 0</span>
+</code></pre></div>
+<h3 id="92">9.2 客户端断开/重连<a class="headerlink" href="#92" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># elogcat 断开后再重连</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-t<span class="w"> </span><span class="m">5</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d
+
+<span class="c1"># elog_app 反复启停</span>
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">10</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span>
+<span class="k">done</span>
+
+<span class="c1"># 确认 elogd 仍在运行</span>
+ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>elogd
+</code></pre></div>
+<h3 id="93-socket">9.3 残留 socket 清理<a class="headerlink" href="#93-socket" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># elogd 异常退出后残留 socket</span>
+sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-9<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>elogd<span class="k">)</span>
+
+<span class="c1"># 再次启动应正常 (覆盖残留 socket)</span>
+sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-TERM<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>elogd<span class="k">)</span>
+</code></pre></div>
+<hr />
+<h2 id="10">10. 刷盘验证<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">5</span>
+
+<span class="c1"># 等 flusher 周期 (500ms)</span>
+sleep<span class="w"> </span><span class="m">1</span>
+
+<span class="c1"># 检查日志文件</span>
+ls<span class="w"> </span>-la<span class="w"> </span>/var/log/elog_*.log
+
+<span class="c1"># 验证文件内容</span>
+cat<span class="w"> </span>/var/log/elog_main.log
+cat<span class="w"> </span>/var/log/elog_events.log
+cat<span class="w"> </span>/var/log/elog_kernel.log
+
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-TERM<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>elogd<span class="k">)</span>
+</code></pre></div>
+<hr />
+<h2 id="11">11. 二进制/事件日志测试<a class="headerlink" href="#11" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>./build/elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+
+<span class="c1"># events buffer 文本输出</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>events
+
+<span class="c1"># 二进制原始输出</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>./build<span class="w"> </span>./build/elogcat<span class="w"> </span>-d<span class="w"> </span>-b<span class="w"> </span>events<span class="w"> </span>-B<span class="w"> </span><span class="p">|</span><span class="w"> </span>xxd<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-20
+
+<span class="c1"># 验证 TLV 编解码: event_id=1001, 包含 int32+string+float</span>
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-TERM<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>elogd<span class="k">)</span>
+</code></pre></div>
+<hr />
+<h2 id="12">12. 回归测试检查清单<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<p>每次代码变更后执行：</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/lion/workdir/sourcecode/quantum_main/src/packages/embeded_logging/build
+
+<span class="c1"># 1. 编译无警告</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Debug<span class="w"> </span>-DCMAKE_C_FLAGS<span class="o">=</span><span class="s2">&quot;-Wall -Wextra -Werror -DELOG_DBG_ALL&quot;</span>
+make<span class="w"> </span>-j<span class="k">$(</span>nproc<span class="k">)</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;warning\|error&quot;</span>
+
+<span class="c1"># 2. 单元测试全通过</span>
+ctest<span class="w"> </span>--output-on-failure
+
+<span class="c1"># 3. 集成测试全通过</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./elog_integration_test
+
+<span class="c1"># 4. 手动 smoke test</span>
+sudo<span class="w"> </span>./elogd<span class="w"> </span><span class="p">&amp;</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./elog_app<span class="w"> </span>-n<span class="w"> </span><span class="m">3</span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./elogcat<span class="w"> </span>-d
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./elogcat<span class="w"> </span>-c
+sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-TERM<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>elogd<span class="k">)</span>
+</code></pre></div>
+<hr />
+<h2 id="13-socket">13. Socket 路径速查<a class="headerlink" href="#13-socket" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>默认路径</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日志写入</td>
+<td><code>/var/run/elogdw</code></td>
+<td><code>SOCK_DGRAM</code></td>
+</tr>
+<tr>
+<td>管理命令</td>
+<td><code>/var/run/elogd</code></td>
+<td><code>SOCK_STREAM</code></td>
+</tr>
+<tr>
+<td>日志推送</td>
+<td><code>/var/run/elogdr</code></td>
+<td><code>SOCK_SEQPACKET</code></td>
+</tr>
+<tr>
+<td>刷盘目录</td>
+<td><code>/var/log/elog_*.log</code></td>
+<td>文件</td>
+</tr>
+</tbody>
+</table>
+<p>自定义路径方式：
+- elogd 命令行: <code>elogd -w &lt;path&gt; -c &lt;path&gt; -r &lt;path&gt;</code>
+- 客户端全局变量: <code>g_daemon_write_sock</code>, <code>g_daemon_cmd_sock</code>, <code>g_daemon_reader_sock</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

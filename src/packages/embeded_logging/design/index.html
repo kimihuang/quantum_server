@@ -1,0 +1,4241 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../feature/">
+      
+      
+        <link rel="next" href="../integration_test_guide/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>elog_design - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#elog" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              elog_design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../spec_research/mpam/MPAM_research/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  spec_research
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../feature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_feature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_design
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 设计目标与约束
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 设计目标与约束">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 设计目标
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-android-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 与 Android logging 的关键差异
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 借鉴的设计模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 分层架构总览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 目录结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 核心数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 核心数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 日志级别
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 日志 ID（缓冲区类型）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-logmessagepacked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 LogMessage（packed 结构体）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Event 日志二进制格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 核心层设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 核心层设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-dispatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Dispatcher（函数指针分发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-logfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 LogFilter（多级过滤）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-logformatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 LogFormatter（格式化器）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 缓冲层设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 缓冲层设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-logbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 LogBuffer 抽象接口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-ringlogbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 RingLogBuffer（默认实现）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-shmlogbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 ShmLogBuffer（多进程共享内存）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 传输层设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 传输层设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-logtransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 LogTransport 抽象接口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-transportregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 TransportRegistry（多路分发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 具体传输实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3 具体传输实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uarttransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UartTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filetransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FileTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nettransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NetTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rtosqueuetransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RtosQueueTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 过滤与裁剪
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 过滤与裁剪">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-logprune" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 LogPrune（优先级裁剪）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-logstatistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 LogStatistics（轻量统计）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 持久化设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 持久化设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 三级持久化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-android-pmsgwrite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 借鉴 Android PmsgWrite
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-pstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 pstore 写入流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-elogd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. elogd 守护进程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. elogd 守护进程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 启动序列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-logd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 三端口架构（借鉴 logd）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 命令协议
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 日志写入流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. 日志写入流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 ISR 安全写入
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 日志读取流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 日志读取流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-android-logreaderlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 读者管理（借鉴 Android LogReaderList）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-elogd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. elogd 初始化流程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 部署方案
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. 部署方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-a-mmu-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 方案 A: 有 MMU（嵌入式 Linux）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-b-mmurtos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 方案 B: 无 MMU（RTOS / 裸机）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 方案 C: 最小配置（极小资源）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. 编译期配置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 运行时 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16. 运行时 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#161" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.1 初始化与配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#162" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2 日志输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#163" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3 日志读取
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#164-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4 Event 日志
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-android-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. 与 Android logging 的设计对照
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17. 与 Android logging 的设计对照">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#171" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 架构对照表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#172" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 关键设计差异分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录: 图表索引
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration_test_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_integration_test_guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_bug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../google_esh/examples/emulation/armv8A-64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_esh_armv8A-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    spec_research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    spec_research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../spec_research/mpam/MPAM_research/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 设计目标与约束
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 设计目标与约束">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 设计目标
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-android-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 与 Android logging 的关键差异
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 借鉴的设计模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 分层架构总览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 目录结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 核心数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 核心数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 日志级别
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 日志 ID（缓冲区类型）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-logmessagepacked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 LogMessage（packed 结构体）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Event 日志二进制格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 核心层设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 核心层设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-dispatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Dispatcher（函数指针分发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-logfilter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 LogFilter（多级过滤）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-logformatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 LogFormatter（格式化器）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 缓冲层设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 缓冲层设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-logbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 LogBuffer 抽象接口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-ringlogbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 RingLogBuffer（默认实现）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-shmlogbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 ShmLogBuffer（多进程共享内存）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 传输层设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 传输层设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-logtransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 LogTransport 抽象接口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-transportregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 TransportRegistry（多路分发）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 具体传输实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3 具体传输实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#uarttransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UartTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filetransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FileTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nettransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NetTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rtosqueuetransport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RtosQueueTransport
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 过滤与裁剪
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 过滤与裁剪">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-logprune" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 LogPrune（优先级裁剪）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-logstatistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 LogStatistics（轻量统计）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 持久化设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 持久化设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 三级持久化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-android-pmsgwrite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 借鉴 Android PmsgWrite
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-pstore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 pstore 写入流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-elogd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. elogd 守护进程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. elogd 守护进程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 启动序列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-logd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 三端口架构（借鉴 logd）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 命令协议
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 日志写入流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. 日志写入流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 ISR 安全写入
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 日志读取流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 日志读取流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#121-android-logreaderlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 读者管理（借鉴 Android LogReaderList）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-elogd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. elogd 初始化流程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. 部署方案
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. 部署方案">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-a-mmu-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 方案 A: 有 MMU（嵌入式 Linux）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142-b-mmurtos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 方案 B: 无 MMU（RTOS / 裸机）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#143-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 方案 C: 最小配置（极小资源）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. 编译期配置
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 运行时 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16. 运行时 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#161" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.1 初始化与配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#162" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2 日志输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#163" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3 日志读取
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#164-event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4 Event 日志
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-android-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17. 与 Android logging 的设计对照
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17. 与 Android logging 的设计对照">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#171" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 架构对照表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#172" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 关键设计差异分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录: 图表索引
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="elog">嵌入式日志框架 (elog) — 设计文档<a class="headerlink" href="#elog" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>借鉴 Android system/logging (logd + liblog) 的架构设计，适配资源受限的嵌入式环境。</p>
+</blockquote>
+<hr />
+<h2 id="_1">目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#1-设计目标与约束">1. 设计目标与约束</a></li>
+<li><a href="#2-分层架构总览">2. 分层架构总览</a></li>
+<li><a href="#3-目录结构">3. 目录结构</a></li>
+<li><a href="#4-核心数据结构">4. 核心数据结构</a></li>
+<li><a href="#5-核心层设计">5. 核心层设计</a></li>
+<li><a href="#6-缓冲层设计">6. 缓冲层设计</a></li>
+<li><a href="#7-传输层设计">7. 传输层设计</a></li>
+<li><a href="#8-过滤与裁剪">8. 过滤与裁剪</a></li>
+<li><a href="#9-持久化设计">9. 持久化设计</a></li>
+<li><a href="#10-elogd-守护进程">10. elogd 守护进程</a></li>
+<li><a href="#11-日志写入流程">11. 日志写入流程</a></li>
+<li><a href="#12-日志读取流程">12. 日志读取流程</a></li>
+<li><a href="#13-elogd-初始化流程">13. elogd 初始化流程</a></li>
+<li><a href="#14-部署方案">14. 部署方案</a></li>
+<li><a href="#15-编译期配置">15. 编译期配置</a></li>
+<li><a href="#16-运行时-api">16. 运行时 API</a></li>
+<li><a href="#17-与-android-logging-的设计对照">17. 与 Android logging 的设计对照</a></li>
+</ul>
+<hr />
+<h2 id="1">1. 设计目标与约束<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 设计目标<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>低资源占用</strong></td>
+<td>RAM &lt; 16KB（最小配置），ROM &lt; 8KB</td>
+</tr>
+<tr>
+<td><strong>零拷贝/低拷贝</strong></td>
+<td>热路径尽量避免内存拷贝</td>
+</tr>
+<tr>
+<td><strong>实时安全</strong></td>
+<td>ISR 中可调用非阻塞日志接口</td>
+</tr>
+<tr>
+<td><strong>多输出目标</strong></td>
+<td>同时输出到 UART/文件/网络/RTOS 队列</td>
+</tr>
+<tr>
+<td><strong>多级过滤</strong></td>
+<td>全局级别 + 模块级别 + 标签级别</td>
+</tr>
+<tr>
+<td><strong>优先级裁剪</strong></td>
+<td>高优先级日志受保护，低优先级日志优先丢弃</td>
+</tr>
+<tr>
+<td><strong>掉电保持</strong></td>
+<td>关键日志可持久化到 Flash/NVRAM</td>
+</tr>
+<tr>
+<td><strong>可扩展</strong></td>
+<td>传输层、缓冲区、格式化器均可插拔替换</td>
+</tr>
+<tr>
+<td><strong>两种部署</strong></td>
+<td>同时支持 Linux（有 MMU）和 RTOS/裸机（无 MMU）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-android-logging">1.2 与 Android logging 的关键差异<a class="headerlink" href="#12-android-logging" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Android logging</th>
+<th>嵌入式 elog</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内存模型</td>
+<td>堆分配（std::list, 堆对象）</td>
+<td>栈/静态分配优先，Ring Buffer</td>
+</tr>
+<tr>
+<td>线程模型</td>
+<td>多线程 + pthread + 条件变量</td>
+<td>可选 RTOS 任务 / 裸机轮询</td>
+</tr>
+<tr>
+<td>IPC</td>
+<td>Unix Domain Socket</td>
+<td>UDS / 共享内存 / RTOS 队列 / UART</td>
+</tr>
+<tr>
+<td>压缩</td>
+<td>Zstd/Zlib（运行时压缩 Chunk）</td>
+<td>可选 miniz/lz4，默认关闭</td>
+</tr>
+<tr>
+<td>Event 日志</td>
+<td>TLV 二进制格式</td>
+<td>保留 TLV 格式，简化 tag 映射</td>
+</tr>
+<tr>
+<td>统计</td>
+<td>8 维度哈希表</td>
+<td>轻量计数器数组</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13">1.3 借鉴的设计模式<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Android 模式</th>
+<th>嵌入式适配</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LogBuffer 抽象接口 + 多实现</td>
+<td>LogBuffer 抽象 → RingLogBuffer / ShmLogBuffer</td>
+</tr>
+<tr>
+<td>write_to_log() 双路分发</td>
+<td>TransportRegistry 多路分发</td>
+</tr>
+<tr>
+<td>PruneList 高/低优先级裁剪</td>
+<td>LogPrune 同样的两级策略</td>
+</tr>
+<tr>
+<td>atomic_int CAS 延迟初始化</td>
+<td>保留 CAS 模式，适配裸机（关中断）</td>
+</tr>
+<tr>
+<td>LogWriter 抽象 + 多种输出</td>
+<td>LogWriter 抽象 → UartWriter/FileWriter/NetWriter</td>
+</tr>
+<tr>
+<td>android_log_header_t packed 头</td>
+<td>LogMessage packed 结构体</td>
+</tr>
+<tr>
+<td>LogStatistics 多维统计</td>
+<td>LogStatistics 轻量计数器</td>
+</tr>
+<tr>
+<td>FrameworkCommand 宏注册</td>
+<td>简化为函数指针数组</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2">2. 分层架构总览<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────┐
+│                    应用层 Application Layer                   │
+│   elog_debug/elog_info/elog_warn/elog_error/elog_assert     │
+│   ELOG_D / ELOG_I / ELOG_W / ELOG_E / ELOG_TAG_*          │
+│   elog_event_begin / elog_event_end                         │
+├─────────────────────────────────────────────────────────────┤
+│                    核心层 Core Layer                         │
+│   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐       │
+│   │ Dispatcher   │ │ LogFilter    │ │ Formatter    │       │
+│   │ (函数指针分发)│ │ (级别+标签)   │ │ (文本/二进制) │       │
+│   └──────────────┘ └──────────────┘ └──────────────┘       │
+├─────────────────────────────────────────────────────────────┤
+│                    缓冲层 Buffer Layer                       │
+│   ┌──────────────────────┐ ┌──────────────────────┐       │
+│   │ RingLogBuffer        │ │ ShmLogBuffer         │       │
+│   │ (单进程/ISR 安全)     │ │ (多进程共享内存)      │       │
+│   └──────────────────────┘ └──────────────────────┘       │
+├─────────────────────────────────────────────────────────────┤
+│                    传输层 Transport Layer                    │
+│   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌────────┐ ┌──────┐│
+│   │  UART   │ │  File   │ │  Net    │ │  CAN   │ │ RTOS ││
+│   │Transport│ │Transport│ │Transport│ │Transport│ │Queue ││
+│   └─────────┘ └─────────┘ └─────────┘ └────────┘ └──────┘│
+├─────────────────────────────────────────────────────────────┤
+│                  后端服务层 Backend Service Layer            │
+│   elogd 守护进程 / elogcat CLI / 日志采集器                   │
+├─────────────────────────────────────────────────────────────┤
+│                  持久化层 Storage Layer                      │
+│   FAT32/LittleFS 文件 / pstore NVRAM / Flash 环形分区        │
+├─────────────────────────────────────────────────────────────┤
+│                  配置层 Config Layer                         │
+│   编译期: Kconfig / 头文件宏定义                               │
+│   运行时: elog_set_level() / elog_add_transport()           │
+└─────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<pre class="mermaid"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f5e9', 'primaryBorderColor': '#2e7d32', 'primaryTextColor': '#1b5e20', 'lineColor': '#43a047', 'secondaryColor': '#fff3e0', 'tertiaryColor': '#e3f2fd'}}}%%
+
+graph TB
+    subgraph APP["应用层 Application Layer"]
+        direction LR
+        API["elog_api.h&lt;br/&gt;elog_debug/elog_info/elog_warn/elog_error&lt;br/&gt;elog_event_begin/end&lt;br/&gt;elog_assert"]
+        MACRO["ELOG_D / ELOG_I / ELOG_W / ELOG_E&lt;br/&gt;ELOG_TAG_D(tag, fmt, ...)&lt;br/&gt;ELOG_EVENT(event_id, ...)"]
+        API --- MACRO
+    end
+
+    subgraph CORE["核心层 Core Layer"]
+        direction TB
+        MSG["LogMessage&lt;br/&gt;─────────────────&lt;br/&gt;log_id: uint8_t&lt;br/&gt;level: uint8_t&lt;br/&gt;timestamp: uint32_t&lt;br/&gt;tag: const char*&lt;br/&gt;file: const char*&lt;br/&gt;line: uint16_t&lt;br/&gt;pid: uint16_t&lt;br/&gt;tid: uint16_t&lt;br/&gt;msg: char[]"]
+
+        DISPATCH["Dispatcher&lt;br/&gt;─────────────────&lt;br/&gt;write_dispatcher()&lt;br/&gt;─────────────────&lt;br/&gt;logger_function_t*&lt;br/&gt;注册/替换日志后端"]
+
+        FILTER["LogFilter&lt;br/&gt;─────────────────&lt;br/&gt;global_level: uint8_t&lt;br/&gt;tag_level_map[]&lt;br/&gt;module_level_map[]&lt;br/&gt;─────────────────&lt;br/&gt;should_log()&lt;br/&gt;set_level()"]
+
+        FMT["Formatter&lt;br/&gt;─────────────────&lt;br/&gt;format_text()&lt;br/&gt;format_binary()&lt;br/&gt;─────────────────&lt;br/&gt;时间戳格式化&lt;br/&gt;彩色输出&lt;br/&gt;源码位置"]
+
+        DISPATCH --- MSG
+        MSG --- FILTER
+        FILTER --- FMT
+    end
+
+    subgraph BUFFER["缓冲层 Buffer Layer"]
+        direction TB
+        BUF_IFACE["LogBuffer (抽象接口)&lt;br/&gt;─────────────────&lt;br/&gt;log()&lt;br/&gt;flush()&lt;br/&gt;clear()&lt;br/&gt;size() / capacity()"]
+
+        RING_BUF["RingLogBuffer&lt;br/&gt;─────────────────&lt;br/&gt;ring_buffer_t&lt;br/&gt;动态/静态分配&lt;br/&gt;无锁 SPSC&lt;br/&gt;自动覆写/阻塞"]
+
+        SHM_BUF["ShmLogBuffer&lt;br/&gt;─────────────────&lt;br/&gt;共享内存区域&lt;br/&gt;多进程安全&lt;br/&gt;POSIX shm"]
+
+        BUF_IFACE --- RING_BUF
+        BUF_IFACE --- SHM_BUF
+    end
+
+    subgraph TRANSPORT["传输层 Transport Layer"]
+        direction LR
+        T_IFACE["LogTransport (抽象接口)&lt;br/&gt;─────────────────&lt;br/&gt;open() / close()&lt;br/&gt;write(entry) / flush()"]
+
+        T_UART["UartTransport&lt;br/&gt;─────────────────&lt;br/&gt;UART / serial&lt;br/&gt;DMA 零拷贝&lt;br/&gt;波特率自适应"]
+
+        T_FILE["FileTransport&lt;br/&gt;─────────────────&lt;br/&gt;文件系统&lt;br/&gt;滚动日志&lt;br/&gt;可选压缩"]
+
+        T_NET["NetTransport&lt;br/&gt;─────────────────&lt;br/&gt;UDP/TCP&lt;br/&gt;远程 syslog&lt;br/&gt;TLS 可选"]
+
+        T_CAN["CanTransport&lt;br/&gt;─────────────────&lt;br/&gt;CAN 总线&lt;br/&gt;UDS 诊断&lt;br/&gt;ISO-TP"]
+
+        T_RTOS["RtosQueueTransport&lt;br/&gt;─────────────────&lt;br/&gt;RTOS 消息队列&lt;br/&gt;FreeRTOS/CMSIS-RTOS&lt;br/&gt;线程间传递"]
+
+        T_IFACE --- T_UART
+        T_IFACE --- T_FILE
+        T_IFACE --- T_NET
+        T_IFACE --- T_CAN
+        T_IFACE --- T_RTOS
+    end
+
+    subgraph BACKEND["后端服务层 Backend Service Layer"]
+        direction LR
+        DAEMON["elogd 守护进程&lt;br/&gt;─────────────────&lt;br/&gt;多源汇聚&lt;br/&gt;优先级裁剪&lt;br/&gt;统一输出"]
+
+        LOGCAT["elogcat CLI&lt;br/&gt;─────────────────&lt;br/&gt;多缓冲区读取&lt;br/&gt;过滤/着色/格式化"]
+
+        COLLECTOR["日志采集器&lt;br/&gt;─────────────────&lt;br/&gt;远程上报&lt;br/&gt;OTA 配套"]
+    end
+
+    subgraph STORAGE["持久化层 Storage Layer"]
+        direction LR
+        FS["文件系统&lt;br/&gt;─────────────────&lt;br/&gt;FAT32 / LittleFS&lt;br/&gt;滚动策略&lt;br/&gt;可选压缩"]
+
+        PSTORE["pstore / NVRAM&lt;br/&gt;─────────────────&lt;br/&gt;掉电保持&lt;br/&gt;关键日志&lt;br/&gt;崩溃恢复"]
+
+        FLASH["Flash 环形区&lt;br/&gt;─────────────────&lt;br/&gt;原始分区&lt;br/&gt;磨损均衡&lt;br/&gt;断电安全"]
+    end
+
+    subgraph CONFIG["配置层 Config Layer"]
+        direction LR
+        COMPILE["编译期配置&lt;br/&gt;─────────────────&lt;br/&gt;ELOG_MAX_TAG_LEN&lt;br/&gt;ELOG_MAX_MSG_LEN&lt;br/&gt;ELOG_BUFFER_SIZE&lt;br/&gt;ELOG_LEVEL_DEFAULT&lt;br/&gt;ELOG_COLOR_ENABLE"]
+
+        RUNTIME["运行时配置&lt;br/&gt;─────────────────&lt;br/&gt;动态级别调整&lt;br/&gt;模块开关&lt;br/&gt;传输目标切换&lt;br/&gt;缓冲区大小调整"]
+
+        COMPILE --- RUNTIME
+    end
+
+    APP --&gt;|调用| CORE
+    CORE --&gt;|写入| BUFFER
+    BUFFER --&gt;|分发| TRANSPORT
+    TRANSPORT --&gt;|输出| STORAGE
+    TRANSPORT --&gt;|网络| BACKEND
+    BACKEND --&gt;|采集| STORAGE
+    CONFIG -.-&gt;|编译期宏| CORE
+    CONFIG -.-&gt;|编译期宏| BUFFER
+    CONFIG -.-&gt;|运行时 API| CORE
+
+    style APP fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style CORE fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    style BUFFER fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style TRANSPORT fill:#fce4ec,stroke:#c62828,stroke-width:2px
+    style BACKEND fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    style STORAGE fill:#efebe9,stroke:#4e342e,stroke-width:2px
+    style CONFIG fill:#e0f7fa,stroke:#00838f,stroke-width:2px,stroke-dasharray:5 5
+</code></pre>
+<pre class="mermaid"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f5e9', 'primaryBorderColor': '#2e7d32', 'lineColor': '#43a047'}}}%%
+
+graph LR
+    subgraph Sources["日志源 (Log Sources)"]
+        APP["App A&lt;br/&gt;elog_init('app_a')"]
+        DRV["Driver&lt;br/&gt;elog_init('driver')"]
+        MIDL["Middleware&lt;br/&gt;elog_init('middleware')"]
+        KERN["Kernel Module&lt;br/&gt;klog_write()"]
+        RTOS["RTOS Event&lt;br/&gt;elog_event()"]
+    end
+
+    subgraph ClientLib["客户端库 (libelog.so)"]
+        API["elog API&lt;br/&gt;elog_d/i/w/e()"]
+        EVENT["Event API&lt;br/&gt;elog_event_begin/end()"]
+        WRITE["Transport Registry&lt;br/&gt;dispatch()"]
+        COMPRESS["Compress (可选)&lt;br/&gt;lz4 / miniz"]
+        WRITE_TX["writer_func_t*&lt;br/&gt;函数指针分发"]
+
+        API --&gt; EVENT
+        API --&gt; WRITE
+        EVENT --&gt; WRITE
+        WRITE --&gt; WRITE_TX
+    end
+
+    subgraph Daemon["elogd 守护进程"]
+        IN_LOG["LogListener&lt;br/&gt;/var/run/elogdw&lt;br/&gt;SOCK_DGRAM"]
+        IN_CMD["CmdListener&lt;br/&gt;/var/run/elogd&lt;br/&gt;SOCK_STREAM"]
+        OUT_READ["LogReader&lt;br/&gt;/var/run/elogdr&lt;br/&gt;SOCK_SEQPACKET"]
+        BUF["RingLogBuffer&lt;br/&gt;×log_id"]
+        STATS["LogStatistics"]
+        PRUNE["LogPrune"]
+        TAG["EventTagMap"]
+
+        IN_LOG --&gt; BUF
+        BUF --&gt; STATS
+        BUF --&gt; PRUNE
+        TAG -.-&gt;|event 解码| OUT_READ
+        IN_CMD --&gt;|命令| BUF
+        IN_CMD --&gt; STATS
+        IN_CMD --&gt; PRUNE
+        BUF --&gt; OUT_READ
+    end
+
+    subgraph Outputs["输出目标 (Log Outputs)"]
+        UART_OUT["UART Console&lt;br/&gt;实时调试"]
+        FILE_OUT["Log Files&lt;br/&gt;/var/log/elog/&lt;br/&gt;滚动+压缩"]
+        NET_OUT["Network&lt;br/&gt;UDP syslog&lt;br/&gt;TCP 长连接"]
+        FLASH_OUT["Flash Ring&lt;br/&gt;掉电保持&lt;br/&gt;pstore 分区"]
+    end
+
+    subgraph Tools["工具链"]
+        CAT["elogcat&lt;br/&gt;多缓冲区读取&lt;br/&gt;过滤/着色"]
+        DUMP["elogdump&lt;br/&gt;二进制转文本&lt;br/&gt;离线分析"]
+        CONF["elogctl&lt;br/&gt;运行时配置&lt;br/&gt;级别/裁剪规则"]
+    end
+
+    APP --&gt; API
+    DRV --&gt; API
+    MIDL --&gt; API
+    KERN --&gt;|"procfs/ioctl"| IN_LOG
+    RTOS --&gt; API
+
+    WRITE --&gt;|DGRAM| IN_LOG
+    WRITE --&gt;|"可选"| COMPRESS
+    COMPRESS --&gt;|pstore| FLASH_OUT
+
+    OUT_READ --&gt;|"PUSH"| CAT
+    OUT_READ --&gt;|"PUSH"| NET_OUT
+    OUT_READ --&gt;|"PUSH"| UART_OUT
+    BUF --&gt;|"定时 flush"| FILE_OUT
+
+    CONF --&gt;|"SOCK_STREAM"| IN_CMD
+
+    style Sources fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style ClientLib fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    style Daemon fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style Outputs fill:#fce4ec,stroke:#c62828,stroke-width:2px
+    style Tools fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+</code></pre>
+<hr />
+<h2 id="3">3. 目录结构<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>embedded_logging/
+├── docs/
+│   ├── design.md                    # 本文档
+│   ├── embedded_logging_arch.mmd    # 分层架构图
+│   ├── embedded_logging_class.mmd   # 类体系图
+│   ├── embedded_logging_dataflow.mmd # 数据流图
+│   ├── embedded_logging_write_seq.mmd # 写入时序图
+│   ├── embedded_logging_read_seq.mmd  # 读取时序图
+│   ├── embedded_logging_init_seq.mmd  # 初始化时序图
+│   └── embedded_logging_deployment.mmd # 部署场景图
+├── include/
+│   └── elog/
+│       ├── elog.h                   # 公共 API 头文件
+│       ├── elog_config.h            # 编译期配置（用户修改）
+│       ├── elog_def.h               # 内部类型定义
+│       ├── elog_buf.h               # LogBuffer 接口
+│       ├── elog_transport.h         # LogTransport 接口
+│       ├── elog_filter.h            # LogFilter 接口
+│       ├── elog_format.h            # Formatter 接口
+│       ├── elog_stats.h             # LogStatistics 接口
+│       ├── elog_prune.h             # LogPrune 接口
+│       └── elog_event.h             # Event 日志接口
+├── src/
+│   ├── elog.c                       # 核心实现 (API + Dispatcher + Filter)
+│   ├── elog_format.c                # 格式化器实现
+│   ├── elog_filter.c                # 过滤器实现
+│   ├── elog_stats.c                 # 统计实现
+│   ├── elog_prune.c                 # 裁剪策略实现
+│   ├── elog_event.c                 # Event 日志实现
+│   ├── buf/
+│   │   ├── elog_buf_ring.c          # RingLogBuffer
+│   │   └── elog_buf_shm.c           # ShmLogBuffer
+│   └── transport/
+│       ├── elog_transport_uart.c    # UART 输出
+│       ├── elog_transport_file.c    # 文件输出
+│       ├── elog_transport_net.c     # 网络输出
+│       ├── elog_transport_can.c     # CAN 总线输出
+│       └── elog_transport_rtos.c    # RTOS 队列输出
+├── daemon/
+│   ├── elogd.c                      # 守护进程 main
+│   ├── elogd_listener.c             # 日志接收 (SOCK_DGRAM)
+│   ├── elogd_reader.c               # 日志推送 (SOCK_SEQPACKET)
+│   ├── elogd_cmd.c                  # 命令处理 (SOCK_STREAM)
+│   └── elogd_service.c              # Binder/DBus 服务
+├── tools/
+│   ├── elogcat.c                    # 日志查看工具
+│   ├── elogdump.c                   # 二进制转文本
+│   └── elogctl.c                    # 运行时配置工具
+├── port/
+│   ├── elog_port.h                  # 平台适配层头文件
+│   ├── elog_port_linux.c            # Linux 实现
+│   ├── elog_port_freertos.c         # FreeRTOS 实现
+│   └── elog_port_bare.c             # 裸机实现
+├── CMakeLists.txt
+├── Kconfig                          # 编译选项配置
+└── Makefile
+</code></pre></div>
+<hr />
+<h2 id="4">4. 核心数据结构<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 日志级别<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_VERBOSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 详细调试信息 */</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_DEBUG</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 调试信息 */</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_INFO</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 一般信息 */</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_WARN</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 警告 */</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_ERROR</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 错误 */</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_FATAL</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 致命错误 */</span>
+<span class="w">    </span><span class="n">ELOG_LEVEL_NONE</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 关闭所有日志 */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_level_t</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="42-id">4.2 日志 ID（缓冲区类型）<a class="headerlink" href="#42-id" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ELOG_ID_MAIN</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 主日志缓冲区 */</span>
+<span class="w">    </span><span class="n">ELOG_ID_RADIO</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 无线电/通信模块 */</span>
+<span class="w">    </span><span class="n">ELOG_ID_EVENTS</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 事件日志 (二进制) */</span>
+<span class="w">    </span><span class="n">ELOG_ID_SYSTEM</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 系统日志 */</span>
+<span class="w">    </span><span class="n">ELOG_ID_CRASH</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 崩溃日志 */</span>
+<span class="w">    </span><span class="n">ELOG_ID_KERNEL</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 内核日志 */</span>
+<span class="w">    </span><span class="n">ELOG_ID_MAX</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_id_t</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>借鉴 Android <code>log_id_t</code>，根据嵌入式场景精简（去掉 STATS/SECURITY，增加 KERNEL）。</p>
+</blockquote>
+<h3 id="43-logmessagepacked">4.3 LogMessage（packed 结构体）<a class="headerlink" href="#43-logmessagepacked" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 借鉴 Android LogBufferElement，packed 减少内存占用 */</span>
+<span class="cp">#pragma pack(push, 1)</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">log_id</span><span class="p">;</span><span class="w">          </span><span class="cm">/* ELOG_ID_MAIN 等 */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">level</span><span class="p">;</span><span class="w">           </span><span class="cm">/* ELOG_LEVEL_INFO 等 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">timestamp</span><span class="p">;</span><span class="w">       </span><span class="cm">/* Unix epoch seconds (or uptime ticks) */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">pid</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 进程 ID */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">tid</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 线程 ID */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">line</span><span class="p">;</span><span class="w">            </span><span class="cm">/* 源码行号 */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">tag_len</span><span class="p">;</span><span class="w">         </span><span class="cm">/* tag 长度 */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">msg_len</span><span class="p">;</span><span class="w">         </span><span class="cm">/* 消息长度 */</span>
+<span class="w">    </span><span class="cm">/* 后续为变长数据: tag[tag_len] + msg[msg_len] */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_msg_header_t</span><span class="p">;</span>
+<span class="cp">#pragma pack(pop)</span>
+
+<span class="cm">/* 线路上完整消息 = header + tag + msg */</span>
+<span class="cm">/* sizeof(header) = 16 bytes (ARM32), 对齐友好 */</span>
+</code></pre></div>
+<blockquote>
+<p>借鉴 Android 的 <code>android_log_header_t</code> + <code>logger_entry</code> 双头设计，合并为单头减少开销。Android 在 liblog→logd 传两个 header（<code>android_log_header_t</code> 11B + <code>logger_entry</code> 可变），嵌入式合并为 16B packed 头。</p>
+</blockquote>
+<h3 id="44-event">4.4 Event 日志二进制格式<a class="headerlink" href="#44-event" title="Permanent link">&para;</a></h3>
+<p>保留 Android 的 TLV 格式，精简类型集：</p>
+<div class="highlight"><pre><span></span><code>Event 元素编码:
+  ┌──────────┬──────────┐
+  │ type:u8  │ data:var │
+  └──────────┴──────────┘
+
+  type=0 (INT32):  1B type + 4B value = 5 bytes
+  type=1 (INT64):  1B type + 8B value = 9 bytes
+  type=2 (STRING): 1B type + 4B len  + N bytes = 5+N bytes
+  type=3 (FLOAT):  1B type + 4B value = 5 bytes
+  type=4 (LIST):   1B type + 1B count + elements
+</code></pre></div>
+<hr />
+<h2 id="5">5. 核心层设计<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-dispatcher">5.1 Dispatcher（函数指针分发）<a class="headerlink" href="#51-dispatcher" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 借鉴 Android __android_log_write_log_message 中的 logger_function 函数指针 */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">elog_logger_func_t</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="n">elog_msg_header_t</span><span class="o">*</span><span class="w"> </span><span class="n">hdr</span><span class="p">,</span>
+<span class="w">                                    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span>
+<span class="w">                                    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+
+<span class="cm">/* 可替换的全局日志后端（策略模式） */</span>
+<span class="k">static</span><span class="w"> </span><span class="n">elog_logger_func_t</span><span class="w"> </span><span class="n">s_logger_func</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">elog_default_logger</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_set_logger</span><span class="p">(</span><span class="n">elog_logger_func_t</span><span class="w"> </span><span class="n">func</span><span class="p">);</span>
+</code></pre></div>
+<blockquote>
+<p>Android 使用 <code>__android_logger_function</code> 函数指针实现可替换的日志后端。elog 保留此模式，默认指向 <code>elog_default_logger</code>（走 Buffer→Transport 路径），用户可替换为自定义实现（如直接串口输出、发送到自定义队列等）。</p>
+</blockquote>
+<h3 id="52-logfilter">5.2 LogFilter（多级过滤）<a class="headerlink" href="#52-logfilter" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 标签级别映射 */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">     </span><span class="n">level</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_tag_level_t</span><span class="p">;</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">            </span><span class="n">global_level</span><span class="p">;</span><span class="w">            </span><span class="cm">/* 全局最低级别 */</span>
+<span class="w">    </span><span class="n">elog_tag_level_t</span><span class="w">   </span><span class="n">tag_levels</span><span class="p">[</span><span class="n">ELOG_MAX_TAGS</span><span class="p">];</span><span class="w"> </span><span class="cm">/* 标签级别白名单 */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">            </span><span class="n">tag_count</span><span class="p">;</span><span class="w">               </span><span class="cm">/* 已注册标签数 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">               </span><span class="n">color_enabled</span><span class="p">;</span><span class="w">           </span><span class="cm">/* 彩色输出 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">               </span><span class="n">timestamp_enabled</span><span class="p">;</span><span class="w">       </span><span class="cm">/* 时间戳 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">               </span><span class="n">source_location</span><span class="p">;</span><span class="w">         </span><span class="cm">/* 源码位置 */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_filter_t</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>过滤逻辑</strong>（同 Android <code>LogStatistics::ShouldPrune</code> 的阈值思路）:</p>
+<div class="highlight"><pre><span></span><code>should_log(level, tag):
+  if level &lt; global_level: return false
+  if tag in tag_levels:
+    if level &lt; tag_levels[tag]: return false
+  return true
+</code></pre></div>
+<h3 id="53-logformatter">5.3 LogFormatter（格式化器）<a class="headerlink" href="#53-logformatter" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">  </span><span class="n">buf</span><span class="p">[</span><span class="n">ELOG_MAX_FORMAT_LEN</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">pos</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_format_ctx_t</span><span class="p">;</span>
+
+<span class="cm">/* 文本格式化（借鉴 logcat 输出格式）:</span>
+<span class="cm"> * 01-01 08:00:00.123 I  1234  567 sensor  : temperature=25</span>
+<span class="cm"> * MM-DD HH:MM:SS.mmm L PID TID TAG    : message</span>
+<span class="cm"> */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_format_text</span><span class="p">(</span><span class="n">elog_format_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">elog_msg_header_t</span><span class="o">*</span><span class="w"> </span><span class="n">hdr</span><span class="p">,</span>
+<span class="w">                     </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+
+<span class="cm">/* 二进制格式化（用于网络传输/文件存储，紧凑格式）:</span>
+<span class="cm"> * header(16B) + tag + msg，无格式化开销</span>
+<span class="cm"> */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_format_binary</span><span class="p">(</span><span class="n">elog_format_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">elog_msg_header_t</span><span class="o">*</span><span class="w"> </span><span class="n">hdr</span><span class="p">,</span>
+<span class="w">                       </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+</code></pre></div>
+<hr />
+<h2 id="6">6. 缓冲层设计<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<h3 id="61-logbuffer">6.1 LogBuffer 抽象接口<a class="headerlink" href="#61-logbuffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="n">log</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">elog_msg_header_t</span><span class="o">*</span><span class="w"> </span><span class="n">hdr</span><span class="p">,</span>
+<span class="w">                </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="n">flush</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">elog_writer_t</span><span class="o">*</span><span class="w"> </span><span class="n">writer</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">elog_filter_t</span><span class="o">*</span><span class="w"> </span><span class="n">filter</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">clear</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">capacity</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="n">is_empty</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_buf</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_buf_t</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>借鉴 Android <code>LogBuffer</code> 纯虚接口，使用 C 函数指针模拟虚函数表（vtable），避免 C++ 运行时开销。Android 用 C++ 虚函数实现 <code>Log()</code> / <code>FlushTo()</code> / <code>Clear()</code> 等 7 个方法，elog 精简为 6 个。</p>
+</blockquote>
+<h3 id="62-ringlogbuffer">6.2 RingLogBuffer（默认实现）<a class="headerlink" href="#62-ringlogbuffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_buf_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* vtable */</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w">  </span><span class="n">buffer</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* 数据区域 */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">capacity</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* 总容量 */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">write_pos</span><span class="p">;</span><span class="w">                </span><span class="cm">/* 写入位置 */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">read_pos</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* 读取位置 */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">count</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* 当前条目数 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">      </span><span class="n">overwrite</span><span class="p">;</span><span class="w">                </span><span class="cm">/* true: 覆写旧日志; false: 丢弃新日志 */</span>
+
+<span class="w">    </span><span class="cm">/* 同步原语（通过 port 层适配） */</span>
+<span class="w">    </span><span class="n">elog_mutex_t</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_cond_t</span><span class="w">  </span><span class="n">not_empty</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 用于 reader wait */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_ring_buf_t</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>与 Android SerializedLogBuffer 的对比</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Android SerializedLogBuffer</th>
+<th>elog RingLogBuffer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>存储</td>
+<td><code>list&lt;SerializedLogChunk&gt;</code> × log_id</td>
+<td>单一连续环形缓冲区</td>
+</tr>
+<tr>
+<td>分配</td>
+<td>每个 Chunk 堆分配</td>
+<td>静态分配或单次 malloc</td>
+</tr>
+<tr>
+<td>压缩</td>
+<td>Chunk 写满后 Zstd 压缩</td>
+<td>可选，默认关闭</td>
+</tr>
+<tr>
+<td>读者追踪</td>
+<td>reader_ref_count_ + readers_</td>
+<td>单 reader（嵌入式简化）</td>
+</tr>
+<tr>
+<td>裁剪单位</td>
+<td>整 Chunk 释放</td>
+<td>逐条覆写/丢弃</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-shmlogbuffer">6.3 ShmLogBuffer（多进程共享内存）<a class="headerlink" href="#63-shmlogbuffer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_buf_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w">       </span><span class="n">shm_fd</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="o">*</span><span class="w">     </span><span class="n">shm_addr</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">shm_size</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_sem_t</span><span class="w"> </span><span class="n">sem</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* POSIX 信号量 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">      </span><span class="n">is_owner</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* 创建者负责 unlink */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_shm_buf_t</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>用于有 MMU 的嵌入式 Linux 多进程场景，借鉴 Android logd 通过 Unix Socket + SCM_CREDENTIALS 实现多进程日志汇聚，但简化为共享内存直写（减少一次拷贝）。</p>
+</blockquote>
+<hr />
+<h2 id="7">7. 传输层设计<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-logtransport">7.1 LogTransport 抽象接口<a class="headerlink" href="#71-logtransport" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="n">open</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">close</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="n">flush</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">is_open</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">name</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_transport</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_transport_t</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>借鉴 Android 的 <code>android_log_transport_write</code> 函数指针结构体（name / logMask / open / close / write），扩展为更完整的 vtable。</p>
+</blockquote>
+<h3 id="72-transportregistry">7.2 TransportRegistry（多路分发）<a class="headerlink" href="#72-transportregistry" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 借鉴 Android write_to_log() 中 LogdWrite + PmsgWrite 的双路分发，</span>
+<span class="cm">   扩展为 N 路分发 */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_transport_t</span><span class="o">*</span><span class="w"> </span><span class="n">transports</span><span class="p">[</span><span class="n">ELOG_MAX_TRANSPORTS</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">          </span><span class="n">count</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_mutex_t</span><span class="w">     </span><span class="n">lock</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_transport_registry_t</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w">  </span><span class="nf">elog_transport_register</span><span class="p">(</span><span class="n">elog_transport_t</span><span class="o">*</span><span class="w"> </span><span class="n">transport</span><span class="p">);</span>
+<span class="kt">int</span><span class="w">  </span><span class="nf">elog_transport_unregister</span><span class="p">(</span><span class="n">elog_transport_t</span><span class="o">*</span><span class="w"> </span><span class="n">transport</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_transport_dispatch</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_transport_flush_all</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</code></pre></div>
+<p><strong>与 Android write_to_log() 的对比</strong>:</p>
+<p>Android 在 <code>logger_write.cpp:199</code> 中硬编码双路:
+<div class="highlight"><pre><span></span><code><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogdWrite</span><span class="p">(</span><span class="n">log_id</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="n">nr</span><span class="p">);</span><span class="w">  </span><span class="c1">// 主路径</span>
+<span class="n">PmsgWrite</span><span class="p">(</span><span class="n">log_id</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="n">vec</span><span class="p">,</span><span class="w"> </span><span class="n">nr</span><span class="p">);</span><span class="w">         </span><span class="c1">// 附加路径 (fire-and-forget)</span>
+</code></pre></div></p>
+<p>elog 改为注册表模式，支持任意数量传输目标:
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">registry</span><span class="p">.</span><span class="n">transports</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="73">7.3 具体传输实现<a class="headerlink" href="#73" title="Permanent link">&para;</a></h3>
+<h4 id="uarttransport">UartTransport<a class="headerlink" href="#uarttransport" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_transport_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w">       </span><span class="n">fd</span><span class="p">;</span><span class="w">              </span><span class="cm">/* UART 设备文件描述符 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w">  </span><span class="n">baudrate</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w">  </span><span class="n">dma_tx_buf</span><span class="p">;</span><span class="w">      </span><span class="cm">/* DMA 发送缓冲区 */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">dma_tx_len</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">      </span><span class="n">dma_enabled</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_mutex_t</span><span class="w"> </span><span class="n">dma_lock</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_uart_transport_t</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>借鉴 Android <code>LogdWrite</code> 通过 Unix Socket <code>writev()</code> + <code>SCM_CREDENTIALS</code> 传递身份信息</li>
+<li>嵌入式简化为 UART <code>write()</code> + DMA 异步发送</li>
+<li>非 DMA 模式下使用环形 TX 缓冲区避免阻塞</li>
+</ul>
+<h4 id="filetransport">FileTransport<a class="headerlink" href="#filetransport" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_transport_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w">       </span><span class="n">fd</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">      </span><span class="n">filepath</span><span class="p">[</span><span class="n">ELOG_PATH_MAX</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">file_size</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w">    </span><span class="n">max_file_size</span><span class="p">;</span><span class="w">    </span><span class="cm">/* 单文件最大大小 */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">   </span><span class="n">max_files</span><span class="p">;</span><span class="w">        </span><span class="cm">/* 滚动文件数量 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">      </span><span class="n">compress</span><span class="p">;</span><span class="w">         </span><span class="cm">/* 写入时压缩 */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">      </span><span class="n">binary</span><span class="p">;</span><span class="w">           </span><span class="cm">/* 二进制/文本模式 */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_file_transport_t</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>借鉴 Android <code>PmsgWrite</code> 写入 <code>/dev/pmsg0</code> 的持久化思路</li>
+<li>增加滚动日志（rotate）和可选压缩</li>
+</ul>
+<h4 id="nettransport">NetTransport<a class="headerlink" href="#nettransport" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_transport_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w">       </span><span class="n">sock_fd</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">   </span><span class="n">proto</span><span class="p">;</span><span class="w">           </span><span class="cm">/* ELOG_NET_UDP / ELOG_NET_TCP */</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">      </span><span class="n">host</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w">  </span><span class="n">port</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">      </span><span class="n">connected</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w">  </span><span class="n">reconnect_interval_ms</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_net_transport_t</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>UDP 模式: <code>sendto()</code> 无连接，适合日志上报</li>
+<li>TCP 模式: 长连接 + 自动重连，适合远程日志服务</li>
+</ul>
+<h4 id="rtosqueuetransport">RtosQueueTransport<a class="headerlink" href="#rtosqueuetransport" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_transport_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">elog_queue_t</span><span class="w"> </span><span class="n">queue</span><span class="p">;</span><span class="w">         </span><span class="cm">/* RTOS 消息队列句柄 */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">         </span><span class="n">max_depth</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_task_t</span><span class="w"> </span><span class="n">consumer_task</span><span class="p">;</span><span class="w">  </span><span class="cm">/* 消费者任务 */</span>
+<span class="w">    </span><span class="n">elog_transport_t</span><span class="o">*</span><span class="w"> </span><span class="n">downstream</span><span class="p">;</span><span class="w"> </span><span class="cm">/* 消费者转发的目标 Transport */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_rtos_queue_transport_t</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>用于 ISR → Logger Task 的解耦</li>
+<li>借鉴 Android <code>LogReaderThread</code> 的条件变量等待机制，改用 RTOS 队列信号量</li>
+</ul>
+<hr />
+<h2 id="8">8. 过滤与裁剪<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="81-logprune">8.1 LogPrune（优先级裁剪）<a class="headerlink" href="#81-logprune" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 借鉴 Android PruneList 的 ~ / ~! / ~1000/! 语法 */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">        </span><span class="n">is_negated</span><span class="p">;</span><span class="w">     </span><span class="cm">/* ~ 前缀: 否定匹配 → 保护 */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w">    </span><span class="n">pid</span><span class="p">;</span><span class="w">            </span><span class="cm">/* 可选: /PID 粒度 */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_prune_rule_t</span><span class="p">;</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_prune_rule_t</span><span class="w"> </span><span class="n">high_rules</span><span class="p">[</span><span class="n">ELOG_MAX_PRUNE_RULES</span><span class="p">];</span><span class="w">  </span><span class="cm">/* 保护规则 (~) */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">          </span><span class="n">high_count</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_prune_rule_t</span><span class="w"> </span><span class="n">low_rules</span><span class="p">[</span><span class="n">ELOG_MAX_PRUNE_RULES</span><span class="p">];</span><span class="w">   </span><span class="cm">/* 低优先级规则 */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">          </span><span class="n">low_count</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w">         </span><span class="n">prune_threshold_pct</span><span class="p">;</span><span class="w"> </span><span class="cm">/* 触发裁剪的阈值 (%) */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_prune_t</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>裁剪策略</strong>（借鉴 Android <code>PruneList</code>）:</p>
+<div class="highlight"><pre><span></span><code>缓冲区使用率 &gt; threshold (默认 90%):
+  1. 遍历旧日志
+  2. 如果 tag 匹配 low_rules → 优先丢弃
+  3. 如果 tag 匹配 high_rules (~ 前缀) → 最后丢弃
+  4. 未匹配任何规则 → 按时间顺序丢弃
+</code></pre></div>
+<p><strong>Android 默认裁剪规则</strong>: <code>"~! ~1000/!"</code> — 保护系统进程和 system UID 下所有进程</p>
+<p><strong>嵌入式默认裁剪规则</strong>: <code>"~elogd ~crash"</code> — 保护日志守护进程和崩溃日志</p>
+<h3 id="82-logstatistics">8.2 LogStatistics（轻量统计）<a class="headerlink" href="#82-logstatistics" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">total_count</span><span class="p">[</span><span class="n">ELOG_ID_MAX</span><span class="p">];</span><span class="w">      </span><span class="cm">/* 每个缓冲区总写入数 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dropped_count</span><span class="p">[</span><span class="n">ELOG_ID_MAX</span><span class="p">];</span><span class="w">    </span><span class="cm">/* 每个缓冲区丢弃数 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">level_count</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span><span class="w">                </span><span class="cm">/* 按级别统计 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">buffer_usage</span><span class="p">;</span><span class="w">                  </span><span class="cm">/* 当前缓冲区使用量 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">buffer_peak</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* 缓冲区使用峰值 */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_stats_t</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>借鉴 Android <code>LogStatistics</code> 的 8 维度哈希表（uidTable / pidTable / tidTable / tagTable 等），精简为纯计数器数组。Android 的多维哈希表在 64KB+ RAM 的设备上合理，但嵌入式通常只有 16-256KB RAM。</p>
+</blockquote>
+<hr />
+<h2 id="9">9. 持久化设计<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<h3 id="91">9.1 三级持久化<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────┐
+│ Level 0: 内存缓冲区 (RingLogBuffer)          │
+│   - 最快，掉电丢失                            │
+│   - 适用于实时调试                             │
+├─────────────────────────────────────────────┤
+│ Level 1: 文件系统 (FAT32/LittleFS)           │
+│   - 滚动日志 + 可选压缩                      │
+│   - 适用于长期存储                             │
+├─────────────────────────────────────────────┤
+│ Level 2: 原始 Flash / NVRAM (pstore)         │
+│   - 掉电保持，最小写入开销                     │
+│   - 适用于崩溃恢复（最后 N 条日志）              │
+└─────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="92-android-pmsgwrite">9.2 借鉴 Android PmsgWrite<a class="headerlink" href="#92-android-pmsgwrite" title="Permanent link">&para;</a></h3>
+<p>Android 的 <code>PmsgWrite</code> 写入 <code>/dev/pmsg0</code>（pstore RAM），用于崩溃后恢复日志。</p>
+<p>嵌入式对应方案:</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>适用场景</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flash 环形分区</td>
+<td>带 NOR/NAND Flash 的设备</td>
+<td>raw flash driver，磨损均衡</td>
+</tr>
+<tr>
+<td>NVRAM / RTC RAM</td>
+<td>带 SRAM 保留区的 MCU</td>
+<td>直接内存映射</td>
+</tr>
+<tr>
+<td>EEPROM / FRAM</td>
+<td>小容量持久化需求</td>
+<td>I2C/SPI 接口</td>
+</tr>
+<tr>
+<td>pstore (Linux)</td>
+<td>运行 Linux 的嵌入式设备</td>
+<td><code>/sys/fs/pstore/pmsg-ramoops-0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-pstore">9.3 pstore 写入流程<a class="headerlink" href="#93-pstore" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>elog_pmsg_write():
+  1. 构造: elog_msg_header_t + tag + msg
+  2. 添加 pmsg 头 (magic + len + pid + uid)
+  3. writev() 到 /dev/pmsg0 或 raw flash
+  4. 非 debug 模式仅允许 CRASH/EVENTS 级别
+</code></pre></div>
+<blockquote>
+<p>与 Android <code>PmsgWrite</code> 相同的策略：非 debug 构建只持久化关键日志。</p>
+</blockquote>
+<hr />
+<h2 id="10-elogd">10. elogd 守护进程<a class="headerlink" href="#10-elogd" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>完整设计借鉴 Android <code>logd/main.cpp</code> 的启动序列。</p>
+</blockquote>
+<h3 id="101">10.1 启动序列<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>elogd main():
+  1. elog_ring_buf_create(capacity)         → 创建 RingLogBuffer
+  2. elog_reader_list_create()              → 创建 ReaderList
+  3. elog_stats_create()                    → 创建 LogStatistics
+  4. elog_prune_init(default_rules)         → 初始化裁剪规则
+  5. elogd_cmd_listener_start(buf, stats)   → /var/run/elogd.sock (SOCK_STREAM)
+  6. elogd_log_listener_start(buf, readers) → /var/run/elogdw.sock (SOCK_DGRAM)
+  7. elogd_reader_start(buf, readers)       → /var/run/elogdr.sock (SOCK_SEQPACKET)
+  8. elogd_service_register(readers)        → 注册系统服务 (Binder/DBus)
+  9. event_loop(poll)                       → 进入主事件循环
+</code></pre></div>
+<h3 id="102-logd">10.2 三端口架构（借鉴 logd）<a class="headerlink" href="#102-logd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Socket</th>
+<th>类型</th>
+<th>用途</th>
+<th>对应 Android</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/var/run/elogd</code></td>
+<td>SOCK_STREAM</td>
+<td>命令控制 (clear/size/stats/prune)</td>
+<td><code>/dev/socket/logd</code></td>
+</tr>
+<tr>
+<td><code>/var/run/elogdw</code></td>
+<td>SOCK_DGRAM</td>
+<td>日志写入 (客户端→elogd)</td>
+<td><code>/dev/socket/logdw</code></td>
+</tr>
+<tr>
+<td><code>/var/run/elogdr</code></td>
+<td>SOCK_SEQPACKET</td>
+<td>日志读取 (elogcat←elogd)</td>
+<td><code>/dev/socket/logdr</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="103">10.3 命令协议<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>客户端发送 ASCII 命令 → elogd CmdListener 处理:
+
+  clear &lt;log_id&gt;              清空指定缓冲区
+  getBufSize &lt;log_id&gt;         获取缓冲区大小
+  setBufSize &lt;log_id&gt; &lt;size&gt;  设置缓冲区大小
+  getStatistics               获取统计信息
+  getPruneList                获取裁剪规则
+  setPruneList &lt;rules&gt;        设置裁剪规则
+  exit                        断开连接
+</code></pre></div>
+<blockquote>
+<p>借鉴 Android <code>CommandListener</code> 的 <code>FrameworkCommand</code> 宏注册模式，简化为函数指针数组分发。</p>
+</blockquote>
+<hr />
+<h2 id="11_1">11. 日志写入流程<a class="headerlink" href="#11_1" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f5e9', 'primaryBorderColor': '#2e7d32', 'lineColor': '#43a047', 'secondaryColor': '#fff3e0', 'tertiaryColor': '#e3f2fd'}}}%%
+
+sequenceDiagram
+    participant App as 应用代码
+    participant API as elog API
+    participant Filter as LogFilter
+    participant Buf as RingLogBuffer
+    participant Registry as TransportRegistry
+    participant T_uart as UartTransport
+    participant T_file as FileTransport
+    participant T_net as NetTransport
+    participant Prune as LogPrune
+    participant Stats as LogStatistics
+
+    App-&gt;&gt;API: ELOG_I("sensor", "temp=%d", value)
+    activate API
+
+    API-&gt;&gt;API: va_list 格式化 → LogMessage
+
+    API-&gt;&gt;Filter: should_log(level=INFO, tag="sensor")
+    activate Filter
+    Filter--&gt;&gt;API: true (global_level ≤ INFO)
+    deactivate Filter
+
+    API-&gt;&gt;Buf: log(&amp;msg)
+    activate Buf
+
+    Buf-&gt;&gt;Buf: acquire_lock()
+
+    alt 缓冲区有空间
+        Buf-&gt;&gt;Buf: memcpy entry → ring_buffer
+        Buf-&gt;&gt;Stats: on_log(&amp;msg)
+        activate Stats
+        Stats-&gt;&gt;Stats: total_count_++, level_count_[INFO]++
+        deactivate Stats
+    else 缓冲区已满
+        Buf-&gt;&gt;Prune: should_prune(tag, current_size)
+        activate Prune
+        Prune--&gt;&gt;Buf: true (low priority tag)
+        deactivate Prune
+        Buf-&gt;&gt;Buf: overwrite oldest / discard low-priority
+        Buf-&gt;&gt;Stats: on_drop()
+        activate Stats
+        Stats-&gt;&gt;Stats: dropped_count_++
+        deactivate Stats
+    end
+
+    Buf-&gt;&gt;Buf: release_lock()
+    Buf--&gt;&gt;API: 0 (success)
+    deactivate Buf
+
+    API-&gt;&gt;Registry: dispatch(&amp;msg)
+    activate Registry
+
+    par 多路并行分发
+        Registry-&gt;&gt;T_uart: write(&amp;msg)
+        activate T_uart
+        T_uart-&gt;&gt;T_uart: format_text() → UART TX DMA
+        T_uart--&gt;&gt;Registry: len
+        deactivate T_uart
+    and
+        Registry-&gt;&gt;T_file: write(&amp;msg)
+        activate T_file
+        T_file-&gt;&gt;T_file: format_binary() → fwrite()
+        alt file_size &gt; max_file_size
+            T_file-&gt;&gt;T_file: rotate() 滚动日志
+        end
+        T_file--&gt;&gt;Registry: len
+        deactivate T_file
+    and
+        Registry-&gt;&gt;T_net: write(&amp;msg)
+        activate T_net
+        alt !connected_
+            T_net-&gt;&gt;T_net: reconnect()
+        end
+        T_uart-&gt;&gt;T_net: sendto(sock, &amp;entry)
+        T_net--&gt;&gt;Registry: len
+        deactivate T_net
+    end
+
+    Registry--&gt;&gt;API: 0 (all dispatched)
+    deactivate Registry
+
+    API--&gt;&gt;App: void
+    deactivate API
+</code></pre>
+<div class="highlight"><pre><span></span><code>1. App: ELOG_I(&quot;sensor&quot;, &quot;temp=%d&quot;, value)
+   ↓
+2. elog_write(level, tag, fmt, ...):
+   - va_list 格式化消息
+   - 构造 LogMessage (header + tag + msg)
+   ↓
+3. elog_filter_check(level, tag):
+   - global_level 过滤
+   - tag 级别过滤
+   - 不通过则直接返回
+   ↓
+4. elog_buf_log(buffer, &amp;msg):
+   - 加锁
+   - 检查空间:
+     a. 有空间 → memcpy 到 ring buffer
+     b. 无空间 → 检查裁剪策略:
+        - low priority tag → 丢弃/覆写
+        - high priority tag → 覆写最旧的非保护条目
+   - 更新统计 (total_count / dropped_count)
+   - 解锁
+   ↓
+5. elog_transport_dispatch(&amp;msg):
+   - 遍历所有注册的 Transport
+   - 并行分发到 UART / File / Net / Queue
+   ↓
+6. 各 Transport write():
+   - UartTransport: format_text() → UART TX (DMA)
+   - FileTransport: format_binary() → fwrite() → rotate if needed
+   - NetTransport: sendto() / send()
+   - RtosQueueTransport: queue_send() → wake consumer task
+</code></pre></div>
+<h3 id="111-isr">11.1 ISR 安全写入<a class="headerlink" href="#111-isr" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* ISR 中调用的非阻塞版本 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_write_isr</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">level</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">msg_len</span><span class="p">);</span>
+
+<span class="cm">/* 特点:</span>
+<span class="cm"> * - 不使用互斥锁（改用关中断或原子操作）</span>
+<span class="cm"> * - 不使用可重入的格式化（消息需预格式化）</span>
+<span class="cm"> * - Ring buffer 满时直接覆写最旧条目</span>
+<span class="cm"> * - 仅写入内存缓冲区，不触发 Transport 输出</span>
+<span class="cm"> *   （输出由 Logger Task 在中断返回后处理）</span>
+<span class="cm"> */</span>
+</code></pre></div>
+<hr />
+<h2 id="12">12. 日志读取流程<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e3f2fd', 'primaryBorderColor': '#1565c0', 'lineColor': '#43a047'}}}%%
+
+sequenceDiagram
+    participant Client as elogcat / elogd
+    participant API as elog_read API
+    participant Buf as RingLogBuffer
+    participant Filter as LogFilter
+    participant Writer as FileReader / UartReader
+
+    Client-&gt;&gt;API: elog_reader_init(mode, tail, pid_filter)
+    activate API
+    API-&gt;&gt;API: reader = calloc(sizeof(elog_reader_t))
+    API-&gt;&gt;Buf: register_reader(reader)
+    API--&gt;&gt;Client: reader handle
+    deactivate API
+
+    loop 读取循环
+        Client-&gt;&gt;API: elog_reader_read(reader, &amp;msg, timeout_ms)
+        activate API
+
+        API-&gt;&gt;Buf: flush(writer, filter)
+        activate Buf
+
+        loop 遍历缓冲区
+            Buf-&gt;&gt;Buf: lock → 读取 entry
+            Buf-&gt;&gt;Filter: should_log(entry.level, entry.tag)
+            Filter--&gt;&gt;Buf: true / false
+
+            alt should_log == true
+                Buf-&gt;&gt;Writer: write(entry)
+                Writer--&gt;&gt;Buf: len
+            end
+
+            Buf-&gt;&gt;Buf: advance read_pos
+        end
+
+        Buf--&gt;&gt;API: flushed_count
+        deactivate Buf
+
+        alt flushed_count == 0
+            API-&gt;&gt;API: wait on condition_variable&lt;br/&gt;或 poll(timeout_ms)
+            API--&gt;&gt;Client: 0 (timeout, no new logs)
+        else flushed_count &gt; 0
+            API--&gt;&gt;Client: flushed_count
+        end
+        deactivate API
+    end
+
+    Client-&gt;&gt;API: elog_reader_free(reader)
+    activate API
+    API-&gt;&gt;Buf: unregister_reader(reader)
+    API-&gt;&gt;API: free(reader)
+    API--&gt;&gt;Client: done
+    deactivate API
+</code></pre>
+<div class="highlight"><pre><span></span><code>1. elogcat: elog_reader_init(mode=TAIL, tail=100)
+   - 注册为 buffer 的 reader
+   ↓
+2. 读取循环:
+   elog_reader_read(reader, &amp;msg, timeout_ms):
+   a. buf.flush(writer, filter):
+      - 加锁
+      - 从 read_pos 遍历 ring buffer
+      - 对每条 entry 调用 filter.should_log()
+      - 通过过滤的 entry → writer.write()
+      - 更新 read_pos
+      - 解锁
+   b. 如果 flush 返回 0 (无新日志):
+      - wait on condition_variable (timeout_ms)
+      - 超时返回 0
+   c. 如果 flush 返回 N (有 N 条新日志):
+      - 返回 N
+   ↓
+3. elogcat: elog_reader_free(reader)
+   - 注销 reader
+</code></pre></div>
+<h3 id="121-android-logreaderlist">12.1 读者管理（借鉴 Android LogReaderList）<a class="headerlink" href="#121-android-logreaderlist" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elog_reader_thread_t</span><span class="o">*</span><span class="w"> </span><span class="n">readers</span><span class="p">[</span><span class="n">ELOG_MAX_READERS</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">              </span><span class="n">count</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elog_mutex_t</span><span class="w">         </span><span class="n">lock</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">elog_reader_list_t</span><span class="p">;</span>
+
+<span class="cm">/* 新日志到达时唤醒所有等待的读者 */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_reader_list_notify</span><span class="p">(</span><span class="n">elog_reader_list_t</span><span class="o">*</span><span class="w"> </span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">log_mask</span><span class="p">);</span>
+</code></pre></div>
+<hr />
+<h2 id="13-elogd">13. elogd 初始化流程<a class="headerlink" href="#13-elogd" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f3e5f5', 'primaryBorderColor': '#6a1b9a', 'lineColor': '#43a047'}}}%%
+
+sequenceDiagram
+    participant Main as main()
+    participant Buf as RingLogBuffer
+    participant RL as ReaderList
+    participant Cmd as CmdListener
+    participant Listener as LogListener
+    participant Reader as LogReader
+    participant Stats as LogStatistics
+    participant Prune as LogPrune
+    participant Binder as elogd_service
+
+    Main-&gt;&gt;Buf: RingLogBuffer(capacity)
+    activate Buf
+    Buf--&gt;&gt;Main: buf
+    deactivate Buf
+
+    Main-&gt;&gt;RL: ReaderList()
+    activate RL
+    RL--&gt;&gt;Main: reader_list
+    deactivate RL
+
+    Main-&gt;&gt;Stats: LogStatistics()
+    Main-&gt;&gt;Prune: LogPrune(rules)
+
+    rect rgb(227, 242, 253)
+        Note over Main,Binder: 启动 Socket/接口服务
+        Main-&gt;&gt;Cmd: CmdListener(buf, stats, prune)
+        activate Cmd
+        Cmd-&gt;&gt;Cmd: listen("/var/run/elogd.sock", SOCK_STREAM)
+        Note right of Cmd: 命令控制端口&lt;br/&gt;clear/size/stats/prune
+        deactivate Cmd
+
+        Main-&gt;&gt;Listener: LogListener(buf, reader_list)
+        activate Listener
+        Listener-&gt;&gt;Listener: listen("/var/run/elogdw.sock", SOCK_DGRAM)
+        Note right of Listener: 日志写入端口&lt;br/&gt;接收客户端日志
+        deactivate Listener
+
+        Main-&gt;&gt;Reader: LogReader(buf, reader_list)
+        activate Reader
+        Reader-&gt;&gt;Reader: listen("/var/run/elogdr.sock", SOCK_SEQPACKET)
+        Note right of Reader: 日志读取端口&lt;br/&gt;推送给 elogcat
+        deactivate Reader
+    end
+
+    rect rgb(232, 245, 233)
+        Note over Main,Binder: 注册系统服务
+        Main-&gt;&gt;Binder: elogd_native_service_init(reader_list)
+        activate Binder
+        Binder--&gt;&gt;Main: registered
+        deactivate Binder
+    end
+
+    rect rgb(255, 243, 224)
+        Note over Main,Binder: 事件循环
+        loop main event loop
+            Main-&gt;&gt;Cmd: poll(events, timeout)
+            Main-&gt;&gt;Listener: poll(events, timeout)
+            Main-&gt;&gt;Reader: poll(events, timeout)
+
+            Listener--&gt;&gt;Buf: HandleData() → buf.log()
+            Buf-&gt;&gt;RL: NotifyNewLog()
+            RL-&gt;&gt;Reader: TriggerReader()
+            Reader-&gt;&gt;Buf: FlushTo(writer)
+            Buf--&gt;&gt;Reader: entries
+            Reader--&gt;&gt;Main: sendDatav() → elogcat
+        end
+    end
+</code></pre>
+<div class="highlight"><pre><span></span><code>┌─ 创建核心组件 ──────────────────────────┐
+│ RingLogBuffer(256KB)                    │
+│ ReaderList()                            │
+│ LogStatistics()                         │
+│ LogPrune(&quot;~elogd ~crash&quot;)              │
+└──────────────┬──────────────────────────┘
+               ↓
+┌─ 启动服务端口 ──────────────────────────┐
+│ CmdListener  → /var/run/elogd  (STREAM) │ ← 命令控制
+│ LogListener  → /var/run/elogdw (DGRAM)  │ ← 接收日志
+│ LogReader    → /var/run/elogdr (SEQPACKET)│ ← 推送日志
+└──────────────┬──────────────────────────┘
+               ↓
+┌─ 注册系统服务 ──────────────────────────┐
+│ elogd_native_service_register()          │
+└──────────────┬──────────────────────────┘
+               ↓
+┌─ 主事件循环 ────────────────────────────┐
+│ while (running) {                       │
+│     poll(sockets, -1);                  │
+│     // 处理写入请求 → buf.log()          │
+│     // 通知读者   → reader_list.notify() │
+│     // 推送日志   → reader.flush()       │
+│     // 处理命令   → cmd_handler()        │
+│ }                                       │
+└─────────────────────────────────────────┘
+</code></pre></div>
+<hr />
+<h2 id="14">14. 部署方案<a class="headerlink" href="#14" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#fff3e0', 'primaryBorderColor': '#e65100', 'lineColor': '#ff9800'}}}%%
+
+graph TB
+    subgraph MMU["有 MMU 的嵌入式 Linux"]
+        direction TB
+        subgraph USERSPACE["用户空间"]
+            APP_A["App A&lt;br/&gt;libelog.so"]
+            APP_B["App B&lt;br/&gt;libelog.so"]
+            ELOGCAT["elogcat"]
+        end
+
+        subgraph KERNEL["内核空间"]
+            KERN_LOG["klog&lt;br/&gt;printk → /dev/kmsg"]
+        end
+
+        subgraph DAEMON["elogd 守护进程"]
+            LISTEN["LogListener&lt;br/&gt;SOCK_DGRAM"]
+            BUFFER["RingLogBuffer"]
+            READER["LogReader&lt;br/&gt;SOCK_SEQPACKET"]
+            CMD["CmdListener&lt;br/&gt;SOCK_STREAM"]
+            FILE_OUT["FileWriter&lt;br/&gt;/var/log/elog/"]
+        end
+
+        APP_A --&gt;|"writev()&lt;br/&gt;SCM_CREDENTIALS"| LISTEN
+        APP_B --&gt;|"writev()"| LISTEN
+        KERN_LOG --&gt;|"/proc/kmsg"| LISTEN
+        LISTEN --&gt; BUFFER
+        BUFFER --&gt; READER
+        BUFFER --&gt; FILE_OUT
+        READER --&gt;|"push"| ELOGCAT
+        CMD --&gt;|"clear/size/stats"| BUFFER
+
+        SOCKETS["Unix Domain Socket&lt;br/&gt;/var/run/elogd*"]
+
+        style USERSPACE fill:#e8f5e9,stroke:#2e7d32
+        style KERNEL fill:#ffebee,stroke:#c62828
+        style DAEMON fill:#e3f2fd,stroke:#1565c0
+    end
+
+    subgraph NOMMU["无 MMU 的 RTOS / 裸机"]
+        direction TB
+        TASK_A["Task A&lt;br/&gt;elog API (静态链接)"]
+        TASK_B["Task B&lt;br/&gt;elog API (静态链接)"]
+        ISR["ISR Handler&lt;br/&gt;elog_isr()"]
+        BUF_RTOS["RingLogBuffer&lt;br/&gt;全局/静态"]
+        TX_UART["UartTransport&lt;br/&gt;DMA TX"]
+        TX_FILE["FileTransport&lt;br/&gt;LittleFS"]
+        TX_QUEUE["RtosQueueTransport&lt;br/&gt;→ Logger Task"]
+        LOGGER_TASK["Logger Task&lt;br/&gt;低优先级&lt;br/&gt;统一输出"]
+
+        TASK_A --&gt;|"lock-free write"| BUF_RTOS
+        TASK_B --&gt;|"lock-free write"| BUF_RTOS
+        ISR --&gt;|"non-blocking"| BUF_RTOS
+        BUF_RTOS --&gt;|"interrupt"| TX_QUEUE
+        TX_QUEUE --&gt; LOGGER_TASK
+        LOGGER_TASK --&gt; TX_UART
+        LOGGER_TASK --&gt; TX_FILE
+
+        style NOMMU fill:#fff3e0,stroke:#e65100
+    end
+
+    subgraph COMMON["公共组件 (两个场景共享)"]
+        direction LR
+        FILTER["LogFilter&lt;br/&gt;级别/标签过滤"]
+        FMT["LogFormatter&lt;br/&gt;文本/二进制格式化"]
+        STATS["LogStatistics&lt;br/&gt;计数统计"]
+        PRUNE["LogPrune&lt;br/&gt;优先级裁剪"]
+        EVENT["EventTagMap&lt;br/&gt;事件标签映射"]
+        COMPRESS["Compress (可选)&lt;br/&gt;lz4 / miniz"]
+    end
+
+    COMMON -.-&gt;|"静态库"| MMU
+    COMMON -.-&gt;|"静态库"| NOMMU
+</code></pre>
+<h3 id="141-a-mmu-linux">14.1 方案 A: 有 MMU（嵌入式 Linux）<a class="headerlink" href="#141-a-mmu-linux" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────┐
+│         用户空间                  │
+│  App A (libelog.so)              │
+│  App B (libelog.so)              │
+│  elogcat                         │
+├─────────────────────────────────┤
+│         elogd 守护进程            │
+│  LogListener ← writev()          │
+│  RingLogBuffer                   │
+│  LogReader   → push to elogcat   │
+│  FileWriter  → /var/log/elog/    │
+├─────────────────────────────────┤
+│         内核空间                  │
+│  klog (printk → /proc/kmsg)     │
+└─────────────────────────────────┘
+  IPC: Unix Domain Socket + SCM_CREDENTIALS
+</code></pre></div>
+<ul>
+<li>多进程通过 Unix Socket 写入 elogd</li>
+<li>elogd 统一管理缓冲区、裁剪、持久化</li>
+<li>借鉴 Android logd 完整架构</li>
+</ul>
+<h3 id="142-b-mmurtos">14.2 方案 B: 无 MMU（RTOS / 裸机）<a class="headerlink" href="#142-b-mmurtos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────┐
+│  Task A  ──┐                    │
+│  Task B  ──┤── RingLogBuffer ──┐ │
+│  ISR    ──┘   (全局静态)       │ │
+│                                │ │
+│            Logger Task ────────┘ │
+│              ├─ UartTransport    │
+│              ├─ FileTransport    │
+│              └─ NetTransport     │
+└─────────────────────────────────┘
+  同步: Mutex / 临界区 / 关中断
+  通信: RTOS Queue (ISR → Logger)
+</code></pre></div>
+<ul>
+<li>无守护进程，所有组件静态链接到固件</li>
+<li>ISR 使用非阻塞写入（关中断保护）</li>
+<li>Logger Task 低优先级运行，统一处理输出</li>
+<li>无 Unix Socket，通过全局 buffer + RTOS 队列通信</li>
+</ul>
+<h3 id="143-c">14.3 方案 C: 最小配置（极小资源）<a class="headerlink" href="#143-c" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>  仅启用:
+  - RingLogBuffer (4KB, 静态数组)
+  - UartTransport (无 DMA)
+  - LogFilter (仅全局级别)
+  - 无裁剪，无统计，无持久化
+
+  ROM: ~4KB  RAM: ~6KB
+</code></pre></div>
+<hr />
+<h2 id="15">15. 编译期配置<a class="headerlink" href="#15" title="Permanent link">&para;</a></h2>
+<p>通过 <code>elog_config.h</code> 或 Kconfig 控制，借鉴 Android logd 的编译选项。</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* ===== 缓冲区配置 ===== */</span>
+<span class="cp">#define ELOG_BUFFER_SIZE          65536    </span><span class="cm">/* Ring buffer 大小 (bytes) */</span>
+<span class="cp">#define ELOG_MAX_MSG_LEN          1024     </span><span class="cm">/* 单条日志最大长度 */</span>
+<span class="cp">#define ELOG_MAX_TAG_LEN          32       </span><span class="cm">/* 标签最大长度 */</span>
+
+<span class="cm">/* ===== 功能裁剪 ===== */</span>
+<span class="cp">#define ELOG_COLOR_ENABLE         1        </span><span class="cm">/* 彩色输出 */</span>
+<span class="cp">#define ELOG_TIMESTAMP_ENABLE     1        </span><span class="cm">/* 时间戳 */</span>
+<span class="cp">#define ELOG_SOURCE_LOCATION      0        </span><span class="cm">/* 源码位置 (file:line) */</span>
+<span class="cp">#define ELOG_EVENT_ENABLE         1        </span><span class="cm">/* Event 日志 */</span>
+<span class="cp">#define ELOG_STATS_ENABLE         1        </span><span class="cm">/* 统计功能 */</span>
+<span class="cp">#define ELOG_PRUNE_ENABLE         0        </span><span class="cm">/* 优先级裁剪 */</span>
+
+<span class="cm">/* ===== 传输层裁剪 ===== */</span>
+<span class="cp">#define ELOG_TRANSPORT_UART       1        </span><span class="cm">/* UART 输出 */</span>
+<span class="cp">#define ELOG_TRANSPORT_FILE       1        </span><span class="cm">/* 文件输出 */</span>
+<span class="cp">#define ELOG_TRANSPORT_NET        0        </span><span class="cm">/* 网络输出 */</span>
+<span class="cp">#define ELOG_TRANSPORT_CAN        0        </span><span class="cm">/* CAN 总线输出 */</span>
+<span class="cp">#define ELOG_TRANSPORT_RTOS_QUEUE 0        </span><span class="cm">/* RTOS 队列 */</span>
+
+<span class="cm">/* ===== 守护进程（仅 Linux） ===== */</span>
+<span class="cp">#define ELOG_DAEMON_ENABLE        1        </span><span class="cm">/* 编译 elogd */</span>
+<span class="cp">#define ELOG_MAX_READERS          8        </span><span class="cm">/* 最大同时读者数 */</span>
+<span class="cp">#define ELOG_MAX_TRANSPORTS       4        </span><span class="cm">/* 最大传输目标数 */</span>
+
+<span class="cm">/* ===== 默认值 ===== */</span>
+<span class="cp">#define ELOG_LEVEL_DEFAULT        ELOG_LEVEL_DEBUG</span>
+<span class="cp">#define ELOG_FILE_MAX_SIZE        (256 * 1024)  </span><span class="cm">/* 256KB */</span>
+<span class="cp">#define ELOG_FILE_MAX_FILES       4               </span><span class="cm">/* 4 个滚动文件 */</span>
+</code></pre></div>
+<hr />
+<h2 id="16-api">16. 运行时 API<a class="headerlink" href="#16-api" title="Permanent link">&para;</a></h2>
+<h3 id="161">16.1 初始化与配置<a class="headerlink" href="#161" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 初始化（RTOS/裸机方案必须调用，Linux elogd 方案可选） */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_init</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_deinit</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="cm">/* 设置全局日志级别 */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_set_level</span><span class="p">(</span><span class="n">elog_level_t</span><span class="w"> </span><span class="n">level</span><span class="p">);</span>
+<span class="n">elog_level_t</span><span class="w"> </span><span class="nf">elog_get_level</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="cm">/* 设置标签级别 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_set_tag_level</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">elog_level_t</span><span class="w"> </span><span class="n">level</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_reset_tag_level</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">);</span>
+
+<span class="cm">/* 替换日志后端 */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_set_logger</span><span class="p">(</span><span class="n">elog_logger_func_t</span><span class="w"> </span><span class="n">func</span><span class="p">);</span>
+
+<span class="cm">/* 注册/注销传输目标 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_add_transport</span><span class="p">(</span><span class="n">elog_transport_t</span><span class="o">*</span><span class="w"> </span><span class="n">transport</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_remove_transport</span><span class="p">(</span><span class="n">elog_transport_t</span><span class="o">*</span><span class="w"> </span><span class="n">transport</span><span class="p">);</span>
+
+<span class="cm">/* 裁剪规则管理 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_prune_set_rules</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">rules</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_prune_get_rules</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="162">16.2 日志输出<a class="headerlink" href="#162" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 基础 API */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_write</span><span class="p">(</span><span class="n">elog_level_t</span><span class="w"> </span><span class="n">level</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_vwrite</span><span class="p">(</span><span class="n">elog_level_t</span><span class="w"> </span><span class="n">level</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="kt">va_list</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span>
+
+<span class="cm">/* 级别快捷方式 */</span>
+<span class="cp">#define elog_debug(tag, fmt, ...)   elog_write(ELOG_LEVEL_DEBUG, tag, fmt, ##__VA_ARGS__)</span>
+<span class="cp">#define elog_info(tag, fmt, ...)    elog_write(ELOG_LEVEL_INFO, tag, fmt, ##__VA_ARGS__)</span>
+<span class="cp">#define elog_warn(tag, fmt, ...)    elog_write(ELOG_LEVEL_WARN, tag, fmt, ##__VA_ARGS__)</span>
+<span class="cp">#define elog_error(tag, fmt, ...)   elog_write(ELOG_LEVEL_ERROR, tag, fmt, ##__VA_ARGS__)</span>
+<span class="cp">#define elog_fatal(tag, fmt, ...)   elog_write(ELOG_LEVEL_FATAL, tag, fmt, ##__VA_ARGS__)</span>
+
+<span class="cm">/* 宏版本（编译期级别过滤，零开销） */</span>
+<span class="cp">#define ELOG_D(tag, fmt, ...)  do { \</span>
+<span class="cp">    if (ELOG_LEVEL_DEBUG &gt;= ELOG_LEVEL_DEFAULT) \</span>
+<span class="cp">        elog_write(ELOG_LEVEL_DEBUG, tag, fmt, ##__VA_ARGS__); \</span>
+<span class="cp">} while(0)</span>
+
+<span class="cp">#define ELOG_I(tag, fmt, ...)  do { \</span>
+<span class="cp">    if (ELOG_LEVEL_INFO &gt;= ELOG_LEVEL_DEFAULT) \</span>
+<span class="cp">        elog_write(ELOG_LEVEL_INFO, tag, fmt, ##__VA_ARGS__); \</span>
+<span class="cp">} while(0)</span>
+
+<span class="cm">/* ISR 安全版本 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_write_isr</span><span class="p">(</span><span class="n">elog_level_t</span><span class="w"> </span><span class="n">level</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span>
+<span class="w">                   </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">msg_len</span><span class="p">);</span>
+
+<span class="cm">/* 断言 */</span>
+<span class="cp">#define elog_assert(cond) do { \</span>
+<span class="cp">    if (!(cond)) { \</span>
+<span class="cp">        elog_write(ELOG_LEVEL_FATAL, &quot;assert&quot;, \</span>
+<span class="cp">                   &quot;%s failed at %s:%d&quot;, #cond, __FILE__, __LINE__); \</span>
+<span class="cp">        elog_assert_hook(); \</span>
+<span class="cp">    } \</span>
+<span class="cp">} while(0)</span>
+</code></pre></div>
+<h3 id="163">16.3 日志读取<a class="headerlink" href="#163" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_reader</span><span class="w"> </span><span class="n">elog_reader_t</span><span class="p">;</span>
+
+<span class="cm">/* 创建/销毁 reader */</span>
+<span class="n">elog_reader_t</span><span class="o">*</span><span class="w"> </span><span class="nf">elog_reader_create</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">mode</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">tail</span><span class="p">,</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">pid</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_reader_destroy</span><span class="p">(</span><span class="n">elog_reader_t</span><span class="o">*</span><span class="w"> </span><span class="n">reader</span><span class="p">);</span>
+
+<span class="cm">/* 读取日志 (阻塞/非阻塞) */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_reader_read</span><span class="p">(</span><span class="n">elog_reader_t</span><span class="o">*</span><span class="w"> </span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">timeout_ms</span><span class="p">);</span>
+
+<span class="cm">/* 读取模式 */</span>
+<span class="cp">#define ELOG_READ_NONBLOCK  0x01</span>
+<span class="cp">#define ELOG_READ_PSTORE    0x02    </span><span class="cm">/* 从 pstore 恢复上次启动日志 */</span>
+<span class="cp">#define ELOG_READ_BINARY    0x04    </span><span class="cm">/* 二进制格式 */</span>
+</code></pre></div>
+<h3 id="164-event">16.4 Event 日志<a class="headerlink" href="#164-event" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">elog_event_ctx</span><span class="w"> </span><span class="n">elog_event_ctx_t</span><span class="p">;</span>
+
+<span class="cm">/* 创建 Event 上下文 */</span>
+<span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="nf">elog_event_create</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">event_id</span><span class="p">);</span>
+
+<span class="cm">/* 添加参数（链式调用） */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_event_add_int32</span><span class="p">(</span><span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_event_add_int64</span><span class="p">(</span><span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_event_add_float</span><span class="p">(</span><span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_event_add_string</span><span class="p">(</span><span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">str</span><span class="p">);</span>
+
+<span class="cm">/* 提交 Event */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">elog_event_submit</span><span class="p">(</span><span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">elog_event_destroy</span><span class="p">(</span><span class="n">elog_event_ctx_t</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+
+<span class="cm">/* 使用示例:</span>
+<span class="cm"> * elog_event_ctx_t* e = elog_event_create(EVENT_SENSOR_READING);</span>
+<span class="cm"> * elog_event_add_int32(e, sensor_id);</span>
+<span class="cm"> * elog_event_add_float(e, temperature);</span>
+<span class="cm"> * elog_event_add_string(e, unit);</span>
+<span class="cm"> * elog_event_submit(e);</span>
+<span class="cm"> * elog_event_destroy(e);</span>
+<span class="cm"> */</span>
+</code></pre></div>
+<hr />
+<h2 id="17-android-logging">17. 与 Android logging 的设计对照<a class="headerlink" href="#17-android-logging" title="Permanent link">&para;</a></h2>
+<h3 id="171">17.1 架构对照表<a class="headerlink" href="#171" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>Android</th>
+<th>elog</th>
+<th>适配说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户端库</td>
+<td>liblog.so</td>
+<td>libelog.a / libelog.so</td>
+<td>可静态/动态链接</td>
+</tr>
+<tr>
+<td>守护进程</td>
+<td>logd</td>
+<td>elogd</td>
+<td>仅 Linux 部署</td>
+</tr>
+<tr>
+<td>日志工具</td>
+<td>logcat</td>
+<td>elogcat</td>
+<td>多缓冲区 + 着色</td>
+</tr>
+<tr>
+<td>写入 Socket</td>
+<td>/dev/socket/logdw</td>
+<td>/var/run/elogdw</td>
+<td>Unix DGRAM</td>
+</tr>
+<tr>
+<td>读取 Socket</td>
+<td>/dev/socket/logdr</td>
+<td>/var/run/elogdr</td>
+<td>Unix SEQPACKET</td>
+</tr>
+<tr>
+<td>命令 Socket</td>
+<td>/dev/socket/logd</td>
+<td>/var/run/elogd</td>
+<td>Unix STREAM</td>
+</tr>
+<tr>
+<td>缓冲区</td>
+<td>LogBuffer (heap)</td>
+<td>RingLogBuffer (static)</td>
+<td>堆→静态</td>
+</tr>
+<tr>
+<td>条目格式</td>
+<td>LogBufferElement</td>
+<td>elog_msg_header_t</td>
+<td>packed struct</td>
+</tr>
+<tr>
+<td>传输分发</td>
+<td>write_to_log() 双路</td>
+<td>TransportRegistry 多路</td>
+<td>注册表模式</td>
+</tr>
+<tr>
+<td>函数指针分发</td>
+<td>__android_logger_function</td>
+<td>elog_logger_func_t</td>
+<td>策略模式</td>
+</tr>
+<tr>
+<td>延迟初始化</td>
+<td>atomic_int CAS</td>
+<td>atomic_int CAS / 关中断</td>
+<td>两种实现</td>
+</tr>
+<tr>
+<td>优先级裁剪</td>
+<td>PruneList (~ ~!)</td>
+<td>LogPrune (~ rules)</td>
+<td>保留语法</td>
+</tr>
+<tr>
+<td>统计</td>
+<td>LogStatistics (hash)</td>
+<td>LogStatistics (array)</td>
+<td>简化维度</td>
+</tr>
+<tr>
+<td>Event 日志</td>
+<td>TLV binary</td>
+<td>TLV binary</td>
+<td>保留格式</td>
+</tr>
+<tr>
+<td>持久化</td>
+<td>pmsg0 (pstore)</td>
+<td>Flash/NVRAM/pstore</td>
+<td>多后端</td>
+</tr>
+<tr>
+<td>身份传递</td>
+<td>SCM_CREDENTIALS</td>
+<td>可选 SCM_CREDS / pid 参数</td>
+<td>简化</td>
+</tr>
+<tr>
+<td>慢读者处理</td>
+<td>KickReader (3级)</td>
+<td>丢弃/断开 (2级)</td>
+<td>简化</td>
+</tr>
+<tr>
+<td>压缩</td>
+<td>Zstd/Zlib</td>
+<td>可选 miniz/lz4</td>
+<td>默认关闭</td>
+</tr>
+</tbody>
+</table>
+<h3 id="172">17.2 关键设计差异分析<a class="headerlink" href="#172" title="Permanent link">&para;</a></h3>
+<p><strong>为什么用 Ring Buffer 替代 Chunk 链表?</strong></p>
+<p>Android <code>SerializedLogBuffer</code> 使用 <code>list&lt;SerializedLogChunk&gt;</code>，每个 Chunk 堆分配。这在有 MMU + 虚拟内存 + 内存充足的 Android 设备上合理。嵌入式设备:
+- 无 MMU → 无虚拟内存，堆碎片致命
+- RAM 有限 → 固定大小 Ring Buffer 可预测内存
+- 实时要求 → 连续内存缓存友好</p>
+<p><strong>为什么用函数指针替代 C++ 虚函数?</strong></p>
+<ul>
+<li>避免 C++ 运行时开销（vtable、RTTI、异常处理）</li>
+<li>支持 C 编译器（许多嵌入式工具链 C++ 支持不完整）</li>
+<li>函数指针在 bare-metal 中更可控</li>
+</ul>
+<p><strong>为什么 ISR 路径不走 Transport?</strong></p>
+<p>Android 没有 ISR 概念（用户空间不能关中断）。嵌入式 ISR 中:
+- 不能阻塞（不能调用 write() / send()）
+- 执行时间必须极短
+- 所以 ISR 只写 Ring Buffer，Logger Task 负责输出</p>
+<hr />
+<h2 id="_2">附录: 图表索引<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>图表</th>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分层架构图</td>
+<td><a href="../embedded_logging_arch.mmd"><code>embedded_logging_arch.mmd</code></a></td>
+<td>6 层架构总览</td>
+</tr>
+<tr>
+<td>类体系图</td>
+<td><a href="../embedded_logging_class.mmd"><code>embedded_logging_class.mmd</code></a></td>
+<td>完整 C/C++ 类与结构体关系</td>
+</tr>
+<tr>
+<td>数据流图</td>
+<td><a href="../embedded_logging_dataflow.mmd"><code>embedded_logging_dataflow.mmd</code></a></td>
+<td>端到端数据流</td>
+</tr>
+<tr>
+<td>写入时序图</td>
+<td><a href="../embedded_logging_write_seq.mmd"><code>embedded_logging_write_seq.mmd</code></a></td>
+<td>日志写入完整调用链</td>
+</tr>
+<tr>
+<td>读取时序图</td>
+<td><a href="../embedded_logging_read_seq.mmd"><code>embedded_logging_read_seq.mmd</code></a></td>
+<td>日志读取循环</td>
+</tr>
+<tr>
+<td>初始化时序图</td>
+<td><a href="../embedded_logging_init_seq.mmd"><code>embedded_logging_init_seq.mmd</code></a></td>
+<td>elogd 启动序列</td>
+</tr>
+<tr>
+<td>部署场景图</td>
+<td><a href="../embedded_logging_deployment.mmd"><code>embedded_logging_deployment.mmd</code></a></td>
+<td>Linux vs RTOS 部署对比</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

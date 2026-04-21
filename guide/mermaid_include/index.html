@@ -1,0 +1,1622 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../../arm/smmu/SMMU_Architecture_and_Design/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Mermaid 图表引用 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mermaid" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Mermaid 图表引用
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../arm/smmu/SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../src/packages/sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../src/spec_research/mpam/MPAM_research/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  spec_research
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本用法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="基本用法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例：引用同目录下的 .mmd 文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mmd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例：引用其他目录的 .mmd 文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mmd_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .mmd 文件编写规范
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置参考
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arm/smmu/SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arm/smmu/SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arm/smmu/SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arm/smmu/SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../src/packages/sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../src/packages/embeded_logging/feature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_feature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../src/packages/embeded_logging/design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../src/packages/embeded_logging/integration_test_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_integration_test_guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../src/packages/embeded_logging/bug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_bug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../src/packages/google_esh/examples/emulation/armv8A-64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_esh_armv8A-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    spec_research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    spec_research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../src/spec_research/mpam/MPAM_research/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原理
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本用法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="基本用法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例：引用同目录下的 .mmd 文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mmd_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例：引用其他目录的 .mmd 文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mmd_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .mmd 文件编写规范
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置参考
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="mermaid">Mermaid 图表引用<a class="headerlink" href="#mermaid" title="Permanent link">&para;</a></h1>
+<p>本文档介绍如何在 Markdown 文件中引用外部 <code>.mmd</code> 文件，使其在 MkDocs 编译后以图形方式渲染。</p>
+<hr />
+<h2 id="_1">原理<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>通过 <code>pymdownx.snippets</code> + <code>pymdownx.superfences</code> 组合实现：</p>
+<ol>
+<li><strong><code>pymdownx.snippets</code></strong>（预处理器）在编译早期将 <code>--8&lt;-- "filename"</code> 替换为文件内容</li>
+<li><strong><code>pymdownx.superfences</code></strong> 随后将包含 mermaid 内容的代码块渲染为 <code>&lt;pre class="mermaid"&gt;</code>，由浏览器端 Mermaid.js 绘制图形</li>
+</ol>
+<h2 id="_2">基本用法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>在 Markdown 文件中使用以下语法：</p>
+<div class="highlight"><pre><span></span><code><span class="sb">```mermaid</span>
+<span class="s">%%{init: {&#39;theme&#39;: &#39;base&#39;, &#39;themeVariables&#39;: {&#39;primaryColor&#39;: &#39;#e8f5e9&#39;, &#39;primaryBorderColor&#39;: &#39;#2e7d32&#39;, &#39;primaryTextColor&#39;: &#39;#1b5e20&#39;, &#39;lineColor&#39;: &#39;#43a047&#39;, &#39;secondaryColor&#39;: &#39;#fff3e0&#39;, &#39;tertiaryColor&#39;: &#39;#e3f2fd&#39;}}}%%</span>
+
+<span class="s">graph TB</span>
+<span class="s">    subgraph APP[&quot;应用层 Application Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        API[&quot;elog_api.h&lt;br/&gt;elog_debug/elog_info/elog_warn/elog_error&lt;br/&gt;elog_event_begin/end&lt;br/&gt;elog_assert&quot;]</span>
+<span class="s">        MACRO[&quot;ELOG_D / ELOG_I / ELOG_W / ELOG_E&lt;br/&gt;ELOG_TAG_D(tag, fmt, ...)&lt;br/&gt;ELOG_EVENT(event_id, ...)&quot;]</span>
+<span class="s">        API --- MACRO</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph CORE[&quot;核心层 Core Layer&quot;]</span>
+<span class="s">        direction TB</span>
+<span class="s">        MSG[&quot;LogMessage&lt;br/&gt;─────────────────&lt;br/&gt;log_id: uint8_t&lt;br/&gt;level: uint8_t&lt;br/&gt;timestamp: uint32_t&lt;br/&gt;tag: const char*&lt;br/&gt;file: const char*&lt;br/&gt;line: uint16_t&lt;br/&gt;pid: uint16_t&lt;br/&gt;tid: uint16_t&lt;br/&gt;msg: char[]&quot;]</span>
+
+<span class="s">        DISPATCH[&quot;Dispatcher&lt;br/&gt;─────────────────&lt;br/&gt;write_dispatcher()&lt;br/&gt;─────────────────&lt;br/&gt;logger_function_t*&lt;br/&gt;注册/替换日志后端&quot;]</span>
+
+<span class="s">        FILTER[&quot;LogFilter&lt;br/&gt;─────────────────&lt;br/&gt;global_level: uint8_t&lt;br/&gt;tag_level_map[]&lt;br/&gt;module_level_map[]&lt;br/&gt;─────────────────&lt;br/&gt;should_log()&lt;br/&gt;set_level()&quot;]</span>
+
+<span class="s">        FMT[&quot;Formatter&lt;br/&gt;─────────────────&lt;br/&gt;format_text()&lt;br/&gt;format_binary()&lt;br/&gt;─────────────────&lt;br/&gt;时间戳格式化&lt;br/&gt;彩色输出&lt;br/&gt;源码位置&quot;]</span>
+
+<span class="s">        DISPATCH --- MSG</span>
+<span class="s">        MSG --- FILTER</span>
+<span class="s">        FILTER --- FMT</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph BUFFER[&quot;缓冲层 Buffer Layer&quot;]</span>
+<span class="s">        direction TB</span>
+<span class="s">        BUF_IFACE[&quot;LogBuffer (抽象接口)&lt;br/&gt;─────────────────&lt;br/&gt;log()&lt;br/&gt;flush()&lt;br/&gt;clear()&lt;br/&gt;size() / capacity()&quot;]</span>
+
+<span class="s">        RING_BUF[&quot;RingLogBuffer&lt;br/&gt;─────────────────&lt;br/&gt;ring_buffer_t&lt;br/&gt;动态/静态分配&lt;br/&gt;无锁 SPSC&lt;br/&gt;自动覆写/阻塞&quot;]</span>
+
+<span class="s">        SHM_BUF[&quot;ShmLogBuffer&lt;br/&gt;─────────────────&lt;br/&gt;共享内存区域&lt;br/&gt;多进程安全&lt;br/&gt;POSIX shm&quot;]</span>
+
+<span class="s">        BUF_IFACE --- RING_BUF</span>
+<span class="s">        BUF_IFACE --- SHM_BUF</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph TRANSPORT[&quot;传输层 Transport Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        T_IFACE[&quot;LogTransport (抽象接口)&lt;br/&gt;─────────────────&lt;br/&gt;open() / close()&lt;br/&gt;write(entry) / flush()&quot;]</span>
+
+<span class="s">        T_UART[&quot;UartTransport&lt;br/&gt;─────────────────&lt;br/&gt;UART / serial&lt;br/&gt;DMA 零拷贝&lt;br/&gt;波特率自适应&quot;]</span>
+
+<span class="s">        T_FILE[&quot;FileTransport&lt;br/&gt;─────────────────&lt;br/&gt;文件系统&lt;br/&gt;滚动日志&lt;br/&gt;可选压缩&quot;]</span>
+
+<span class="s">        T_NET[&quot;NetTransport&lt;br/&gt;─────────────────&lt;br/&gt;UDP/TCP&lt;br/&gt;远程 syslog&lt;br/&gt;TLS 可选&quot;]</span>
+
+<span class="s">        T_CAN[&quot;CanTransport&lt;br/&gt;─────────────────&lt;br/&gt;CAN 总线&lt;br/&gt;UDS 诊断&lt;br/&gt;ISO-TP&quot;]</span>
+
+<span class="s">        T_RTOS[&quot;RtosQueueTransport&lt;br/&gt;─────────────────&lt;br/&gt;RTOS 消息队列&lt;br/&gt;FreeRTOS/CMSIS-RTOS&lt;br/&gt;线程间传递&quot;]</span>
+
+<span class="s">        T_IFACE --- T_UART</span>
+<span class="s">        T_IFACE --- T_FILE</span>
+<span class="s">        T_IFACE --- T_NET</span>
+<span class="s">        T_IFACE --- T_CAN</span>
+<span class="s">        T_IFACE --- T_RTOS</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph BACKEND[&quot;后端服务层 Backend Service Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        DAEMON[&quot;elogd 守护进程&lt;br/&gt;─────────────────&lt;br/&gt;多源汇聚&lt;br/&gt;优先级裁剪&lt;br/&gt;统一输出&quot;]</span>
+
+<span class="s">        LOGCAT[&quot;elogcat CLI&lt;br/&gt;─────────────────&lt;br/&gt;多缓冲区读取&lt;br/&gt;过滤/着色/格式化&quot;]</span>
+
+<span class="s">        COLLECTOR[&quot;日志采集器&lt;br/&gt;─────────────────&lt;br/&gt;远程上报&lt;br/&gt;OTA 配套&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph STORAGE[&quot;持久化层 Storage Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        FS[&quot;文件系统&lt;br/&gt;─────────────────&lt;br/&gt;FAT32 / LittleFS&lt;br/&gt;滚动策略&lt;br/&gt;可选压缩&quot;]</span>
+
+<span class="s">        PSTORE[&quot;pstore / NVRAM&lt;br/&gt;─────────────────&lt;br/&gt;掉电保持&lt;br/&gt;关键日志&lt;br/&gt;崩溃恢复&quot;]</span>
+
+<span class="s">        FLASH[&quot;Flash 环形区&lt;br/&gt;─────────────────&lt;br/&gt;原始分区&lt;br/&gt;磨损均衡&lt;br/&gt;断电安全&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph CONFIG[&quot;配置层 Config Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        COMPILE[&quot;编译期配置&lt;br/&gt;─────────────────&lt;br/&gt;ELOG_MAX_TAG_LEN&lt;br/&gt;ELOG_MAX_MSG_LEN&lt;br/&gt;ELOG_BUFFER_SIZE&lt;br/&gt;ELOG_LEVEL_DEFAULT&lt;br/&gt;ELOG_COLOR_ENABLE&quot;]</span>
+
+<span class="s">        RUNTIME[&quot;运行时配置&lt;br/&gt;─────────────────&lt;br/&gt;动态级别调整&lt;br/&gt;模块开关&lt;br/&gt;传输目标切换&lt;br/&gt;缓冲区大小调整&quot;]</span>
+
+<span class="s">        COMPILE --- RUNTIME</span>
+<span class="s">    end</span>
+
+<span class="s">    APP --&gt;|调用| CORE</span>
+<span class="s">    CORE --&gt;|写入| BUFFER</span>
+<span class="s">    BUFFER --&gt;|分发| TRANSPORT</span>
+<span class="s">    TRANSPORT --&gt;|输出| STORAGE</span>
+<span class="s">    TRANSPORT --&gt;|网络| BACKEND</span>
+<span class="s">    BACKEND --&gt;|采集| STORAGE</span>
+<span class="s">    CONFIG -.-&gt;|编译期宏| CORE</span>
+<span class="s">    CONFIG -.-&gt;|编译期宏| BUFFER</span>
+<span class="s">    CONFIG -.-&gt;|运行时 API| CORE</span>
+
+<span class="s">    style APP fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px</span>
+<span class="s">    style CORE fill:#fff8e1,stroke:#f57f17,stroke-width:2px</span>
+<span class="s">    style BUFFER fill:#e3f2fd,stroke:#1565c0,stroke-width:2px</span>
+<span class="s">    style TRANSPORT fill:#fce4ec,stroke:#c62828,stroke-width:2px</span>
+<span class="s">    style BACKEND fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px</span>
+<span class="s">    style STORAGE fill:#efebe9,stroke:#4e342e,stroke-width:2px</span>
+<span class="s">    style CONFIG fill:#e0f7fa,stroke:#00838f,stroke-width:2px,stroke-dasharray:5 5</span>
+
+<span class="sb">```</span>
+</code></pre></div>
+<h3 id="mmd">示例：引用同目录下的 .mmd 文件<a class="headerlink" href="#mmd" title="Permanent link">&para;</a></h3>
+<p>假设 <code>.mmd</code> 文件与 <code>.md</code> 文件在同一目录（如 <code>src/packages/embeded_logging/</code>）下：</p>
+<div class="highlight"><pre><span></span><code><span class="sb">```mermaid</span>
+<span class="s">%%{init: {&#39;theme&#39;: &#39;base&#39;, &#39;themeVariables&#39;: {&#39;primaryColor&#39;: &#39;#e8f5e9&#39;, &#39;primaryBorderColor&#39;: &#39;#2e7d32&#39;, &#39;primaryTextColor&#39;: &#39;#1b5e20&#39;, &#39;lineColor&#39;: &#39;#43a047&#39;, &#39;secondaryColor&#39;: &#39;#fff3e0&#39;, &#39;tertiaryColor&#39;: &#39;#e3f2fd&#39;}}}%%</span>
+
+<span class="s">graph TB</span>
+<span class="s">    subgraph APP[&quot;应用层 Application Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        API[&quot;elog_api.h&lt;br/&gt;elog_debug/elog_info/elog_warn/elog_error&lt;br/&gt;elog_event_begin/end&lt;br/&gt;elog_assert&quot;]</span>
+<span class="s">        MACRO[&quot;ELOG_D / ELOG_I / ELOG_W / ELOG_E&lt;br/&gt;ELOG_TAG_D(tag, fmt, ...)&lt;br/&gt;ELOG_EVENT(event_id, ...)&quot;]</span>
+<span class="s">        API --- MACRO</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph CORE[&quot;核心层 Core Layer&quot;]</span>
+<span class="s">        direction TB</span>
+<span class="s">        MSG[&quot;LogMessage&lt;br/&gt;─────────────────&lt;br/&gt;log_id: uint8_t&lt;br/&gt;level: uint8_t&lt;br/&gt;timestamp: uint32_t&lt;br/&gt;tag: const char*&lt;br/&gt;file: const char*&lt;br/&gt;line: uint16_t&lt;br/&gt;pid: uint16_t&lt;br/&gt;tid: uint16_t&lt;br/&gt;msg: char[]&quot;]</span>
+
+<span class="s">        DISPATCH[&quot;Dispatcher&lt;br/&gt;─────────────────&lt;br/&gt;write_dispatcher()&lt;br/&gt;─────────────────&lt;br/&gt;logger_function_t*&lt;br/&gt;注册/替换日志后端&quot;]</span>
+
+<span class="s">        FILTER[&quot;LogFilter&lt;br/&gt;─────────────────&lt;br/&gt;global_level: uint8_t&lt;br/&gt;tag_level_map[]&lt;br/&gt;module_level_map[]&lt;br/&gt;─────────────────&lt;br/&gt;should_log()&lt;br/&gt;set_level()&quot;]</span>
+
+<span class="s">        FMT[&quot;Formatter&lt;br/&gt;─────────────────&lt;br/&gt;format_text()&lt;br/&gt;format_binary()&lt;br/&gt;─────────────────&lt;br/&gt;时间戳格式化&lt;br/&gt;彩色输出&lt;br/&gt;源码位置&quot;]</span>
+
+<span class="s">        DISPATCH --- MSG</span>
+<span class="s">        MSG --- FILTER</span>
+<span class="s">        FILTER --- FMT</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph BUFFER[&quot;缓冲层 Buffer Layer&quot;]</span>
+<span class="s">        direction TB</span>
+<span class="s">        BUF_IFACE[&quot;LogBuffer (抽象接口)&lt;br/&gt;─────────────────&lt;br/&gt;log()&lt;br/&gt;flush()&lt;br/&gt;clear()&lt;br/&gt;size() / capacity()&quot;]</span>
+
+<span class="s">        RING_BUF[&quot;RingLogBuffer&lt;br/&gt;─────────────────&lt;br/&gt;ring_buffer_t&lt;br/&gt;动态/静态分配&lt;br/&gt;无锁 SPSC&lt;br/&gt;自动覆写/阻塞&quot;]</span>
+
+<span class="s">        SHM_BUF[&quot;ShmLogBuffer&lt;br/&gt;─────────────────&lt;br/&gt;共享内存区域&lt;br/&gt;多进程安全&lt;br/&gt;POSIX shm&quot;]</span>
+
+<span class="s">        BUF_IFACE --- RING_BUF</span>
+<span class="s">        BUF_IFACE --- SHM_BUF</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph TRANSPORT[&quot;传输层 Transport Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        T_IFACE[&quot;LogTransport (抽象接口)&lt;br/&gt;─────────────────&lt;br/&gt;open() / close()&lt;br/&gt;write(entry) / flush()&quot;]</span>
+
+<span class="s">        T_UART[&quot;UartTransport&lt;br/&gt;─────────────────&lt;br/&gt;UART / serial&lt;br/&gt;DMA 零拷贝&lt;br/&gt;波特率自适应&quot;]</span>
+
+<span class="s">        T_FILE[&quot;FileTransport&lt;br/&gt;─────────────────&lt;br/&gt;文件系统&lt;br/&gt;滚动日志&lt;br/&gt;可选压缩&quot;]</span>
+
+<span class="s">        T_NET[&quot;NetTransport&lt;br/&gt;─────────────────&lt;br/&gt;UDP/TCP&lt;br/&gt;远程 syslog&lt;br/&gt;TLS 可选&quot;]</span>
+
+<span class="s">        T_CAN[&quot;CanTransport&lt;br/&gt;─────────────────&lt;br/&gt;CAN 总线&lt;br/&gt;UDS 诊断&lt;br/&gt;ISO-TP&quot;]</span>
+
+<span class="s">        T_RTOS[&quot;RtosQueueTransport&lt;br/&gt;─────────────────&lt;br/&gt;RTOS 消息队列&lt;br/&gt;FreeRTOS/CMSIS-RTOS&lt;br/&gt;线程间传递&quot;]</span>
+
+<span class="s">        T_IFACE --- T_UART</span>
+<span class="s">        T_IFACE --- T_FILE</span>
+<span class="s">        T_IFACE --- T_NET</span>
+<span class="s">        T_IFACE --- T_CAN</span>
+<span class="s">        T_IFACE --- T_RTOS</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph BACKEND[&quot;后端服务层 Backend Service Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        DAEMON[&quot;elogd 守护进程&lt;br/&gt;─────────────────&lt;br/&gt;多源汇聚&lt;br/&gt;优先级裁剪&lt;br/&gt;统一输出&quot;]</span>
+
+<span class="s">        LOGCAT[&quot;elogcat CLI&lt;br/&gt;─────────────────&lt;br/&gt;多缓冲区读取&lt;br/&gt;过滤/着色/格式化&quot;]</span>
+
+<span class="s">        COLLECTOR[&quot;日志采集器&lt;br/&gt;─────────────────&lt;br/&gt;远程上报&lt;br/&gt;OTA 配套&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph STORAGE[&quot;持久化层 Storage Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        FS[&quot;文件系统&lt;br/&gt;─────────────────&lt;br/&gt;FAT32 / LittleFS&lt;br/&gt;滚动策略&lt;br/&gt;可选压缩&quot;]</span>
+
+<span class="s">        PSTORE[&quot;pstore / NVRAM&lt;br/&gt;─────────────────&lt;br/&gt;掉电保持&lt;br/&gt;关键日志&lt;br/&gt;崩溃恢复&quot;]</span>
+
+<span class="s">        FLASH[&quot;Flash 环形区&lt;br/&gt;─────────────────&lt;br/&gt;原始分区&lt;br/&gt;磨损均衡&lt;br/&gt;断电安全&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph CONFIG[&quot;配置层 Config Layer&quot;]</span>
+<span class="s">        direction LR</span>
+<span class="s">        COMPILE[&quot;编译期配置&lt;br/&gt;─────────────────&lt;br/&gt;ELOG_MAX_TAG_LEN&lt;br/&gt;ELOG_MAX_MSG_LEN&lt;br/&gt;ELOG_BUFFER_SIZE&lt;br/&gt;ELOG_LEVEL_DEFAULT&lt;br/&gt;ELOG_COLOR_ENABLE&quot;]</span>
+
+<span class="s">        RUNTIME[&quot;运行时配置&lt;br/&gt;─────────────────&lt;br/&gt;动态级别调整&lt;br/&gt;模块开关&lt;br/&gt;传输目标切换&lt;br/&gt;缓冲区大小调整&quot;]</span>
+
+<span class="s">        COMPILE --- RUNTIME</span>
+<span class="s">    end</span>
+
+<span class="s">    APP --&gt;|调用| CORE</span>
+<span class="s">    CORE --&gt;|写入| BUFFER</span>
+<span class="s">    BUFFER --&gt;|分发| TRANSPORT</span>
+<span class="s">    TRANSPORT --&gt;|输出| STORAGE</span>
+<span class="s">    TRANSPORT --&gt;|网络| BACKEND</span>
+<span class="s">    BACKEND --&gt;|采集| STORAGE</span>
+<span class="s">    CONFIG -.-&gt;|编译期宏| CORE</span>
+<span class="s">    CONFIG -.-&gt;|编译期宏| BUFFER</span>
+<span class="s">    CONFIG -.-&gt;|运行时 API| CORE</span>
+
+<span class="s">    style APP fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px</span>
+<span class="s">    style CORE fill:#fff8e1,stroke:#f57f17,stroke-width:2px</span>
+<span class="s">    style BUFFER fill:#e3f2fd,stroke:#1565c0,stroke-width:2px</span>
+<span class="s">    style TRANSPORT fill:#fce4ec,stroke:#c62828,stroke-width:2px</span>
+<span class="s">    style BACKEND fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px</span>
+<span class="s">    style STORAGE fill:#efebe9,stroke:#4e342e,stroke-width:2px</span>
+<span class="s">    style CONFIG fill:#e0f7fa,stroke:#00838f,stroke-width:2px,stroke-dasharray:5 5</span>
+
+<span class="sb">```</span>
+</code></pre></div>
+<h3 id="mmd_1">示例：引用其他目录的 .mmd 文件<a class="headerlink" href="#mmd_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="sb">```mermaid</span>
+<span class="s">%%{init: {&#39;theme&#39;: &#39;base&#39;, &#39;themeVariables&#39;: {&#39;primaryColor&#39;: &#39;#e8f5e9&#39;, &#39;primaryBorderColor&#39;: &#39;#2e7d32&#39;, &#39;lineColor&#39;: &#39;#43a047&#39;}}}%%</span>
+
+<span class="s">graph LR</span>
+<span class="s">    subgraph Sources[&quot;日志源 (Log Sources)&quot;]</span>
+<span class="s">        APP[&quot;App A&lt;br/&gt;elog_init(&#39;app_a&#39;)&quot;]</span>
+<span class="s">        DRV[&quot;Driver&lt;br/&gt;elog_init(&#39;driver&#39;)&quot;]</span>
+<span class="s">        MIDL[&quot;Middleware&lt;br/&gt;elog_init(&#39;middleware&#39;)&quot;]</span>
+<span class="s">        KERN[&quot;Kernel Module&lt;br/&gt;klog_write()&quot;]</span>
+<span class="s">        RTOS[&quot;RTOS Event&lt;br/&gt;elog_event()&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph ClientLib[&quot;客户端库 (libelog.so)&quot;]</span>
+<span class="s">        API[&quot;elog API&lt;br/&gt;elog_d/i/w/e()&quot;]</span>
+<span class="s">        EVENT[&quot;Event API&lt;br/&gt;elog_event_begin/end()&quot;]</span>
+<span class="s">        WRITE[&quot;Transport Registry&lt;br/&gt;dispatch()&quot;]</span>
+<span class="s">        COMPRESS[&quot;Compress (可选)&lt;br/&gt;lz4 / miniz&quot;]</span>
+<span class="s">        WRITE_TX[&quot;writer_func_t*&lt;br/&gt;函数指针分发&quot;]</span>
+
+<span class="s">        API --&gt; EVENT</span>
+<span class="s">        API --&gt; WRITE</span>
+<span class="s">        EVENT --&gt; WRITE</span>
+<span class="s">        WRITE --&gt; WRITE_TX</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph Daemon[&quot;elogd 守护进程&quot;]</span>
+<span class="s">        IN_LOG[&quot;LogListener&lt;br/&gt;/var/run/elogdw&lt;br/&gt;SOCK_DGRAM&quot;]</span>
+<span class="s">        IN_CMD[&quot;CmdListener&lt;br/&gt;/var/run/elogd&lt;br/&gt;SOCK_STREAM&quot;]</span>
+<span class="s">        OUT_READ[&quot;LogReader&lt;br/&gt;/var/run/elogdr&lt;br/&gt;SOCK_SEQPACKET&quot;]</span>
+<span class="s">        BUF[&quot;RingLogBuffer&lt;br/&gt;×log_id&quot;]</span>
+<span class="s">        STATS[&quot;LogStatistics&quot;]</span>
+<span class="s">        PRUNE[&quot;LogPrune&quot;]</span>
+<span class="s">        TAG[&quot;EventTagMap&quot;]</span>
+
+<span class="s">        IN_LOG --&gt; BUF</span>
+<span class="s">        BUF --&gt; STATS</span>
+<span class="s">        BUF --&gt; PRUNE</span>
+<span class="s">        TAG -.-&gt;|event 解码| OUT_READ</span>
+<span class="s">        IN_CMD --&gt;|命令| BUF</span>
+<span class="s">        IN_CMD --&gt; STATS</span>
+<span class="s">        IN_CMD --&gt; PRUNE</span>
+<span class="s">        BUF --&gt; OUT_READ</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph Outputs[&quot;输出目标 (Log Outputs)&quot;]</span>
+<span class="s">        UART_OUT[&quot;UART Console&lt;br/&gt;实时调试&quot;]</span>
+<span class="s">        FILE_OUT[&quot;Log Files&lt;br/&gt;/var/log/elog/&lt;br/&gt;滚动+压缩&quot;]</span>
+<span class="s">        NET_OUT[&quot;Network&lt;br/&gt;UDP syslog&lt;br/&gt;TCP 长连接&quot;]</span>
+<span class="s">        FLASH_OUT[&quot;Flash Ring&lt;br/&gt;掉电保持&lt;br/&gt;pstore 分区&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    subgraph Tools[&quot;工具链&quot;]</span>
+<span class="s">        CAT[&quot;elogcat&lt;br/&gt;多缓冲区读取&lt;br/&gt;过滤/着色&quot;]</span>
+<span class="s">        DUMP[&quot;elogdump&lt;br/&gt;二进制转文本&lt;br/&gt;离线分析&quot;]</span>
+<span class="s">        CONF[&quot;elogctl&lt;br/&gt;运行时配置&lt;br/&gt;级别/裁剪规则&quot;]</span>
+<span class="s">    end</span>
+
+<span class="s">    APP --&gt; API</span>
+<span class="s">    DRV --&gt; API</span>
+<span class="s">    MIDL --&gt; API</span>
+<span class="s">    KERN --&gt;|&quot;procfs/ioctl&quot;| IN_LOG</span>
+<span class="s">    RTOS --&gt; API</span>
+
+<span class="s">    WRITE --&gt;|DGRAM| IN_LOG</span>
+<span class="s">    WRITE --&gt;|&quot;可选&quot;| COMPRESS</span>
+<span class="s">    COMPRESS --&gt;|pstore| FLASH_OUT</span>
+
+<span class="s">    OUT_READ --&gt;|&quot;PUSH&quot;| CAT</span>
+<span class="s">    OUT_READ --&gt;|&quot;PUSH&quot;| NET_OUT</span>
+<span class="s">    OUT_READ --&gt;|&quot;PUSH&quot;| UART_OUT</span>
+<span class="s">    BUF --&gt;|&quot;定时 flush&quot;| FILE_OUT</span>
+
+<span class="s">    CONF --&gt;|&quot;SOCK_STREAM&quot;| IN_CMD</span>
+
+<span class="s">    style Sources fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px</span>
+<span class="s">    style ClientLib fill:#fff8e1,stroke:#f57f17,stroke-width:2px</span>
+<span class="s">    style Daemon fill:#e3f2fd,stroke:#1565c0,stroke-width:2px</span>
+<span class="s">    style Outputs fill:#fce4ec,stroke:#c62828,stroke-width:2px</span>
+<span class="s">    style Tools fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px</span>
+
+<span class="sb">```</span>
+</code></pre></div>
+<h2 id="mmd_2">.mmd 文件编写规范<a class="headerlink" href="#mmd_2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>使用标准 Mermaid 语法（graph、sequenceDiagram、classDiagram 等）</li>
+<li>文件编码为 UTF-8</li>
+<li>文件内不要包含 <code>```</code> 围栏标记，只需写 Mermaid 图表内容本身</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+    A[编写 .mmd 文件] --&gt; B[在 md 中用 --8&lt;-- 引用]
+    B --&gt; C[mkdocs build]
+    C --&gt; D[浏览器中查看图形]</code></pre>
+<h2 id="_3">配置参考<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p><code>mkdocs.yml</code> 中的相关配置：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">markdown_extensions</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pymdownx.snippets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">base_path</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs</span><span class="w">    </span><span class="c1"># snippets 搜索根目录</span>
+<span class="w">      </span><span class="nt">check_paths</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">   </span><span class="c1"># 文件不存在时报错</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pymdownx.superfences</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">custom_fences</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mermaid</span>
+<span class="w">          </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mermaid</span>
+<span class="w">          </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="kt">!!python/name:pymdownx.superfences.fence_code_format</span>
+</code></pre></div>
+<h2 id="_4">常见问题<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p><strong>Q: 构建报错 <code>File not found</code></strong></p>
+<p>检查文件路径是否相对于 <code>base_path</code> 正确。如果 <code>.mmd</code> 文件在 <code>docs/src/packages/embeded_logging/</code> 下，路径应为 <code>src/packages/embeded_logging/xxx.mmd</code>。</p>
+<p><strong>Q: 图表不渲染，只显示代码文本</strong></p>
+<p>确认浏览器控制台是否有 Mermaid.js 加载错误。MkDocs Material 主题内置了 Mermaid 支持（9.0+），确保主题版本 &gt;= 9.0。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
