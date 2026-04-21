@@ -1,0 +1,3198 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../MPAM_SoC_IP_design_requirements/">
+      
+      
+        <link rel="next" href="../MPAM_Linux_Software_Design/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>mpam_registers - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ip-mpam" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              mpam_registers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../packages/sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../MPAM_research/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  spec_research
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../packages/sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/feature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_feature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/integration_test_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_integration_test_guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/bug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_bug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/google_esh/examples/emulation/armv8A-64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_esh_armv8A-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    spec_research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    spec_research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPAM_research/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPAM_SoC_IP_design_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_ip_req
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_registers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_registers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-msc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 共享缓存 MSC 寄存器总览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 特性发现寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 特性发现寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-mpamf_cpor_idr-cache-portion-partitioning-id-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 MPAMF_CPOR_IDR -- Cache Portion Partitioning ID Register
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-mpamf_ccap_idr-cache-capacity-partitioning-id-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 MPAMF_CCAP_IDR -- Cache Capacity Partitioning ID Register
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-mpamf_csumon_idr-cache-storage-usage-monitoring-id-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 MPAMF_CSUMON_IDR -- Cache Storage Usage Monitoring ID Register
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 配置访问寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 配置访问寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-mpamcfg_part_sel-partid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 MPAMCFG_PART_SEL -- PARTID 选择寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-msmon_cfg_mon_sel-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 MSMON_CFG_MON_SEL -- 监控器选择寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ccap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 缓存容量分区寄存器 (CCAP)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 缓存容量分区寄存器 (CCAP)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 定点小数格式说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mpamcfg_cmax-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MPAMCFG_CMAX -- 缓存最大容量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-mpamcfg_cmin-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 MPAMCFG_CMIN -- 缓存最小容量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-mpamcfg_cassoc-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 MPAMCFG_CASSOC -- 缓存关联性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 缓存分配优先级模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-cpor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 缓存位图分区寄存器 (CPOR)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 缓存位图分区寄存器 (CPOR)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-mpamcfg_cpbmn-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 MPAMCFG_CPBM\&lt;n> -- 缓存位图寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. CSU 监控寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. CSU 监控寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-msmon_cfg_csu_flt-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 MSMON_CFG_CSU_FLT -- CSU 监控过滤寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-msmon_cfg_csu_ctl-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 MSMON_CFG_CSU_CTL -- CSU 监控控制寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-msmon_csu-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 MSMON_CSU -- CSU 计数器寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-msmon_csu_capture-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 MSMON_CSU_CAPTURE -- CSU 快照寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 使能/禁用寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 使能/禁用寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-mpamcfg_en-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 MPAMCFG_EN -- 使能寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-mpamcfg_dis-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 MPAMCFG_DIS -- 禁用寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 寄存器使用编程模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 寄存器使用编程模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 配置缓存分区的标准流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 安全域隔离
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 寄存器复位默认值汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MPAM_Linux_Software_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_soft_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-msc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 共享缓存 MSC 寄存器总览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 特性发现寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 特性发现寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-mpamf_cpor_idr-cache-portion-partitioning-id-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 MPAMF_CPOR_IDR -- Cache Portion Partitioning ID Register
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-mpamf_ccap_idr-cache-capacity-partitioning-id-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 MPAMF_CCAP_IDR -- Cache Capacity Partitioning ID Register
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-mpamf_csumon_idr-cache-storage-usage-monitoring-id-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 MPAMF_CSUMON_IDR -- Cache Storage Usage Monitoring ID Register
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 配置访问寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 配置访问寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-mpamcfg_part_sel-partid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 MPAMCFG_PART_SEL -- PARTID 选择寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-msmon_cfg_mon_sel-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 MSMON_CFG_MON_SEL -- 监控器选择寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ccap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 缓存容量分区寄存器 (CCAP)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 缓存容量分区寄存器 (CCAP)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 定点小数格式说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mpamcfg_cmax-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MPAMCFG_CMAX -- 缓存最大容量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-mpamcfg_cmin-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 MPAMCFG_CMIN -- 缓存最小容量
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-mpamcfg_cassoc-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 MPAMCFG_CASSOC -- 缓存关联性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 缓存分配优先级模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-cpor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 缓存位图分区寄存器 (CPOR)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 缓存位图分区寄存器 (CPOR)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-mpamcfg_cpbmn-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 MPAMCFG_CPBM\&lt;n> -- 缓存位图寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. CSU 监控寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. CSU 监控寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-msmon_cfg_csu_flt-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 MSMON_CFG_CSU_FLT -- CSU 监控过滤寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-msmon_cfg_csu_ctl-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 MSMON_CFG_CSU_CTL -- CSU 监控控制寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-msmon_csu-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 MSMON_CSU -- CSU 计数器寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-msmon_csu_capture-csu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 MSMON_CSU_CAPTURE -- CSU 快照寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 使能/禁用寄存器
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 使能/禁用寄存器">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-mpamcfg_en-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 MPAMCFG_EN -- 使能寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-mpamcfg_dis-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 MPAMCFG_DIS -- 禁用寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 寄存器使用编程模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 寄存器使用编程模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 配置缓存分区的标准流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 安全域隔离
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 寄存器复位默认值汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ip-mpam">共享缓存 IP 的 MPAM 寄存器设计细节<a class="headerlink" href="#ip-mpam" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>基于 Arm IHI 0099B.a MPAM MSC Specification Chapter 9</p>
+</blockquote>
+<hr />
+<h2 id="_1">目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-共享缓存-msc-寄存器总览">共享缓存 MSC 寄存器总览</a></li>
+<li><a href="#2-特性发现寄存器">特性发现寄存器 (ID Registers)</a></li>
+<li><a href="#3-配置访问寄存器">配置访问寄存器</a></li>
+<li><a href="#4-缓存容量分区寄存器-ccap">缓存容量分区寄存器 (CCAP)</a></li>
+<li><a href="#5-缓存位图分区寄存器-cpor">缓存位图分区寄存器 (CPOR)</a></li>
+<li><a href="#6-csu-监控寄存器">CSU 监控寄存器</a></li>
+<li><a href="#7-使能禁用寄存器">使能/禁用寄存器</a></li>
+<li><a href="#8-寄存器使用编程模型">寄存器使用编程模型</a></li>
+</ol>
+<hr />
+<h2 id="1-msc">1. 共享缓存 MSC 寄存器总览<a class="headerlink" href="#1-msc" title="Permanent link">&para;</a></h2>
+<p>共享缓存作为 MPAM MSC，其内存映射寄存器空间按偏移地址组织。以下仅列出与共享缓存相关的寄存器：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "ID 寄存器 (只读, 特性发现)"
+        IDR["MPAMF_IDR 0x0000&lt;br/&gt;MSC 标识"]
+        CPOR_IDR["MPAMF_CPOR_IDR 0x0030&lt;br/&gt;CPOR 特性"]
+        CCAP_IDR["MPAMF_CCAP_IDR 0x0038&lt;br/&gt;CCAP 特性"]
+        CSUMON_IDR["MPAMF_CSUMON_IDR 0x0088&lt;br/&gt;CSU 监控特性"]
+    end
+
+    subgraph "配置选择"
+        PART_SEL["MPAMCFG_PART_SEL 0x0100&lt;br/&gt;PARTID 选择"]
+        MON_SEL["MSMON_CFG_MON_SEL 0x0800&lt;br/&gt;监控器选择"]
+    end
+
+    subgraph "CCAP 分区控制"
+        CMAX["MPAMCFG_CMAX 0x0108&lt;br/&gt;最大缓存容量"]
+        CMIN["MPAMCFG_CMIN 0x0110&lt;br/&gt;最小缓存容量"]
+        CASSOC["MPAMCFG_CASSOC 0x0118&lt;br/&gt;缓存关联性"]
+    end
+
+    subgraph "CPOR 分区控制"
+        CPBM["MPAMCFG_CPBM 0x1000+&lt;br/&gt;缓存位图"]
+    end
+
+    subgraph "CSU 监控"
+        CSU_FLT["MSMON_CFG_CSU_FLT 0x0810&lt;br/&gt;CSU 过滤"]
+        CSU_CTL["MSMON_CFG_CSU_CTL 0x0818&lt;br/&gt;CSU 控制"]
+        CSU["MSMON_CSU 0x0840&lt;br/&gt;CSU 计数器"]
+        CSU_CAP["MSMON_CSU_CAPTURE 0x0848&lt;br/&gt;CSU 快照"]
+    end
+
+    subgraph "使能控制"
+        EN["MPAMCFG_EN 0x0300"]
+        DIS["MPAMCFG_DIS 0x0310"]
+    end
+
+    PART_SEL --&gt; CMAX
+    PART_SEL --&gt; CMIN
+    PART_SEL --&gt; CASSOC
+    PART_SEL --&gt; CPBM
+    PART_SEL --&gt; EN
+    PART_SEL --&gt; DIS
+    MON_SEL --&gt; CSU_FLT
+    MON_SEL --&gt; CSU_CTL
+    MON_SEL --&gt; CSU
+    MON_SEL --&gt; CSU_CAP</code></pre>
+<hr />
+<h2 id="2">2. 特性发现寄存器<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21-mpamf_cpor_idr-cache-portion-partitioning-id-register">2.1 MPAMF_CPOR_IDR -- Cache Portion Partitioning ID Register<a class="headerlink" href="#21-mpamf_cpor_idr-cache-portion-partitioning-id-register" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0030</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 只读</p>
+<p><strong>存在条件:</strong> <code>(FEAT_MPAMv0p1 || FEAT_MPAMv1p0)</code> 且 <code>MPAMF_IDR.HAS_CPOR_PART == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RES0</td>
+<td>[31:16]</td>
+<td>16</td>
+<td>RO</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CPBM_WD</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>缓存位图宽度 (1 ~ 32768)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CPBM_WD 详细说明：</strong></p>
+<ul>
+<li>指示 <code>MPAMCFG_CPBM&lt;n&gt;</code> 中有效位的数量</li>
+<li>范围 1 ~ 32768，值 &gt; 32 时需要多个 32 位寄存器（最多 1024 个）</li>
+<li>若实现 RIS，此字段反映当前 <code>MPAMCFG_PART_SEL.RIS</code> 选中的资源实例的位图宽度</li>
+</ul>
+<hr />
+<h3 id="22-mpamf_ccap_idr-cache-capacity-partitioning-id-register">2.2 MPAMF_CCAP_IDR -- Cache Capacity Partitioning ID Register<a class="headerlink" href="#22-mpamf_ccap_idr-cache-capacity-partitioning-id-register" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0038</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 只读</p>
+<p><strong>存在条件:</strong> <code>(FEAT_MPAMv0p1 || FEAT_MPAMv1p0)</code> 且 <code>MPAMF_IDR.HAS_CCAP_PART == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAS_CMAX_SOFTLIM</td>
+<td>[31]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=无 SOFTLIM 字段, 1=CMAX 有 SOFTLIM 字段</td>
+</tr>
+<tr>
+<td>NO_CMAX</td>
+<td>[30]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=CMAX 已实现, 1=CMAX 未实现</td>
+</tr>
+<tr>
+<td>HAS_CMIN</td>
+<td>[29]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=CMIN 未实现, 1=CMIN 已实现</td>
+</tr>
+<tr>
+<td>HAS_CASSOC</td>
+<td>[28]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=CASSOC 未实现, 1=CASSOC 已实现</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[27:13]</td>
+<td>15</td>
+<td>RO</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CASSOC_WD</td>
+<td>[12:8]</td>
+<td>5</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>CASSOC 定点小数位数</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[7:6]</td>
+<td>2</td>
+<td>RO</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CMAX_WD</td>
+<td>[5:0]</td>
+<td>6</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>CMAX/CMIN 定点小数位数 (1~16)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>版本要求：</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>v1.0</th>
+<th>v0.1</th>
+<th>v1.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAS_CMAX_SOFTLIM</td>
+<td>禁止</td>
+<td>可选</td>
+<td>可选</td>
+</tr>
+<tr>
+<td>NO_CMAX</td>
+<td>禁止</td>
+<td>可选</td>
+<td>可选</td>
+</tr>
+<tr>
+<td>HAS_CMIN</td>
+<td>禁止</td>
+<td>可选</td>
+<td>可选</td>
+</tr>
+<tr>
+<td>HAS_CASSOC</td>
+<td>禁止</td>
+<td>可选</td>
+<td>可选</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="23-mpamf_csumon_idr-cache-storage-usage-monitoring-id-register">2.3 MPAMF_CSUMON_IDR -- Cache Storage Usage Monitoring ID Register<a class="headerlink" href="#23-mpamf_csumon_idr-cache-storage-usage-monitoring-id-register" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0088</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 只读</p>
+<p><strong>存在条件:</strong> <code>HAS_MSMON == 1</code> 且 <code>MPAMF_MSMON_IDR.MSMON_CSU == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HAS_CAPTURE</td>
+<td>[31]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=无 CAPTURE 寄存器, 1=支持快照</td>
+</tr>
+<tr>
+<td>CSU_RO</td>
+<td>[30]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=MSMON_CSU 可读写, 1=只读</td>
+</tr>
+<tr>
+<td>HAS_XCL</td>
+<td>[29]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=无 XCL 过滤, 1=仅统计脏行</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[28]</td>
+<td>1</td>
+<td>RO</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>HAS_OFLOW_LNKG</td>
+<td>[27]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>溢出关联控制</td>
+</tr>
+<tr>
+<td>HAS_OFSR</td>
+<td>[26]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=无 OFSR 寄存器, 1=已实现</td>
+</tr>
+<tr>
+<td>HAS_CEVNT_OFLW</td>
+<td>[25]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>CTL 中 CEVNT_OFLW 字段</td>
+</tr>
+<tr>
+<td>HAS_OFLOW_CAPT</td>
+<td>[24]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>CTL 中 OFLOW_CAPT 字段</td>
+</tr>
+<tr>
+<td>NO_MATCH_PARTID</td>
+<td>[23]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=支持 PARTID 过滤, 1=不支持</td>
+</tr>
+<tr>
+<td>NO_MATCH_PMG</td>
+<td>[22]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=支持 PMG 过滤, 1=不支持</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[21:16]</td>
+<td>6</td>
+<td>RO</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>NUM_MON</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>CSU 监控器实例数量</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NUM_MON 说明：</strong> 最大 MON_SEL 值为 <code>NUM_MON - 1</code>。</p>
+<hr />
+<h2 id="3">3. 配置访问寄存器<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-mpamcfg_part_sel-partid">3.1 MPAMCFG_PART_SEL -- PARTID 选择寄存器<a class="headerlink" href="#31-mpamcfg_part_sel-partid" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0100</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> 至少一个分区特性已实现</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RES0</td>
+<td>[31:28]</td>
+<td>4</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>RIS</td>
+<td>[27:24]</td>
+<td>4</td>
+<td>RW</td>
+<td>IMPDEF</td>
+<td>资源实例选择器 (v0.1/v1.1, EXT=1, HAS_RIS=1)</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[23:19]</td>
+<td>5</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>DEFAULT_PARTID</td>
+<td>[18]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>默认 PARTID 配置 (FEAT_MPAM_MSC_DCTRL)</td>
+</tr>
+<tr>
+<td>INGRESS_TL</td>
+<td>[17]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>入站翻译 PARTID (FEAT_MPAM_MSC_DOMAINS)</td>
+</tr>
+<tr>
+<td>INTERNAL</td>
+<td>[16]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>0=reqPARTID, 1=intPARTID</td>
+</tr>
+<tr>
+<td>PARTID_SEL</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RW</td>
+<td>IMPDEF</td>
+<td>选中要配置的 PARTID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键规则：</strong></p>
+<ul>
+<li>软件必须<strong>先写 PARTID_SEL</strong>，再访问其他 <code>MPAMCFG_*</code> 寄存器</li>
+<li>写超范围 PARTID_SEL 可能产生 <code>MPAMF_ESR.ERRCODE = 0b0001</code> (PARTID_SEL_Range)</li>
+<li>若 RIS 未实现，RIS 字段为 RES0</li>
+<li>仅单资源实例时，所有控制使用 <code>RIS = 0</code></li>
+</ul>
+<h3 id="32-msmon_cfg_mon_sel-">3.2 MSMON_CFG_MON_SEL -- 监控器选择寄存器<a class="headerlink" href="#32-msmon_cfg_mon_sel-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0800</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_MSMON == 1</code> 或存在实现定义的监控器</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RES0</td>
+<td>[31:28]</td>
+<td>4</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>RIS</td>
+<td>[27:24]</td>
+<td>4</td>
+<td>RW</td>
+<td>0</td>
+<td>资源实例选择器</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[23:16]</td>
+<td>8</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>MON_SEL</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RW</td>
+<td>IMPDEF</td>
+<td>监控器实例选择器</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键规则：</strong></p>
+<ul>
+<li>写超范围 MON_SEL 可能产生 <code>MPAMF_ESR.ERRCODE = 0b0101</code> (Monitor_Range)</li>
+<li>不同监控器类型 (CSU/MBWU) 的最大 MON_SEL 不同，由各自 IDR 中 NUM_MON 决定</li>
+</ul>
+<hr />
+<h2 id="4-ccap">4. 缓存容量分区寄存器 (CCAP)<a class="headerlink" href="#4-ccap" title="Permanent link">&para;</a></h2>
+<p>CCAP 使用 <strong>16 位无符号定点小数格式</strong>控制缓存容量。二进制小数点位于 bits [15] 和 [16] 之间。</p>
+<h3 id="41">4.1 定点小数格式说明<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "16-bit 固定点小数 (CMAX_WD = 8 为例)"
+        B15["bit15"] --&gt; B8["bit8"] --&gt; B7["bit7"] --&gt; B0["bit0"]
+        B15 -.-&gt;|"整数部分&lt;br/&gt;(=0)"| INT["(0)"]
+        B8 -.-&gt;|"小数部分&lt;br/&gt;(8位)"| FRAC[".XXXXXXXX"]
+    end</code></pre>
+<ul>
+<li><strong>有效值范围:</strong> <code>[v, v + 2^(-w)]</code>，其中 <code>v</code> 为编程值，<code>w</code> 为 <code>CMAX_WD</code></li>
+<li><strong>编程 <code>0xFFFF</code>:</strong> 强制为 100%</li>
+<li><strong>实际最大值:</strong> <code>1 - 2^(-w)</code></li>
+</ul>
+<p><strong>8 位小数宽度 (CMAX_WD=8) 编程示例：</strong></p>
+<table>
+<thead>
+<tr>
+<th>目标百分比</th>
+<th>编程值</th>
+<th>实际值</th>
+<th>下界</th>
+<th>上界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25%</td>
+<td>0x3F</td>
+<td>0x40</td>
+<td>25%</td>
+<td>25.39%</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>0x7F</td>
+<td>0x80</td>
+<td>50%</td>
+<td>50.39%</td>
+</tr>
+<tr>
+<td>75%</td>
+<td>0xBF</td>
+<td>0xC0</td>
+<td>75%</td>
+<td>75.39%</td>
+</tr>
+<tr>
+<td>100%</td>
+<td>0xFF</td>
+<td>强制 100%</td>
+<td>100%</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-mpamcfg_cmax-">4.2 MPAMCFG_CMAX -- 缓存最大容量<a class="headerlink" href="#42-mpamcfg_cmax-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0108</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_CCAP_PART == 1</code> 且 <code>MPAMF_CCAP_IDR.NO_CMAX == 0</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SOFTLIM</td>
+<td>[31]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>0=硬限制, 1=软限制 (需 HAS_CMAX_SOFTLIM)</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[30:16]</td>
+<td>15</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CMAX</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RW</td>
+<td>0xFFFF</td>
+<td>最大缓存容量比例 (定点小数)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>行为规则：</strong></p>
+<ul>
+<li><strong>硬限制 (SOFTLIM=0, 复位默认):</strong> 当 PARTID 已使用 &gt;= CMAX 容量时，仅能替换自身已占用的缓存行，不能增加</li>
+<li><strong>软限制 (SOFTLIM=1):</strong> 当 PARTID 已使用 &gt;= CMAX 容量时，仍可分配无效行或已禁用 PARTID 的行</li>
+<li>已实现位宽由 <code>CMAX_WD</code> 决定 (bits [15 : 16-CMAX_WD])，未实现位为 RAZ/WI</li>
+<li>复位值 <code>0xFFFF</code> = 所有位使能 = 最大可能容量</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    REQ["缓存分配请求"] --&gt; CHK{"当前使用量&lt;br/&gt;&gt;= CMAX?"}
+    CHK --&gt;|否| ALLOC["正常分配"]
+    CHK --&gt;|是| LIM{"SOFTLIM?"}
+    LIM --&gt;|"0 (硬限制)"| OWN["仅替换&lt;br/&gt;自身缓存行"]
+    LIM --&gt;|"1 (软限制)"| FREE["可分配&lt;br/&gt;无效行或禁用PARTID行"]</code></pre>
+<h3 id="43-mpamcfg_cmin-">4.3 MPAMCFG_CMIN -- 缓存最小容量<a class="headerlink" href="#43-mpamcfg_cmin-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0110</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_CCAP_PART == 1</code> 且 <code>MPAMF_CCAP_IDR.HAS_CMIN == 1</code> (v0.1 或 v1.1)</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RES0</td>
+<td>[31:16]</td>
+<td>16</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CMIN</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RW</td>
+<td>0xFFFF</td>
+<td>最小缓存容量比例 (定点小数)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>行为规则：</strong></p>
+<ul>
+<li>与 CMAX 共享相同的定点格式和位宽 (<code>CMAX_WD</code>)</li>
+<li>当 PARTID 的使用量 <strong>低于 CMIN</strong> 时，在缓存行替换决策中享有<strong>提升的分配优先级</strong></li>
+<li>复位值 <code>0xFFFF</code> = 最大值</li>
+</ul>
+<h3 id="44-mpamcfg_cassoc-">4.4 MPAMCFG_CASSOC -- 缓存关联性<a class="headerlink" href="#44-mpamcfg_cassoc-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0118</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_CCAP_PART == 1</code> 且 <code>MPAMF_CCAP_IDR.HAS_CASSOC == 1</code> (v0.1 或 v1.1)</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RES0</td>
+<td>[31:16]</td>
+<td>16</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CASSOC</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RW</td>
+<td>0xFFFF</td>
+<td>最大关联性比例 (定点小数)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>行为规则：</strong></p>
+<ul>
+<li>控制每个关联组 (如 set-associative cache 中每个 set) 中 PARTID 可分配的最大路数比例</li>
+<li>定点位宽由 <code>CASSOC_WD</code> 决定，已实现位为 MSB</li>
+<li>复位值 <code>0xFFFF</code></li>
+</ul>
+<h3 id="45">4.5 缓存分配优先级模型<a class="headerlink" href="#45" title="Permanent link">&para;</a></h3>
+<p>CMAX 和 CMIN 共同决定 PARTID 的缓存分配优先级：</p>
+<pre class="mermaid"><code>graph TB
+    subgraph "分配优先级 (低 -&gt; 高)"
+        P0["0: 未分配"]
+        P1["1: 已禁用 (MPAMCFG_DIS)"]
+        P2["2: 使用量 &gt; CMAX"]
+        P3["3: CMIN &lt; 使用量 &lt;= CMAX"]
+        P4["4: 使用量 &lt;= CMIN"]
+    end
+
+    P0 --&gt;|"优先级最低"| P1
+    P1 --&gt; P2
+    P2 --&gt; P3
+    P3 --&gt;|"优先级最高"| P4</code></pre>
+<ul>
+<li>优先级 0 的缓存行可被优先级 1-4 的请求驱逐</li>
+<li>优先级 2: 替换决策受 SOFTLIM 影响</li>
+<li>优先级 4: 保护最严格，缓存行最难被驱逐</li>
+</ul>
+<hr />
+<h2 id="5-cpor">5. 缓存位图分区寄存器 (CPOR)<a class="headerlink" href="#5-cpor" title="Permanent link">&para;</a></h2>
+<h3 id="51-mpamcfg_cpbmn-">5.1 MPAMCFG_CPBM\&lt;n&gt; -- 缓存位图寄存器<a class="headerlink" href="#51-mpamcfg_cpbmn-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x1000 + 4*n</code> | <strong>宽度:</strong> 每个 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_CPOR_PART == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P31</td>
+<td>[31]</td>
+<td>1</td>
+<td>RW</td>
+<td>1</td>
+<td>第 n*32+31 路分配权限</td>
+</tr>
+<tr>
+<td>P30</td>
+<td>[30]</td>
+<td>1</td>
+<td>RW</td>
+<td>1</td>
+<td>第 n*32+30 路分配权限</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>[1]</td>
+<td>1</td>
+<td>RW</td>
+<td>1</td>
+<td>第 n*32+1 路分配权限</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>[0]</td>
+<td>1</td>
+<td>RW</td>
+<td>1</td>
+<td>第 n*32+0 路分配权限</td>
+</tr>
+</tbody>
+</table>
+<p><strong>位图寻址方式：</strong></p>
+<ul>
+<li>总位宽由 <code>MPAMF_CPOR_IDR.CPBM_WD</code> 决定 (最大 32768)</li>
+<li>对于缓存 portion <code>p</code>：寄存器索引 <code>n = p[15:5]</code>，字段位 <code>x = p[4:0]</code></li>
+<li>超出 CPBM_WD 的位为 RES0</li>
+<li>复位值全部为 1（所有路可分配）</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+    subgraph "CPBM 位图 (以 8 路缓存为例, CPBM_WD=8)"
+        W0["P0: Way 0"] --- W1["P1: Way 1"]
+        W1 --- W2["P2: Way 2"]
+        W2 --- W3["P3: Way 3"]
+        W3 --- W4["P4: Way 4"]
+        W4 --- W5["P5: Way 5"]
+        W5 --- W6["P6: Way 6"]
+        W6 --- W7["P7: Way 7"]
+    end
+
+    subgraph "PARTID 0: CPBM = 0xFF"
+        A0["P0=1"] --- A1["P1=1"] --- A2["P2=1"] --- A3["P3=1"]
+        A3 --- A4["P4=1"] --- A5["P5=1"] --- A6["P6=1"] --- A7["P7=1"]
+    end
+
+    subgraph "PARTID 1: CPBM = 0xC0"
+        B0["P0=0"] --- B1["P1=0"] --- B2["P2=1"] --- B3["P3=1"]
+        B3 --- B4["P4=1"] --- B5["P5=1"] --- B6["P6=0"] --- B7["P7=0"]
+    end</code></pre>
+<p><strong>行为规则：</strong></p>
+<ul>
+<li><code>P&lt;x&gt; = 1</code>: PARTID 允许分配到对应缓存路</li>
+<li><code>P&lt;x&gt; = 0</code>: PARTID 不允许分配到对应缓存路</li>
+<li>仅当选中候选路中 CPBM 位已设置时，该路才参与分配决策</li>
+</ul>
+<hr />
+<h2 id="6-csu">6. CSU 监控寄存器<a class="headerlink" href="#6-csu" title="Permanent link">&para;</a></h2>
+<h3 id="61-msmon_cfg_csu_flt-csu">6.1 MSMON_CFG_CSU_FLT -- CSU 监控过滤寄存器<a class="headerlink" href="#61-msmon_cfg_csu_flt-csu" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0810</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_MSMON == 1</code> 且 <code>MPAMF_MSMON_IDR.MSMON_CSU == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XCL</td>
+<td>[31]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>0=统计所有行, 1=仅统计脏行 (需 HAS_XCL)</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[30:24]</td>
+<td>7</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>PMG</td>
+<td>[23:16]</td>
+<td>8</td>
+<td>RW</td>
+<td>0</td>
+<td>PMG 过滤值</td>
+</tr>
+<tr>
+<td>PARTID</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>RW</td>
+<td>0</td>
+<td>PARTID 过滤值</td>
+</tr>
+</tbody>
+</table>
+<p><strong>过滤行为 (与 CTL 中 MATCH 位配合)：</strong></p>
+<table>
+<thead>
+<tr>
+<th>MATCH_PARTID</th>
+<th>MATCH_PMG</th>
+<th>统计范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>所有已分配缓存存储</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>匹配 PARTID 的缓存存储</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>匹配 PARTID <strong>且</strong> PMG 的缓存存储</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>CONSTRAINED UNPREDICTABLE (必须设 MATCH_PARTID=1)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-msmon_cfg_csu_ctl-csu">6.2 MSMON_CFG_CSU_CTL -- CSU 监控控制寄存器<a class="headerlink" href="#62-msmon_cfg_csu_ctl-csu" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0818</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_MSMON == 1</code> 且 <code>MPAMF_MSMON_IDR.MSMON_CSU == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EN</td>
+<td>[31]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>0=禁用, 1=使能</td>
+</tr>
+<tr>
+<td>CAPT_EVNT</td>
+<td>[30:28]</td>
+<td>3</td>
+<td>RW</td>
+<td>0</td>
+<td>捕获事件选择 (0=无, 1-6=外部, 7=本地)</td>
+</tr>
+<tr>
+<td>CAPT_RESET</td>
+<td>[27]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>捕获后重置: 0=否, 1=是</td>
+</tr>
+<tr>
+<td>OFLOW_STATUS</td>
+<td>[26]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>溢出状态 (粘滞位, 写 1 清除)</td>
+</tr>
+<tr>
+<td>OFLOW_INTR</td>
+<td>[25]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>溢出中断使能</td>
+</tr>
+<tr>
+<td>OFLOW_FRZ</td>
+<td>[24]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>溢出时冻结计数器</td>
+</tr>
+<tr>
+<td>OFLOW_CAPT</td>
+<td>[23]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>溢出时触发捕获 (需 HAS_OFLOW_CAPT)</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[22:19]</td>
+<td>4</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>CEVNT_OFLW</td>
+<td>[18]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>捕获事件触发溢出行为 (需 HAS_CEVNT_OFLW)</td>
+</tr>
+<tr>
+<td>MATCH_PMG</td>
+<td>[17]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>0=任意 PMG, 1=匹配 FLT.PMG</td>
+</tr>
+<tr>
+<td>MATCH_PARTID</td>
+<td>[16]</td>
+<td>1</td>
+<td>RW</td>
+<td>0</td>
+<td>0=任意 PARTID, 1=匹配 FLT.PARTID</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[15:11]</td>
+<td>5</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>OFLOW_LNKG</td>
+<td>[10:8]</td>
+<td>3</td>
+<td>RW</td>
+<td>0</td>
+<td>溢出关联 (0=无, 1-6=信号捕获事件)</td>
+</tr>
+<tr>
+<td>TYPE</td>
+<td>[7:0]</td>
+<td>8</td>
+<td>RO</td>
+<td>0x43</td>
+<td>监控器类型码 (CSU = 0x43, 只读)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>溢出处理流程：</strong></p>
+<pre class="mermaid"><code>flowchart TD
+    OVF["计数器溢出"] --&gt; CHK_CAPT{"OFLOW_CAPT?"}
+    CHK_CAPT --&gt;|"1"| SNAP["复制 MSMON_CSU 到&lt;br/&gt;MSMON_CSU_CAPTURE"]
+    CHK_CAPT --&gt;|"0"| NO_SNAP["不捕获"]
+    SNAP --&gt; CHK_RST{"CAPT_RESET?"}
+    CHK_RST --&gt;|"1"| CLR["MSMON_CSU 清零"]
+    CHK_RST --&gt;|"0"| KEEP["保持计数值"]
+    NO_SNAP --&gt; CHK_FRZ
+    CLR --&gt; CHK_FRZ{"OFLOW_FRZ?"}
+    KEEP --&gt; CHK_FRZ
+    CHK_FRZ --&gt;|"1"| FREEZE["冻结计数器&lt;br/&gt;停止计数"]
+    CHK_FRZ --&gt;|"0"| CONT["继续计数"]
+    FREEZE --&gt; CHK_INTR{"OFLOW_INTR?"}
+    CONT --&gt; CHK_INTR
+    CHK_INTR --&gt;|"1"| INTR["触发溢出中断"]
+    CHK_INTR --&gt;|"0"| DONE["完成"]
+    INTR --&gt; DONE</code></pre>
+<h3 id="63-msmon_csu-csu">6.3 MSMON_CSU -- CSU 计数器寄存器<a class="headerlink" href="#63-msmon_csu-csu" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0840</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> RW 或 RO (取决于 CSU_RO)</p>
+<p><strong>存在条件:</strong> <code>HAS_MSMON == 1</code> 且 <code>MPAMF_MSMON_IDR.MSMON_CSU == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NRDY</td>
+<td>[31]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>0=值准确, 1=值可能不准确</td>
+</tr>
+<tr>
+<td>VALUE</td>
+<td>[30:0]</td>
+<td>31</td>
+<td>RW 或 RO</td>
+<td>0</td>
+<td>缓存存储使用量 (字节)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>行为规则：</strong></p>
+<ul>
+<li>VALUE 报告当前缓存存储使用量（字节），满足 FLT 和 CTL 中的过滤条件</li>
+<li><code>NRDY = 1</code> 时软件应避免使用 VALUE</li>
+<li><code>CSU_RO = 0</code>: 可写，写操作清除计数器（用于重置）</li>
+<li><code>CSU_RO = 1</code>: 只读</li>
+<li>冻结时 (<code>OFLOW_FRZ = 1</code>)，VALUE 不会改变直到写 MSMON_CSU 解冻</li>
+<li>规范建议：设计时应防止 CSU 监控器溢出（因为最大值在设计时可预知）</li>
+</ul>
+<h3 id="64-msmon_csu_capture-csu">6.4 MSMON_CSU_CAPTURE -- CSU 快照寄存器<a class="headerlink" href="#64-msmon_csu_capture-csu" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0848</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 读写</p>
+<p><strong>存在条件:</strong> <code>HAS_CAPTURE == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NRDY</td>
+<td>[31]</td>
+<td>1</td>
+<td>RO</td>
+<td>IMPDEF</td>
+<td>快照时的就绪状态</td>
+</tr>
+<tr>
+<td>VALUE</td>
+<td>[30:0]</td>
+<td>31</td>
+<td>RW</td>
+<td>0</td>
+<td>捕获的缓存存储使用量 (字节)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>行为规则：</strong></p>
+<ul>
+<li>捕获事件触发时，<code>MSMON_CSU.{NRDY, VALUE}</code> 被复制到此寄存器</li>
+<li>软件可随时读取此寄存器获取上次快照，不影响实时计数器</li>
+</ul>
+<hr />
+<h2 id="7">7. 使能/禁用寄存器<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-mpamcfg_en-">7.1 MPAMCFG_EN -- 使能寄存器<a class="headerlink" href="#71-mpamcfg_en-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0300</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 只写 (WO/RAZ)</p>
+<p><strong>存在条件:</strong> <code>(FEAT_MPAMv0p1 || FEAT_MPAMv1p1)</code> 且 <code>MPAMF_IDR.HAS_ENDIS == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RES0</td>
+<td>[31:16]</td>
+<td>16</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>PARTID</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>WO</td>
+<td>-</td>
+<td>写入要使能的 PARTID 值</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>写入 PARTID 值即激活该 PARTID 的配置</li>
+<li>读取返回 0</li>
+</ul>
+<h3 id="72-mpamcfg_dis-">7.2 MPAMCFG_DIS -- 禁用寄存器<a class="headerlink" href="#72-mpamcfg_dis-" title="Permanent link">&para;</a></h3>
+<p><strong>偏移:</strong> <code>0x0310</code> | <strong>宽度:</strong> 32-bit | <strong>访问:</strong> 只写 (WO/RAZ)</p>
+<p><strong>存在条件:</strong> <code>HAS_ENDIS == 1</code></p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>宽度</th>
+<th>访问</th>
+<th>复位值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NFU</td>
+<td>[31]</td>
+<td>1</td>
+<td>WO</td>
+<td>-</td>
+<td>0=保留控制设置, 1=设置可能变为 UNKNOWN</td>
+</tr>
+<tr>
+<td>RES0</td>
+<td>[30:16]</td>
+<td>15</td>
+<td>-</td>
+<td>0</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>PARTID</td>
+<td>[15:0]</td>
+<td>16</td>
+<td>WO</td>
+<td>-</td>
+<td>写入要禁用的 PARTID 值</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NFU (No Future Use) 行为：</strong></p>
+<ul>
+<li><code>NFU = 0</code>: 禁用 PARTID，但保留控制设置（后续可重新使能）</li>
+<li><code>NFU = 1</code>: 禁用 PARTID，控制设置可能变为 UNKNOWN，承诺后续会重新配置后再使用</li>
+<li>禁用的 PARTID 优先级为 1 (仅高于未分配的 0)</li>
+</ul>
+<hr />
+<h2 id="8">8. 寄存器使用编程模型<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="81">8.1 配置缓存分区的标准流程<a class="headerlink" href="#81" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant SW as 软件 (OS/Hypervisor)
+    participant MSC as 缓存 MSC 寄存器
+
+    SW-&gt;&gt;MSC: 1. 读 MPAMF_IDR 确认版本和特性
+    SW-&gt;&gt;MSC: 2. 读 MPAMF_CPOR_IDR 获取 CPBM_WD
+    SW-&gt;&gt;MSC: 3. 读 MPAMF_CCAP_IDR 获取 CMAX_WD 等特性
+
+    Note over SW: 配置 PARTID=N 的分区
+    SW-&gt;&gt;MSC: 4. 写 MPAMCFG_PART_SEL.PARTID_SEL = N
+    SW-&gt;&gt;MSC: 5. (可选) 写 MPAMCFG_PART_SEL.RIS = r
+
+    alt 实现 CCAP
+        SW-&gt;&gt;MSC: 6a. 写 MPAMCFG_CMAX.CMAX = 目标最大容量
+        opt 实现 CMIN
+            SW-&gt;&gt;MSC: 6b. 写 MPAMCFG_CMIN.CMIN = 目标最小容量
+        end
+        opt 实现 CASSOC
+            SW-&gt;&gt;MSC: 6c. 写 MPAMCFG_CASSOC.CASSOC = 目标关联性
+        end
+    end
+
+    alt 实现 CPOR
+        SW-&gt;&gt;MSC: 7. 写 MPAMCFG_CPBM&lt;n&gt; 位图
+    end
+
+    SW-&gt;&gt;MSC: 8. 写 MPAMCFG_EN.PARTID = N (使能)
+
+    Note over SW: 配置 CSU 监控
+    SW-&gt;&gt;MSC: 9. 写 MSMON_CFG_MON_SEL.MON_SEL = m
+    SW-&gt;&gt;MSC: 10. 写 MSMON_CFG_CSU_FLT.PARTID = N, PMG = g
+    SW-&gt;&gt;MSC: 11. 写 MSMON_CFG_CSU_CTL (MATCH 位 + EN)
+    SW-&gt;&gt;MSC: 12. 写 MSMON_CSU = 0 (清零计数器)
+
+    Note over SW: 运行时读取
+    SW-&gt;&gt;MSC: 13. 读 MSMON_CSU.NRDY 检查就绪
+    SW-&gt;&gt;MSC: 14. 读 MSMON_CSU.VALUE 获取使用量</code></pre>
+<h3 id="82">8.2 安全域隔离<a class="headerlink" href="#82" title="Permanent link">&para;</a></h3>
+<p>每个寄存器在 Secure (<code>_s</code>)、Non-secure (<code>_ns</code>)、Root (<code>_rt</code>)、Realm (<code>_rl</code>) 特性页中有独立的实例，且<strong>永不别名</strong>。软件只能通过对应 PARTID 空间的特性页访问该空间的配置。</p>
+<h3 id="83">8.3 寄存器复位默认值汇总<a class="headerlink" href="#83" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>复位值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MPAMCFG_CMAX.CMAX</td>
+<td>0xFFFF</td>
+<td>最大容量 (无限制)</td>
+</tr>
+<tr>
+<td>MPAMCFG_CMAX.SOFTLIM</td>
+<td>0</td>
+<td>硬限制 (最严格)</td>
+</tr>
+<tr>
+<td>MPAMCFG_CMIN.CMIN</td>
+<td>0xFFFF</td>
+<td>最大容量 (无限制)</td>
+</tr>
+<tr>
+<td>MPAMCFG_CASSOC.CASSOC</td>
+<td>0xFFFF</td>
+<td>最大关联性 (无限制)</td>
+</tr>
+<tr>
+<td>MPAMCFG_CPBM\&lt;n&gt;</td>
+<td>All 1s</td>
+<td>所有路可分配</td>
+</tr>
+<tr>
+<td>MSMON_CSU.VALUE</td>
+<td>0</td>
+<td>计数器清零</td>
+</tr>
+<tr>
+<td>MSMON_CFG_CSU_CTL.EN</td>
+<td>0</td>
+<td>监控器禁用</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>复位后仅默认 PARTID (0) 有控制配置，系统表现为无 MPAM 分区。</p>
+</blockquote>
+<hr />
+<p><em>基于 Arm IHI 0099B.a MPAM MSC Specification Chapter 9 寄存器描述分析生成。</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
