@@ -1,0 +1,3087 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+        <link rel="prev" href="../../mpam/MPAM_Linux_Software_Design/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>dmabuf_arch - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dma-buf" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              dmabuf_arch
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  ARM
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../packages/sort_app/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Packages
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../mpam/MPAM_research/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  spec_research
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARM
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ARM
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Architecture_and_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 架构与设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_SVA_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU SVA 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMU_Virtualization_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMU 虚拟化设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm/smmu/SMMUv3_MultiDie_Heterogeneous_SoC_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SMMUv3 多芯异构 SoC 设计
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../packages/sort_app/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packages
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Packages
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/feature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_feature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/integration_test_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_integration_test_guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/embeded_logging/bug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    elog_bug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../packages/google_esh/examples/emulation/armv8A-64/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    google_esh_armv8A-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    spec_research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    spec_research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mpam/MPAM_research/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mpam/MPAM_SoC_IP_design_requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_ip_req
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mpam/MPAM_SharedCache_Register_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_registers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mpam/MPAM_Linux_Software_Design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mpam_soft_design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    dmabuf_arch
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    dmabuf_arch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心设计目标
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 整体架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 模块详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 模块详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-dma-buf-dma-bufc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 dma-buf 核心框架 (dma-buf.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-dma-fence-dma-fencec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 dma-fence 同步原语 (dma-fence.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-dma-fence-array-dma-fence-arrayc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 dma-fence-array (dma-fence-array.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-dma-fence-chain-dma-fence-chainc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 dma-fence-chain (dma-fence-chain.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-dma-fence-unwrap-dma-fence-unwrapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 dma-fence-unwrap (dma-fence-unwrap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-dma-resv-dma-resvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 dma-resv 预留对象 (dma-resv.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-dma-heap-dma-heapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 dma-heap 分配框架 (dma-heap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-sync_file-sync_filec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 sync_file (sync_file.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#39" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 内存后端实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.9 内存后端实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system_heap-heapssystem_heapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        system_heap (heaps/system_heap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cma_heap-heapscma_heapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cma_heap (heaps/cma_heap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#udmabuf-udmabufc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        udmabuf (udmabuf.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#310-drm-prime-drm_primec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 DRM PRIME (drm_prime.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 关键数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 关键数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-struct-dma_buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 struct dma_buf (核心缓冲区对象)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-struct-dma_fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 struct dma_fence (同步原语)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-struct-dma_resv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 struct dma_resv (预留对象)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-struct-dma_fence_array-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 struct dma_fence_array (fence 聚合)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-struct-dma_fence_chain-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 struct dma_fence_chain (fence 时序链)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-struct-dma_heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 struct dma_heap (堆设备)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-struct-dma_buf_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 struct dma_buf_ops (操作函数表)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#48-struct-dma_fence_ops-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8 struct dma_fence_ops (fence 操作函数表)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 关键链路分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 关键链路分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 用户态缓冲区分配全链路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 跨设备缓冲区共享链路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-dma-resv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 隐式同步链路 (dma-resv)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-sync_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 显式同步链路 (sync_file)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 dma-buf 生命周期管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 用户态使用方式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 用户态使用方式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-dma-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 通过 dma-heap 接口分配（推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-android-libdmabufheap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 通过 Android libdmabufheap（封装库）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-udmabuf-qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 通过 udmabuf 接口（QEMU 场景）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 内核模块使用方式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 内核模块使用方式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 导出 dma-buf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-dma-buf-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 导入 dma-buf 并 DMA 映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-dma-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 注册自定义 dma-heap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 构建系统
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 同步模型对比
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 文件清单与角色
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心设计目标
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 整体架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 模块详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 模块详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-dma-buf-dma-bufc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 dma-buf 核心框架 (dma-buf.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-dma-fence-dma-fencec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 dma-fence 同步原语 (dma-fence.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-dma-fence-array-dma-fence-arrayc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 dma-fence-array (dma-fence-array.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-dma-fence-chain-dma-fence-chainc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 dma-fence-chain (dma-fence-chain.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-dma-fence-unwrap-dma-fence-unwrapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 dma-fence-unwrap (dma-fence-unwrap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-dma-resv-dma-resvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 dma-resv 预留对象 (dma-resv.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-dma-heap-dma-heapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 dma-heap 分配框架 (dma-heap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-sync_file-sync_filec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 sync_file (sync_file.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#39" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 内存后端实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.9 内存后端实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system_heap-heapssystem_heapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        system_heap (heaps/system_heap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cma_heap-heapscma_heapc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cma_heap (heaps/cma_heap.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#udmabuf-udmabufc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        udmabuf (udmabuf.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#310-drm-prime-drm_primec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 DRM PRIME (drm_prime.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 关键数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 关键数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-struct-dma_buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 struct dma_buf (核心缓冲区对象)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-struct-dma_fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 struct dma_fence (同步原语)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-struct-dma_resv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 struct dma_resv (预留对象)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-struct-dma_fence_array-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 struct dma_fence_array (fence 聚合)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-struct-dma_fence_chain-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 struct dma_fence_chain (fence 时序链)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-struct-dma_heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 struct dma_heap (堆设备)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-struct-dma_buf_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 struct dma_buf_ops (操作函数表)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#48-struct-dma_fence_ops-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8 struct dma_fence_ops (fence 操作函数表)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 关键链路分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 关键链路分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 用户态缓冲区分配全链路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 跨设备缓冲区共享链路
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-dma-resv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 隐式同步链路 (dma-resv)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-sync_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 显式同步链路 (sync_file)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 dma-buf 生命周期管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 用户态使用方式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 用户态使用方式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-dma-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 通过 dma-heap 接口分配（推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-android-libdmabufheap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 通过 Android libdmabufheap（封装库）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-udmabuf-qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 通过 udmabuf 接口（QEMU 场景）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 内核模块使用方式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 内核模块使用方式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 导出 dma-buf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-dma-buf-dma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 导入 dma-buf 并 DMA 映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-dma-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 注册自定义 dma-heap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 构建系统
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 同步模型对比
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 文件清单与角色
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="dma-buf">DMA-BUF 子系统架构分析<a class="headerlink" href="#dma-buf" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>DMA-BUF 是 Linux 内核中用于跨设备、跨子系统共享缓冲区的通用框架。它允许不同的硬件设备（GPU、VPU、ISP、显示控制器等）和内核子系统之间高效地共享内存缓冲区，同时提供同步机制来协调对这些缓冲区的并发访问。</p>
+<h3 id="_1">核心设计目标<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>零拷贝缓冲区共享</strong>：通过文件描述符（FD）在进程和设备间传递缓冲区，无需数据拷贝</li>
+<li><strong>跨设备同步</strong>：通过 dma-fence 机制实现异步 DMA 操作的跨驱动同步</li>
+<li><strong>统一抽象</strong>：为不同内存后端（连续内存、非连续内存、用户态内存）提供统一接口</li>
+<li><strong>隐式/显式同步</strong>：支持 dma-resv 隐式同步和 sync_file 显式同步两种模式</li>
+</ul>
+<h2 id="2">2. 整体架构<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "用户态 (Userspace)"
+        APP[应用程序]
+        LIB[libdmabufheap&lt;br/&gt;Android C++ 库]
+    end
+
+    subgraph "内核态 - 分配入口"
+        DH["/dev/dma_heap/&amp;lt;name&amp;gt;&lt;br/&gt;dma-heap 框架"]
+        UDM["/dev/udmabuf&lt;br/&gt;用户态 dmabuf"]
+        PRIME["DRM PRIME&lt;br/&gt;GEM 导入/导出"]
+    end
+
+    subgraph "内核态 - 核心框架"
+        DB["dma-buf 框架&lt;br/&gt;dma-buf.c"]
+        RESV["dma-resv&lt;br/&gt;预留对象"]
+        FENCE["dma-fence&lt;br/&gt;同步原语"]
+        SF["sync_file&lt;br/&gt;用户态同步"]
+    end
+
+    subgraph "内核态 - Fence 容器"
+        FA["dma-fence-array&lt;br/&gt;聚合多 fence"]
+        FC["dma-fence-chain&lt;br/&gt;时序链 fence"]
+        FU["dma-fence-unwrap&lt;br/&gt;fence 解包/合并"]
+    end
+
+    subgraph "内核态 - 内存后端"
+        SH["system_heap&lt;br/&gt;系统内存(非连续)"]
+        CH["cma_heap&lt;br/&gt;CMA 连续内存"]
+    end
+
+    subgraph "硬件设备"
+        GPU[GPU]
+        DSP[DSP/VPU]
+        DISP[显示控制器]
+    end
+
+    APP --&gt;|"ioctl DMA_HEAP_IOCTL_ALLOC"| DH
+    APP --&gt;|"ioctl UDMABUF_CREATE"| UDM
+    LIB --&gt;|"DMA_HEAP_IOCTL_ALLOC"| DH
+    LIB --&gt;|"DMA_BUF_IOCTL_SYNC"| DB
+
+    DH --&gt;|"allocate()"| SH
+    DH --&gt;|"allocate()"| CH
+
+    SH --&gt;|"dma_buf_export()"| DB
+    CH --&gt;|"dma_buf_export()"| DB
+    UDM --&gt;|"dma_buf_export()"| DB
+    PRIME --&gt;|"dma_buf_export/import"| DB
+
+    DB --&gt;|"内嵌"| RESV
+    DB --&gt;|"attach/map"| GPU
+    DB --&gt;|"attach/map"| DSP
+    DB --&gt;|"attach/map"| DISP
+
+    RESV --&gt;|"包含"| FENCE
+    FENCE --&gt;|"聚合"| FA
+    FENCE --&gt;|"链接"| FC
+    FA -.-&gt;|"unwrap"| FU
+    FC -.-&gt;|"unwrap"| FU
+
+    FENCE --&gt;|"包装为 FD"| SF
+    SF --&gt;|"poll/wait"| APP</code></pre>
+<h2 id="3">3. 模块详解<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-dma-buf-dma-bufc">3.1 dma-buf 核心框架 (<code>dma-buf.c</code>)<a class="headerlink" href="#31-dma-buf-dma-bufc" title="Permanent link">&para;</a></h3>
+<p>dma-buf 是整个子系统的核心，定义了 <code>struct dma_buf</code> 结构体和与之关联的文件操作。</p>
+<p><strong>主要职责：</strong></p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>API</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>导出缓冲区</td>
+<td><code>dma_buf_export()</code></td>
+<td>创建 dma-buf 文件描述符</td>
+</tr>
+<tr>
+<td>获取 FD</td>
+<td><code>dma_buf_fd()</code></td>
+<td>将 dma-buf 关联到文件描述符</td>
+</tr>
+<tr>
+<td>设备附加</td>
+<td><code>dma_buf_attach()</code></td>
+<td>设备附加到缓冲区，获取 sg_table</td>
+</tr>
+<tr>
+<td>DMA 映射</td>
+<td><code>dma_buf_map/unmap()</code></td>
+<td>建立/解除设备 DMA 映射</td>
+</tr>
+<tr>
+<td>mmap</td>
+<td><code>dma_buf_mmap()</code></td>
+<td>用户态映射</td>
+</tr>
+<tr>
+<td>vmap</td>
+<td><code>dma_buf_vmap/vunmap()</code></td>
+<td>内核态虚拟映射</td>
+</tr>
+<tr>
+<td>CPU 访问同步</td>
+<td><code>begin/end_cpu_access</code></td>
+<td>CPU 缓存一致性操作</td>
+</tr>
+<tr>
+<td>同步文件导出</td>
+<td><code>dma_buf_sync_file_export()</code></td>
+<td>导出隐式 fence 为 sync_file</td>
+</tr>
+<tr>
+<td>同步文件导入</td>
+<td><code>dma_buf_sync_file_import()</code></td>
+<td>导入 sync_file 为隐式 fence</td>
+</tr>
+<tr>
+<td>poll</td>
+<td><code>dma_buf_poll()</code></td>
+<td>用户态 poll 查询 fence 状态</td>
+</tr>
+</tbody>
+</table>
+<p><strong>文件系统注册：</strong></p>
+<p>dma-buf 使用伪文件系统（pseudo filesystem）实现，魔法数为 <code>DMA_BUF_MAGIC</code>。每个 dma-buf 都是一个匿名 inode 文件，通过 <code>anon_inode_getfile()</code> 创建。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Heap as dma_heap
+    participant DB as dma_buf_export
+    participant FS as pseudo_fs
+    participant App as 用户态
+
+    Heap-&gt;&gt;DB: dma_buf_export(exp_info)
+    DB-&gt;&gt;FS: get_unused_fd_flags()
+    DB-&gt;&gt;FS: anon_inode_getfile("dmabuf", fops, dmabuf)
+    DB-&gt;&gt;FS: fd_install(fd, file)
+    DB--&gt;&gt;Heap: struct dma_buf *
+    Heap--&gt;&gt;App: fd (文件描述符)
+
+    App-&gt;&gt;FS: mmap(fd, ...)
+    FS-&gt;&gt;DB: dma_buf_mmap_internal()
+    DB-&gt;&gt;DB: ops-&gt;mmap(dmabuf, vma)</code></pre>
+<h3 id="32-dma-fence-dma-fencec">3.2 dma-fence 同步原语 (<code>dma-fence.c</code>)<a class="headerlink" href="#32-dma-fence-dma-fencec" title="Permanent link">&para;</a></h3>
+<p>dma-fence 是跨设备、跨驱动的异步同步原语，代表一个 DMA 操作的完成信号。</p>
+<p><strong>核心概念：</strong></p>
+<ul>
+<li><strong>Context</strong>：每个执行上下文有唯一的 64-bit context ID，同一 context 内的 fence 全序</li>
+<li><strong>Seqno</strong>：同一 context 内递增的序列号，用于比较 fence 顺序</li>
+<li><strong>Signal</strong>：fence 从未信号变为已信号的单向状态转换</li>
+</ul>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; Unsignaled: dma_fence_init()
+    Unsignaled --&gt; Signaled: dma_fence_signal()
+    Signaled --&gt; [*]: dma_fence_put() (refcount=0)
+
+    note right of Unsignaled: 可注册回调 callback&lt;br/&gt;可执行 wait
+    note right of Signaled: 回调已执行&lt;br/&gt;等待者已唤醒&lt;br/&gt;timestamp 已记录</code></pre>
+<p><strong>关键操作：</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始化</td>
+<td><code>dma_fence_init()</code></td>
+<td>设置 context、seqno、ops、lock</td>
+</tr>
+<tr>
+<td>发信号</td>
+<td><code>dma_fence_signal()</code></td>
+<td>设置 SIGNALED 标志，执行所有回调</td>
+</tr>
+<tr>
+<td>等待</td>
+<td><code>dma_fence_wait()</code></td>
+<td>阻塞等待 fence 信号</td>
+</tr>
+<tr>
+<td>添加回调</td>
+<td><code>dma_fence_add_callback()</code></td>
+<td>注册信号完成回调</td>
+</tr>
+<tr>
+<td>获取引用</td>
+<td><code>dma_fence_get/put()</code></td>
+<td>引用计数管理</td>
+</tr>
+<tr>
+<td>设置截止时间</td>
+<td><code>dma_fence_set_deadline()</code></td>
+<td>提示信号方优先级（电源管理）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lockdep 死锁检测：</strong></p>
+<p>通过 <code>dma_fence_begin_signalling()</code> 和 <code>dma_fence_end_signalling()</code> 注解 fence 发信号的临界区，让 lockdep 能够检测 <code>dma_fence_wait()</code> 与 <code>dma_fence_signal()</code> 之间的死锁。</p>
+<h3 id="33-dma-fence-array-dma-fence-arrayc">3.3 dma-fence-array (<code>dma-fence-array.c</code>)<a class="headerlink" href="#33-dma-fence-array-dma-fence-arrayc" title="Permanent link">&para;</a></h3>
+<p>将多个 fence 聚合为一个，支持 <strong>全部完成才信号</strong> 和 <strong>任一完成即信号</strong> 两种模式。</p>
+<pre class="mermaid"><code>graph LR
+    F1[fence 1] --&gt;|"callback"| ARR[dma_fence_array]
+    F2[fence 2] --&gt;|"callback"| ARR
+    F3[fence 3] --&gt;|"callback"| ARR
+    ARR --&gt;|"所有完成时&lt;br/&gt;signal()"| OUT[聚合结果]
+
+    style ARR fill:#f9f,stroke:#333</code></pre>
+<p><strong>工作机制：</strong>
+1. <code>enable_signaling</code> 时为每个子 fence 注册回调
+2. 每个子 fence 完成时，原子递减 <code>num_pending</code> 计数器
+3. 当 <code>num_pending</code> 降为 0 时，通过 <code>irq_work</code> 发信号
+4. 错误传播：第一个子 fence 的错误会被记录到聚合结果中</p>
+<h3 id="34-dma-fence-chain-dma-fence-chainc">3.4 dma-fence-chain (<code>dma-fence-chain.c</code>)<a class="headerlink" href="#34-dma-fence-chain-dma-fence-chainc" title="Permanent link">&para;</a></h3>
+<p>将 fence 按时序链接成链，支持 64-bit 序列号，用于时间线同步。</p>
+<pre class="mermaid"><code>graph LR
+    C1["chain node&lt;br/&gt;seqno=100"] --&gt;|"prev"| C2["chain node&lt;br/&gt;seqno=101"]
+    C2 --&gt;|"prev"| C3["chain node&lt;br/&gt;seqno=102"]
+    C3 --&gt;|"prev"| C4["chain node&lt;br/&gt;seqno=103"]
+
+    C1 -.-&gt;|"contained"| F1[fence A]
+    C2 -.-&gt;|"contained"| F2[fence B]
+    C3 -.-&gt;|"contained"| F3[fence C]
+    C4 -.-&gt;|"contained"| F4[fence D]</code></pre>
+<p><strong>RCU 垃圾回收：</strong> 已信号的 chain 节点会被跳过并通过 RCU 安全释放，避免遍历已完成的节点。</p>
+<h3 id="35-dma-fence-unwrap-dma-fence-unwrapc">3.5 dma-fence-unwrap (<code>dma-fence-unwrap.c</code>)<a class="headerlink" href="#35-dma-fence-unwrap-dma-fence-unwrapc" title="Permanent link">&para;</a></h3>
+<p>提供 fence 容器（array、chain）的扁平化解包和合并工具：</p>
+<ul>
+<li><code>dma_fence_unwrap_first/next</code>：迭代嵌套容器中的所有叶 fence</li>
+<li><code>dma_fence_merge()</code>：合并多个 fence 为一个（自动去重同 context fence）</li>
+</ul>
+<h3 id="36-dma-resv-dma-resvc">3.6 dma-resv 预留对象 (<code>dma-resv.c</code>)<a class="headerlink" href="#36-dma-resv-dma-resvc" title="Permanent link">&para;</a></h3>
+<p>管理关联到一个共享资源（如缓冲区）的所有 fence，是隐式同步的核心。</p>
+<p><strong>Fence 使用级别：</strong></p>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>枚举值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>KERNEL</td>
+<td>0</td>
+<td>内核内部使用，不暴露给用户态</td>
+</tr>
+<tr>
+<td>WRITE</td>
+<td>1</td>
+<td>独占写操作</td>
+</tr>
+<tr>
+<td>READ</td>
+<td>2</td>
+<td>共享读操作</td>
+</tr>
+<tr>
+<td>BOOKKEEP</td>
+<td>3</td>
+<td>记账用途，包含所有 fence</td>
+</tr>
+</tbody>
+</table>
+<p><strong>RCU 保护的迭代器：</strong></p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Reader as 无锁读者
+    participant Writer as 写者 (持锁)
+
+    Note over Writer: dma_resv_lock()
+    Writer-&gt;&gt;Writer: reserve_fences()
+    Writer-&gt;&gt;Writer: add_fence(new_fence)
+    Note over Writer: dma_resv_unlock()
+
+    Note over Reader: RCU read lock
+    Reader-&gt;&gt;Reader: iter_first() → 遍历 fences
+    Note over Reader: 若期间 list 被替换 → 自动 restart
+    Note over Reader: RCU read unlock</code></pre>
+<h3 id="37-dma-heap-dma-heapc">3.7 dma-heap 分配框架 (<code>dma-heap.c</code>)<a class="headerlink" href="#37-dma-heap-dma-heapc" title="Permanent link">&para;</a></h3>
+<p>为用户态提供统一的缓冲区分配接口，每个 heap 注册为 <code>/dev/dma_heap/&lt;name&gt;</code> 字符设备。</p>
+<pre class="mermaid"><code>graph TD
+    USER["用户态 open(/dev/dma_heap/system)"]
+    USER --&gt;|"DMA_HEAP_IOCTL_ALLOC"| IOCTL[dma_heap_ioctl]
+    IOCTL --&gt;|"heap-&gt;ops-&gt;allocate()"| ALLOC[dma_heap_buffer_alloc]
+    ALLOC --&gt;|"PAGE_ALIGN(len)"| SIZE[页对齐大小]
+    SIZE --&gt; ALLOC2[具体 heap 实现]
+    ALLOC2 --&gt;|"dma_buf_export()"| DMBUF[dma_buf]
+    DMBUF --&gt;|"dma_buf_fd()"| FD[返回 fd 给用户态]</code></pre>
+<h3 id="38-sync_file-sync_filec">3.8 sync_file (<code>sync_file.c</code>)<a class="headerlink" href="#38-sync_file-sync_filec" title="Permanent link">&para;</a></h3>
+<p>将 dma-fence 包装为文件描述符，支持用户态显式同步。</p>
+<p><strong>IOCTL 接口：</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SYNC_IOC_MERGE</code></td>
+<td>合并两个 sync_file 为一个新的</td>
+</tr>
+<tr>
+<td><code>SYNC_IOC_FILE_INFO</code></td>
+<td>查询 fence 状态、时间戳、驱动信息</td>
+</tr>
+<tr>
+<td><code>SYNC_IOC_SET_DEADLINE</code></td>
+<td>设置截止时间提示</td>
+</tr>
+</tbody>
+</table>
+<p><strong>用户态同步模型：</strong></p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GPU as GPU 驱动
+    participant APP as 应用程序
+    participant DISP as 显示驱动
+
+    GPU-&gt;&gt;GPU: 提交渲染任务
+    GPU-&gt;&gt;APP: sync_file fd (out_fence)
+    APP-&gt;&gt;APP: poll(fd, POLLIN) / read(fd)
+    GPU--&gt;&gt;APP: fence signal → 可读
+    APP-&gt;&gt;DISP: 传递 fd 作为 in_fence
+    DISP-&gt;&gt;DISP: 等待 fd 对应 fence 完成后开始显示</code></pre>
+<h3 id="39">3.9 内存后端实现<a class="headerlink" href="#39" title="Permanent link">&para;</a></h3>
+<h4 id="system_heap-heapssystem_heapc">system_heap (<code>heaps/system_heap.c</code>)<a class="headerlink" href="#system_heap-heapssystem_heapc" title="Permanent link">&para;</a></h4>
+<p>使用内核 buddy 分配器分配 <strong>非连续物理内存</strong>，通过 scatter-gather table 描述。</p>
+<pre class="mermaid"><code>graph LR
+    REQ[分配请求&lt;br/&gt;N 页] --&gt; O8["尝试 order-8&lt;br/&gt;1MB 连续页"]
+    O8 --&gt;|"失败"| O4["尝试 order-4&lt;br/&gt;64KB 连续页"]
+    O4 --&gt;|"失败"| O0["尝试 order-0&lt;br/&gt;4KB 页"]
+    O0 --&gt;|"失败"| ERR[ENOMEM]
+    O8 --&gt;|"成功"| SG[构建 sg_table]
+    O4 --&gt;|"成功"| SG
+    O0 --&gt;|"成功"| SG
+    SG --&gt; EXPORT[dma_buf_export]</code></pre>
+<h4 id="cma_heap-heapscma_heapc">cma_heap (<code>heaps/cma_heap.c</code>)<a class="headerlink" href="#cma_heap-heapscma_heapc" title="Permanent link">&para;</a></h4>
+<p>使用 <strong>CMA（连续内存分配器）</strong> 分配物理连续内存，适用于对 DMA 地址连续性有要求的设备。</p>
+<h4 id="udmabuf-udmabufc">udmabuf (<code>udmabuf.c</code>)<a class="headerlink" href="#udmabuf-udmabufc" title="Permanent link">&para;</a></h4>
+<p>将用户态 memfd 的页面 pin 住后转换为 dma-buf，适用于 QEMU 虚拟化场景。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant APP as 用户进程
+    participant UDM as /dev/udmabuf
+    participant MEMFD as memfd
+    participant DMABUF as dma-buf
+
+    APP-&gt;&gt;MEMFD: memfd_create() + 写入数据
+    APP-&gt;&gt;UDM: ioctl(UDMABUF_CREATE, memfd, offset, size)
+    UDM-&gt;&gt;MEMFD: check_memfd_seals()
+    UDM-&gt;&gt;MEMFD: memfd_pin_folios() → pin 住页面
+    UDM-&gt;&gt;DMABUF: dma_buf_export()
+    UDM--&gt;&gt;APP: 返回 dmabuf fd
+    APP-&gt;&gt;APP: 传递 fd 给 GPU/VFIO 等设备</code></pre>
+<h3 id="310-drm-prime-drm_primec">3.10 DRM PRIME (<code>drm_prime.c</code>)<a class="headerlink" href="#310-drm-prime-drm_primec" title="Permanent link">&para;</a></h3>
+<p>DRM 子系统与 dma-buf 的桥接层，支持：
+- <strong>Export</strong>：将 GEM buffer object 导出为 dma-buf FD
+- <strong>Import</strong>：将 dma-buf FD 导入为 GEM buffer object
+- 通过 rbtree 缓存 handle↔dmabuf 映射，确保同一对象只对应一个 handle</p>
+<h2 id="4">4. 关键数据结构<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-struct-dma_buf">4.1 struct dma_buf (核心缓冲区对象)<a class="headerlink" href="#41-struct-dma_buf" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">                      </span><span class="c1">// 缓冲区字节大小</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">file</span><span class="w"> </span><span class="o">*</span><span class="n">file</span><span class="p">;</span><span class="w">                </span><span class="c1">// 关联的文件对象</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w"> </span><span class="n">attachments</span><span class="p">;</span><span class="w">     </span><span class="c1">// 所有 device attachment 链表</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_ops</span><span class="w"> </span><span class="o">*</span><span class="n">ops</span><span class="p">;</span><span class="w">    </span><span class="c1">// 操作函数表</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mutex</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span><span class="w">                </span><span class="c1">// 自旋锁</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">priv</span><span class="p">;</span><span class="w">                       </span><span class="c1">// 导出者私有数据</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_resv</span><span class="w"> </span><span class="o">*</span><span class="n">resv</span><span class="p">;</span><span class="w">            </span><span class="c1">// 预留对象（包含隐式 fence）</span>
+
+<span class="w">    </span><span class="n">wait_queue_head_t</span><span class="w"> </span><span class="n">poll</span><span class="p">;</span><span class="w">           </span><span class="c1">// poll 等待队列</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_poll_cb_t</span><span class="w"> </span><span class="n">cb_in</span><span class="p">;</span><span class="w">   </span><span class="c1">// 读方向 poll 回调</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_poll_cb_t</span><span class="w"> </span><span class="n">cb_out</span><span class="p">;</span><span class="w">  </span><span class="c1">// 写方向 poll 回调</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w"> </span><span class="n">list_node</span><span class="p">;</span><span class="w">       </span><span class="c1">// 全局 dma-buf 列表节点</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span><span class="w">                       </span><span class="c1">// 调试用名称</span>
+<span class="w">    </span><span class="n">spinlock_t</span><span class="w"> </span><span class="n">name_lock</span><span class="p">;</span><span class="w">             </span><span class="c1">// name 访问锁</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">module</span><span class="w"> </span><span class="o">*</span><span class="n">owner</span><span class="p">;</span><span class="w">             </span><span class="c1">// 拥有模块</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">vmapping_counter</span><span class="p">;</span><span class="w">             </span><span class="c1">// 内核映射引用计数</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="42-struct-dma_fence">4.2 struct dma_fence (同步原语)<a class="headerlink" href="#42-struct-dma_fence" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">spinlock_t</span><span class="w"> </span><span class="o">*</span><span class="n">lock</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 自旋锁（必须 irq-safe）</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence_ops</span><span class="w"> </span><span class="o">*</span><span class="n">ops</span><span class="p">;</span><span class="w">  </span><span class="c1">// 操作函数表</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">kref</span><span class="w"> </span><span class="n">refcount</span><span class="p">;</span><span class="w">         </span><span class="c1">// 引用计数</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">rcu_head</span><span class="w"> </span><span class="n">rcu</span><span class="p">;</span><span class="w">              </span><span class="c1">// RCU 释放头</span>
+
+<span class="w">    </span><span class="n">u64</span><span class="w"> </span><span class="n">context</span><span class="p">;</span><span class="w">                      </span><span class="c1">// 执行上下文 ID（全局唯一）</span>
+<span class="w">    </span><span class="n">u64</span><span class="w"> </span><span class="n">seqno</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 上下文内序列号</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span><span class="w">              </span><span class="c1">// 状态标志</span>
+<span class="w">    </span><span class="n">ktime_t</span><span class="w"> </span><span class="n">timestamp</span><span class="p">;</span><span class="w">                </span><span class="c1">// 信号时间戳</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">error</span><span class="p">;</span><span class="w">                        </span><span class="c1">// 完成错误码</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w"> </span><span class="n">cb_list</span><span class="p">;</span><span class="w">         </span><span class="c1">// 回调链表</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="43-struct-dma_resv">4.3 struct dma_resv (预留对象)<a class="headerlink" href="#43-struct-dma_resv" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_resv</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ww_mutex</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span><span class="w">                     </span><span class="c1">// 可重入互斥锁</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_resv_list</span><span class="w"> </span><span class="n">__rcu</span><span class="w"> </span><span class="o">*</span><span class="n">fences</span><span class="p">;</span><span class="w">       </span><span class="c1">// RCU 保护的 fence 数组</span>
+<span class="p">};</span>
+
+<span class="c1">// 内部 fence 列表结构</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_resv_list</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">rcu_head</span><span class="w"> </span><span class="n">rcu</span><span class="p">;</span>
+<span class="w">    </span><span class="n">u32</span><span class="w"> </span><span class="n">num_fences</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 当前 fence 数量</span>
+<span class="w">    </span><span class="n">u32</span><span class="w"> </span><span class="n">max_fences</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 预分配最大数量</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="n">__rcu</span><span class="w"> </span><span class="o">*</span><span class="n">table</span><span class="p">[];</span><span class="c1">// fence 指针 + usage 标志</span>
+<span class="p">};</span>
+<span class="c1">// table[i] 低 2 位存储 dma_resv_usage 枚举值</span>
+</code></pre></div>
+<h3 id="44-struct-dma_fence_array-fence">4.4 struct dma_fence_array (fence 聚合)<a class="headerlink" href="#44-struct-dma_fence_array-fence" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence_array</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="n">base</span><span class="p">;</span><span class="w">          </span><span class="c1">// 基类 fence</span>
+<span class="w">    </span><span class="n">spinlock_t</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span><span class="w">                </span><span class="c1">// 独立锁</span>
+<span class="w">    </span><span class="n">atomic_t</span><span class="w"> </span><span class="n">num_pending</span><span class="p">;</span><span class="w">           </span><span class="c1">// 等待完成的子 fence 数</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">**</span><span class="n">fences</span><span class="p">;</span><span class="w">      </span><span class="c1">// 子 fence 数组</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">num_fences</span><span class="p">;</span><span class="w">        </span><span class="c1">// 子 fence 数量</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">irq_work</span><span class="w"> </span><span class="n">work</span><span class="p">;</span><span class="w">           </span><span class="c1">// 信号通知 work</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence_array_cb</span><span class="w"> </span><span class="n">callbacks</span><span class="p">[];</span><span class="w"> </span><span class="c1">// 每个 fence 的回调</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="45-struct-dma_fence_chain-fence">4.5 struct dma_fence_chain (fence 时序链)<a class="headerlink" href="#45-struct-dma_fence_chain-fence" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence_chain</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="n">base</span><span class="p">;</span><span class="w">          </span><span class="c1">// 基类 fence</span>
+<span class="w">    </span><span class="n">spinlock_t</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence_cb</span><span class="w"> </span><span class="n">cb</span><span class="p">;</span><span class="w">         </span><span class="c1">// 当前等待的回调</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">irq_work</span><span class="w"> </span><span class="n">work</span><span class="p">;</span><span class="w">           </span><span class="c1">// 重新 arm 回调的 work</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="n">__rcu</span><span class="w"> </span><span class="o">*</span><span class="n">prev</span><span class="p">;</span><span class="w">   </span><span class="c1">// 前一个 chain 节点</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="n">fence</span><span class="p">;</span><span class="w">        </span><span class="c1">// 包含的实际 fence</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">prev_seqno</span><span class="p">;</span><span class="w">            </span><span class="c1">// 前节点的 seqno</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="46-struct-dma_heap">4.6 struct dma_heap (堆设备)<a class="headerlink" href="#46-struct-dma_heap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span><span class="w">               </span><span class="c1">// 堆名称（如 &quot;system&quot;）</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_ops</span><span class="w"> </span><span class="o">*</span><span class="n">ops</span><span class="p">;</span><span class="w"> </span><span class="c1">// 分配操作</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">priv</span><span class="p">;</span><span class="w">                     </span><span class="c1">// 堆私有数据</span>
+<span class="w">    </span><span class="kt">dev_t</span><span class="w"> </span><span class="n">heap_devt</span><span class="p">;</span><span class="w">                </span><span class="c1">// 设备号</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w"> </span><span class="n">list</span><span class="p">;</span><span class="w">          </span><span class="c1">// 全局堆列表</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">cdev</span><span class="w"> </span><span class="n">heap_cdev</span><span class="p">;</span><span class="w">          </span><span class="c1">// 字符设备</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="47-struct-dma_buf_ops">4.7 struct dma_buf_ops (操作函数表)<a class="headerlink" href="#47-struct-dma_buf_ops" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_ops</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">attach</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_attachment</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">detach</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_attachment</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sg_table</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">map_dma_buf</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_attachment</span><span class="w"> </span><span class="o">*</span><span class="p">,</span>
+<span class="w">                                     </span><span class="k">enum</span><span class="w"> </span><span class="n">dma_data_direction</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">unmap_dma_buf</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_attachment</span><span class="w"> </span><span class="o">*</span><span class="p">,</span>
+<span class="w">                           </span><span class="k">struct</span><span class="w"> </span><span class="nc">sg_table</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">dma_data_direction</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">release</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">mmap</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">vm_area_struct</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">vmap</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iosys_map</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">vunmap</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iosys_map</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">begin_cpu_access</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">dma_data_direction</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">end_cpu_access</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">dma_data_direction</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="48-struct-dma_fence_ops-fence">4.8 struct dma_fence_ops (fence 操作函数表)<a class="headerlink" href="#48-struct-dma_fence_ops-fence" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence_ops</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_driver_name</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">get_timeline_name</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">enable_signaling</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">signaled</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">wait</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">intr</span><span class="p">,</span><span class="w"> </span><span class="kt">signed</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">timeout</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">release</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">fence_value_str</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">timeline_value_str</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">set_deadline</span><span class="p">)(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">ktime_t</span><span class="w"> </span><span class="n">deadline</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+<h2 id="5">5. 关键链路分析<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 用户态缓冲区分配全链路<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant App
+    participant HeapDev as /dev/dma_heap/system
+    participant Heap as system_heap
+    participant DB as dma_buf
+    participant Buddy as Buddy Alloc
+
+    App-&gt;&gt;HeapDev: open("/dev/dma_heap/system")
+    App-&gt;&gt;HeapDev: ioctl(DMA_HEAP_IOCTL_ALLOC, {len=1MB})
+    HeapDev-&gt;&gt;HeapDev: dma_heap_ioctl_allocate()
+    HeapDev-&gt;&gt;HeapDev: dma_heap_buffer_alloc(heap, len)
+    HeapDev-&gt;&gt;Heap: heap-&gt;ops-&gt;allocate() → system_heap_allocate()
+
+    loop 按需分配页块
+        Heap-&gt;&gt;Buddy: alloc_pages(order=8) → 1MB
+        alt order=8 成功
+            Heap-&gt;&gt;Heap: 添加到 sg_table
+        else order=8 失败
+            Heap-&gt;&gt;Buddy: alloc_pages(order=4) → 64KB
+            Heap-&gt;&gt;Buddy: alloc_pages(order=0) → 4KB
+        end
+    end
+
+    Heap-&gt;&gt;DB: dma_buf_export(exp_info)
+    DB-&gt;&gt;DB: get_unused_fd_flags()
+    DB-&gt;&gt;DB: anon_inode_getfile("dmabuf", fops, dmabuf)
+    DB-&gt;&gt;DB: fd_install(fd, file)
+    DB--&gt;&gt;HeapDev: dma_buf *
+    HeapDev--&gt;&gt;App: fd
+
+    Note over App: 后续可通过 mmap(fd) 映射到用户态</code></pre>
+<h3 id="52">5.2 跨设备缓冲区共享链路<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GPU as GPU 驱动
+    participant DB as dma_buf
+    participant DISP as 显示控制器
+
+    GPU-&gt;&gt;DB: dma_buf_attach(dmabuf, gpu_device)
+    DB-&gt;&gt;DB: ops-&gt;attach() → 创建 attachment
+    GPU-&gt;&gt;DB: dma_buf_map_attachment(attachment, DMA_TO_DEVICE)
+    DB-&gt;&gt;DB: ops-&gt;map_dma_buf() → dma_map_sgtable()
+    DB--&gt;&gt;GPU: sg_table (含 DMA 地址)
+
+    Note over GPU: GPU 使用 DMA 地址进行渲染
+
+    GPU-&gt;&gt;DISP: 传递 dmabuf fd
+
+    DISP-&gt;&gt;DB: dma_buf_attach(dmabuf, display_device)
+    DB-&gt;&gt;DB: ops-&gt;attach()
+    DISP-&gt;&gt;DB: dma_buf_map_attachment(attachment, DMA_FROM_DEVICE)
+    DB-&gt;&gt;DB: ops-&gt;map_dma_buf() → dma_map_sgtable()
+    DB--&gt;&gt;DISP: sg_table
+
+    Note over DISP: 显示控制器使用同一物理内存</code></pre>
+<h3 id="53-dma-resv">5.3 隐式同步链路 (dma-resv)<a class="headerlink" href="#53-dma-resv" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GPU as GPU 驱动
+    participant RESV as dma_resv
+    participant FENCE as dma_fence
+    participant DISP as 显示控制器
+
+    GPU-&gt;&gt;FENCE: 创建 out_fence (seqno=N)
+    GPU-&gt;&gt;RESV: dma_resv_add_fence(resv, out_fence, WRITE)
+    Note over RESV: WRITE fence 表示 GPU 正在写缓冲区
+
+    DISP-&gt;&gt;RESV: dma_resv_lock(resv)
+    DISP-&gt;&gt;RESV: dma_resv_for_each_fence(resv, READ, fence)
+    Note over DISP: 发现 WRITE fence 未信号
+
+    DISP-&gt;&gt;FENCE: dma_fence_wait(out_fence)
+    Note over GPU: GPU 完成渲染
+    GPU-&gt;&gt;FENCE: dma_fence_signal(out_fence)
+    FENCE--&gt;&gt;DISP: 唤醒！
+    Note over DISP: 可以安全读取缓冲区</code></pre>
+<h3 id="54-sync_file">5.4 显式同步链路 (sync_file)<a class="headerlink" href="#54-sync_file" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant GPU as GPU 驱动
+    participant SF_OUT as out_fence (sync_file)
+    participant APP as 应用程序
+    participant SF_IN as in_fence (sync_file)
+    participant DISP as 显示驱动
+
+    GPU-&gt;&gt;SF_OUT: sync_file_create(fence)
+    GPU--&gt;&gt;APP: 返回 out_fence fd
+
+    APP-&gt;&gt;APP: poll(out_fence_fd, POLLIN)
+    Note over APP: 阻塞直到 GPU 完成
+    GPU-&gt;&gt;SF_OUT: dma_fence_signal()
+    SF_OUT--&gt;&gt;APP: poll 返回 EPOLLIN
+
+    APP-&gt;&gt;SF_IN: SYNC_IOC_MERGE(out_fence, extra_fence)
+    SF_IN--&gt;&gt;APP: merged_fence fd
+    APP-&gt;&gt;DISP: 传递 merged_fence 作为 in_fence
+    DISP-&gt;&gt;SF_IN: sync_file_get_fence(fd)
+    DISP-&gt;&gt;DISP: 等待 merged_fence 完成后开始扫描</code></pre>
+<h3 id="55-dma-buf">5.5 dma-buf 生命周期管理<a class="headerlink" href="#55-dma-buf" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    CREATE["dma_buf_export()&lt;br/&gt;创建 dma_buf"] --&gt;|"get_unused_fd_flags()"| FD[分配 fd]
+    CREATE --&gt;|"anon_inode_getfile()"| FILE[创建 file 对象]
+    CREATE --&gt;|"__dma_buf_list_add()"| LIST[加入全局列表]
+
+    FD --&gt;|"用户态持有 fd"| REF[refcount++]
+    FILE --&gt;|"其他内核模块引用"| REF
+
+    REF --&gt;|"dma_buf_get()"| REF2[refcount++]
+    REF2 --&gt;|"dma_buf_put()"| DEC[refcount--]
+    DEC --&gt;|"refcount &gt; 0"| REF2
+
+    DEC --&gt;|"refcount = 0"| RELEASE[dentry_ops.d_release]
+    RELEASE --&gt;|"ops-&gt;release()"| DRV[驱动释放私有数据]
+    RELEASE --&gt;|"dma_resv_fini()"| RESV_FINI[清理 resv]
+    RELEASE --&gt;|"module_put() + kfree()"| FREE[释放 dma_buf]
+
+    style CREATE fill:#bbf
+    style RELEASE fill:#fbb
+    style FREE fill:#f99</code></pre>
+<h2 id="6">6. 用户态使用方式<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<h3 id="61-dma-heap">6.1 通过 dma-heap 接口分配（推荐）<a class="headerlink" href="#61-dma-heap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 1. 打开堆设备</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">heap_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/dma_heap/system&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDONLY</span><span class="p">);</span>
+
+<span class="c1">// 2. 分配缓冲区</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_allocation_data</span><span class="w"> </span><span class="n">alloc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w">      </span><span class="c1">// 1MB</span>
+<span class="w">    </span><span class="p">.</span><span class="n">fd_flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">O_RDWR</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">O_CLOEXEC</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">heap_flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">heap_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_HEAP_IOCTL_ALLOC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">alloc</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloc</span><span class="p">.</span><span class="n">fd</span><span class="p">;</span>
+
+<span class="c1">// 3. mmap 到用户态</span>
+<span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="n">PROT_READ</span><span class="o">|</span><span class="n">PROT_WRITE</span><span class="p">,</span><span class="w"> </span><span class="n">MAP_SHARED</span><span class="p">,</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// 4. CPU 缓存同步</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_sync</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_START</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_RW</span><span class="w"> </span><span class="p">};</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_SYNC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sync</span><span class="p">);</span>
+<span class="c1">// ... 读写 ptr ...</span>
+<span class="n">sync</span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_END</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_RW</span><span class="p">;</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_SYNC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sync</span><span class="p">);</span>
+
+<span class="c1">// 5. 传递给设备驱动（通过特定驱动 ioctl）</span>
+<span class="c1">// 6. 显式同步</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sync_fence_info</span><span class="w"> </span><span class="n">info</span><span class="p">;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sync_file_info</span><span class="w"> </span><span class="n">fi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">num_fences</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_SYNC_FILE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fi</span><span class="p">);</span><span class="w">  </span><span class="c1">// 导出 fence</span>
+<span class="n">poll</span><span class="p">(</span><span class="n">fi</span><span class="p">.</span><span class="n">fence</span><span class="p">,</span><span class="w"> </span><span class="n">POLLIN</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w">  </span><span class="c1">// 等待设备操作完成</span>
+</code></pre></div>
+<h3 id="62-android-libdmabufheap">6.2 通过 Android libdmabufheap（封装库）<a class="headerlink" href="#62-android-libdmabufheap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">BufferAllocator</span><span class="w"> </span><span class="n">alloc</span><span class="p">;</span>
+<span class="c1">// 自动探测 dma_heap 和 legacy ion</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloc</span><span class="p">.</span><span class="n">Alloc</span><span class="p">(</span><span class="s">&quot;system&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloc</span><span class="p">.</span><span class="n">AllocSystem</span><span class="p">(</span><span class="nb">true</span><span class="w"> </span><span class="cm">/*cpu_access*/</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<span class="n">alloc</span><span class="p">.</span><span class="n">CpuSyncStart</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">SyncType</span><span class="o">::</span><span class="n">kSyncReadWrite</span><span class="p">);</span>
+<span class="n">alloc</span><span class="p">.</span><span class="n">CpuSyncEnd</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">SyncType</span><span class="o">::</span><span class="n">kSyncReadWrite</span><span class="p">);</span>
+</code></pre></div>
+<p><strong>自动回退机制：</strong></p>
+<pre class="mermaid"><code>graph TD
+    ALLOC["alloc.Alloc('system', size)"] --&gt;|"尝试"| DMAHEAP["open(/dev/dma_heap/system)"]
+    DMAHEAP --&gt;|"成功"| DALLOC["DMA_HEAP_IOCTL_ALLOC"]
+    DMAHEAP --&gt;|"失败(ENOENT)"| IONCHECK{"/dev/ion 可用?"}
+    IONCHECK --&gt;|"是"| IONALLOC["ion_alloc_fd()"]
+    IONCHECK --&gt;|"否"| FAIL["返回错误"]</code></pre>
+<h3 id="63-udmabuf-qemu">6.3 通过 udmabuf 接口（QEMU 场景）<a class="headerlink" href="#63-udmabuf-qemu" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 1. 创建 memfd 并写入数据</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">memfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">memfd_create</span><span class="p">(</span><span class="s">&quot;guest-fb&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">MFD_ALLOW_SEALING</span><span class="p">);</span>
+<span class="n">ftruncate</span><span class="p">(</span><span class="n">memfd</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<span class="n">write</span><span class="p">(</span><span class="n">memfd</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<span class="n">fcntl</span><span class="p">(</span><span class="n">memfd</span><span class="p">,</span><span class="w"> </span><span class="n">F_ADD_SEALS</span><span class="p">,</span><span class="w"> </span><span class="n">F_SEAL_SHRINK</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">F_SEAL_WRITE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">F_SEAL_FUTURE_WRITE</span><span class="p">);</span>
+
+<span class="c1">// 2. 转换为 dmabuf</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">udmabuf_create</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">memfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">memfd</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">udmabuf_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/udmabuf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDWR</span><span class="p">);</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">udmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">UDMABUF_CREATE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">create</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">create</span><span class="p">.</span><span class="n">fd</span><span class="p">;</span><span class="w">  </span><span class="c1">// 可传递给 VFIO/GPU</span>
+</code></pre></div>
+<h2 id="7">7. 内核模块使用方式<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-dma-buf">7.1 导出 dma-buf<a class="headerlink" href="#71-dma-buf" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 1. 实现 dma_buf_ops</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_ops</span><span class="w"> </span><span class="n">my_ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">attach</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_attach</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">detach</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_detach</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">map_dma_buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_map</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">unmap_dma_buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_unmap</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">release</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_release</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">mmap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_mmap</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">begin_cpu_access</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_begin_cpu</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">end_cpu_access</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_end_cpu</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="c1">// 2. 导出</span>
+<span class="n">DEFINE_DMA_BUF_EXPORT_INFO</span><span class="p">(</span><span class="n">exp_info</span><span class="p">);</span>
+<span class="n">exp_info</span><span class="p">.</span><span class="n">ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">my_ops</span><span class="p">;</span>
+<span class="n">exp_info</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buf_size</span><span class="p">;</span>
+<span class="n">exp_info</span><span class="p">.</span><span class="n">priv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_private</span><span class="p">;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="n">dmabuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_export</span><span class="p">(</span><span class="o">&amp;</span><span class="n">exp_info</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_fd</span><span class="p">(</span><span class="n">dmabuf</span><span class="p">,</span><span class="w"> </span><span class="n">O_CLOEXEC</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="72-dma-buf-dma">7.2 导入 dma-buf 并 DMA 映射<a class="headerlink" href="#72-dma-buf-dma" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="n">dmabuf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_get</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_attachment</span><span class="w"> </span><span class="o">*</span><span class="n">attach</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_attach</span><span class="p">(</span><span class="n">dmabuf</span><span class="p">,</span><span class="w"> </span><span class="n">my_dev</span><span class="p">);</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sg_table</span><span class="w"> </span><span class="o">*</span><span class="n">sgt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_map_attachment</span><span class="p">(</span><span class="n">attach</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_TO_DEVICE</span><span class="p">);</span>
+<span class="c1">// 使用 sgt 中的 DMA 地址</span>
+<span class="c1">// ...</span>
+<span class="n">dma_buf_unmap_attachment</span><span class="p">(</span><span class="n">attach</span><span class="p">,</span><span class="w"> </span><span class="n">sgt</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_TO_DEVICE</span><span class="p">);</span>
+<span class="n">dma_buf_detach</span><span class="p">(</span><span class="n">dmabuf</span><span class="p">,</span><span class="w"> </span><span class="n">attach</span><span class="p">);</span>
+<span class="n">dma_buf_put</span><span class="p">(</span><span class="n">dmabuf</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="73-dma-heap">7.3 注册自定义 dma-heap<a class="headerlink" href="#73-dma-heap" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="n">my_heap_allocate</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap</span><span class="w"> </span><span class="o">*</span><span class="n">heap</span><span class="p">,</span>
+<span class="w">                                         </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">len</span><span class="p">,</span>
+<span class="w">                                         </span><span class="n">u32</span><span class="w"> </span><span class="n">fd_flags</span><span class="p">,</span><span class="w"> </span><span class="n">u64</span><span class="w"> </span><span class="n">heap_flags</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 分配内存、构建 sg_table、调用 dma_buf_export</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_ops</span><span class="w"> </span><span class="n">my_heap_ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">allocate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_heap_allocate</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">__init</span><span class="w"> </span><span class="nf">my_heap_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_export_info</span><span class="w"> </span><span class="n">exp_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my_custom_heap&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">my_heap_ops</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">priv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">PTR_ERR_OR_ZERO</span><span class="p">(</span><span class="n">dma_heap_add</span><span class="p">(</span><span class="o">&amp;</span><span class="n">exp_info</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="n">module_init</span><span class="p">(</span><span class="n">my_heap_init</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="8">8. 构建系统<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TD
+    KCONFIG["Kconfig"] --&gt;|"CONFIG_DMABUF_HEAPS"| HEAP["dma-heap.c + heaps/*.c"]
+    KCONFIG --&gt;|"CONFIG_SYNC_FILE"| SF["sync_file.c"]
+    KCONFIG --&gt;|"CONFIG_SW_SYNC"| SWSYNC["sw_sync.c"]
+    KCONFIG --&gt;|"CONFIG_UDMABUF"| UDMABUF["udmabuf.c"]
+    KCONFIG --&gt;|"CONFIG_DMABUF_SELFTESTS"| SELFTEST["selftest.c + st-*.c"]
+
+    subgraph "无条件编译"
+        CORE["dma-buf.c&lt;br/&gt;dma-fence.c&lt;br/&gt;dma-resv.c&lt;br/&gt;dma-fence-array.c&lt;br/&gt;dma-fence-chain.c&lt;br/&gt;dma-fence-unwrap.c&lt;br/&gt;dma-buf-mapping.c"]
+    end</code></pre>
+<h2 id="9">9. 同步模型对比<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "隐式同步 (Implicit)"
+        I1[dma_buf.resv] --&gt; I2[包含 WRITE/READ fence]
+        I2 --&gt; I3[设备自动等待相关 fence]
+        I3 --&gt; I4[用户态通过 poll() 查询状态]
+    end
+
+    subgraph "显式同步 (Explicit)"
+        E1[驱动创建 out_fence] --&gt; E2["sync_file_create()"]
+        E2 --&gt; E3[返回 sync_file fd 给用户态]
+        E3 --&gt; E4[用户态传递 fd 给下一设备]
+        E4 --&gt; E5[下一设备将 fd 作为 in_fence]
+        E5 --&gt; E6[设备自动等待 fence]
+    end
+
+    style I1 fill:#bfb
+    style E1 fill:#fbb</code></pre>
+<h2 id="10">10. 文件清单与角色<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dma-buf.c</code></td>
+<td>核心：dma_buf 结构体、文件操作、导出/导入、poll、mmap</td>
+</tr>
+<tr>
+<td><code>dma-fence.c</code></td>
+<td>核心：dma_fence 同步原语、signal/wait/callback</td>
+</tr>
+<tr>
+<td><code>dma-resv.c</code></td>
+<td>核心：dma_resv 预留对象、fence 容器管理</td>
+</tr>
+<tr>
+<td><code>dma-fence-array.c</code></td>
+<td>扩展：多 fence 聚合容器</td>
+</tr>
+<tr>
+<td><code>dma-fence-chain.c</code></td>
+<td>扩展：时序链 fence 容器（64-bit seqno）</td>
+</tr>
+<tr>
+<td><code>dma-fence-unwrap.c</code></td>
+<td>工具：fence 解包、去重、合并</td>
+</tr>
+<tr>
+<td><code>dma-heap.c</code></td>
+<td>框架：用户态分配入口（/dev/dma_heap/）</td>
+</tr>
+<tr>
+<td><code>sync_file.c</code></td>
+<td>接口：用户态显式同步（sync_file fd）</td>
+</tr>
+<tr>
+<td><code>sw_sync.c</code></td>
+<td>调试：软件 sync timeline（debugfs）</td>
+</tr>
+<tr>
+<td><code>udmabuf.c</code></td>
+<td>特殊：用户态内存转 dma-buf</td>
+</tr>
+<tr>
+<td><code>heaps/system_heap.c</code></td>
+<td>后端：系统内存分配器（非连续）</td>
+</tr>
+<tr>
+<td><code>heaps/cma_heap.c</code></td>
+<td>后端：CMA 连续内存分配器</td>
+</tr>
+<tr>
+<td><code>drm_prime.c</code></td>
+<td>桥接：DRM GEM ↔ dma-buf 转换</td>
+</tr>
+<tr>
+<td><code>libdmabufheap/</code></td>
+<td>用户态：Android 分配封装库</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
