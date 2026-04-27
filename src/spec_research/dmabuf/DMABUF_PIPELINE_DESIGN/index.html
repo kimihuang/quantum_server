@@ -1,0 +1,1782 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>DMA-BUF 多媒体 Pipeline 设计：4路 Camera + VPU + NPU - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dma-buf-pipeline-4-camera-vpu-npu" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DMA-BUF 多媒体 Pipeline 设计：4路 Camera + VPU + NPU
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 场景概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 场景概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心设计原则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 整体架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Pipeline 模式详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Pipeline 模式详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 模式一：实时采集 + AI 推理 + 编码存储
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 模式二：视频文件解码 + AI 推理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 模式三：多路拼接 + 环视 + AI 检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. DMA-BUF 使用详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. DMA-BUF 使用详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 帧缓冲池设计
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-camera-preprocess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Camera → Preprocess 同步（隐式 + 显式混合）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 同步 Fence 的传递方式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-4-camera-npu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 4路 Camera 并行 + NPU 的完整同步设计
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-npu-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. NPU 推理的 DMA-BUF 交互
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. NPU 推理的 DMA-BUF 交互">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-npu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 NPU 输入输出缓冲区
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-npu-batching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 NPU 多批次推理（Batching）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-npu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 NPU 推理结果回读
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 内存后端选择
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Pipeline 调度器设计
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Fence 合并与等待的最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Fence 合并与等待的最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-npu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 多路采集 → 单一 NPU 任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-npu-vpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 单帧多消费者（NPU + VPU 并行读）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 性能优化要点
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 性能优化要点">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键优化建议
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 典型端到端数据流
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="dma-buf-pipeline-4-camera-vpu-npu">DMA-BUF 多媒体 Pipeline 设计：4路 Camera + VPU + NPU<a class="headerlink" href="#dma-buf-pipeline-4-camera-vpu-npu" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 场景概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>本文描述如何利用 DMA-BUF 零拷贝共享和同步机制，构建一个高效的多媒体处理 Pipeline，串联以下组件：</p>
+<ul>
+<li><strong>4路 Camera（ISP）</strong>：4 个摄像头并行采集，输出 YUV/RAW 帧</li>
+<li><strong>VPU（Video Processing Unit）</strong>：视频编解码（H.264/H.265/AV1）</li>
+<li><strong>NPU（Neural Processing Unit）</strong>：AI 推理（目标检测、语义分割等）</li>
+</ul>
+<h3 id="_1">核心设计原则<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>零拷贝</td>
+<td>全链路通过 fd 传递 dma-buf，无内存拷贝</td>
+</tr>
+<tr>
+<td>双模式同步</td>
+<td>Pipeline 内部用隐式同步（dma-resv），跨子系统用显式同步（sync_file）</td>
+</tr>
+<tr>
+<td>池化分配</td>
+<td>预分配帧缓冲池，避免运行时分配延迟</td>
+</tr>
+<tr>
+<td>Pin 最小化</td>
+<td>只有正在使用的缓冲区才 pin 在设备地址空间</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2">2. 整体架构<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "采集层 (Capture)"
+        CAM0["Camera 0&lt;br/&gt;(ISP Output)"]
+        CAM1["Camera 1&lt;br/&gt;(ISP Output)"]
+        CAM2["Camera 2&lt;br/&gt;(ISP Output)"]
+        CAM3["Camera 3&lt;br/&gt;(ISP Output)"]
+    end
+
+    subgraph "帧缓冲池 (Frame Buffer Pool)"
+        POOL["dma_heap 分配&lt;br/&gt;system_heap / cma_heap&lt;br/&gt;预分配 N 帧 x 4路"]
+    end
+
+    subgraph "处理层 (Processing)"
+        PRE["预处理 (CPU/GPU)&lt;br/&gt;resize / normalize / format convert"]
+        VPU_ENC["VPU Encoder&lt;br/&gt;H.264/H.265 编码"]
+        VPU_DEC["VPU Decoder&lt;br/&gt;视频解码"]
+        NPU["NPU Inference&lt;br/&gt;检测/分割/分类"]
+        POST["后处理 (CPU/GPU)&lt;br/&gt;NMS / draw / composite"]
+    end
+
+    subgraph "输出层 (Output)"
+        NET["网络推流&lt;br/&gt;(encoded bitstream)"]
+        STORE["本地存储&lt;br/&gt;(encoded file)"]
+        DISP["显示输出&lt;br/&gt;(HDMI/DSI)"]
+        APP["应用层&lt;br/&gt;(推理结果)"]
+    end
+
+    POOL --&gt;|"dmabuf fd"| CAM0
+    POOL --&gt;|"dmabuf fd"| CAM1
+    POOL --&gt;|"dmabuf fd"| CAM2
+    POOL --&gt;|"dmabuf fd"| CAM3
+
+    CAM0 --&gt;|"out_fence"| PRE
+    CAM1 --&gt;|"out_fence"| PRE
+    CAM2 --&gt;|"out_fence"| PRE
+    CAM3 --&gt;|"out_fence"| PRE
+
+    PRE --&gt;|"out_fence"| NPU
+    PRE --&gt;|"out_fence"| VPU_ENC
+
+    NPU --&gt;|"out_fence"| POST
+    VPU_ENC --&gt;|"encoded bs"| NET
+    VPU_ENC --&gt;|"encoded bs"| STORE
+
+    POST --&gt;|"out_fence"| DISP
+
+    VPU_DEC --&gt;|"decoded frame (dmabuf)"| PRE
+    STORE --&gt;|"recorded file"| VPU_DEC
+
+    style POOL fill:#e1f5fe
+    style NPU fill:#fff3e0
+    style VPU_ENC fill:#e8f5e9
+    style VPU_DEC fill:#e8f5e9</code></pre>
+<h2 id="3-pipeline">3. Pipeline 模式详解<a class="headerlink" href="#3-pipeline" title="Permanent link">&para;</a></h2>
+<h3 id="31-ai">3.1 模式一：实时采集 + AI 推理 + 编码存储<a class="headerlink" href="#31-ai" title="Permanent link">&para;</a></h3>
+<p>最典型的多路摄像头场景：4路摄像头同时采集，画面经 AI 推理处理后编码存储。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant CAM as Camera (ISP)
+    participant POOL as Frame Pool
+    participant SCHED as Pipeline Scheduler
+    participant PRE as Preprocess (CPU)
+    participant NPU as NPU
+    participant VPU as VPU Encoder
+    participant FS as File System
+
+    Note over SCHED: 初始化阶段
+    SCHED-&gt;&gt;POOL: dma_heap_alloc() x N 帧 x 4路
+    SCHED-&gt;&gt;SCHED: 构建帧缓冲池 (ring buffer)
+
+    loop 每帧 (4路并行)
+        Note over CAM,CAM: Camera 0~3 并行采集
+
+        POOL-&gt;&gt;CAM: dequeue 空闲 dmabuf (fd)
+        CAM-&gt;&gt;CAM: ISP 输出写入 dmabuf
+        CAM-&gt;&gt;CAM: dma_resv_add_fence(WRITE fence)
+
+        CAM-&gt;&gt;SCHED: 传递 dmabuf fd + out_fence (sync_file)
+        SCHED-&gt;&gt;PRE: 传递 dmabuf fd + in_fence
+
+        Note over PRE: CPU 预处理
+        PRE-&gt;&gt;PRE: DMA_BUF_IOCTL_SYNC(START)
+        PRE-&gt;&gt;PRE: resize / color convert / normalize
+        PRE-&gt;&gt;PRE: DMA_BUF_IOCTL_SYNC(END)
+        PRE-&gt;&gt;PRE: dma_resv_add_fence(WRITE fence)
+        PRE-&gt;&gt;SCHED: 传递 dmabuf fd + out_fence
+
+        par 并行分支：AI 推理
+            SCHED-&gt;&gt;NPU: 传递 dmabuf fd + in_fence
+            NPU-&gt;&gt;NPU: 推理计算
+            NPU-&gt;&gt;SCHED: 返回结果 + out_fence
+        and 并行分支：视频编码
+            SCHED-&gt;&gt;VPU: 传递 dmabuf fd + in_fence
+            VPU-&gt;&gt;VPU: H.264/H.265 编码
+            VPU-&gt;&gt;FS: 写入编码码流
+            VPU-&gt;&gt;SCHED: out_fence
+        end
+
+        SCHED-&gt;&gt;POOL: 回收 dmabuf 到池中
+    end</code></pre>
+<h3 id="32-ai">3.2 模式二：视频文件解码 + AI 推理<a class="headerlink" href="#32-ai" title="Permanent link">&para;</a></h3>
+<p>离线场景：读取录制文件，VPU 解码后送 NPU 推理。</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant FS as File System
+    participant VPU as VPU Decoder
+    participant POOL as Frame Pool
+    participant PRE as Preprocess
+    participant NPU as NPU
+    participant APP as Application
+
+    loop 解码循环
+        FS-&gt;&gt;VPU: 压缩码流 (H.264 NAL)
+        VPU-&gt;&gt;POOL: 获取空闲 dmabuf
+        VPU-&gt;&gt;VPU: 解码写入 dmabuf
+        VPU-&gt;&gt;VPU: dma_resv_add_fence(WRITE fence)
+        VPU-&gt;&gt;PRE: dmabuf fd + out_fence (sync_file)
+
+        PRE-&gt;&gt;PRE: DMA_BUF_SYNC_START (CPU缓存失效)
+        PRE-&gt;&gt;PRE: 格式转换 NV12→RGB / normalize
+        PRE-&gt;&gt;PRE: DMA_BUF_SYNC_END (CPU缓存刷回)
+        PRE-&gt;&gt;NPU: dmabuf fd + out_fence
+
+        NPU-&gt;&gt;NPU: 等待 in_fence 完成
+        NPU-&gt;&gt;NPU: AI 推理
+        NPU-&gt;&gt;NPU: 输出结果到输出 dmabuf
+        NPU-&gt;&gt;NPU: dma_resv_add_fence(OUTPUT, WRITE fence)
+        NPU-&gt;&gt;APP: 输出 dmabuf fd + out_fence
+
+        APP-&gt;&gt;APP: 读取推理结果 (mmap / CPU sync)
+        APP-&gt;&gt;POOL: 回收 dmabuf
+    end</code></pre>
+<h3 id="33-ai">3.3 模式三：多路拼接 + 环视 + AI 检测<a class="headerlink" href="#33-ai" title="Permanent link">&para;</a></h3>
+<p>车载场景：4路摄像头画面拼接成环视，同时做目标检测。</p>
+<pre class="mermaid"><code>graph LR
+    subgraph "4路 Camera 输入"
+        F0["Cam0&lt;br/&gt;dmabuf_0"]
+        F1["Cam1&lt;br/&gt;dmabuf_1"]
+        F2["Cam2&lt;br/&gt;dmabuf_2"]
+        F3["Cam3&lt;br/&gt;dmabuf_3"]
+    end
+
+    subgraph "GPU 合成"
+        STITCH["GPU Stitch&lt;br/&gt;环视拼接&lt;br/&gt;输出: dmabuf_stitch"]
+    end
+
+    subgraph "NPU 检测 (4路并行)"
+        D0["NPU Detect&lt;br/&gt;dmabuf_0"]
+        D1["NPU Detect&lt;br/&gt;dmabuf_1"]
+        D2["NPU Detect&lt;br/&gt;dmabuf_2"]
+        D3["NPU Detect&lt;br/&gt;dmabuf_3"]
+    end
+
+    subgraph "后处理"
+        OVERLAY["GPU Overlay&lt;br/&gt;绘制检测框&lt;br/&gt;输出: dmabuf_final"]
+    end
+
+    F0 --&gt; STITCH
+    F1 --&gt; STITCH
+    F2 --&gt; STITCH
+    F3 --&gt; STITCH
+
+    F0 --&gt; D0
+    F1 --&gt; D1
+    F2 --&gt; D2
+    F3 --&gt; D3
+
+    STITCH --&gt;|"环视帧"| OVERLAY
+    D0 --&gt;|"检测结果"| OVERLAY
+    D1 --&gt;|"检测结果"| OVERLAY
+    D2 --&gt;|"检测结果"| OVERLAY
+    D3 --&gt;|"检测结果"| OVERLAY
+
+    OVERLAY --&gt;|"display dmabuf"| DISP["Display / HDMI"]
+
+    style STITCH fill:#e8f5e9
+    style OVERLAY fill:#fff3e0
+    style DISP fill:#fce4ec</code></pre>
+<h2 id="4-dma-buf">4. DMA-BUF 使用详解<a class="headerlink" href="#4-dma-buf" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 帧缓冲池设计<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 帧缓冲池：预分配避免运行时延迟 */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">frame_pool</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">heap_fd</span><span class="p">;</span><span class="w">                  </span><span class="cm">/* /dev/dma_heap/system 的 fd */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dmabuf_frame</span><span class="w"> </span><span class="o">*</span><span class="n">frames</span><span class="p">;</span><span class="w">  </span><span class="cm">/* 预分配的帧数组 */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* 帧数量 */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">stride</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* 单帧字节数 */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mutex</span><span class="w"> </span><span class="n">lock</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">dmabuf_frame</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="p">;</span><span class="w">                </span><span class="cm">/* dma-buf 文件描述符 */</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">cpu_addr</span><span class="p">;</span><span class="w">               </span><span class="cm">/* mmap 映射的 CPU 地址 */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">in_use</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sync_file</span><span class="w"> </span><span class="o">*</span><span class="n">out_fence</span><span class="p">;</span><span class="w">  </span><span class="cm">/* 最近一次操作的 out_fence */</span>
+<span class="p">};</span>
+</code></pre></div>
+<pre class="mermaid"><code>graph TD
+    subgraph "初始化"
+        INIT["open(/dev/dma_heap/system)"] --&gt; ALLOC["dma_heap_alloc() x N"]
+        ALLOC --&gt; MMAP["mmap() 每帧"]
+        MMAP --&gt; READY["帧池就绪"]
+    end
+
+    subgraph "运行时流转"
+        READY --&gt; DEQ["dequeue: 取空闲帧"]
+        DEQ --&gt; FILL["设备填充数据&lt;br/&gt;(Camera/VPU/GPU)"]
+        FILL --&gt; ENQ["enqueue: 帧入处理队列"]
+        ENQ --&gt; PROC["NPU/VPU/Display 处理"]
+        PROC --&gt; REL["release: 回收到池"]
+        REL --&gt; DEQ
+    end
+
+    style READY fill:#c8e6c9
+    style FILL fill:#bbdefb
+    style PROC fill:#ffe0b2</code></pre>
+<p><strong>池初始化代码：</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">frame_pool_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">frame_pool</span><span class="w"> </span><span class="o">*</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_allocation_data</span><span class="w"> </span><span class="n">alloc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">heap_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/dma_heap/system&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDONLY</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">O_CLOEXEC</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="w">    </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">stride</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PAGE_ALIGN</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">  </span><span class="cm">/* NV12 格式 */</span>
+<span class="w">    </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calloc</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">));</span>
+<span class="w">    </span><span class="n">mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">alloc</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">stride</span><span class="p">;</span>
+<span class="w">        </span><span class="n">alloc</span><span class="p">.</span><span class="n">fd_flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">O_RDWR</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">O_CLOEXEC</span><span class="p">;</span>
+<span class="w">        </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ioctl</span><span class="p">(</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">heap_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_HEAP_IOCTL_ALLOC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">alloc</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">dmabuf_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloc</span><span class="p">.</span><span class="n">fd</span><span class="p">;</span>
+<span class="w">        </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">stride</span><span class="p">;</span>
+<span class="w">        </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">cpu_addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">stride</span><span class="p">,</span>
+<span class="w">                                         </span><span class="n">PROT_READ</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PROT_WRITE</span><span class="p">,</span>
+<span class="w">                                         </span><span class="n">MAP_SHARED</span><span class="p">,</span><span class="w"> </span><span class="n">alloc</span><span class="p">.</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">cpu_addr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">MAP_FAILED</span><span class="p">)</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOMEM</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="42-camera-preprocess">4.2 Camera → Preprocess 同步（隐式 + 显式混合）<a class="headerlink" href="#42-camera-preprocess" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant ISP as Camera ISP Driver
+    participant DMABUF as dma-buf (resv)
+    participant CPU as CPU Preprocess
+
+    Note over ISP: 1. ISP 完成采集
+
+    ISP-&gt;&gt;DMABUF: dma_resv_add_fence(isp_fence, WRITE)
+    Note over DMABUF: resv 中有 WRITE fence (ISP)
+
+    ISP-&gt;&gt;CPU: 传递 dmabuf_fd + sync_file_create(isp_fence)
+
+    Note over CPU: 2. CPU 等待 ISP 完成
+
+    CPU-&gt;&gt;CPU: 方式A: poll(sync_fd, POLLIN)
+    CPU-&gt;&gt;CPU: 方式B: dma_resv_wait_timeout(resv, WRITE)
+    CPU-&gt;&gt;CPU: 方式C: NPU 驱动内部等待 (in_fence)
+
+    Note over CPU: 3. CPU 开始预处理
+
+    CPU-&gt;&gt;DMABUF: ioctl(DMA_BUF_IOCTL_SYNC, SYNC_START | RW)
+    Note over DMABUF: invalidate CPU cache
+    CPU-&gt;&gt;CPU: resize / color convert / normalize
+    CPU-&gt;&gt;DMABUF: ioctl(DMA_BUF_IOCTL_SYNC, SYNC_END | RW)
+    Note over DMABUF: flush CPU cache
+
+    CPU-&gt;&gt;DMABUF: dma_resv_add_fence(cpu_fence, WRITE)
+    Note over DMABUF: resv 中 WRITE fence 被 CPU fence 替换
+
+    CPU-&gt;&gt;NPU: 传递 dmabuf_fd + sync_file_create(cpu_fence)</code></pre>
+<h3 id="43-fence">4.3 同步 Fence 的传递方式<a class="headerlink" href="#43-fence" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    subgraph "隐式同步 (dma-resv)"
+        I1["设备A 写入&lt;br/&gt;add_fence(WRITE)"] --&gt; I2["设备B 读取前&lt;br/&gt;等待 WRITE fence"]
+        I2 --&gt; I3["设备B 写入&lt;br/&gt;add_fence(WRITE) 替换"]
+        I3 --&gt; I4["设备C 读取前&lt;br/&gt;等待 WRITE fence"]
+    end
+
+    subgraph "显式同步 (sync_file)"
+        E1["设备A 导出 out_fence&lt;br/&gt;sync_file_create()"] --&gt; E2["返回 fd 给用户态/调度器"]
+        E2 --&gt; E3["传递 fd 给设备B&lt;br/&gt;作为 in_fence"]
+        E3 --&gt; E4["设备B 内部&lt;br/&gt;dma_fence_wait(in_fence)"]
+    end
+
+    subgraph "选择策略"
+        S1{"同一 dma-buf 上的&lt;br/&gt;连续操作？"} --&gt;|"是"| S2["隐式同步&lt;br/&gt;(dma-resv 自动管理)"]
+        S1 --&gt;|"否 / 跨子系统调度"| S3["显式同步&lt;br/&gt;(sync_file fd 传递)"]
+    end
+
+    style I1 fill:#c8e6c9
+    style E1 fill:#bbdefb</code></pre>
+<p><strong>使用建议：</strong></p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐方式</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ISP → GPU → Display（同一缓冲区直通）</td>
+<td>隐式同步</td>
+<td>同一 dma-buf 上的连续流水线，dma-resv 自动管理</td>
+</tr>
+<tr>
+<td>Camera → NPU（调度器中转）</td>
+<td>显式同步</td>
+<td>需要用户态调度器协调多路缓冲区</td>
+</tr>
+<tr>
+<td>VPU Decode → NPU（同一驱动内）</td>
+<td>隐式同步</td>
+<td>驱动内部可自动处理</td>
+</tr>
+<tr>
+<td>NPU → App 读取结果</td>
+<td>显式同步</td>
+<td>用户态需要知道推理何时完成</td>
+</tr>
+<tr>
+<td>多路 Camera 合并输出</td>
+<td>显式同步</td>
+<td>需要等待 4 路全部完成后才开始合成</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-4-camera-npu">4.4 4路 Camera 并行 + NPU 的完整同步设计<a class="headerlink" href="#44-4-camera-npu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C0 as Cam 0
+    participant C1 as Cam 1
+    participant C2 as Cam 2
+    participant C3 as Cam 3
+    participant SCHED as Scheduler
+    participant NPU as NPU
+
+    Note over C0,C3: 4路 Camera 并行采集（各自独立 dma-buf）
+
+    par Camera 0
+        C0-&gt;&gt;C0: 写入 dmabuf_0
+        C0-&gt;&gt;C0: out_fence_0 = sync_file_create(isp_fence_0)
+    and Camera 1
+        C1-&gt;&gt;C1: 写入 dmabuf_1
+        C1-&gt;&gt;C1: out_fence_1 = sync_file_create(isp_fence_1)
+    and Camera 2
+        C2-&gt;&gt;C2: 写入 dmabuf_2
+        C2-&gt;&gt;C2: out_fence_2 = sync_file_create(isp_fence_2)
+    and Camera 3
+        C3-&gt;&gt;C3: 写入 dmabuf_3
+        C3-&gt;&gt;C3: out_fence_3 = sync_file_create(isp_fence_3)
+    end
+
+    C0-&gt;&gt;SCHED: dmabuf_0 + out_fence_0
+    C1-&gt;&gt;SCHED: dmabuf_1 + out_fence_1
+    C2-&gt;&gt;SCHED: dmabuf_2 + out_fence_2
+    C3-&gt;&gt;SCHED: dmabuf_3 + out_fence_3
+
+    Note over SCHED: 合并 4 路 fence 为一个
+
+    SCHED-&gt;&gt;SCHED: merged = SYNC_IOC_MERGE(f0, f1)
+    SCHED-&gt;&gt;SCHED: merged = SYNC_IOC_MERGE(merged, f2)
+    SCHED-&gt;&gt;SCHED: merged = SYNC_IOC_MERGE(merged, f3)
+
+    Note over SCHED: 依次提交 4 路到 NPU&lt;br/&gt;每路携带合并后的 in_fence
+
+    SCHED-&gt;&gt;NPU: submit(dmabuf_0, in_fence=merged)
+    SCHED-&gt;&gt;NPU: submit(dmabuf_1, in_fence=merged)
+    SCHED-&gt;&gt;NPU: submit(dmabuf_2, in_fence=merged)
+    SCHED-&gt;&gt;NPU: submit(dmabuf_3, in_fence=merged)
+
+    Note over NPU: NPU 内部等待 merged fence&lt;br/&gt;（4路全部采集完成后才开始推理）
+
+    NPU-&gt;&gt;NPU: 并行推理 4 路
+    NPU-&gt;&gt;SCHED: npu_out_fence_0~3
+
+    SCHED-&gt;&gt;SCHED: 回收 dmabuf_0~3 到帧池</code></pre>
+<h2 id="5-npu-dma-buf">5. NPU 推理的 DMA-BUF 交互<a class="headerlink" href="#5-npu-dma-buf" title="Permanent link">&para;</a></h2>
+<h3 id="51-npu">5.1 NPU 输入输出缓冲区<a class="headerlink" href="#51-npu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "NPU 推理一次前向传播"
+        INPUT["输入 dmabuf&lt;br/&gt;(图像帧)&lt;br/&gt;NV12 / RGB / NCHW"] --&gt; MODEL["NPU 模型推理&lt;br/&gt;(固定权重，不在 dmabuf 中)"]
+        MODEL --&gt; OUTPUT["输出 dmabuf&lt;br/&gt;(推理结果)&lt;br/&gt;检测框 / 分割图 / 特征图"]
+    end
+
+    INPUT_FENCE["in_fence&lt;br/&gt;(等待输入就绪)"] -.-&gt;|"wait"| INPUT
+    OUTPUT_FENCE["out_fence&lt;br/&gt;(推理完成)"] -.-&gt;|"signal"| OUTPUT
+
+    style INPUT fill:#bbdefb
+    style OUTPUT fill:#c8e6c9
+    style MODEL fill:#fff3e0</code></pre>
+<h3 id="52-npu-batching">5.2 NPU 多批次推理（Batching）<a class="headerlink" href="#52-npu-batching" title="Permanent link">&para;</a></h3>
+<p>将 4 路摄像头帧合并为一个 batch 送 NPU，提高利用率：</p>
+<pre class="mermaid"><code>graph TD
+    subgraph "输入: 4路独立 dmabuf"
+        B0["dmabuf_0&lt;br/&gt;1920x1080 NV12"]
+        B1["dmabuf_1&lt;br/&gt;1920x1080 NV12"]
+        B2["dmabuf_2&lt;br/&gt;1920x1080 NV12"]
+        B3["dmabuf_3&lt;br/&gt;1920x1080 NV12"]
+    end
+
+    subgraph "NPU Batch 输入缓冲区"
+        NBATCH["dmabuf_batch&lt;br/&gt;7680x1080 NV12&lt;br/&gt;(或 4x1920x1080 NCHW)"]
+    end
+
+    subgraph "NPU"
+        NPU_IN["NPU 输入"] --&gt; NPU_CORE["推理 Core"] --&gt; NPU_OUT["NPU 输出&lt;br/&gt;dmabuf_result"]
+    end
+
+    B0 --&gt;|"DMA copy / GPU compose"| NBATCH
+    B1 --&gt;|"DMA copy / GPU compose"| NBATCH
+    B2 --&gt;|"DMA copy / GPU compose"| NBATCH
+    B3 --&gt;|"DMA copy / GPU compose"| NBATCH
+
+    NBATCH --&gt;|"in_fence"| NPU_IN
+    NPU_OUT --&gt;|"out_fence"| RESULT["推理结果&lt;br/&gt;4路检测框"]
+
+    note1["方案A: GPU 做 batch 拼接&lt;br/&gt;(零拷贝 DMA)"]
+    note2["方案B: NPU 驱动内部拼接&lt;br/&gt;(接受多个 dmabuf fd)"]
+
+    style NBATCH fill:#fff9c4</code></pre>
+<p><strong>方案 A（推荐）：GPU 做 batch 拼接</strong></p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* GPU 拼接 4 路帧到一个 batch dmabuf，全程零拷贝 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">gpu_batch_compose</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">batch_fd</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cam_fds</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* 1. GPU attach 到 5 个 dmabuf */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="n">batch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_get</span><span class="p">(</span><span class="n">batch_fd</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf</span><span class="w"> </span><span class="o">*</span><span class="n">cam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dma_buf_get</span><span class="p">(</span><span class="n">cam_fds</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="n">dma_buf_attach</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span><span class="w"> </span><span class="n">gpu_device</span><span class="p">);</span>
+<span class="w">        </span><span class="n">dma_buf_put</span><span class="p">(</span><span class="n">cam</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">dma_buf_attach</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span><span class="w"> </span><span class="n">gpu_device</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 2. GPU DMA map 所有缓冲区 */</span>
+<span class="w">    </span><span class="cm">/* 3. GPU 执行 copy/compose kernel */</span>
+<span class="w">    </span><span class="cm">/* 4. GPU 输出 add_fence 到 batch dmabuf 的 resv */</span>
+<span class="w">    </span><span class="cm">/* 5. 所有操作通过隐式同步自动串行 */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="53-npu">5.3 NPU 推理结果回读<a class="headerlink" href="#53-npu" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm"> * NPU 推理完成后，CPU 读取结果的标准流程：</span>
+<span class="cm"> * 1. 等待 out_fence 完成</span>
+<span class="cm"> * 2. 执行 CPU 缓存同步</span>
+<span class="cm"> * 3. 读取数据</span>
+<span class="cm"> */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">npu_result_read</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">result_fd</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sync_file</span><span class="w"> </span><span class="o">*</span><span class="n">out_fence</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* 方式1: 通过 sync_file fd 的 poll 等待 */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pollfd</span><span class="w"> </span><span class="n">pfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dup</span><span class="p">(</span><span class="n">sync_file_fd</span><span class="p">(</span><span class="n">out_fence</span><span class="p">)),</span><span class="w"> </span><span class="p">.</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">POLLIN</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="n">poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pfd</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w">  </span><span class="cm">/* 阻塞直到 NPU 完成 */</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">pfd</span><span class="p">.</span><span class="n">fd</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 方式2: 通过 dma-buf 隐式同步导出的 sync_file */</span>
+<span class="w">    </span><span class="cm">/* dma_buf_ioctl(dmabuf_fd, DMA_BUF_IOCTL_EXPORT_SYNC_FILE, &amp;arg); */</span>
+<span class="w">    </span><span class="cm">/* poll(arg.fd, POLLIN, -1); */</span>
+
+<span class="w">    </span><span class="cm">/* CPU 缓存同步：确保 NPU 写入的数据对 CPU 可见 */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_sync</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_START</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_READ</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">result_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_SYNC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sync</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 现在可以安全读取结果 */</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mmap</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">PROT_READ</span><span class="p">,</span><span class="w"> </span><span class="n">MAP_SHARED</span><span class="p">,</span><span class="w"> </span><span class="n">result_fd</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">memcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 结束 CPU 访问 */</span>
+<span class="w">    </span><span class="n">sync</span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_END</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_READ</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">result_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_SYNC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sync</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">munmap</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="6">6. 内存后端选择<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TD
+    ALLOC{"选择 dma_heap 类型"}
+
+    ALLOC --&gt;|"需要物理连续?"| CONTIG{"是否必须&lt;br/&gt;物理连续?"}
+
+    CONTIG --&gt;|"是"| CMA["CMA Heap&lt;br/&gt;/dev/dma_heap/linux,cma&lt;br/&gt;适用: 老旧 DMA 控制器&lt;br/&gt;某些 ISP/VPU 要求"]
+    CONTIG --&gt;|"否"| SYS["System Heap&lt;br/&gt;/dev/dma_heap/system&lt;br/&gt;适用: NPU, GPU, 现代VPU&lt;br/&gt;支持 IOMMU/SMMU"]
+
+    ALLOC --&gt;|"用户态内存转 dmabuf"| UDMA["udmabuf&lt;br/&gt;/dev/udmabuf&lt;br/&gt;适用: QEMU 虚拟化&lt;br/&gt;测试场景"]
+
+    SYS --&gt;|"典型大小"| SIZE1["1920x1080 NV12&lt;br/&gt;≈ 3MB / 帧"]
+    CMA --&gt;|"典型大小"| SIZE2["4K NV12&lt;br/&gt;≈ 12MB / 帧"]
+
+    style SYS fill:#c8e6c9
+    style CMA fill:#bbdefb
+    style UDMA fill:#fff3e0</code></pre>
+<p><strong>推荐配置：</strong></p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>推荐 Heap</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Camera ISP 输出</td>
+<td>CMA 或 vendor heap</td>
+<td>ISP 通常要求物理连续</td>
+</tr>
+<tr>
+<td>GPU 中间结果</td>
+<td>system_heap</td>
+<td>GPU 有 IOMMU，无需连续</td>
+</tr>
+<tr>
+<td>NPU 输入/输出</td>
+<td>system_heap</td>
+<td>NPU 有 IOMMU</td>
+</tr>
+<tr>
+<td>VPU 编码输入</td>
+<td>system_heap</td>
+<td>现代 VPU 支持 scatter-gather</td>
+</tr>
+<tr>
+<td>VPU 解码输出</td>
+<td>system_heap</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>Display 输出</td>
+<td>CMA 或 vendor heap</td>
+<td>显示控制器可能要求连续</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-pipeline">7. Pipeline 调度器设计<a class="headerlink" href="#7-pipeline" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; EMPTY: 帧在池中
+
+    EMPTY --&gt; FILLING: dequeue 给 Camera
+    FILLING --&gt; FILLED: Camera 写入完成&lt;br/&gt;(out_fence signaled)
+
+    FILLED --&gt; PREPROCESSING: 提交给预处理
+    PREPROCESSING --&gt; PREPROCESSED: 预处理完成
+
+    state "并行处理" as PARALLEL {
+        PREPROCESSED --&gt; NPU_RUNNING: 提交给 NPU
+        PREPROCESSED --&gt; VPU_RUNNING: 提交给 VPU Encoder
+        NPU_RUNNING --&gt; NPU_DONE
+        VPU_RUNNING --&gt; VPU_DONE
+    }
+
+    NPU_DONE --&gt; POSTPROCESSING: 提交给后处理
+    VPU_DONE --&gt; DONE: 编码完成
+    POSTPROCESSING --&gt; DONE: 后处理完成
+    DONE --&gt; EMPTY: 回收到帧池
+
+    note right of PARALLEL: 同一帧可同时&lt;br/&gt;送 NPU 和 VPU&lt;br/&gt;(只读共享)</code></pre>
+<p><strong>调度器核心逻辑（伪代码）：</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">pipeline_scheduler_loop</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">running</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="cm">/* 1. 检查 Camera 输出 */</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">cam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">cam</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">cam</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">camera_frame_ready</span><span class="p">(</span><span class="n">cam</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">struct</span><span class="w"> </span><span class="nc">dmabuf_frame</span><span class="w"> </span><span class="o">*</span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame_pool_dequeue</span><span class="p">();</span>
+<span class="w">                </span><span class="k">struct</span><span class="w"> </span><span class="nc">sync_file</span><span class="w"> </span><span class="o">*</span><span class="n">out_fence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">camera_get_out_fence</span><span class="p">(</span><span class="n">cam</span><span class="p">);</span>
+<span class="w">                </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">out_fence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">out_fence</span><span class="p">;</span>
+
+<span class="w">                </span><span class="cm">/* 2. 提交预处理 */</span>
+<span class="w">                </span><span class="n">preprocess_submit</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">out_fence</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="cm">/* 3. 检查预处理完成 */</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">preprocess_dequeue</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="cm">/* 4. 并行提交 NPU 和 VPU */</span>
+<span class="w">            </span><span class="k">struct</span><span class="w"> </span><span class="nc">sync_file</span><span class="w"> </span><span class="o">*</span><span class="n">pre_fence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">out_fence</span><span class="p">;</span>
+
+<span class="w">            </span><span class="cm">/* NPU 推理（需要等预处理完成） */</span>
+<span class="w">            </span><span class="n">npu_submit</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dmabuf_fd</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">sync_file_fd</span><span class="p">(</span><span class="n">pre_fence</span><span class="p">),</span><span class="w">   </span><span class="cm">/* in_fence */</span>
+<span class="w">                      </span><span class="n">result_pool_dequeue</span><span class="p">());</span><span class="w">     </span><span class="cm">/* 输出 dmabuf */</span>
+
+<span class="w">            </span><span class="cm">/* VPU 编码（需要等预处理完成，与 NPU 并行） */</span>
+<span class="w">            </span><span class="n">vpu_encode_submit</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">dmabuf_fd</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">sync_file_fd</span><span class="p">(</span><span class="n">pre_fence</span><span class="p">),</span><span class="w">  </span><span class="cm">/* in_fence */</span>
+<span class="w">                            </span><span class="n">bitstream_fd</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="cm">/* 5. 检查 NPU/VPU 完成，回帧到池 */</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">npu_dequeue_done</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="cm">/* 读取推理结果，后处理... */</span>
+<span class="w">            </span><span class="n">frame_pool_release</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vpu_dequeue_done</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">frame_pool_release</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="8-fence">8. Fence 合并与等待的最佳实践<a class="headerlink" href="#8-fence" title="Permanent link">&para;</a></h2>
+<h3 id="81-npu">8.1 多路采集 → 单一 NPU 任务<a class="headerlink" href="#81-npu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    F0["fence_0"] --&gt; MERGE["SYNC_IOC_MERGE"]
+    F1["fence_1"] --&gt; MERGE
+    F2["fence_2"] --&gt; MERGE
+    F3["fence_3"] --&gt; MERGE
+    MERGE --&gt; MF["merged_fence"]
+    MF --&gt; NPU["NPU in_fence&lt;br/&gt;(等待4路全部就绪)"]
+
+    style MERGE fill:#fff9c4</code></pre>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 合并 4 路 Camera fence 为一个 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">merge_4_cam_fences</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">fence_fds</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sync_merge_data</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">merged_fd</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* 先合并 fence_0 和 fence_1 */</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">fd2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fence_fds</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cam01&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">));</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open_sync_file</span><span class="p">(</span><span class="n">fence_fds</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">SYNC_IOC_MERGE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">);</span>
+<span class="w">    </span><span class="n">merged_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">fence</span><span class="p">;</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 合并 fence_2 */</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">fd2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fence_fds</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cam012&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">));</span>
+<span class="w">    </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open_sync_file</span><span class="p">(</span><span class="n">merged_fd</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">SYNC_IOC_MERGE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">);</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">merged_fd</span><span class="p">);</span>
+<span class="w">    </span><span class="n">merged_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">fence</span><span class="p">;</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 合并 fence_3 */</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">fd2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fence_fds</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="w">    </span><span class="n">strncpy</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;cam0123&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">name</span><span class="p">));</span>
+<span class="w">    </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open_sync_file</span><span class="p">(</span><span class="n">merged_fd</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">SYNC_IOC_MERGE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">);</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">merged_fd</span><span class="p">);</span>
+<span class="w">    </span><span class="n">merged_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">fence</span><span class="p">;</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">merged_fd</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="82-npu-vpu">8.2 单帧多消费者（NPU + VPU 并行读）<a class="headerlink" href="#82-npu-vpu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph TD
+    subgraph "生产者: Camera (WRITE)"
+        P1["add_fence(cam_fence, WRITE)"]
+    end
+
+    subgraph "消费者: 并行只读"
+        C1["NPU: wait(WRITE fence)&lt;br/&gt;然后 add_fence(npu_fence, BOOKKEEP)"]
+        C2["VPU: wait(WRITE fence)&lt;br/&gt;然后 add_fence(vpu_fence, BOOKKEEP)"]
+    end
+
+    subgraph "回收: 等待所有消费者"
+        R1["wait(READ fences)&lt;br/&gt;全部完成后回帧到池"]
+    end
+
+    P1 --&gt; C1
+    P1 --&gt; C2
+    C1 --&gt; R1
+    C2 --&gt; R1
+
+    style P1 fill:#ffcdd2
+    style C1 fill:#c8e6c9
+    style C2 fill:#c8e6c9
+    style R1 fill:#bbdefb</code></pre>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm"> * 多消费者场景的同步要点：</span>
+<span class="cm"> * 1. Camera 写入后添加 WRITE fence</span>
+<span class="cm"> * 2. NPU 和 VPU 都等待 WRITE fence（可并行，因为只读）</span>
+<span class="cm"> * 3. NPU/VPU 完成后添加 BOOKKEEP 级别 fence（不阻塞写者）</span>
+<span class="cm"> * 4. 调度器等待所有 BOOKKEEP fence 完成后回帧</span>
+<span class="cm"> */</span>
+
+<span class="cm">/* 步骤3: 消费者完成后添加 BOOKKEEP fence */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">npu_done_notify</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_fence</span><span class="w"> </span><span class="o">*</span><span class="n">npu_fence</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* 导入 fence 到 dma-resv，使用 BOOKKEEP 级别 */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_import_sync_file</span><span class="w"> </span><span class="n">arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_READ</span><span class="p">,</span><span class="w">  </span><span class="cm">/* 读操作 */</span>
+<span class="w">        </span><span class="p">.</span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sync_file_fd_create</span><span class="p">(</span><span class="n">npu_fence</span><span class="p">),</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_IMPORT_SYNC_FILE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arg</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* 步骤4: 等待所有消费者完成 */</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">wait_all_consumers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_export_sync_file</span><span class="w"> </span><span class="n">arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DMA_BUF_SYNC_READ</span><span class="p">,</span><span class="w">  </span><span class="cm">/* 等待所有 READ/BOOKKEEP fence */</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="cm">/* 导出当前所有 READ 级别 fence */</span>
+<span class="w">    </span><span class="n">ioctl</span><span class="p">(</span><span class="n">dmabuf_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_BUF_IOCTL_EXPORT_SYNC_FILE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arg</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">pollfd</span><span class="w"> </span><span class="n">pfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arg</span><span class="p">.</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">POLLIN</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="n">poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pfd</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w">  </span><span class="cm">/* 阻塞等待 */</span>
+<span class="w">    </span><span class="n">close</span><span class="p">(</span><span class="n">arg</span><span class="p">.</span><span class="n">fd</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="9">9. 性能优化要点<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "内存优化"
+        M1["预分配帧池&lt;br/&gt;避免运行时 alloc/mmap"]
+        M2["双层池: 大帧 + 小帧&lt;br/&gt;按分辨率分离"]
+        M3["CMA 用于 ISP&lt;br/&gt;System 用于 NPU/VPU"]
+    end
+
+    subgraph "同步优化"
+        S1["隐式同步用于流水线内部&lt;br/&gt;(dma-resv 自动管理)"]
+        S2["显式同步用于跨子系统调度&lt;br/&gt;(sync_file fd 传递)"]
+        S3["批量 fence 合并&lt;br/&gt;减少 wait 开销"]
+        S4["in_fence 模式&lt;br/&gt;NPU/VPU 驱动内部等待"]
+    end
+
+    subgraph "流水线优化"
+        P1["双缓冲/三缓冲&lt;br/&gt;流水线并行"]
+        P2["NPU batch 推理&lt;br/&gt;提高利用率"]
+        P3["GPU 做 resize/compose&lt;br/&gt;释放 CPU/NPU"]
+        P4["零拷贝: 全链路 dmabuf fd 传递"]
+    end
+
+    style M1 fill:#e8f5e9
+    style S1 fill:#e3f2fd
+    style P1 fill:#fff3e0</code></pre>
+<h3 id="_2">关键优化建议<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>优化点</th>
+<th>方法</th>
+<th>预期效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>避免内存拷贝</td>
+<td>全链路 dma-buf fd 传递，不经过 CPU 中转</td>
+<td>吞吐量提升 2-5x</td>
+</tr>
+<tr>
+<td>减少 fence 等待</td>
+<td>NPU/VPU 使用 in_fence 模式，驱动内等待</td>
+<td>延迟降低 1-2ms</td>
+</tr>
+<tr>
+<td>批量推理</td>
+<td>GPU 拼接 4 路为 batch，NPU 一次处理</td>
+<td>NPU 利用率 4x</td>
+</tr>
+<tr>
+<td>预分配帧池</td>
+<td>启动时分配所有帧，运行时零分配</td>
+<td>消除帧分配抖动</td>
+</tr>
+<tr>
+<td>CPU 缓存同步最小化</td>
+<td>CPU 只在必要时 sync，其余走隐式同步</td>
+<td>减少 cache flush 开销</td>
+</tr>
+<tr>
+<td>双缓冲流水线</td>
+<td>采集 N+2 帧时处理第 N 帧</td>
+<td>帧率不受处理延迟影响</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10">10. 典型端到端数据流<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph LR
+    subgraph "Camera 采集"
+        A["ISP DMA 写入&lt;br/&gt;→ dmabuf (NV12)"]
+    end
+
+    subgraph "GPU 预处理"
+        B["resize 1080p→640x640&lt;br/&gt;NV12→RGB float&lt;br/&gt;GPU kernel 零拷贝"]
+    end
+
+    subgraph "NPU 推理"
+        C["YOLOv8 检测&lt;br/&gt;输入: 1x3x640x640&lt;br/&gt;输出: 检测框 tensor"]
+    end
+
+    subgraph "VPU 编码 (并行)"
+        D["H.264 编码&lt;br/&gt;输入: 原 1080p NV12&lt;br/&gt;输出: 编码码流"]
+    end
+
+    subgraph "输出"
+        E["推理结果&lt;br/&gt;→ 应用层"]
+        F["编码码流&lt;br/&gt;→ RTMP/文件"]
+    end
+
+    A --&gt;|"dmabuf fd + out_fence"| B
+    A --&gt;|"dmabuf fd + out_fence"| D
+    B --&gt;|"dmabuf fd + out_fence"| C
+    C --&gt;|"result dmabuf"| E
+    D --&gt;|"bitstream"| F
+
+    style A fill:#ffcdd2
+    style B fill:#c8e6c9
+    style C fill:#fff3e0
+    style D fill:#e3f2fd</code></pre>
+<p><strong>每帧的数据流与 fence 传递：</strong></p>
+<div class="highlight"><pre><span></span><code>┌─────────┐   dmabuf_fd    ┌───────────┐   dmabuf_fd    ┌─────┐
+│  Camera  │───+ out_fence──→│ Preprocess │───+ out_fence──→│ NPU │
+│  (ISP)   │                │  (CPU/GPU) │                │     │
+└─────────┘                └───────────┘                └─────┘
+     │                                                       │
+     │ dmabuf_fd (原始帧)                                     │ result
+     │ + out_fence                                           │ dmabuf_fd
+     ▼                                                       ▼
+┌─────────┐                                            ┌──────────┐
+│   VPU   │                                            │   App    │
+│ Encoder │                                            │ (结果读取)│
+└─────────┘                                            └──────────┘
+     │
+     │ encoded bitstream
+     ▼
+┌──────────┐
+│  推流/存储  │
+└──────────┘
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

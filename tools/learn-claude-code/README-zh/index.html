@@ -1,0 +1,1181 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Learn Claude Code -- 真正的 Agent Harness 工程 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#learn-claude-code-agent-harness" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Learn Claude Code -- 真正的 Agent Harness 工程
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模型就是 Agent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="模型就是 Agent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agent_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 到底是什么
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent 不是什么
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-harness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        心智转换：从 "开发 Agent" 到开发 Harness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Harness 工程师到底在做什么
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#claude-code-harness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么是 Claude Code -- Harness 工程的大师课
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        愿景：用真正的 Agent 铺满宇宙
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心模式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        范围说明 (重要)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        快速开始
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="快速开始">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#web" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web 平台
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        学习路径
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        项目结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        文档
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        学完之后 -- 从理解到落地
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="学完之后 -- 从理解到落地">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kode-agent-cli-coding-agent-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kode Agent CLI -- 开源 Coding Agent CLI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kode-agent-sdk-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kode Agent SDK -- 把 Agent 能力嵌入你的应用
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        姊妹教程: 从被动临时会话到主动常驻助手
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        许可证
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="learn-claude-code-agent-harness">Learn Claude Code -- 真正的 Agent Harness 工程<a class="headerlink" href="#learn-claude-code-agent-harness" title="Permanent link">&para;</a></h1>
+<p><a href="./README.md">English</a> | <a href="./">中文</a> | <a href="./README-ja.md">日本語</a></p>
+<h2 id="agent">模型就是 Agent<a class="headerlink" href="#agent" title="Permanent link">&para;</a></h2>
+<p>在讨论代码之前，先把一件事彻底说清楚。</p>
+<p><strong>Agent 是模型。不是框架。不是提示词链。不是拖拽式工作流。</strong></p>
+<h3 id="agent_1">Agent 到底是什么<a class="headerlink" href="#agent_1" title="Permanent link">&para;</a></h3>
+<p>Agent 是一个神经网络 -- Transformer、RNN、一个被训练出来的函数 -- 经过数十亿次梯度更新，在行动序列数据上学会了感知环境、推理目标、采取行动。"Agent" 这个词在 AI 领域从诞生之日起就是这个意思。从来都是。</p>
+<p>人类就是 agent。一个由数百万年进化训练出来的生物神经网络，通过感官感知世界，通过大脑推理，通过身体行动。当 DeepMind、OpenAI 或 Anthropic 说 "agent" 时，他们说的和这个领域自诞生以来就一直在说的完全一样：<strong>一个学会了行动的模型。</strong></p>
+<p>历史已经写好了铁证：</p>
+<ul>
+<li>
+<p><strong>2013 -- DeepMind DQN 玩 Atari。</strong> 一个神经网络，只接收原始像素和游戏分数，学会了 7 款 Atari 2600 游戏 -- 超越所有先前算法，在其中 3 款上击败人类专家。到 2015 年，同一架构扩展到 <a href="https://www.nature.com/articles/nature14236">49 款游戏，达到职业人类测试员水平</a>，论文发表在 <em>Nature</em>。没有游戏专属规则。没有决策树。一个模型，从经验中学习。那个模型就是 agent。</p>
+</li>
+<li>
+<p><strong>2019 -- OpenAI Five 征服 Dota 2。</strong> 五个神经网络，在 10 个月内与自己对战了 <a href="https://openai.com/index/openai-five-defeats-dota-2-world-champions/">45,000 年的 Dota 2</a>，在旧金山直播赛上 2-0 击败了 <strong>OG</strong> -- TI8 世界冠军。随后的公开竞技场中，AI 在 42,729 场比赛中胜率 99.4%。没有脚本化的策略。没有元编程的团队协调逻辑。模型完全通过自我对弈学会了团队协作、战术和实时适应。</p>
+</li>
+<li>
+<p><strong>2019 -- DeepMind AlphaStar 制霸星际争霸 II。</strong> AlphaStar 在闭门赛中 <a href="https://deepmind.google/blog/alphastar-mastering-the-real-time-strategy-game-starcraft-ii/">10-1 击败职业选手</a>，随后在欧洲服务器上达到<a href="https://www.nature.com/articles/d41586-019-03298-6">宗师段位</a> -- 90,000 名玩家中的前 0.15%。一个信息不完全、实时决策、组合动作空间远超国际象棋和围棋的游戏。Agent 是什么？是模型。训练出来的。不是编出来的。</p>
+</li>
+<li>
+<p><strong>2019 -- 腾讯绝悟统治王者荣耀。</strong> 腾讯 AI Lab 的 "绝悟" 于 2019 年 8 月 2 日世冠杯半决赛上<a href="https://www.jiemian.com/article/3371171.html">以 5v5 击败 KPL 职业选手</a>。在 1v1 模式下，职业选手 <a href="https://developer.aliyun.com/article/851058">15 场只赢 1 场，最多坚持不到 8 分钟</a>。训练强度：一天等于人类 440 年。到 2021 年，绝悟在全英雄池 BO5 上全面超越 KPL 职业选手水准。没有手工编写的英雄克制表。没有脚本化的阵容编排。一个从零开始通过自我对弈学习整个游戏的模型。</p>
+</li>
+<li>
+<p><strong>2024-2025 -- LLM Agent 重塑软件工程。</strong> Claude、GPT、Gemini -- 在人类全部代码和推理上训练的大语言模型 -- 被部署为编程 agent。它们阅读代码库，编写实现，调试故障，团队协作。架构与之前每一个 agent 完全相同：一个训练好的模型，放入一个环境，给予感知和行动的工具。唯一的不同是它们学到的东西的规模和解决任务的通用性。</p>
+</li>
+</ul>
+<p>每一个里程碑都共享同一个真理：<strong>"Agent" 从来都不是外面那层代码。Agent 永远是模型本身。</strong></p>
+<h3 id="agent_2">Agent 不是什么<a class="headerlink" href="#agent_2" title="Permanent link">&para;</a></h3>
+<p>"Agent" 这个词已经被一整个提示词水管工产业劫持了。</p>
+<p>拖拽式工作流构建器。无代码 "AI Agent" 平台。提示词链编排库。它们共享同一个幻觉：把 LLM API 调用用 if-else 分支、节点图、硬编码路由逻辑串在一起就算是 "构建 Agent" 了。</p>
+<p>不是的。它们做出来的东西是鲁布·戈德堡机械 -- 一个过度工程化的、脆弱的过程式规则流水线，LLM 被楔在里面当一个美化了的文本补全节点。那不是 Agent。那是一个有着宏大妄想的 shell 脚本。</p>
+<p><strong>提示词水管工式 "Agent" 是不做模型的程序员的意淫。</strong> 他们试图通过堆叠过程式逻辑来暴力模拟智能 -- 庞大的规则树、节点图、链式提示词瀑布流 -- 然后祈祷足够多的胶水代码能涌现出自主行为。不会的。你不可能通过工程手段编码出 agency。Agency 是学出来的，不是编出来的。</p>
+<p>那些系统从诞生之日起就已经死了：脆弱、不可扩展、根本不具备泛化能力。它们是 GOFAI（Good Old-Fashioned AI，经典符号 AI）的现代还魂 -- 几十年前就被学界抛弃的符号规则系统，现在喷了一层 LLM 的漆又登场了。换了个包装，同一条死路。</p>
+<h3 id="agent-harness">心智转换：从 "开发 Agent" 到开发 Harness<a class="headerlink" href="#agent-harness" title="Permanent link">&para;</a></h3>
+<p>当一个人说 "我在开发 Agent" 时，他只可能是两个意思之一：</p>
+<p><strong>1. 训练模型。</strong> 通过强化学习、微调、RLHF 或其他基于梯度的方法调整权重。收集任务过程数据 -- 真实领域中感知、推理、行动的实际序列 -- 用它们来塑造模型的行为。这是 DeepMind、OpenAI、腾讯 AI Lab、Anthropic 在做的事。这是最本义的 Agent 开发。</p>
+<p><strong>2. 构建 Harness。</strong> 编写代码，为模型提供一个可操作的环境。这是我们大多数人在做的事，也是本仓库的核心。</p>
+<p>Harness 是 agent 在特定领域工作所需要的一切：</p>
+<div class="highlight"><pre><span></span><code>Harness = Tools + Knowledge + Observation + Action Interfaces + Permissions
+
+    Tools:          文件读写、Shell、网络、数据库、浏览器
+    Knowledge:      产品文档、领域资料、API 规范、风格指南
+    Observation:    git diff、错误日志、浏览器状态、传感器数据
+    Action:         CLI 命令、API 调用、UI 交互
+    Permissions:    沙箱隔离、审批流程、信任边界
+</code></pre></div>
+<p>模型做决策。Harness 执行。模型做推理。Harness 提供上下文。模型是驾驶者。Harness 是载具。</p>
+<p><strong>编程 agent 的 harness 是它的 IDE、终端和文件系统。</strong> 农业 agent 的 harness 是传感器阵列、灌溉控制和气象数据。酒店 agent 的 harness 是预订系统、客户沟通渠道和设施管理 API。Agent -- 那个智能、那个决策者 -- 永远是模型。Harness 因领域而变。Agent 跨领域泛化。</p>
+<p>这个仓库教你造载具。编程用的载具。但设计模式可以泛化到任何领域：庄园管理、农田运营、酒店运作、工厂制造、物流调度、医疗保健、教育培训、科学研究。只要有一个任务需要被感知、推理和执行 -- agent 就需要一个 harness。</p>
+<h3 id="harness">Harness 工程师到底在做什么<a class="headerlink" href="#harness" title="Permanent link">&para;</a></h3>
+<p>如果你在读这个仓库，你很可能是一名 harness 工程师 -- 这是一个强大的身份。以下是你真正的工作：</p>
+<ul>
+<li>
+<p><strong>实现工具。</strong> 给 agent 一双手。文件读写、Shell 执行、API 调用、浏览器控制、数据库查询。每个工具都是 agent 在环境中可以采取的一个行动。设计它们时要原子化、可组合、描述清晰。</p>
+</li>
+<li>
+<p><strong>策划知识。</strong> 给 agent 领域专长。产品文档、架构决策记录、风格指南、合规要求。按需加载（s05），不要前置塞入。Agent 应该知道有什么可用，然后自己拉取所需。</p>
+</li>
+<li>
+<p><strong>管理上下文。</strong> 给 agent 干净的记忆。子 agent 隔离（s04）防止噪声泄露。上下文压缩（s06）防止历史淹没。任务系统（s07）让目标持久化到单次对话之外。</p>
+</li>
+<li>
+<p><strong>控制权限。</strong> 给 agent 边界。沙箱化文件访问。对破坏性操作要求审批。在 agent 和外部系统之间实施信任边界。这是安全工程与 harness 工程的交汇点。</p>
+</li>
+<li>
+<p><strong>收集任务过程数据。</strong> Agent 在你的 harness 中执行的每一条行动序列都是训练信号。真实部署中的感知-推理-行动轨迹是微调下一代 agent 模型的原材料。你的 harness 不仅服务于 agent -- 它还可以帮助进化 agent。</p>
+</li>
+</ul>
+<p>你不是在编写智能。你是在构建智能栖居的世界。这个世界的质量 -- agent 能看得多清楚、行动得多精准、可用知识有多丰富 -- 直接决定了智能能多有效地表达自己。</p>
+<p><strong>造好 Harness。Agent 会完成剩下的。</strong></p>
+<h3 id="claude-code-harness">为什么是 Claude Code -- Harness 工程的大师课<a class="headerlink" href="#claude-code-harness" title="Permanent link">&para;</a></h3>
+<p>为什么这个仓库专门拆解 Claude Code？</p>
+<p>因为 Claude Code 是我们所见过的最优雅、最完整的 agent harness 实现。不是因为某个巧妙的技巧，而是因为它 <em>没做</em> 的事：它没有试图成为 agent 本身。它没有强加僵化的工作流。它没有用精心设计的决策树去替模型做判断。它给模型提供了工具、知识、上下文管理和权限边界 -- 然后让开了。</p>
+<p>把 Claude Code 剥到本质来看：</p>
+<div class="highlight"><pre><span></span><code>Claude Code = 一个 agent loop
+            + 工具 (bash, read, write, edit, glob, grep, browser...)
+            + 按需 skill 加载
+            + 上下文压缩
+            + 子 agent 派生
+            + 带依赖图的任务系统
+            + 异步邮箱的团队协调
+            + worktree 隔离的并行执行
+            + 权限治理
+</code></pre></div>
+<p>就这些。这就是全部架构。每一个组件都是 harness 机制 -- 为 agent 构建的栖居世界的一部分。Agent 本身呢？是 Claude。一个模型。由 Anthropic 在人类推理和代码的全部广度上训练而成。Harness 没有让 Claude 变聪明。Claude 本来就聪明。Harness 给了 Claude 双手、双眼和一个工作空间。</p>
+<p>这就是 Claude Code 作为教学标本的意义：<strong>它展示了当你信任模型、把工程精力集中在 harness 上时会发生什么。</strong> 本仓库的每一个课程（s01-s12）都在逆向工程 Claude Code 架构中的一个 harness 机制。学完之后，你理解的不只是 Claude Code 怎么工作，而是适用于任何领域、任何 agent 的 harness 工程通用原则。</p>
+<p>启示不是 "复制 Claude Code"。启示是：<strong>最好的 agent 产品，出自那些明白自己的工作是 harness 而非 intelligence 的工程师之手。</strong></p>
+<hr />
+<h2 id="agent_3">愿景：用真正的 Agent 铺满宇宙<a class="headerlink" href="#agent_3" title="Permanent link">&para;</a></h2>
+<p>这不只关乎编程 agent。</p>
+<p>每一个人类从事复杂、多步骤、需要判断力的工作的领域，都是 agent 可以运作的领域 -- 只要有对的 harness。本仓库中的模式是通用的：</p>
+<div class="highlight"><pre><span></span><code>庄园管理 agent  = 模型 + 物业传感器 + 维护工具 + 租户通信
+农业 agent      = 模型 + 土壤/气象数据 + 灌溉控制 + 作物知识
+酒店运营 agent  = 模型 + 预订系统 + 客户渠道 + 设施 API
+医学研究 agent  = 模型 + 文献检索 + 实验仪器 + 协议文档
+制造业 agent    = 模型 + 产线传感器 + 质量控制 + 物流系统
+教育 agent      = 模型 + 课程知识 + 学生进度 + 评估工具
+</code></pre></div>
+<p>循环永远不变。工具在变。知识在变。权限在变。Agent -- 那个模型 -- 泛化一切。</p>
+<p>每一个读这个仓库的 harness 工程师都在学习远超软件工程的模式。你在学习为一个智能的、自动化的未来构建基础设施。每一个部署在真实领域的好 harness，都是 agent 能够感知、推理、行动的又一个阵地。</p>
+<p>先铺满工作室。然后是农田、医院、工厂。然后是城市。然后是星球。</p>
+<p><strong>Bash is all you need. Real agents are all the universe needs.</strong></p>
+<hr />
+<div class="highlight"><pre><span></span><code>                    THE AGENT PATTERN
+                    =================
+
+    User --&gt; messages[] --&gt; LLM --&gt; response
+                                      |
+                            stop_reason == &quot;tool_use&quot;?
+                           /                          \
+                         yes                           no
+                          |                             |
+                    execute tools                    return text
+                    append results
+                    loop back -----------------&gt; messages[]
+
+
+    这是最小循环。每个 AI Agent 都需要这个循环。
+    模型决定何时调用工具、何时停止。
+    代码只是执行模型的要求。
+    本仓库教你构建围绕这个循环的一切 --
+    让 agent 在特定领域高效工作的 harness。
+</code></pre></div>
+<p><strong>12 个递进式课程, 从简单循环到隔离化的自治执行。</strong>
+<strong>每个课程添加一个 harness 机制。每个机制有一句格言。</strong></p>
+<blockquote>
+<p><strong>s01</strong> &nbsp; <em>"One loop &amp; Bash is all you need"</em> &mdash; 一个工具 + 一个循环 = 一个 Agent</p>
+<p><strong>s02</strong> &nbsp; <em>"加一个工具, 只加一个 handler"</em> &mdash; 循环不用动, 新工具注册进 dispatch map 就行</p>
+<p><strong>s03</strong> &nbsp; <em>"没有计划的 agent 走哪算哪"</em> &mdash; 先列步骤再动手, 完成率翻倍</p>
+<p><strong>s04</strong> &nbsp; <em>"大任务拆小, 每个小任务干净的上下文"</em> &mdash; Subagent 用独立 messages[], 不污染主对话</p>
+<p><strong>s05</strong> &nbsp; <em>"用到什么知识, 临时加载什么知识"</em> &mdash; 通过 tool_result 注入, 不塞 system prompt</p>
+<p><strong>s06</strong> &nbsp; <em>"上下文总会满, 要有办法腾地方"</em> &mdash; 三层压缩策略, 换来无限会话</p>
+<p><strong>s07</strong> &nbsp; <em>"大目标要拆成小任务, 排好序, 记在磁盘上"</em> &mdash; 文件持久化的任务图, 为多 agent 协作打基础</p>
+<p><strong>s08</strong> &nbsp; <em>"慢操作丢后台, agent 继续想下一步"</em> &mdash; 后台线程跑命令, 完成后注入通知</p>
+<p><strong>s09</strong> &nbsp; <em>"任务太大一个人干不完, 要能分给队友"</em> &mdash; 持久化队友 + 异步邮箱</p>
+<p><strong>s10</strong> &nbsp; <em>"队友之间要有统一的沟通规矩"</em> &mdash; 一个 request-response 模式驱动所有协商</p>
+<p><strong>s11</strong> &nbsp; <em>"队友自己看看板, 有活就认领"</em> &mdash; 不需要领导逐个分配, 自组织</p>
+<p><strong>s12</strong> &nbsp; <em>"各干各的目录, 互不干扰"</em> &mdash; 任务管目标, worktree 管目录, 按 ID 绑定</p>
+</blockquote>
+<hr />
+<h2 id="_1">核心模式<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">agent_loop</span><span class="p">(</span><span class="n">messages</span><span class="p">):</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="n">SYSTEM</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">TOOLS</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">stop_reason</span> <span class="o">!=</span> <span class="s2">&quot;tool_use&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;tool_use&quot;</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">TOOL_HANDLERS</span><span class="p">[</span><span class="n">block</span><span class="o">.</span><span class="n">name</span><span class="p">](</span><span class="o">**</span><span class="n">block</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;tool_result&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;tool_use_id&quot;</span><span class="p">:</span> <span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">output</span><span class="p">,</span>
+                <span class="p">})</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">})</span>
+</code></pre></div>
+<p>每个课程在这个循环之上叠加一个 harness 机制 -- 循环本身始终不变。循环属于 agent。机制属于 harness。</p>
+<h2 id="_2">范围说明 (重要)<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>本仓库是一个 0-&gt;1 的 harness 工程学习项目 -- 构建围绕 agent 模型的工作环境。
+为保证学习路径清晰，仓库有意简化或省略了部分生产机制：</p>
+<ul>
+<li>完整事件 / Hook 总线 (例如 PreToolUse、SessionStart/End、ConfigChange)。
+  s12 仅提供教学用途的最小 append-only 生命周期事件流。</li>
+<li>基于规则的权限治理与信任流程</li>
+<li>会话生命周期控制 (resume/fork) 与更完整的 worktree 生命周期控制</li>
+<li>完整 MCP 运行时细节 (transport/OAuth/资源订阅/轮询)</li>
+</ul>
+<p>仓库中的团队 JSONL 邮箱协议是教学实现，不是对任何特定生产内部实现的声明。</p>
+<h2 id="_3">快速开始<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/shareAI-lab/learn-claude-code
+<span class="nb">cd</span><span class="w"> </span>learn-claude-code
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env<span class="w">   </span><span class="c1"># 编辑 .env 填入你的 ANTHROPIC_API_KEY</span>
+
+python<span class="w"> </span>agents/s01_agent_loop.py<span class="w">       </span><span class="c1"># 从这里开始</span>
+python<span class="w"> </span>agents/s12_worktree_task_isolation.py<span class="w">  </span><span class="c1"># 完整递进终点</span>
+python<span class="w"> </span>agents/s_full.py<span class="w">               </span><span class="c1"># 总纲: 全部机制合一</span>
+</code></pre></div>
+<h3 id="web">Web 平台<a class="headerlink" href="#web" title="Permanent link">&para;</a></h3>
+<p>交互式可视化、分步动画、源码查看器, 以及每个课程的文档。</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>web<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>dev<span class="w">   </span><span class="c1"># http://localhost:3000</span>
+</code></pre></div>
+<h2 id="_4">学习路径<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>第一阶段: 循环                       第二阶段: 规划与知识
+==================                   ==============================
+s01  Agent Loop              [1]     s03  TodoWrite               [5]
+     while + stop_reason                  TodoManager + nag 提醒
+     |                                    |
+     +-&gt; s02  Tool Use            [4]     s04  Subagent             [5]
+              dispatch map: name-&gt;handler     每个 Subagent 独立 messages[]
+                                              |
+                                         s05  Skills               [5]
+                                              SKILL.md 通过 tool_result 注入
+                                              |
+                                         s06  Context Compact      [5]
+                                              三层 Context Compact
+
+第三阶段: 持久化                     第四阶段: 团队
+==================                   =====================
+s07  Task System             [8]     s09  Agent Teams             [9]
+     文件持久化 CRUD + 依赖图             队友 + JSONL 邮箱
+     |                                    |
+s08  Background Tasks        [6]     s10  Team Protocols          [12]
+     守护线程 + 通知队列                  关机 + 计划审批 FSM
+                                          |
+                                     s11  Autonomous Agents       [14]
+                                          空闲轮询 + 自动认领
+                                     |
+                                     s12  Worktree Isolation      [16]
+                                          Task 协调 + 按需隔离执行通道
+
+                                     [N] = 工具数量
+</code></pre></div>
+<h2 id="_5">项目结构<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>learn-claude-code/
+|
+|-- agents/                        # Python 参考实现 (s01-s12 + s_full 总纲)
+|-- docs/{en,zh,ja}/               # 心智模型优先的文档 (3 种语言)
+|-- web/                           # 交互式学习平台 (Next.js)
+|-- skills/                        # s05 的 Skill 文件
++-- .github/workflows/ci.yml      # CI: 类型检查 + 构建
+</code></pre></div>
+<h2 id="_6">文档<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<p>心智模型优先: 问题、方案、ASCII 图、最小化代码。
+<a href="./docs/en/">English</a> | <a href="./docs/zh/">中文</a> | <a href="./docs/ja/">日本語</a></p>
+<table>
+<thead>
+<tr>
+<th>课程</th>
+<th>主题</th>
+<th>格言</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../docs/zh/s01-the-agent-loop/">s01</a></td>
+<td>Agent Loop</td>
+<td><em>One loop &amp; Bash is all you need</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s02-tool-use/">s02</a></td>
+<td>Tool Use</td>
+<td><em>加一个工具, 只加一个 handler</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s03-todo-write/">s03</a></td>
+<td>TodoWrite</td>
+<td><em>没有计划的 agent 走哪算哪</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s04-subagent/">s04</a></td>
+<td>Subagent</td>
+<td><em>大任务拆小, 每个小任务干净的上下文</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s05-skill-loading/">s05</a></td>
+<td>Skills</td>
+<td><em>用到什么知识, 临时加载什么知识</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s06-context-compact/">s06</a></td>
+<td>Context Compact</td>
+<td><em>上下文总会满, 要有办法腾地方</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s07-task-system/">s07</a></td>
+<td>Task System</td>
+<td><em>大目标要拆成小任务, 排好序, 记在磁盘上</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s08-background-tasks/">s08</a></td>
+<td>Background Tasks</td>
+<td><em>慢操作丢后台, agent 继续想下一步</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s09-agent-teams/">s09</a></td>
+<td>Agent Teams</td>
+<td><em>任务太大一个人干不完, 要能分给队友</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s10-team-protocols/">s10</a></td>
+<td>Team Protocols</td>
+<td><em>队友之间要有统一的沟通规矩</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s11-autonomous-agents/">s11</a></td>
+<td>Autonomous Agents</td>
+<td><em>队友自己看看板, 有活就认领</em></td>
+</tr>
+<tr>
+<td><a href="../docs/zh/s12-worktree-task-isolation/">s12</a></td>
+<td>Worktree + Task Isolation</td>
+<td><em>各干各的目录, 互不干扰</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="-">学完之后 -- 从理解到落地<a class="headerlink" href="#-" title="Permanent link">&para;</a></h2>
+<p>12 个课程走完, 你已经从内到外理解了 harness 工程的运作原理。两种方式把知识变成产品:</p>
+<h3 id="kode-agent-cli-coding-agent-cli">Kode Agent CLI -- 开源 Coding Agent CLI<a class="headerlink" href="#kode-agent-cli-coding-agent-cli" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><code>npm i -g @shareai-lab/kode</code></p>
+</blockquote>
+<p>支持 Skill &amp; LSP, 适配 Windows, 可接 GLM / MiniMax / DeepSeek 等开放模型。装完即用。</p>
+<p>GitHub: <strong><a href="https://github.com/shareAI-lab/Kode-cli">shareAI-lab/Kode-cli</a></strong></p>
+<h3 id="kode-agent-sdk-agent">Kode Agent SDK -- 把 Agent 能力嵌入你的应用<a class="headerlink" href="#kode-agent-sdk-agent" title="Permanent link">&para;</a></h3>
+<p>官方 Claude Code Agent SDK 底层与完整 CLI 进程通信 -- 每个并发用户 = 一个终端进程。Kode SDK 是独立库, 无 per-user 进程开销, 可嵌入后端、浏览器插件、嵌入式设备等任意运行时。</p>
+<p>GitHub: <strong><a href="https://github.com/shareAI-lab/Kode-agent-sdk">shareAI-lab/Kode-agent-sdk</a></strong></p>
+<hr />
+<h2 id="_7">姊妹教程: 从<em>被动临时会话</em>到<em>主动常驻助手</em><a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<p>本仓库教的 harness 属于 <strong>用完即走</strong> 型 -- 开终端、给 agent 任务、做完关掉, 下次重开是全新会话。Claude Code 就是这种模式。</p>
+<p>但 <a href="https://github.com/openclaw/openclaw">OpenClaw</a> 证明了另一种可能: 在同样的 agent core 之上, 加两个 harness 机制就能让 agent 从 "踹一下动一下" 变成 "自己隔 30 秒醒一次找活干":</p>
+<ul>
+<li><strong>心跳 (Heartbeat)</strong> -- 每 30 秒 harness 给 agent 发一条消息, 让它检查有没有事可做。没事就继续睡, 有事立刻行动。</li>
+<li><strong>定时任务 (Cron)</strong> -- agent 可以给自己安排未来要做的事, 到点自动执行。</li>
+</ul>
+<p>再加上 IM 多通道路由 (WhatsApp/Telegram/Slack/Discord 等 13+ 平台)、不清空的上下文记忆、Soul 人格系统, agent 就从一个临时工具变成了始终在线的个人 AI 助手。</p>
+<p><strong><a href="https://github.com/shareAI-lab/claw0">claw0</a></strong> 是我们的姊妹教学仓库, 从零拆解这些 harness 机制:</p>
+<div class="highlight"><pre><span></span><code>claw agent = agent core + heartbeat + cron + IM chat + memory + soul
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>learn-claude-code                   claw0
+(agent harness 内核:                 (主动式常驻 harness:
+ 循环、工具、规划、                    心跳、定时任务、IM 通道、
+ 团队、worktree 隔离)                  记忆、Soul 人格)
+</code></pre></div>
+<h2 id="_8">许可证<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p>MIT</p>
+<hr />
+<p><strong>模型就是 Agent。代码是 Harness。造好 Harness，Agent 会完成剩下的。</strong></p>
+<p><strong>Bash is all you need. Real agents are all the universe needs.</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

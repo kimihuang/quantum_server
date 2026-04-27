@@ -1,0 +1,2141 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>CV Test Framework - 架构及模块设计 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cv-test-framework-" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CV Test Framework - 架构及模块设计
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 总体架构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 核心数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 核心数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 三层结构关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 双向链表节点布局
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 目录结构
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 模块职责
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 模块职责">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cv_listh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 cv_list.h — 双向链表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-cv_testh-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 cv_test.h — 核心数据结构与 API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-cv_macrosh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 cv_macros.h — 用户便捷宏
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-cv_runnerc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 cv_runner.c — 运行器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-cv_optionhc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 cv_option.h/c — 命令行参数解析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.5 cv_option.h/c — 命令行参数解析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#451" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5.1 参数总览
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#452" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5.2 参数组合规则
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#453" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5.3 选项结构体
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#454" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5.4 参数解析流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#455" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5.5 重复执行与统计
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-cv_mainc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 cv_main.c — 入口
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 自动注册机制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 控制台输出示例
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 控制台输出示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 --list 输出示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-list-detail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 --list-detail 输出示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-f-fail-fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 -f --fail-fast 输出示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-n-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 -n 3 重复执行输出示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 示例测试代码
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-cmake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. CMake 构建设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. CMake 构建设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 构建流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-cmakeliststxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 顶层 CMakeLists.txt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 构建命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 依赖关系
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-rtos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 可移植性与 RTOS 适配
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 可移植性与 RTOS 适配">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 外部依赖清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-posix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 已移除的 POSIX 依赖
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103-rtos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 RTOS 移植指南
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-rtos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 最小 RTOS 集成示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 设计要点总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cv-test-framework-">CV Test Framework - 架构及模块设计<a class="headerlink" href="#cv-test-framework-" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 总体架构<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TB
+    subgraph "用户入口"
+        A[cv_test 可执行程序]
+    end
+
+    subgraph "测试框架核心层"
+        B[Framework Core]
+        B1[list.h - 双向链表]
+        B2[framework.h/c - 框架核心]
+        B3[runner.h/c - 测试运行器]
+    end
+
+    subgraph "测试定义层"
+        C[宏定义 API]
+        C1[TEST_CASE - 注册用例]
+        C2[TEST_MODULE - 注册模块]
+        C3[TEST_GROUP - 注册组]
+        C4[PRE_TEST / POST_TEST - 钩子]
+    end
+
+    subgraph "测试用例层 - 2 Group x 3 Module x N Case"
+        D1["group_math&lt;br/&gt;module_add / module_sub / module_mul"]
+        D2["group_string&lt;br/&gt;module_concat / module_len / module_copy"]
+    end
+
+    A --&gt; B
+    C --&gt; B
+    B1 --&gt; B2
+    B2 --&gt; B3
+    D1 -.-&gt; C
+    D2 -.-&gt; C
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+    style D1 fill:#fbb,stroke:#333
+    style D2 fill:#fbb,stroke:#333</code></pre>
+<hr />
+<h2 id="2">2. 核心数据结构<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 三层结构关系<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>classDiagram
+    class cv_test_case {
+        +char name[CV_NAME_MAX]
+        +cv_test_func_t func
+        +cv_test_func_t pre_test
+        +cv_test_func_t post_test
+        +struct list_head case_node
+        +cv_test_result_t result
+        +int enabled
+    }
+
+    class cv_test_module {
+        +char name[CV_NAME_MAX]
+        +struct list_head case_list
+        +struct list_head module_node
+        +int case_count
+        +int pass_count
+        +int fail_count
+        +int skip_count
+        +cv_test_func_t pre_test
+        +cv_test_func_t post_test
+        +int enabled
+    }
+
+    class cv_test_group {
+        +char name[CV_NAME_MAX]
+        +struct list_head module_list
+        +struct list_head group_node
+        +int module_count
+        +int pass_count
+        +int fail_count
+        +int skip_count
+        +cv_test_func_t pre_test
+        +cv_test_func_t post_test
+        +int enabled
+    }
+
+    class cv_test_framework {
+        +struct list_head group_list
+        +int group_count
+        +int total_pass
+        +int total_fail
+        +int total_skip
+    }
+
+    cv_test_framework "1" *-- "*" cv_test_group : contains
+    cv_test_group "1" *-- "*" cv_test_module : contains
+    cv_test_module "1" *-- "*" cv_test_case : contains</code></pre>
+<h3 id="22">2.2 双向链表节点布局<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    subgraph "test_group 链表"
+        G1[group_head] --- G1n[prev/next]
+        G2[group_math] --- G2n[prev/next]
+        G3[group_string] --- G3n[prev/next]
+        G1n --&gt; G2 --&gt; G3
+    end
+
+    subgraph "group_math 内 module 链表"
+        M1[module_head] --- M1n[prev/next]
+        M2[module_add] --- M2n[prev/next]
+        M3[module_sub] --- M3n[prev/next]
+        M4[module_mul] --- M4n[prev/next]
+        M1n --&gt; M2 --&gt; M3 --&gt; M4
+    end
+
+    subgraph "module_add 内 case 链表"
+        C1[case_head] --- C1n[prev/next]
+        C2[case_1_plus_1] --- C2n[prev/next]
+        C3[case_neg_add] --- C3n[prev/next]
+        C4[case_zero_add] --- C4n[prev/next]
+        C1n --&gt; C2 --&gt; C3 --&gt; C4
+    end</code></pre>
+<hr />
+<h2 id="3">3. 目录结构<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>cv_framework/
+├── CMakeLists.txt           # 顶层 CMake 配置
+├── include/
+│   ├── cv_list.h            # Linux 风格双向链表
+│   ├── cv_test.h            # 框架核心数据结构与 API 声明
+│   ├── cv_option.h          # 命令行参数结构体与解析 API
+│   └── cv_macros.h          # 用户层便捷宏定义
+├── src/
+│   ├── cv_test.c            # 框架核心实现（注册、运行、统计）
+│   ├── cv_runner.c          # 测试运行器（遍历链表、调用钩子）
+│   ├── cv_option.c          # 命令行参数解析
+│   └── cv_main.c            # main 入口
+├── tests/
+│   ├── CMakeLists.txt       # 测试子目录 CMake
+│   ├── test_math.c          # group_math: 加减乘模块
+│   └── test_string.c        # group_string: 拼接/长度/拷贝模块
+└── build/                   # CMake out-of-source 构建目录
+    └── cv_test              # 编译产物
+</code></pre></div>
+<hr />
+<h2 id="4">4. 模块职责<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-cv_listh">4.1 <code>cv_list.h</code> — 双向链表<a class="headerlink" href="#41-cv_listh" title="Permanent link">&para;</a></h3>
+<p>仿 Linux kernel <code>list_head</code>，提供：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LIST_HEAD(name)</code></td>
+<td>定义并初始化链表头</td>
+</tr>
+<tr>
+<td><code>INIT_LIST_HEAD(ptr)</code></td>
+<td>初始化链表头</td>
+</tr>
+<tr>
+<td><code>list_add(new, head)</code></td>
+<td>头插法</td>
+</tr>
+<tr>
+<td><code>list_add_tail(new, head)</code></td>
+<td>尾插法</td>
+</tr>
+<tr>
+<td><code>list_del(entry)</code></td>
+<td>从链表中移除</td>
+</tr>
+<tr>
+<td><code>list_entry(ptr, type, member)</code></td>
+<td>通过成员指针获取宿主结构体</td>
+</tr>
+<tr>
+<td><code>list_for_each(pos, head)</code></td>
+<td>正向遍历</td>
+</tr>
+<tr>
+<td><code>list_for_each_prev(pos, head)</code></td>
+<td>反向遍历</td>
+</tr>
+<tr>
+<td><code>list_for_each_safe(pos, n, head)</code></td>
+<td>安全遍历（可中途删除）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-cv_testh-api">4.2 <code>cv_test.h</code> — 核心数据结构与 API<a class="headerlink" href="#42-cv_testh-api" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;cv_list.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stddef.h&gt;</span>
+
+<span class="cm">/* ---- 类型与常量 ---- */</span>
+
+<span class="cp">#define CV_NAME_MAX    64</span>
+<span class="cp">#define CV_ERR_MSG_MAX 256</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">cv_test_func_t</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CV_RESULT_UNINIT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w">   </span><span class="cm">/* 未执行 */</span>
+<span class="w">    </span><span class="n">CV_RESULT_PASS</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 通过   */</span>
+<span class="w">    </span><span class="n">CV_RESULT_FAIL</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 失败   */</span>
+<span class="w">    </span><span class="n">CV_RESULT_SKIP</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 跳过   */</span>
+<span class="w">    </span><span class="n">CV_RESULT_ERROR</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">    </span><span class="cm">/* 异常   */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_test_result_t</span><span class="p">;</span>
+
+<span class="cm">/* ---- cv_test_case：最小执行单位 ----</span>
+<span class="cm"> *</span>
+<span class="cm"> * pre_test / post_test 在 func 前后调用，用于单个用例级的</span>
+<span class="cm"> * 资源准备与清理（如 mock 初始化、临时文件创建等）。</span>
+<span class="cm"> * enabled=0 时跳过该用例（结果记为 SKIP）。</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cv_test_case</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">                </span><span class="n">name</span><span class="p">[</span><span class="n">CV_NAME_MAX</span><span class="p">];</span><span class="w">      </span><span class="cm">/* 用例名称          */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">func</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* 测试函数          */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">pre_test</span><span class="p">;</span><span class="w">               </span><span class="cm">/* 用例前置回调      */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">post_test</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 用例后置回调      */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w">    </span><span class="n">case_node</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 链接: module-&gt;case_list */</span>
+<span class="w">    </span><span class="n">cv_test_result_t</span><span class="w">    </span><span class="n">result</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* 执行结果          */</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">                </span><span class="n">errmsg</span><span class="p">[</span><span class="n">CV_ERR_MSG_MAX</span><span class="p">];</span><span class="w"> </span><span class="cm">/* 失败时的描述信息    */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">enabled</span><span class="p">;</span><span class="w">                </span><span class="cm">/* 1=执行, 0=跳过    */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_test_case_t</span><span class="p">;</span>
+
+<span class="cm">/* ---- cv_test_module：包含多个 test_case ----</span>
+<span class="cm"> *</span>
+<span class="cm"> * pre_test / post_test 在遍历本模块所有用例的前后各调用一次，</span>
+<span class="cm"> * 适合模块级的资源分配与释放。</span>
+<span class="cm"> * enabled=0 时跳过整个模块及其所有用例。</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cv_test_module</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">                </span><span class="n">name</span><span class="p">[</span><span class="n">CV_NAME_MAX</span><span class="p">];</span><span class="w">       </span><span class="cm">/* 模块名称          */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w">    </span><span class="n">case_list</span><span class="p">;</span><span class="w">               </span><span class="cm">/* 头: 挂载 cv_test_case  */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w">    </span><span class="n">module_node</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 链接: group-&gt;module_list */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">case_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 注册的用例总数      */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">pass_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 通过数             */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">fail_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 失败数             */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">skip_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 跳过数             */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">error_count</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 异常数             */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">pre_test</span><span class="p">;</span><span class="w">                </span><span class="cm">/* 模块前置回调       */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">post_test</span><span class="p">;</span><span class="w">               </span><span class="cm">/* 模块后置回调       */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">enabled</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* 1=执行, 0=跳过     */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_test_module_t</span><span class="p">;</span>
+
+<span class="cm">/* ---- cv_test_group：包含多个 test_module ----</span>
+<span class="cm"> *</span>
+<span class="cm"> * pre_test / post_test 在遍历本组所有模块的前后各调用一次，</span>
+<span class="cm"> * 适合组级的全局初始化与清理。</span>
+<span class="cm"> * enabled=0 时跳过整个组及其所有模块/用例。</span>
+<span class="cm"> */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cv_test_group</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">                </span><span class="n">name</span><span class="p">[</span><span class="n">CV_NAME_MAX</span><span class="p">];</span><span class="w">       </span><span class="cm">/* 组名称            */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w">    </span><span class="n">module_list</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 头: 挂载 cv_test_module  */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w">    </span><span class="n">group_node</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 链接: framework-&gt;group_list */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">module_count</span><span class="p">;</span><span class="w">            </span><span class="cm">/* 注册的模块总数      */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">pass_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 通过数（含子模块）  */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">fail_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 失败数             */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">skip_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 跳过数             */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">error_count</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 异常数             */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">pre_test</span><span class="p">;</span><span class="w">                </span><span class="cm">/* 组前置回调         */</span>
+<span class="w">    </span><span class="n">cv_test_func_t</span><span class="w">      </span><span class="n">post_test</span><span class="p">;</span><span class="w">               </span><span class="cm">/* 组后置回调         */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">enabled</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* 1=执行, 0=跳过     */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_test_group_t</span><span class="p">;</span>
+
+<span class="cm">/* ---- cv_test_framework：全局单例 ---- */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cv_test_framework</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w">    </span><span class="n">group_list</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 头: 挂载 cv_test_group  */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">group_count</span><span class="p">;</span><span class="w">             </span><span class="cm">/* 注册的组总数        */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">total_pass</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">total_fail</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">total_skip</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">total_error</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                 </span><span class="n">total_run</span><span class="p">;</span><span class="w">               </span><span class="cm">/* 实际执行的用例数    */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_test_framework_t</span><span class="p">;</span>
+
+<span class="cm">/* ---- 公共 API ---- */</span>
+
+<span class="cm">/* 获取框架全局单例 */</span>
+<span class="n">cv_test_framework_t</span><span class="w"> </span><span class="o">*</span><span class="nf">cv_framework_get</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="cm">/* 注册（使用 constructor 宏自动调用，也可手动调用） */</span>
+<span class="n">cv_test_group_t</span><span class="w">  </span><span class="o">*</span><span class="nf">cv_group_register</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">);</span>
+<span class="n">cv_test_module_t</span><span class="w"> </span><span class="o">*</span><span class="nf">cv_module_register</span><span class="p">(</span><span class="n">cv_test_group_t</span><span class="w"> </span><span class="o">*</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">);</span>
+<span class="n">cv_test_case_t</span><span class="w">   </span><span class="o">*</span><span class="nf">cv_case_register</span><span class="p">(</span><span class="n">cv_test_module_t</span><span class="w"> </span><span class="o">*</span><span class="n">module</span><span class="p">,</span>
+<span class="w">                                    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">func</span><span class="p">);</span>
+
+<span class="cm">/* 设置钩子（pre_test / post_test 传 NULL 表示不设置） */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_group_set_hooks</span><span class="p">(</span><span class="n">cv_test_group_t</span><span class="w">  </span><span class="o">*</span><span class="n">g</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">pre_test</span><span class="p">,</span><span class="w"> </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">post_test</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_module_set_hooks</span><span class="p">(</span><span class="n">cv_test_module_t</span><span class="w"> </span><span class="o">*</span><span class="n">m</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">pre_test</span><span class="p">,</span><span class="w"> </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">post_test</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_case_set_hooks</span><span class="p">(</span><span class="n">cv_test_case_t</span><span class="w">   </span><span class="o">*</span><span class="n">c</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">pre_test</span><span class="p">,</span><span class="w"> </span><span class="n">cv_test_func_t</span><span class="w"> </span><span class="n">post_test</span><span class="p">);</span>
+
+<span class="cm">/* 启用/禁用 */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_group_enable</span><span class="p">(</span><span class="n">cv_test_group_t</span><span class="w">  </span><span class="o">*</span><span class="n">g</span><span class="p">,</span><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">enable</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_module_enable</span><span class="p">(</span><span class="n">cv_test_module_t</span><span class="w"> </span><span class="o">*</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">enable</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_case_enable</span><span class="p">(</span><span class="n">cv_test_case_t</span><span class="w">   </span><span class="o">*</span><span class="n">c</span><span class="p">,</span><span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">enable</span><span class="p">);</span>
+
+<span class="cm">/* 运行 */</span>
+<span class="kt">int</span><span class="w">  </span><span class="nf">cv_run</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">cv_test_opts_t</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+<span class="kt">int</span><span class="w">  </span><span class="nf">cv_run_all</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span><span class="w">  </span><span class="cm">/* 等价于 cv_run(&amp;default_opts) */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_summary</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_list_tests</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">detail</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_apply_filters</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">cv_test_opts_t</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="43-cv_macrosh">4.3 <code>cv_macros.h</code> — 用户便捷宏<a class="headerlink" href="#43-cv_macrosh" title="Permanent link">&para;</a></h3>
+<p>注册宏与钩子宏均使用 <code>__attribute__((constructor))</code> 自动注册，
+优先级：group(101) &lt; module(102) &lt; case(103) &lt; hooks(104)。
+静态变量直接使用用户提供的名称（如 <code>group_math</code>、<code>module_add</code>），
+便于在钩子宏和用例函数中引用。</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* ---- 注册宏 ---- */</span>
+
+<span class="cp">#define TEST_GROUP(name)                                               \</span>
+<span class="cp">    static cv_test_group_t *name;                                     \</span>
+<span class="cp">    __attribute__((constructor(101)))                                   \</span>
+<span class="cp">    static void __cv_reg_grp_##name(void) {                            \</span>
+<span class="cp">        name = cv_group_register(#name);                               \</span>
+<span class="cp">    }</span>
+
+<span class="cp">#define TEST_MODULE(group, name)                                       \</span>
+<span class="cp">    static cv_test_module_t *name;                                    \</span>
+<span class="cp">    __attribute__((constructor(102)))                                   \</span>
+<span class="cp">    static void __cv_reg_mod_##name(void) {                            \</span>
+<span class="cp">        name = cv_module_register(group, #name);                       \</span>
+<span class="cp">    }</span>
+
+<span class="cp">#define TEST_CASE(module, name)                                        \</span>
+<span class="cp">    static void name(void);                                            \</span>
+<span class="cp">    static cv_test_case_t *name##_cvcase;                              \</span>
+<span class="cp">    __attribute__((constructor(103)))                                   \</span>
+<span class="cp">    static void __cv_reg_case_##name(void) {                           \</span>
+<span class="cp">        name##_cvcase = cv_case_register(module, #name, name);        \</span>
+<span class="cp">    }                                                                  \</span>
+<span class="cp">    static void name(void)</span>
+
+<span class="cm">/* ---- 钩子宏（constructor(104)，必须在文件作用域使用） ---- */</span>
+
+<span class="cp">#define GROUP_PRE_TEST(grp, fn)                                        \</span>
+<span class="cp">    __attribute__((constructor(104)))                                   \</span>
+<span class="cp">    static void __cv_gpre_##grp##_##fn(void) {                        \</span>
+<span class="cp">        cv_group_set_hooks(grp, fn, NULL);                             \</span>
+<span class="cp">    }</span>
+
+<span class="cm">/* MODULE_PRE_TEST / MODULE_POST_TEST / CASE_PRE_TEST / CASE_POST_TEST 同理 */</span>
+
+<span class="cm">/* ---- 断言宏 ---- */</span>
+
+<span class="cp">#define CV_ASSERT(cond)                       do {                                     \</span>
+<span class="cp">        if (!(cond)) {                                                               \</span>
+<span class="cp">            cv_test_current_case_fail(__FILE__, __LINE__, #cond);                    \</span>
+<span class="cp">        }                                                                           \</span>
+<span class="cp">    } while (0)</span>
+
+<span class="cp">#define CV_ASSERT_EQ(a, b)                   do {                                     \</span>
+<span class="cp">        long _ea = (long)(a), _eb = (long)(b);                                       \</span>
+<span class="cp">        if (_ea != _eb) {                                                            \</span>
+<span class="cp">            char _ebuf[CV_ERR_MSG_MAX];                                              \</span>
+<span class="cp">            snprintf(_ebuf, sizeof(_ebuf), &quot;%s != %s (%ld vs %ld)&quot;,               \</span>
+<span class="cp">                     #a, #b, _ea, _eb);                                               \</span>
+<span class="cp">            cv_test_current_case_fail(__FILE__, __LINE__, _ebuf);                    \</span>
+<span class="cp">        }                                                                           \</span>
+<span class="cp">    } while (0)</span>
+
+<span class="cp">#define CV_ASSERT_NE(a, b)    </span><span class="cm">/* 类似 CV_ASSERT_EQ，判断不相等 */</span>
+<span class="cp">#define CV_ASSERT_NULL(ptr)   CV_ASSERT((ptr) == NULL)</span>
+<span class="cp">#define CV_ASSERT_NOT_NULL(ptr) CV_ASSERT((ptr) != NULL)</span>
+</code></pre></div>
+<h3 id="44-cv_runnerc">4.4 <code>cv_runner.c</code> — 运行器<a class="headerlink" href="#44-cv_runnerc" title="Permanent link">&para;</a></h3>
+<p>执行流程：</p>
+<pre class="mermaid"><code>flowchart TD
+    START[cv_run: 应用 opts 过滤] --&gt; G_LOOP{遍历 group 链表}
+    G_LOOP --&gt; G_FILT{group 被 -g/-m/-k 过滤?}
+    G_FILT --&gt;|Yes| G_SKIP[group.skip++ 并跳过]
+    G_FILT --&gt;|No| G_CHK{group.enabled?}
+    G_CHK --&gt;|No| G_SKIP2[同上]
+    G_CHK --&gt;|Yes| G_PRE[group.pre_test if set]
+    G_PRE --&gt; M_LOOP{遍历 module 链表}
+
+    M_LOOP --&gt; M_FILT{module 被 -m/-c/-k 过滤?}
+    M_FILT --&gt;|Yes| M_SKIP[module.skip++ 并跳过]
+    M_FILT --&gt;|No| M_CHK{module.enabled?}
+    M_CHK --&gt;|No| M_SKIP2[同上]
+    M_CHK --&gt;|Yes| M_PRE[module.pre_test if set]
+    M_PRE --&gt; C_LOOP{遍历 case 链表}
+
+    C_LOOP --&gt; C_FILT{case 被 -c/-k 过滤?}
+    C_FILT --&gt;|Yes| C_SKIP[case.result=SKIP, module.skip++]
+    C_FILT --&gt;|No| C_CHK{case.enabled?}
+    C_CHK --&gt;|No| C_SKIP2[同上]
+    C_CHK --&gt;|Yes| C_PRE[case.pre_test if set]
+    C_PRE --&gt; RUN[case.func]
+    RUN --&gt; C_POST[case.post_test if set]
+    C_POST --&gt; CHECK{检查 case.result}
+    CHECK --&gt;|PASS| STAT_P[module.pass++]
+    CHECK --&gt;|FAIL| STAT_F[module.fail++]
+    CHECK --&gt;|ERROR| STAT_E[module.error++]
+    STAT_P --&gt; C_LOOP
+    STAT_F --&gt; FF_CHK{fail_fast?}
+    FF_CHK --&gt;|Yes| ABORT[终止本轮执行]
+    FF_CHK --&gt;|No| C_LOOP
+    STAT_E --&gt; C_LOOP
+    C_SKIP --&gt; C_LOOP
+    C_SKIP2 --&gt; C_LOOP
+
+    C_LOOP --&gt;|遍历完| M_POST[module.post_test if set]
+    M_POST --&gt; M_LOOP
+    M_SKIP --&gt; M_LOOP
+    M_SKIP2 --&gt; M_LOOP
+
+    M_LOOP --&gt;|遍历完| G_POST[group.post_test if set]
+    G_POST --&gt; G_LOOP
+    G_SKIP --&gt; G_LOOP
+    G_SKIP2 --&gt; G_LOOP
+    ABORT --&gt; G_LOOP
+
+    G_LOOP --&gt;|遍历完| SUMMARY[cv_summary 打印统计]
+    SUMMARY --&gt; END[返回结果]
+
+    style START fill:#f9f,stroke:#333
+    style END fill:#f9f,stroke:#333
+    style SUMMARY fill:#bbf,stroke:#333
+    style RUN fill:#bfb,stroke:#333
+    style G_FILT fill:#ffe,stroke:#fa0
+    style M_FILT fill:#ffe,stroke:#fa0
+    style C_FILT fill:#ffe,stroke:#fa0
+    style FF_CHK fill:#fee,stroke:#333
+    style ABORT fill:#f66,stroke:#333,color:#fff</code></pre>
+<h3 id="45-cv_optionhc">4.5 <code>cv_option.h/c</code> — 命令行参数解析<a class="headerlink" href="#45-cv_optionhc" title="Permanent link">&para;</a></h3>
+<h4 id="451">4.5.1 参数总览<a class="headerlink" href="#451" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>用法: cv_test [选项]
+
+测试选择:
+  -g, --group &lt;name[,...]&gt;       仅运行指定 group（逗号分隔）
+  -m, --module &lt;name[,...]&gt;      仅运行指定 module（逗号分隔）
+  -c, --case &lt;name[,...]&gt;        仅运行指定 case（逗号分隔）
+  -k, --filter &lt;pattern&gt;         按通配符模式过滤 case 名称（如 &quot;test_*_add&quot;）
+
+执行控制:
+  -n, --count &lt;num&gt;              重复执行次数（默认 1，用于稳定性测试）
+  -r, --repeat                   持续重复直到出现失败（压力/回归测试）
+  -f, --fail-fast                首个失败后立即停止
+      --shuffle                  随机打乱执行顺序
+
+输出控制:
+  -v, --verbose                  显示详细信息（pre/post_test 调用、耗时等）
+  -s, --silent                   仅输出汇总摘要
+      --list                     列出所有已注册的 group/module/case
+      --list-detail              列出详细信息（含 enabled 状态、case 数量）
+      --color                    彩色输出（默认终端自动检测）
+      --no-color                 关闭彩色输出
+
+其他:
+  -h, --help                     显示帮助信息
+</code></pre></div>
+<h4 id="452">4.5.2 参数组合规则<a class="headerlink" href="#452" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>组合</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无参数</td>
+<td>运行所有已注册的 group → module → case</td>
+</tr>
+<tr>
+<td><code>-g group_math</code></td>
+<td>仅运行 group_math 及其下所有 module/case</td>
+</tr>
+<tr>
+<td><code>-g group_math -m module_add</code></td>
+<td>仅运行 group_math.module_add 及其下所有 case</td>
+</tr>
+<tr>
+<td><code>-g group_math -c test_1_plus_1</code></td>
+<td>仅运行 group_math 下的 test_1_plus_1</td>
+</tr>
+<tr>
+<td><code>-m module_add</code></td>
+<td>在所有 group 中搜索名为 module_add 的模块</td>
+</tr>
+<tr>
+<td><code>-k "test_*_add"</code></td>
+<td>在所有 module 中匹配名称以 test_*_add 的 case</td>
+</tr>
+<tr>
+<td><code>-n 1000</code></td>
+<td>全部测试重复 1000 次（统计每轮结果）</td>
+</tr>
+<tr>
+<td><code>-r</code></td>
+<td>持续循环，直到某个 case 失败或用户 Ctrl+C</td>
+</tr>
+<tr>
+<td><code>-f -v</code></td>
+<td>首次失败即停，并输出详细日志</td>
+</tr>
+</tbody>
+</table>
+<p>参数优先级：<code>--case</code> &gt; <code>--module</code> &gt; <code>--group</code> &gt; <code>--filter</code>，指定更精确的过滤会覆盖上层过滤。</p>
+<h4 id="453">4.5.3 选项结构体<a class="headerlink" href="#453" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="cp">#define CV_MAX_FILTERS   32</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cv_test_opts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* --- 测试选择 --- */</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">    </span><span class="o">*</span><span class="n">groups</span><span class="p">[</span><span class="n">CV_MAX_FILTERS</span><span class="p">];</span><span class="w">   </span><span class="cm">/* -g 指定的 group 名称数组  */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">group_count</span><span class="p">;</span><span class="w">              </span><span class="cm">/* group 名称数量             */</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">    </span><span class="o">*</span><span class="n">modules</span><span class="p">[</span><span class="n">CV_MAX_FILTERS</span><span class="p">];</span><span class="w">  </span><span class="cm">/* -m 指定的 module 名称数组 */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">module_count</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">    </span><span class="o">*</span><span class="n">cases</span><span class="p">[</span><span class="n">CV_MAX_FILTERS</span><span class="p">];</span><span class="w">    </span><span class="cm">/* -c 指定的 case 名称数组   */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">case_count</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">char</span><span class="w">    </span><span class="o">*</span><span class="n">filter</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* -k 通配符模式             */</span>
+
+<span class="w">    </span><span class="cm">/* --- 执行控制 --- */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">repeat_count</span><span class="p">;</span><span class="w">             </span><span class="cm">/* -n 重复次数（0=无限，即 -r 模式） */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">fail_fast</span><span class="p">;</span><span class="w">                </span><span class="cm">/* -f 首次失败即停           */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">shuffle</span><span class="p">;</span><span class="w">                  </span><span class="cm">/* --shuffle 随机打乱         */</span>
+
+<span class="w">    </span><span class="cm">/* --- 输出控制 --- */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">verbose</span><span class="p">;</span><span class="w">                  </span><span class="cm">/* -v 详细输出               */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">silent</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* -s 静默输出               */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">list_only</span><span class="p">;</span><span class="w">                </span><span class="cm">/* --list 列出测试            */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">list_detail</span><span class="p">;</span><span class="w">              </span><span class="cm">/* --list-detail 详细列出     */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w">      </span><span class="n">color</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* --color/--no-color（-1=自动检测） */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_test_opts_t</span><span class="p">;</span>
+
+<span class="cm">/* 解析命令行参数，填充 opts 结构体 */</span>
+<span class="kt">int</span><span class="w">  </span><span class="nf">cv_option_parse</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[],</span><span class="w"> </span><span class="n">cv_test_opts_t</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_option_print_usage</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">prog</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">cv_option_free</span><span class="p">(</span><span class="n">cv_test_opts_t</span><span class="w"> </span><span class="o">*</span><span class="n">opts</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="454">4.5.4 参数解析流程<a class="headerlink" href="#454" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>flowchart TD
+    PARSE[解析 argv] --&gt; HELP{-h ?}
+    HELP --&gt;|Yes| USAGE[打印 usage 并退出 0]
+    HELP --&gt;|No| LIST{--list ?}
+    LIST --&gt;|Yes| PRINT_LIST[打印测试列表并退出 0]
+    LIST --&gt;|No| VALIDATE{参数校验}
+
+    VALIDATE --&gt;|非法参数| ERR[打印错误并退出 1]
+    VALIDATE --&gt;|OK| APPLY[应用过滤规则到框架]
+
+    APPLY --&gt; COUNT{-n &gt; 1 或 -r ?}
+    COUNT --&gt;|No| RUN_ONCE[cv_run_filtered 执行一次]
+    COUNT --&gt;|Yes| LOOP[循环执行 cv_run_filtered]
+
+    LOOP --&gt; CHK_FAIL{fail_fast 且有失败?}
+    CHK_FAIL --&gt;|Yes| STOP[终止循环]
+    CHK_FAIL --&gt;|No| CHK_REPEAT{循环次数达上限?}
+    CHK_REPEAT --&gt;|Yes| DONE[打印汇总并返回]
+    CHK_REPEAT --&gt;|No| LOOP
+
+    RUN_ONCE --&gt; DONE
+    STOP --&gt; DONE
+
+    style HELP fill:#fee
+    style LIST fill:#fee
+    style VALIDATE fill:#fee
+    style LOOP fill:#bbf
+    style DONE fill:#bfb</code></pre>
+<h4 id="455">4.5.5 重复执行与统计<a class="headerlink" href="#455" title="Permanent link">&para;</a></h4>
+<p><code>-n</code> / <code>-r</code> 模式下，每轮执行前重置所有 case/module/group 的统计计数器，
+框架额外维护轮次统计：</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 附加到 cv_test_framework 中用于多轮统计 */</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cv_round_stat</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">round</span><span class="p">;</span><span class="w">           </span><span class="cm">/* 当前轮次           */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rounds_passed</span><span class="p">;</span><span class="w">   </span><span class="cm">/* 全部通过的轮次数   */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rounds_failed</span><span class="p">;</span><span class="w">   </span><span class="cm">/* 存在失败的轮次数   */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">worst_pass</span><span class="p">;</span><span class="w">      </span><span class="cm">/* 单轮最低通过率     */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">worst_fail</span><span class="p">;</span><span class="w">      </span><span class="cm">/* 单轮最高失败数     */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">cv_round_stat_t</span><span class="p">;</span>
+</code></pre></div>
+<p>输出示例（<code>-n 5</code>）：</p>
+<div class="highlight"><pre><span></span><code>===========================================
+  CV Test Framework v1.0  [Round 1/5]
+===========================================
+...
+===========================================
+  CV Test Framework v1.0  [Round 5/5]
+===========================================
+
+===========================================
+  ROUND SUMMARY
+===========================================
+  Rounds: 5 | All-Pass: 3 | Has-Fail: 2
+  Worst Round: #3  (PASS: 12  FAIL: 2)
+===========================================
+</code></pre></div>
+<h3 id="46-cv_mainc">4.6 <code>cv_main.c</code> — 入口<a class="headerlink" href="#46-cv_mainc" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">cv_test_opts_t</span><span class="w"> </span><span class="n">opts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="w">    </span><span class="cm">/* 1. 解析命令行参数 */</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cv_option_parse</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">opts</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* 2. 仅列出模式 */</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">opts</span><span class="p">.</span><span class="n">list_only</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">opts</span><span class="p">.</span><span class="n">list_detail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">cv_list_tests</span><span class="p">(</span><span class="n">opts</span><span class="p">.</span><span class="n">list_detail</span><span class="p">);</span>
+<span class="w">        </span><span class="n">cv_option_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* 3. 应用过滤规则（根据 -g/-m/-c/-k 设置 enabled 标志） */</span>
+<span class="w">    </span><span class="n">cv_apply_filters</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 4. 执行测试（含重复逻辑） */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cv_run</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* 5. 释放资源 */</span>
+<span class="w">    </span><span class="n">cv_option_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opts</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="5">5. 自动注册机制<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant File as test_math.c
+    participant Macro as TEST_CASE 宏
+    participant Reg as 注册函数
+    participant List as 双向链表
+
+    File-&gt;&gt;Macro: TEST_CASE(module_add, test_1_plus_1)
+    Macro-&gt;&gt;Macro: 展开为 constructor 函数
+    Note over Macro: __attribute__((constructor(102)))
+    File-&gt;&gt;Reg: cv_case_register(module, "test_1_plus_1", test_1_plus_1)
+    Reg-&gt;&gt;List: list_add_tail(&amp;case-&gt;case_node, &amp;module-&gt;case_list)
+
+    File-&gt;&gt;Macro: TEST_CASE(module_add, test_neg_add)
+    Macro-&gt;&gt;Macro: 展开为 constructor 函数
+    File-&gt;&gt;Reg: cv_case_register(module, "test_neg_add", test_neg_add)
+    Reg-&gt;&gt;List: list_add_tail(&amp;case-&gt;case_node, &amp;module-&gt;case_list)</code></pre>
+<p>注册优先级：<code>group(101)</code> &lt; <code>module(102)</code> &lt; <code>case(103)</code> &lt; <code>hooks(104)</code>，
+确保先注册组、再模块、最后用例，钩子设置在所有注册之后。</p>
+<hr />
+<h2 id="6">6. 控制台输出示例<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>===========================================
+  CV Test Framework v1.0
+===========================================
+
+[GROUP] group_math
+  [GROUP PRE_TEST] group_math init resources...
+  [MODULE] module_add
+    [MODULE PRE_TEST] init adder context
+      [CASE PRE_TEST] setup operand buffer
+      [PASS] test_1_plus_1
+      [CASE POST_TEST] cleanup operand buffer
+      [CASE PRE_TEST] setup operand buffer
+      [PASS] test_neg_add
+      [CASE POST_TEST] cleanup operand buffer
+      [CASE PRE_TEST] setup operand buffer
+      [PASS] test_zero_add
+      [CASE POST_TEST] cleanup operand buffer
+    [MODULE POST_TEST] destroy adder context
+  [MODULE] module_sub
+    [PASS] test_5_minus_3
+    [PASS] test_neg_minus_neg
+  [MODULE] module_mul
+    [PASS] test_2_times_3
+    [FAIL] test_overflow  &lt;-- test_math.c:42: expected 0, got -1
+  [GROUP POST_TEST] group_math release resources...
+
+[GROUP] group_string
+  [MODULE] module_concat
+    [PASS] test_basic_concat
+    [PASS] test_empty_concat
+  [MODULE] module_len
+    [PASS] test_ascii_len
+    [PASS] test_empty_len
+  [MODULE] module_copy
+    [PASS] test_strcpy_basic
+    [PASS] test_overlap_copy
+
+===========================================
+  SUMMARY
+===========================================
+  Groups:  2  |  Modules: 6  |  Cases: 14
+  PASS: 13  |  FAIL: 1  |  ERROR: 0  |  SKIP: 0
+===========================================
+</code></pre></div>
+<h4 id="61-list">6.1 <code>--list</code> 输出示例<a class="headerlink" href="#61-list" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>$ ./cv_test --list
+
+  group_math
+    module_add       (3 cases)
+      test_1_plus_1
+      test_neg_add
+      test_zero_add
+    module_sub       (2 cases)
+      test_5_minus_3
+      test_neg_minus_neg
+    module_mul       (2 cases)
+      test_2_times_3
+      test_overflow
+  group_string
+    module_concat    (2 cases)
+      test_basic_concat
+      test_empty_concat
+    module_len       (2 cases)
+      test_ascii_len
+      test_empty_len
+    module_copy      (2 cases)
+      test_strcpy_basic
+      test_overlap_copy
+
+  Total: 2 groups, 6 modules, 14 cases
+</code></pre></div>
+<h4 id="62-list-detail">6.2 <code>--list-detail</code> 输出示例<a class="headerlink" href="#62-list-detail" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>$ ./cv_test --list-detail
+
+  [ENABLED] group_math (3 modules)
+    [ENABLED] module_add       (3 cases, 0 disabled)
+      [ENABLED] test_1_plus_1
+      [ENABLED] test_neg_add
+      [ENABLED] test_zero_add
+    [ENABLED] module_sub       (2 cases, 0 disabled)
+      ...
+    [DISABLED] module_mul      (2 cases, 2 disabled)
+      [DISABLED] test_2_times_3
+      [DISABLED] test_overflow
+  ...
+
+  Total: 2 groups, 6 modules, 14 cases (2 disabled)
+</code></pre></div>
+<h4 id="63-f-fail-fast">6.3 <code>-f --fail-fast</code> 输出示例<a class="headerlink" href="#63-f-fail-fast" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>$ ./cv_test -f
+
+[GROUP] group_math
+  [MODULE] module_add
+    [PASS] test_1_plus_1
+    [PASS] test_neg_add
+    [PASS] test_zero_add
+  [MODULE] module_sub
+    [PASS] test_5_minus_3
+    [PASS] test_neg_minus_neg
+  [MODULE] module_mul
+    [PASS] test_2_times_3
+    [FAIL] test_overflow  &lt;-- test_math.c:42: expected 0, got -1
+
+  ABORTED: fail-fast on first failure
+
+===========================================
+  SUMMARY
+===========================================
+  Groups:  2  |  Modules: 6  |  Cases: 14
+  PASS: 6  |  FAIL: 1  |  SKIP: 7  |  (stopped early)
+===========================================
+</code></pre></div>
+<h4 id="64-n-3">6.4 <code>-n 3</code> 重复执行输出示例<a class="headerlink" href="#64-n-3" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>$ ./cv_test -n 3
+
+===========================================
+  CV Test Framework v1.0  [Round 1/3]
+===========================================
+...
+  PASS: 13  |  FAIL: 1  |  ERROR: 0  |  SKIP: 0
+===========================================
+  CV Test Framework v1.0  [Round 2/3]
+===========================================
+...
+  PASS: 14  |  FAIL: 0  |  ERROR: 0  |  SKIP: 0
+===========================================
+  CV Test Framework v1.0  [Round 3/3]
+===========================================
+...
+  PASS: 13  |  FAIL: 1  |  ERROR: 0  |  SKIP: 0
+
+===========================================
+  ROUND SUMMARY
+===========================================
+  Rounds: 3 | All-Pass: 1 | Has-Fail: 2
+  Worst Round: #1, #3  (PASS: 13  FAIL: 1)
+===========================================
+</code></pre></div>
+<hr />
+<h2 id="7">7. 示例测试代码<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/test_math.c */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;cv_macros.h&quot;</span>
+
+<span class="n">TEST_GROUP</span><span class="p">(</span><span class="n">group_math</span><span class="p">);</span>
+
+<span class="cm">/* --- 组级钩子 --- */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">math_pre</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[GROUP PRE_TEST] group_math init resources...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">math_post</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;[GROUP POST_TEST] group_math release resources...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="n">GROUP_PRE_TEST</span><span class="p">(</span><span class="n">group_math</span><span class="p">,</span><span class="w"> </span><span class="n">math_pre</span><span class="p">);</span>
+<span class="n">GROUP_POST_TEST</span><span class="p">(</span><span class="n">group_math</span><span class="p">,</span><span class="w"> </span><span class="n">math_post</span><span class="p">);</span>
+
+<span class="cm">/* ==================== module_add ==================== */</span>
+<span class="n">TEST_MODULE</span><span class="p">(</span><span class="n">group_math</span><span class="p">,</span><span class="w"> </span><span class="n">module_add</span><span class="p">);</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">add_pre</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;    [MODULE PRE_TEST] init adder context</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">add_post</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;    [MODULE POST_TEST] destroy adder context</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="n">MODULE_PRE_TEST</span><span class="p">(</span><span class="n">module_add</span><span class="p">,</span><span class="w"> </span><span class="n">add_pre</span><span class="p">);</span>
+<span class="n">MODULE_POST_TEST</span><span class="p">(</span><span class="n">module_add</span><span class="p">,</span><span class="w"> </span><span class="n">add_post</span><span class="p">);</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="n">module_add</span><span class="p">,</span><span class="w"> </span><span class="n">test_1_plus_1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CV_ASSERT</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="n">module_add</span><span class="p">,</span><span class="w"> </span><span class="n">test_neg_add</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CV_ASSERT</span><span class="p">(</span><span class="mi">-1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* 用例级钩子（可选） */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">case_buf_pre</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;      [CASE PRE_TEST] setup operand buffer</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">case_buf_post</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;      [CASE POST_TEST] cleanup operand buffer</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="n">module_add</span><span class="p">,</span><span class="w"> </span><span class="n">test_zero_add</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CV_ASSERT</span><span class="p">(</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* case 级钩子必须在文件作用域（constructor 不能在函数内） */</span>
+<span class="n">CASE_PRE_TEST</span><span class="p">(</span><span class="n">test_zero_add_cvcase</span><span class="p">,</span><span class="w"> </span><span class="n">case_buf_pre</span><span class="p">);</span>
+<span class="n">CASE_POST_TEST</span><span class="p">(</span><span class="n">test_zero_add_cvcase</span><span class="p">,</span><span class="w"> </span><span class="n">case_buf_post</span><span class="p">);</span>
+
+<span class="cm">/* ==================== module_sub ==================== */</span>
+<span class="n">TEST_MODULE</span><span class="p">(</span><span class="n">group_math</span><span class="p">,</span><span class="w"> </span><span class="n">module_sub</span><span class="p">);</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="n">module_sub</span><span class="p">,</span><span class="w"> </span><span class="n">test_5_minus_3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CV_ASSERT</span><span class="p">(</span><span class="mi">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="n">module_sub</span><span class="p">,</span><span class="w"> </span><span class="n">test_neg_minus_neg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">CV_ASSERT</span><span class="p">(</span><span class="mi">-1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="8-cmake">8. CMake 构建设计<a class="headerlink" href="#8-cmake" title="Permanent link">&para;</a></h2>
+<h3 id="81">8.1 构建流程<a class="headerlink" href="#81" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    A[src/cv_*.c] --&gt; B[cv_test 可执行文件]
+    C[tests/*.c] --&gt; B
+    E[CMakeLists.txt] --&gt; B
+
+    style A fill:#bbf,stroke:#333
+    style B fill:#f9f,stroke:#333
+    style C fill:#bfb,stroke:#333</code></pre>
+<h3 id="82-cmakeliststxt">8.2 顶层 <code>CMakeLists.txt</code><a class="headerlink" href="#82-cmakeliststxt" title="Permanent link">&para;</a></h3>
+<p>框架源文件与测试用例直接编译链接为单一 <code>cv_test</code> 可执行文件，
+便于在嵌入式环境中整体烧录运行。</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.10</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">cv_test_framework</span><span class="w"> </span><span class="s">C</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_STANDARD</span><span class="w"> </span><span class="s">11</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_STANDARD_REQUIRED</span><span class="w"> </span><span class="s">ON</span><span class="p">)</span>
+
+<span class="c"># 编译选项</span>
+<span class="nb">add_compile_options</span><span class="p">(</span><span class="s">-Wall</span><span class="w"> </span><span class="s">-Wextra</span><span class="p">)</span>
+
+<span class="c"># 框架头文件路径</span>
+<span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_SOURCE_DIR</span><span class="o">}</span><span class="s">/include</span><span class="p">)</span>
+
+<span class="c"># ---- 可执行目标（框架 + 测试用例一体编译） ----</span>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">cv_test</span>
+<span class="w">    </span><span class="s">src/cv_main.c</span>
+<span class="w">    </span><span class="s">src/cv_test.c</span>
+<span class="w">    </span><span class="s">src/cv_runner.c</span>
+<span class="w">    </span><span class="s">src/cv_option.c</span>
+<span class="w">    </span><span class="s">tests/test_math.c</span>
+<span class="w">    </span><span class="s">tests/test_string.c</span>
+<span class="p">)</span>
+
+<span class="c"># 构建后自动运行测试</span>
+<span class="nb">add_custom_target</span><span class="p">(</span><span class="s">run</span>
+<span class="w">    </span><span class="s">COMMAND</span><span class="w"> </span><span class="o">$&lt;</span><span class="nv">TARGET_FILE:cv_test</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="s">DEPENDS</span><span class="w"> </span><span class="s">cv_test</span>
+<span class="w">    </span><span class="s">WORKING_DIRECTORY</span><span class="w"> </span><span class="o">${</span><span class="nv">CMAKE_BINARY_DIR</span><span class="o">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="83">8.3 构建命令<a class="headerlink" href="#83" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 配置（out-of-source 构建）</span>
+cmake<span class="w"> </span>-B<span class="w"> </span>build
+
+<span class="c1"># 编译</span>
+cmake<span class="w"> </span>--build<span class="w"> </span>build
+
+<span class="c1"># 运行测试</span>
+./build/cv_test
+
+<span class="c1"># 或使用自定义 target</span>
+cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>--target<span class="w"> </span>run
+
+<span class="c1"># 清理</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>build
+</code></pre></div>
+<hr />
+<h2 id="9">9. 依赖关系<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph BT
+    cv_main[cv_main.c] --&gt; cv_test[cv_test.c]
+    cv_runner[cv_runner.c] --&gt; cv_test
+    cv_option[cv_option.c] --&gt; cv_test
+    cv_test --&gt; cv_list[cv_list.h]
+    test_math[test_math.c] --&gt; cv_macros[cv_macros.h]
+    test_string[test_string.c] --&gt; cv_macros
+    cv_macros --&gt; cv_test
+    cv_main --&gt; cv_option
+    cv_main --&gt; cv_runner
+
+    style cv_list fill:#ffd,stroke:#333
+    style cv_test fill:#bbf,stroke:#333
+    style cv_macros fill:#bfb,stroke:#333
+    style cv_option fill:#fdb,stroke:#333</code></pre>
+<hr />
+<h2 id="10-rtos">10. 可移植性与 RTOS 适配<a class="headerlink" href="#10-rtos" title="Permanent link">&para;</a></h2>
+<h3 id="101">10.1 外部依赖清单<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>依赖</th>
+<th>来源</th>
+<th>用途</th>
+<th>RTOS 可用性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stdio.h</code></td>
+<td>C 标准库</td>
+<td>printf 输出</td>
+<td>需 RTOS 提供 UART/semihost</td>
+</tr>
+<tr>
+<td><code>stdlib.h</code></td>
+<td>C 标准库</td>
+<td>malloc/free, atoi, rand, exit</td>
+<td>需 RTOS 提供 heap</td>
+</tr>
+<tr>
+<td><code>string.h</code></td>
+<td>C 标准库</td>
+<td>memset, memcpy, strlen, strncmp</td>
+<td>通常可用</td>
+</tr>
+<tr>
+<td><code>stddef.h</code></td>
+<td>C 标准库</td>
+<td>offsetof, size_t</td>
+<td>通常可用</td>
+</tr>
+<tr>
+<td><code>getopt.h</code></td>
+<td>POSIX / 自带</td>
+<td>getopt_long 命令行解析</td>
+<td>Linux: POSIX; RTOS: 需移植 getopt 实现</td>
+</tr>
+</tbody>
+</table>
+<h3 id="102-posix">10.2 已移除的 POSIX 依赖<a class="headerlink" href="#102-posix" title="Permanent link">&para;</a></h3>
+<p>以下 Linux/POSIX 接口已从代码中移除，以确保 RTOS 可移植性：</p>
+<table>
+<thead>
+<tr>
+<th>已移除</th>
+<th>原用途</th>
+<th>替换方案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>signal.h</code> / <code>signal()</code> / <code>SIGALRM</code></td>
+<td>单用例超时中断</td>
+<td>已移除。RTOS 可通过硬件 Timer 回调 + 标志位实现</td>
+</tr>
+<tr>
+<td><code>setjmp.h</code> / <code>longjmp()</code></td>
+<td>超时跳转</td>
+<td>已移除，与 signal 一同去掉</td>
+</tr>
+<tr>
+<td><code>unistd.h</code> / <code>alarm()</code></td>
+<td>超时定时</td>
+<td>已移除</td>
+</tr>
+<tr>
+<td><code>strdup()</code></td>
+<td>字符串复制</td>
+<td>替换为 <code>cv_strdup()</code> = <code>malloc + memcpy</code></td>
+</tr>
+<tr>
+<td><code>strtok_r()</code></td>
+<td>CSV 解析</td>
+<td>替换为手写逗号分隔解析 <code>split_csv()</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="103-rtos">10.3 RTOS 移植指南<a class="headerlink" href="#103-rtos" title="Permanent link">&para;</a></h3>
+<p>框架核心（<code>cv_list.h</code>, <code>cv_test.h/c</code>, <code>cv_runner.c</code>, <code>cv_macros.h</code>）仅依赖 C 标准库，
+不依赖任何 POSIX 或 Linux 特有接口。移植到 RTOS 时需关注：</p>
+<p><strong>必须适配：</strong></p>
+<ol>
+<li><strong>printf 输出</strong> — RTOS 通常通过 UART 驱动提供 <code>printf</code>，需确认可用</li>
+<li><strong>堆内存</strong> — <code>malloc/free</code> 用于分配 group/module/case 结构体，需确认 RTOS heap 可用</li>
+<li><strong><code>__attribute__((constructor))</code></strong> — GCC 扩展，ARM Compiler (armclang) 也支持；
+   若目标编译器不支持，需改为显式调用注册函数</li>
+<li><strong><code>rand()</code> / <code>srand()</code></strong> — 仅 <code>--shuffle</code> 使用，无 shuffle 需求时可不关注</li>
+</ol>
+<p><strong>可选适配：</strong></p>
+<ol>
+<li><strong>命令行参数</strong> — 嵌入式环境通常无 argc/argv，<code>cv_option.c</code> 可跳过，
+   改为直接调用 <code>cv_run_all()</code> 或通过串口命令解析后调用 <code>cv_run()</code></li>
+<li><strong>超时机制</strong> — 当前已移除。如需单用例超时，可在 RTOS 中启动硬件 Timer，
+   超时后设置标志位，用例函数内轮询该标志位主动返回</li>
+</ol>
+<h3 id="104-rtos">10.4 最小 RTOS 集成示例<a class="headerlink" href="#104-rtos" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* rtos_main.c — 嵌入式环境入口（无命令行） */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;cv_test.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;cv_macros.h&quot;</span>
+
+<span class="cm">/* 包含测试用例（自动注册） */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;test_math.c&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;test_string.c&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">test_entry</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* RTOS: 重新初始化 printf UART 等 */</span>
+
+<span class="w">    </span><span class="cm">/* 直接运行所有测试 */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cv_run_all</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="11">11. 设计要点总结<a class="headerlink" href="#11" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>设计决策</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux 双向链表</td>
+<td><code>list_head</code> 嵌入结构体，零开销，支持安全遍历与删除</td>
+</tr>
+<tr>
+<td>三层结构</td>
+<td>Group → Module → Case，层次清晰，钩子粒度可控</td>
+</tr>
+<tr>
+<td>三级 pre/post_test</td>
+<td>group / module / case 各自拥有 pre_test + post_test，层级嵌套调用</td>
+</tr>
+<tr>
+<td>enabled 字段</td>
+<td>三层均支持 enable/disable，禁用时整棵子树跳过</td>
+</tr>
+<tr>
+<td>result + errmsg</td>
+<td>case 记录枚举结果与错误描述，失败时可追溯文件名/行号</td>
+</tr>
+<tr>
+<td>error 状态</td>
+<td>区分 FAIL（断言失败）与 ERROR（运行时异常如段错误）</td>
+</tr>
+<tr>
+<td><code>__attribute__((constructor))</code></td>
+<td>编译期自动注册，需 GCC/Clang/armclang 支持（优先级 101~104）</td>
+</tr>
+<tr>
+<td>优先级控制</td>
+<td>group(101) &lt; module(102) &lt; case(103)，保证注册顺序</td>
+</tr>
+<tr>
+<td>CV_ASSERT / CV_ASSERT_EQ / NE / NULL</td>
+<td>自动捕获文件名、行号、条件表达式；EQ 额外打印实际值</td>
+</tr>
+<tr>
+<td>一体编译</td>
+<td>框架与测试用例编译为单一可执行文件，便于嵌入式环境整体烧录</td>
+</tr>
+<tr>
+<td>统计汇总</td>
+<td>每个 module/group 独立统计 pass/fail/skip/error，框架级汇总便于 CI 判定</td>
+</tr>
+<tr>
+<td>命令行参数</td>
+<td>支持 <code>-g/-m/-c</code> 三级精确选择 + <code>-k</code> 通配符过滤，参数优先级由细到粗</td>
+</tr>
+<tr>
+<td>重复执行</td>
+<td><code>-n</code> 指定次数（稳定性测试）、<code>-r</code> 持续到失败（压力测试），附加轮次统计</td>
+</tr>
+<tr>
+<td>快速失败</td>
+<td><code>-f</code> 首个失败立即终止，未执行的 case/group 计入 SKIP</td>
+</tr>
+<tr>
+<td>列出模式</td>
+<td><code>--list</code> / <code>--list-detail</code> 无需运行即可查看注册的测试树及 enabled 状态</td>
+</tr>
+<tr>
+<td>输出控制</td>
+<td><code>-v</code> 详细 / <code>-s</code> 静默 / <code>--color</code> 彩色，适配 CI 与交互式两种场景</td>
+</tr>
+<tr>
+<td>RTOS 可移植</td>
+<td>仅依赖 C 标准库 + getopt，已移除 signal/alarm/setjmp/strdup/strtok_r</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

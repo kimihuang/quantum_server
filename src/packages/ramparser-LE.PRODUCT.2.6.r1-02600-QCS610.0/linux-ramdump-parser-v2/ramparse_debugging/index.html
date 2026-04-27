@@ -1,0 +1,1580 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>ramparse Python 调试经验与方法 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ramparse-python" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ramparse Python 调试经验与方法
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 错误分类
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 错误分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-typeerror-nonetype-int" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 TypeError: NoneType + int (最常见)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-gdbmiexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 GdbMIException
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-indexerror-keyerror" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 IndexError / KeyError
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-none" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 三大 None 来源详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 三大 None 来源详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-field_offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 field_offset() — 结构体字段偏移
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-address_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 address_of() — 符号地址查询
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-read_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 read_*() — 内存读取
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 内核配置缺失的影响
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 调试方法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 调试方法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 使用 --debug 模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 单独运行某个解析器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 加 Python 断点调试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 注入调试输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-gdb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 手动验证 gdb 查询
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 快速定位出错行
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 常见修复模式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 常见修复模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-none-field_offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 None 保护 — field_offset 返回值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-none-address_of" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 None 保护 — address_of 返回值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-none-read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 None 保护 — read 函数返回值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 内核版本适配 — struct 字段重命名
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 内核版本适配 — 空结构体
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 无内核配置时的回退
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-ramparse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. ramparse 整体架构参考
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 可用的子解析器完整列表 (73 个)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ramparse-python">ramparse Python 调试经验与方法<a class="headerlink" href="#ramparse-python" title="Permanent link">&para;</a></h1>
+<p>本文档基于 ramparse v2 在 QEMU aarch64 (Linux 6.1) 环境下的实际调试经验,
+总结常见的解析错误模式、诊断方法和修复策略。</p>
+<h2 id="1">1. 错误分类<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>ramparse 的解析错误可以分为以下几类:</p>
+<h3 id="11-typeerror-nonetype-int">1.1 TypeError: NoneType + int (最常见)<a class="headerlink" href="#11-typeerror-nonetype-int" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>TypeError: unsupported operand type(s) for +: &#39;int&#39; and &#39;NoneType&#39;
+</code></pre></div>
+<p><strong>根因</strong>: 某个函数返回了 None, 被直接用于算术运算。ramparse 中有三大 None 来源:</p>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>函数</th>
+<th>返回 None 的条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gdb 查询失败</td>
+<td><code>field_offset(struct, field)</code></td>
+<td>struct 或 field 在 DWARF 中不存在</td>
+</tr>
+<tr>
+<td>gdb 查询失败</td>
+<td><code>address_of(symbol)</code></td>
+<td>symbol 在符号表中不存在</td>
+</tr>
+<tr>
+<td>内存读取失败</td>
+<td><code>read_word/read_u64/read_int/...</code></td>
+<td>地址越界 / 虚拟地址转换失败</td>
+</tr>
+</tbody>
+</table>
+<p><strong>排查方法</strong>:</p>
+<ol>
+<li>查看完整 traceback, 定位出错行</li>
+<li>在出错行中找到 <code>+</code> 或 <code>-</code> 运算的左右两个操作数</li>
+<li>判断哪个是 None:</li>
+<li>如果涉及 <code>field_offset()</code> → struct/field 在 vmlinux 中不存在</li>
+<li>如果涉及 <code>address_of()</code> → 符号不存在</li>
+<li>如果涉及 <code>read_*()</code> → 地址无效或 v2p 转换失败</li>
+<li>用 gdb 手动验证:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="c1"># 验证 struct 是否存在</span>
+ptype/o<span class="w"> </span>struct<span class="w"> </span>xxx
+
+<span class="c1"># 验证 field 是否存在</span>
+ptype/o<span class="w"> </span>struct<span class="w"> </span>xxx<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>field_name
+
+<span class="c1"># 验证符号是否存在</span>
+print<span class="w"> </span><span class="p">&amp;</span>symbol_name
+</code></pre></div>
+<h3 id="12-gdbmiexception">1.2 GdbMIException<a class="headerlink" href="#12-gdbmiexception" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>gdbmi.GdbMIException: &#39;xxx&#39; has unknown type
+</code></pre></div>
+<p><strong>根因</strong>: gdb 无法解析类型或符号。</p>
+<p><strong>排查方法</strong>:</p>
+<ol>
+<li>确认 vmlinux 是否包含调试信息 (文件大小 &gt; 50MB)</li>
+<li>确认 gdb 是否能正常加载 vmlinux:
+   <div class="highlight"><pre><span></span><code>aarch64-none-linux-gnu-gdb<span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>vmlinux<span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;ptype struct xxx&quot;</span>
+</code></pre></div></li>
+</ol>
+<h3 id="13-indexerror-keyerror">1.3 IndexError / KeyError<a class="headerlink" href="#13-indexerror-keyerror" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>IndexError: tuple index out of range
+</code></pre></div>
+<p><strong>根因</strong>: <code>read_string()</code> 内部 <code>struct.unpack()</code> 解包失败, 或者 gdb 返回了意外格式。</p>
+<p><strong>排查方法</strong>: 在出错行前打印 read 函数的返回值。</p>
+<h2 id="2-none">2. 三大 None 来源详解<a class="headerlink" href="#2-none" title="Permanent link">&para;</a></h2>
+<h3 id="21-field_offset">2.1 field_offset() — 结构体字段偏移<a class="headerlink" href="#21-field_offset" title="Permanent link">&para;</a></h3>
+<p><strong>实现</strong> (<code>ramdump.py:2325</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">field_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">the_type</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdbmi</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="n">the_type</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">gdbmi</span><span class="o">.</span><span class="n">GdbMIException</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># 隐式返回 None</span>
+</code></pre></div>
+<p><strong>返回 None 的场景</strong>:</p>
+<ul>
+<li>vmlinux 被 strip, DWARF 信息丢失</li>
+<li>struct 或 field 在当前内核版本中不存在</li>
+<li>struct 名或 field 名拼写不匹配 (如 <code>page</code> 被重命名为 <code>slab</code>)</li>
+</ul>
+<p><strong>代码库统计</strong>: ~196 处调用, 仅 ~11 处有 None 保护 (5.6%)。</p>
+<p><strong>调试技巧</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看完整的 struct 定义 (带偏移)</span>
+aarch64-none-linux-gnu-gdb<span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>vmlinux<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-ex<span class="w"> </span><span class="s2">&quot;ptype/o struct task_struct&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-ex<span class="w"> </span><span class="s2">&quot;ptype/o struct page&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-ex<span class="w"> </span><span class="s2">&quot;ptype/o struct slab&quot;</span>
+
+<span class="c1"># 查找某个 field 在哪个 struct 中</span>
+aarch64-none-linux-gnu-gdb<span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>vmlinux<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-ex<span class="w"> </span><span class="s2">&quot;ptype/o struct task_struct&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>field_name
+</code></pre></div>
+<p><strong>常见内核版本变更导致 field_offset 返回 None</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>旧内核 (4.x/5.x)</th>
+<th>新内核 (6.1)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>struct kmem_cache_cpu.page</code></td>
+<td><code>struct kmem_cache_cpu.slab</code></td>
+<td>字段重命名</td>
+</tr>
+<tr>
+<td><code>struct page.objects</code></td>
+<td><code>struct slab.counters</code></td>
+<td>移到 struct slab</td>
+</tr>
+<tr>
+<td><code>struct page.freelist</code></td>
+<td><code>struct slab.freelist</code></td>
+<td>移到 struct slab</td>
+</tr>
+<tr>
+<td><code>struct sched_info.last_queued</code></td>
+<td>(不存在)</td>
+<td>struct 变为空 (size=0)</td>
+</tr>
+<tr>
+<td><code>struct thread_info.task</code></td>
+<td>(不存在)</td>
+<td>thread_info 嵌入 task_struct</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-address_of">2.2 address_of() — 符号地址查询<a class="headerlink" href="#22-address_of" title="Permanent link">&para;</a></h3>
+<p><strong>实现</strong> (<code>ramdump.py:2224</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">address_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdbmi</span><span class="o">.</span><span class="n">address_of</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">gdbmi</span><span class="o">.</span><span class="n">GdbMIException</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># 隐式返回 None</span>
+</code></pre></div>
+<p><strong>返回 None 的场景</strong>:</p>
+<ul>
+<li>符号不存在 (如 QEMU 没有 <code>cpufreq_cpu_data</code>)</li>
+<li>符号被编译器优化掉</li>
+<li>模块未加载 (如 <code>qcom_kgsl</code>)</li>
+</ul>
+<p><strong>调试技巧</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 vmlinux 中查找符号</span>
+aarch64-none-linux-gnu-nm<span class="w"> </span>vmlinux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>symbol_name
+
+<span class="c1"># 如果 nm 找不到, 说明符号确实不存在</span>
+</code></pre></div>
+<h3 id="23-read_">2.3 read_*() — 内存读取<a class="headerlink" href="#23-read_" title="Permanent link">&para;</a></h3>
+<p><strong>所有 read 方法在失败时静默返回 None, 不抛异常</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+<th>失败原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read_word(addr)</code></td>
+<td>读取 4 字节</td>
+<td>地址不在 dump 范围内</td>
+</tr>
+<tr>
+<td><code>read_u64(addr)</code></td>
+<td>读取 8 字节</td>
+<td>虚拟地址转物理地址失败</td>
+</tr>
+<tr>
+<td><code>read_slong(addr)</code></td>
+<td>读取有符号 long</td>
+<td>地址无效</td>
+</tr>
+<tr>
+<td><code>read_cstring(addr, len)</code></td>
+<td>读取 C 字符串</td>
+<td>地址无效</td>
+</tr>
+<tr>
+<td><code>read_physical(addr, len)</code></td>
+<td>读取物理内存</td>
+<td>addr 不在任何 EBI 映射范围内</td>
+</tr>
+</tbody>
+</table>
+<p><strong>特别注意</strong>: <code>read_cstring()</code> 和 <code>read_binarystring()</code> 也有类似的 <code>pcpu_offset</code> 问题,
+当传入 <code>cpu</code> 参数且 <code>per_cpu_offset()</code> 返回 None 时会崩溃。</p>
+<h2 id="3">3. 内核配置缺失的影响<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<p>ramparse 依赖内核内嵌的 <code>.config</code> (需要 <code>CONFIG_IKCONFIG=y</code>) 来获取 47 个 CONFIG_* 选项。
+当配置不可用时:</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>行为</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_config_val("CONFIG_XXX")</code></td>
+<td>返回 None</td>
+<td><code>int(None)</code> 崩溃</td>
+</tr>
+<tr>
+<td><code>is_config_defined("CONFIG_XXX")</code></td>
+<td>返回 False</td>
+<td>功能被静默禁用</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键 CONFIG 选项及其影响</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>CONFIG</th>
+<th>缺失时的症状</th>
+<th>受影响的解析器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CONFIG_IKCONFIG</code></td>
+<td>所有 <code>get_config_val()</code> 返回 None</td>
+<td>mm.py, slabinfo 等</td>
+</tr>
+<tr>
+<td><code>CONFIG_PGTABLE_LEVELS</code></td>
+<td><code>int(None)</code> → TypeError</td>
+<td>slabinfo (vmemmap)</td>
+</tr>
+<tr>
+<td><code>CONFIG_ARM64_VA_BITS</code></td>
+<td>同上</td>
+<td>mm.py</td>
+</tr>
+<tr>
+<td><code>CONFIG_THREAD_INFO_IN_TASK</code></td>
+<td>错误判断 thread_info 位置</td>
+<td>taskdump, memusage</td>
+</tr>
+<tr>
+<td><code>CONFIG_SMP</code></td>
+<td>跳过 per-cpu 逻辑</td>
+<td>taskdump, sched_info</td>
+</tr>
+<tr>
+<td><code>CONFIG_SCHED_INFO</code></td>
+<td><code>struct sched_info</code> 为空</td>
+<td>taskdump</td>
+</tr>
+<tr>
+<td><code>CONFIG_SLAB_FREELIST_HARDENED</code></td>
+<td>freelist 指针计算错误</td>
+<td>slabinfo</td>
+</tr>
+<tr>
+<td><code>CONFIG_SLUB_CPU_PARTIAL</code></td>
+<td>跳过 partial slab</td>
+<td>slabinfo</td>
+</tr>
+<tr>
+<td><code>CONFIG_KALLSYMS</code></td>
+<td>无法解析内核符号</td>
+<td>ftrace, stacktrace</td>
+</tr>
+<tr>
+<td><code>CONFIG_PRINTK_CALLER</code></td>
+<td>dmesg 格式解析错误</td>
+<td>dmesg</td>
+</tr>
+</tbody>
+</table>
+<p><strong>建议开启的内核配置</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="c"># 必须开启 — 提供内核配置和调试信息</span>
+<span class="nv">CONFIG_DEBUG_INFO</span><span class="o">=</span>y
+<span class="nv">CONFIG_DEBUG_INFO_REDUCED</span><span class="o">=</span>n<span class="w">   </span><span class="c1"># 不要用精简版</span>
+<span class="nv">CONFIG_IKCONFIG</span><span class="o">=</span>y
+<span class="nv">CONFIG_IKCONFIG_PROC</span><span class="o">=</span>y
+
+<span class="c"># 建议开启 — 增强解析能力</span>
+<span class="nv">CONFIG_KALLSYMS</span><span class="o">=</span>y
+<span class="nv">CONFIG_KALLSYMS_ALL</span><span class="o">=</span>y
+<span class="nv">CONFIG_SCHED_INFO</span><span class="o">=</span>y
+<span class="nv">CONFIG_FTRACE</span><span class="o">=</span>y
+<span class="nv">CONFIG_LOCKDEP</span><span class="o">=</span>y
+
+<span class="c"># 不要 strip vmlinux</span>
+<span class="c"># aarch64-none-linux-gnu-strip vmlinux  # 不要执行</span>
+</code></pre></div>
+<h2 id="4">4. 调试方法<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-debug">4.1 使用 --debug 模式<a class="headerlink" href="#41-debug" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>ramparse.py<span class="w"> </span>--ram-file<span class="w"> </span>...<span class="w"> </span>--vmlinux<span class="w"> </span>...<span class="w"> </span>--debug<span class="w"> </span>--print-tasks
+</code></pre></div>
+<p><code>--debug</code> 模式下异常不会被静默捕获, 会直接打印完整堆栈并终止。</p>
+<h3 id="42">4.2 单独运行某个解析器<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<p>不需要运行全部解析器, 可以只运行出错的一个:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 只运行 slabinfo</span>
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>--ram-file<span class="w"> </span>...<span class="w"> </span>--vmlinux<span class="w"> </span>...<span class="w"> </span>--slabinfo<span class="w"> </span>--stdout
+
+<span class="c1"># 只运行 print-tasks</span>
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>--ram-file<span class="w"> </span>...<span class="w"> </span>--vmlinux<span class="w"> </span>...<span class="w"> </span>--print-tasks<span class="w"> </span>--stdout
+</code></pre></div>
+<h3 id="43-python">4.3 加 Python 断点调试<a class="headerlink" href="#43-python" title="Permanent link">&para;</a></h3>
+<p>在 <code>ramparse.py</code> 的解析器调用处添加断点:</p>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>pdb<span class="w"> </span>ramparse.py<span class="w"> </span>--ram-file<span class="w"> </span>...<span class="w"> </span>--vmlinux<span class="w"> </span>...<span class="w"> </span>--slabinfo<span class="w"> </span>--stdout
+</code></pre></div>
+<p>或在代码中临时添加 <code>breakpoint()</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 parsers/slabinfo.py 的 parse() 方法中</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">breakpoint</span><span class="p">()</span>  <span class="c1"># 会在此处进入交互式调试</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">validate_slab_cache</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="44">4.4 注入调试输出<a class="headerlink" href="#44" title="Permanent link">&para;</a></h3>
+<p>ramparse 使用 <code>print_out_str()</code> 输出内容到结果文件。临时添加调试输出:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">print_out</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_out_str</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">some_function</span><span class="p">(</span><span class="n">ramdump</span><span class="p">):</span>
+    <span class="n">addr</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">address_of</span><span class="p">(</span><span class="s1">&#39;some_symbol&#39;</span><span class="p">)</span>
+    <span class="n">print_out_str</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DEBUG: some_symbol addr = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;None&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">val</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">read_u64</span><span class="p">(</span><span class="n">addr</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">print_out_str</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DEBUG: read value = </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>注意</strong>: 不要用 <code>print()</code>, 它只输出到控制台, 不会进入结果文件。
+用 <code>print_out_str()</code> 可以在 <code>--stdout</code> 模式下同时看到输出。</p>
+<h3 id="45-gdb">4.5 手动验证 gdb 查询<a class="headerlink" href="#45-gdb" title="Permanent link">&para;</a></h3>
+<p>在 ramparse 外部用 gdb 手动测试 struct/field/symbol 是否存在:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">GDB</span><span class="o">=</span>aarch64-none-linux-gnu-gdb
+
+<span class="c1"># 查看 struct 定义和字段偏移</span>
+<span class="nv">$GDB</span><span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>binary/vmlinux<span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;ptype/o struct task_struct&quot;</span>
+
+<span class="c1"># 查看某个字段是否存在</span>
+<span class="nv">$GDB</span><span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>binary/vmlinux<span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;ptype/o struct task_struct&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;stack&quot;</span>
+
+<span class="c1"># 查看符号地址</span>
+<span class="nv">$GDB</span><span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>binary/vmlinux<span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;print &amp;init_task&quot;</span>
+<span class="nv">$GDB</span><span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>binary/vmlinux<span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;print &amp;__per_cpu_offset&quot;</span>
+
+<span class="c1"># 读取内核字符串</span>
+<span class="nv">$GDB</span><span class="w"> </span>-batch<span class="w"> </span>-nx<span class="w"> </span>binary/vmlinux<span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;print /s (char *)&amp;linux_banner&quot;</span>
+</code></pre></div>
+<h3 id="46">4.6 快速定位出错行<a class="headerlink" href="#46" title="Permanent link">&para;</a></h3>
+<p>当 ramparse 只输出 <code>"FAILED!"</code> 而没有详细信息时:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 方法 1: 用 --debug 模式获取完整堆栈</span>
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--debug<span class="w"> </span>--slabinfo<span class="w"> </span>--stdout<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A20<span class="w"> </span><span class="s2">&quot;Exception&quot;</span>
+
+<span class="c1"># 方法 2: 在 Python 中直接调用</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">import ramparse</span>
+<span class="s2">dump = ramparse.RamDump(&#39;binary/vmlinux&#39;, &#39;binary/ramdump_raw.bin&#39;,</span>
+<span class="s2">                        0x40000000, 0x80000000)</span>
+<span class="s2">from parsers.slabinfo import Slabinfo</span>
+<span class="s2">Slabinfo(dump).parse()</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h2 id="5">5. 常见修复模式<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-none-field_offset">5.1 None 保护 — field_offset 返回值<a class="headerlink" href="#51-none-field_offset" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 修复前:</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">)</span>
+<span class="n">addr</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">offset</span>  <span class="c1"># offset 为 None 时崩溃</span>
+
+<span class="c1"># 修复后:</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct yyy&#39;</span><span class="p">,</span> <span class="s1">&#39;alt_field&#39;</span><span class="p">)</span>  <span class="c1"># 回退</span>
+<span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>  <span class="c1"># 或 print_out_str(&quot;warning...&quot;) 并 return</span>
+<span class="n">addr</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">offset</span>
+</code></pre></div>
+<h3 id="52-none-address_of">5.2 None 保护 — address_of 返回值<a class="headerlink" href="#52-none-address_of" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 修复前:</span>
+<span class="n">addr</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">address_of</span><span class="p">(</span><span class="s1">&#39;symbol&#39;</span><span class="p">)</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">read_u64</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>  <span class="c1"># addr 为 None 时崩溃</span>
+
+<span class="c1"># 修复后:</span>
+<span class="n">addr</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">address_of</span><span class="p">(</span><span class="s1">&#39;symbol&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">addr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">print_out_str</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: symbol not found&quot;</span><span class="p">)</span>
+    <span class="k">return</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">read_u64</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="53-none-read">5.3 None 保护 — read 函数返回值<a class="headerlink" href="#53-none-read" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 修复前:</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">read_u64</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># val 为 None 时崩溃</span>
+
+<span class="c1"># 修复后:</span>
+<span class="n">val</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">read_u64</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">return</span>  <span class="c1"># 或 continue</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre></div>
+<h3 id="54-struct">5.4 内核版本适配 — struct 字段重命名<a class="headerlink" href="#54-struct" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 当字段在不同内核版本中有不同名称时:</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct kmem_cache_cpu&#39;</span><span class="p">,</span> <span class="s1">&#39;page&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># 内核 5.x+ 将 page 重命名为 slab</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct kmem_cache_cpu&#39;</span><span class="p">,</span> <span class="s1">&#39;slab&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="55">5.5 内核版本适配 — 空结构体<a class="headerlink" href="#55" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 当结构体在当前版本中为空时:</span>
+<span class="n">offset_schedinfo</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct task_struct&#39;</span><span class="p">,</span> <span class="s1">&#39;sched_info&#39;</span><span class="p">)</span>
+<span class="n">field_val</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct sched_info&#39;</span><span class="p">,</span> <span class="s1">&#39;last_queued&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">offset_schedinfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">field_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">offset_schedinfo</span> <span class="o">+</span> <span class="n">field_val</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># 回退: 直接在 task_struct 中查找, 或设为 None</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">field_offset</span><span class="p">(</span><span class="s1">&#39;struct task_struct&#39;</span><span class="p">,</span> <span class="s1">&#39;last_queued&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="56">5.6 无内核配置时的回退<a class="headerlink" href="#56" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 修复前:</span>
+<span class="n">nlevels</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ramdump</span><span class="o">.</span><span class="n">get_config_val</span><span class="p">(</span><span class="s2">&quot;CONFIG_PGTABLE_LEVELS&quot;</span><span class="p">))</span>
+<span class="c1"># get_config_val 返回 None → int(None) 崩溃</span>
+
+<span class="c1"># 修复后:</span>
+<span class="n">nlevels</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">get_config_val</span><span class="p">(</span><span class="s2">&quot;CONFIG_PGTABLE_LEVELS&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">nlevels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># 从已知值推断 (如 VA_BITS)</span>
+    <span class="n">va_bits</span> <span class="o">=</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">get_config_val</span><span class="p">(</span><span class="s2">&quot;CONFIG_ARM64_VA_BITS&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ramdump</span><span class="o">.</span><span class="n">va_bits</span>
+    <span class="n">nlevels</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">va_bits</span> <span class="o">&lt;=</span> <span class="mi">39</span> <span class="k">else</span> <span class="p">(</span><span class="mi">3</span> <span class="k">if</span> <span class="n">va_bits</span> <span class="o">&lt;=</span> <span class="mi">47</span> <span class="k">else</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">nlevels</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nlevels</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="6-ramparse">6. ramparse 整体架构参考<a class="headerlink" href="#6-ramparse" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>ramparse.py (入口, 解析命令行, 管理子解析器)
+├── ramdump.py (RamDump 类)
+│   ├── gdbmi.py (GDB MI 接口)
+│   │   ├── field_offset()  → 返回 None 当 DWARF 缺失
+│   │   ├── address_of()    → 返回 None 当符号不存在
+│   │   └── read_memory()   → 返回 None 当地址无效
+│   ├── mmu.py (虚拟地址 → 物理地址转换)
+│   ├── mm.py (页表管理, vmemmap)
+│   └── read_word/read_u64/... → 全部返回 None 当读取失败
+├── print_out.py (输出管理)
+│   ├── print_out_str()     → 输出到文件
+│   └── print_out_exception() → 打印 traceback
+├── parser_util.py (@register_parser 注册机制)
+└── parsers/ (73 个子解析器)
+</code></pre></div>
+<h2 id="7-73">7. 可用的子解析器完整列表 (73 个)<a class="headerlink" href="#7-73" title="Permanent link">&para;</a></h2>
+<p>ramparse 共注册了 73 个子解析器, 当前 <code>ramparse.sh</code> 启用了 11 个:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>参数</th>
+<th>功能</th>
+<th>当前启用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>--sched-info</code></td>
+<td>调度器参数状态</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>--watchdog</code></td>
+<td>Watchdog 信息</td>
+<td>N (Qualcomm)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>--print-tasks</code></td>
+<td>任务栈打印</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>--print-tasks-timestamps</code></td>
+<td>任务调度统计</td>
+<td>N</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>--check-for-panic</code></td>
+<td>Panic 检测</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>--dmesg</code></td>
+<td>内核日志</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>--kbootlog</code></td>
+<td>启动日志</td>
+<td>N</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>--print-rtb</code></td>
+<td>RTB 信息</td>
+<td>N (Qualcomm)</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>--print-irqs</code></td>
+<td>中断信息</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>--print-workqueues</code></td>
+<td>工作队列</td>
+<td>N</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>--print-runqueues</code></td>
+<td>运行队列</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>--print-memstat</code></td>
+<td>内存统计</td>
+<td>N</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>--print-memory-info</code></td>
+<td>内存使用</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>--print-vmstats</code></td>
+<td>vmstat/zoneinfo</td>
+<td>N</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>--slabinfo</code></td>
+<td>Slab 信息</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>--slabsummary</code></td>
+<td>Slab 汇总</td>
+<td>N</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>--slabpoison</code></td>
+<td>Slab 毒化检查</td>
+<td>N</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>--print-reserved-mem</code></td>
+<td>保留内存</td>
+<td>N</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>--print-cma-areas</code></td>
+<td>CMA 区域</td>
+<td>N</td>
+</tr>
+<tr>
+<td>20</td>
+<td><code>--print-softirq-stat</code></td>
+<td>软中断统计</td>
+<td>N</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code>--print-qsee-log</code></td>
+<td>QSEE 日志</td>
+<td>N (Qualcomm)</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>--print-pagetypeinfo</code></td>
+<td>页类型信息</td>
+<td>N</td>
+</tr>
+<tr>
+<td>23</td>
+<td><code>--print-pagetracking</code></td>
+<td>页追踪</td>
+<td>N</td>
+</tr>
+<tr>
+<td>24</td>
+<td><code>--print-pagealloccorruption</code></td>
+<td>页分配损坏</td>
+<td>N</td>
+</tr>
+<tr>
+<td>25</td>
+<td><code>--print-zram</code></td>
+<td>zram 数据</td>
+<td>N</td>
+</tr>
+<tr>
+<td>26</td>
+<td><code>--print-lsof</code></td>
+<td>打开的文件</td>
+<td>N</td>
+</tr>
+<tr>
+<td>27</td>
+<td><code>--print-vmalloc</code></td>
+<td>Vmalloc 信息</td>
+<td>Y</td>
+</tr>
+<tr>
+<td>28</td>
+<td><code>--timer-list</code></td>
+<td>定时器列表</td>
+<td>N</td>
+</tr>
+<tr>
+<td>29</td>
+<td><code>--clock-dump</code></td>
+<td>时钟转储</td>
+<td>N (Qualcomm)</td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>--regulator</code></td>
+<td>电压调节器</td>
+<td>N (Qualcomm)</td>
+</tr>
+<tr>
+<td>31-73</td>
+<td>...</td>
+<td>其他 Qualcomm 专用</td>
+<td>N</td>
+</tr>
+</tbody>
+</table>
+<p><strong>QEMU 环境可额外尝试的解析器</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 这些解析器不依赖 Qualcomm 专用硬件, 可能在 QEMU 上也能工作</span>
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-workqueues<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-memstat<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-vmstats<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-reserved-mem<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--timer-list<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-kconfig<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--dtb<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-lsof<span class="w"> </span>--stdout
+</code></pre></div>
+<p>开启 <code>CONFIG_IKCONFIG=y</code> 后可进一步启用:</p>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--print-kconfig<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--lockdep-heldlocks<span class="w"> </span>--stdout
+python3<span class="w"> </span>ramparse.py<span class="w"> </span>...<span class="w"> </span>--uftrace<span class="w"> </span>--stdout
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
