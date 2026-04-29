@@ -1,0 +1,1491 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Boot-wrapper-aarch64 设计文档 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#boot-wrapper-aarch64" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Boot-wrapper-aarch64 设计文档
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 整体启动流程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 内存布局
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 内存布局">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-qemu-virt-quantum_qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 实际内存映射（QEMU virt + quantum_qemu）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 各区域偏移与大小
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 链接脚本内存排列
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-initrd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 initrd 地址计算
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 硬件操作
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 硬件操作">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-pl011-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 PL011 UART
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-gicv2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 GICv2 中断控制器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 通用定时器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-armv8-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 ARMv8 系统寄存器配置（EL3 初始化）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 CPU 栈
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-psci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. PSCI 实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. PSCI 实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-psci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 PSCI 启动方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-smc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 SMC 调用链
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-psci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 PSCI 接口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-bakery-lock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Bakery Lock
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-dtb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. DTB 动态修改
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. DTB 动态修改">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 注入的节点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 具体修改内容
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-dtb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 DTB 参数自动提取
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 构建流程
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 异常级别转换
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 异常级别转换">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jump_kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        jump_kernel 详细流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-quantum_qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 配置参数参考（quantum_qemu）
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="boot-wrapper-aarch64">Boot-wrapper-aarch64 设计文档<a class="headerlink" href="#boot-wrapper-aarch64" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>boot-wrapper-aarch64 是 ARM 官方提供的轻量级引导固件，用于在 AArch64 平台上独立启动 Linux 内核。它将内核镜像（Image）、设备树（DTB）和根文件系统（initrd）打包为单一 ELF 文件 <code>linux-system.axf</code>，提供从 CPU 上电到内核入口的完整引导链路。</p>
+<p>核心功能：
+- 多核 CPU 初始化（PSCI 或 spin-table 启动方法）
+- PL011 UART 初始化与调试输出
+- GIC（GICv2）安全中断控制器初始化
+- 设备树动态修改（注入 chosen、PSCI 节点）
+- 异常级别（EL）管理与降级</p>
+<h2 id="2">2. 整体启动流程<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant QEMU
+    participant BW
+    participant PSCI
+    participant Kernel
+
+    Note over QEMU: CPU 从 EL3 复位
+    QEMU-&gt;&gt;BW: 跳转到 _start
+
+    rect rgb(230, 245, 255)
+        Note over BW: Primary CPU0
+        BW-&gt;&gt;BW: 检测当前 EL
+        BW-&gt;&gt;BW: 配置 SCTLR
+        BW-&gt;&gt;BW: 读取 MPIDR
+        BW-&gt;&gt;BW: find_logical_id
+        BW-&gt;&gt;BW: setup_stack
+        BW-&gt;&gt;BW: init_uart
+        BW-&gt;&gt;BW: 打印 Boot-wrapper v0.2
+        BW-&gt;&gt;BW: 打印内存布局
+        BW-&gt;&gt;BW: cpu_init_arch
+        BW-&gt;&gt;BW: gic_secure_init
+        BW-&gt;&gt;BW: 设置 VBAR_EL3
+    end
+
+    rect rgb(255, 245, 230)
+        Note over BW: Secondary CPU1 到 CPU3
+        BW-&gt;&gt;BW: 上电进入 _start
+        BW-&gt;&gt;BW: find_logical_id
+        BW-&gt;&gt;BW: setup_stack
+        BW-&gt;&gt;BW: wfe 等待
+        BW-&gt;&gt;BW: cpu_init_arch
+        BW-&gt;&gt;BW: sev 通知就绪
+    end
+
+    rect rgb(230, 255, 230)
+        Note over BW: 跳转内核
+        BW-&gt;&gt;BW: 等待所有 CPU 就绪
+        BW-&gt;&gt;BW: 打印 All CPUs initialized
+        BW-&gt;&gt;BW: first_spin 跳转 kernel
+        BW-&gt;&gt;BW: 配置 SCTLR_EL1 EL2
+        BW-&gt;&gt;BW: 设置 ELR_EL3 和 SPSR_EL3
+        BW-&gt;&gt;BW: eret 降级到 EL2
+    end
+
+    rect rgb(255, 230, 240)
+        Note over Kernel: Linux 内核启动
+        BW-&gt;&gt;Kernel: x0 等于 DTB 地址
+        Kernel-&gt;&gt;Kernel: 解析 DTB 发现 PSCI
+        Kernel-&gt;&gt;PSCI: PSCI_CPU_ON 唤醒 CPU1
+        PSCI-&gt;&gt;BW: SMC 进入 psci_vectors
+        BW-&gt;&gt;BW: psci_cpu_on 写入 branch_table
+        BW-&gt;&gt;BW: eret 返回内核
+        Kernel-&gt;&gt;BW: CPU1 读取 branch_table
+        BW-&gt;&gt;Kernel: CPU1 跳转内核入口
+        Note over Kernel: CPU2 CPU3 同理
+    end</code></pre>
+<h2 id="3">3. 内存布局<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-qemu-virt-quantum_qemu">3.1 实际内存映射（QEMU virt + quantum_qemu）<a class="headerlink" href="#31-qemu-virt-quantum_qemu" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    subgraph MEM["物理内存 0x40000000 - 0xBFFFFFFF"]
+        subgraph BOOT["boot-wrapper + kernel + dtb + initrd"]
+            BW["boot-wrapper 代码\n(text/data/bss/stack)\n0x40000000 ~7KB"]
+            KERNEL["Linux 内核 Image\n0x40200000 ~8.3MB"]
+            DTB["修改后的 DTB fdt.dtb\n0x48000000 ~8KB"]
+            INITRD["initrd rootfs.cpio\n0x50000000 ~50MB"]
+        end
+        MBOX["Mailbox\n0x4000FFF8\n8 bytes"]
+        MEMDISK["Memdisk 预留\n0x78000000\n256MB"]
+        FREE["可用内存\n0x58000000 - 0x77FFFFFF"]
+    end
+    BW --&gt; KERNEL
+    KERNEL --&gt; DTB
+    DTB --&gt; INITRD</code></pre>
+<h3 id="32">3.2 各区域偏移与大小<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>起始地址</th>
+<th>偏移量</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PHYS_OFFSET</code></td>
+<td><code>0x40000000</code></td>
+<td>—</td>
+<td>DTB <code>memory</code> 节点的第一个 bank</td>
+</tr>
+<tr>
+<td><code>.boot</code> (boot-wrapper)</td>
+<td><code>PHYS_OFFSET + 0x0</code></td>
+<td><code>0x0</code></td>
+<td>链接脚本 <code>model.lds.S</code></td>
+</tr>
+<tr>
+<td><code>.mbox</code> (mailbox)</td>
+<td><code>PHYS_OFFSET + 0xFFF8</code></td>
+<td><code>MBOX_OFFSET=0xFFF8</code></td>
+<td>PSCI branch_table</td>
+</tr>
+<tr>
+<td><code>kernel</code> (Image)</td>
+<td><code>PHYS_OFFSET + 0x200000</code></td>
+<td><code>KERNEL_OFFSET</code></td>
+<td>由 <code>aa64-load-offset.pl</code> 计算，保证 TEXT 对齐</td>
+</tr>
+<tr>
+<td><code>dtb</code> (fdt.dtb)</td>
+<td><code>PHYS_OFFSET + 0x8000000</code></td>
+<td><code>FDT_OFFSET=0x8000000</code></td>
+<td>固定偏移</td>
+</tr>
+<tr>
+<td><code>filesystem</code> (initrd)</td>
+<td><code>PHYS_OFFSET + 0x10000000</code></td>
+<td><code>FS_OFFSET=0x10000000</code></td>
+<td>固定偏移</td>
+</tr>
+<tr>
+<td><code>TEXT_LIMIT</code></td>
+<td><code>0x80000</code> (512KB)</td>
+<td>—</td>
+<td>boot-wrapper 代码最大尺寸约束</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33">3.3 链接脚本内存排列<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    subgraph ELF["linux-system.axf 链接排列顺序"]
+        K["kernel Image"]
+        DTB["fdt.dtb"]
+        FS["initrd cpio"]
+        BOOT[".boot section _start"]
+        MBOX[".mbox branch_table"]
+        K --&gt; DTB --&gt; FS --&gt; BOOT --&gt; MBOX
+    end
+    K ---|"运行地址 0x40200000\nKERNEL_OFFSET"| A1[" "]
+    DTB ---|"运行地址 0x48000000\nFDT_OFFSET"| A2[" "]
+    FS ---|"运行地址 0x50000000\nFS_OFFSET"| A3[" "]
+    BOOT ---|"运行地址 0x40000000\nPHYS_OFFSET"| A4[" "]
+    MBOX ---|"运行地址 0x4000FFF8\nMBOX_OFFSET"| A5[" "]</code></pre>
+<blockquote>
+<p>注意：链接脚本中 <code>.boot</code> 放在最后，但运行时加载地址在最前面（<code>PHYS_OFFSET</code>）。ELF 入口点 <code>_start</code> 位于 <code>0x40000000</code>。</p>
+</blockquote>
+<h3 id="34-initrd">3.4 initrd 地址计算<a class="headerlink" href="#34-initrd" title="Permanent link">&para;</a></h3>
+<p>initrd 在 DTB chosen 节点中的地址：</p>
+<div class="highlight"><pre><span></span><code>FILESYSTEM_START = PHYS_OFFSET + FS_OFFSET = 0x40000000 + 0x10000000 = 0x50000000
+FILESYSTEM_END   = FILESYSTEM_START + rootfs.cpio 文件大小
+</code></pre></div>
+<p>这些值在编译时通过 <code>Makefile.am</code> 计算并嵌入到 <code>fdt.dtb</code> 的 <code>chosen</code> 节点：</p>
+<div class="highlight"><pre><span></span><code><span class="nf">chosen</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">bootargs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;console=ttyAMA0 init=/init ...&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">linux</span><span class="p">,</span><span class="n">initrd-start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x50000000</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">linux</span><span class="p">,</span><span class="n">initrd-end</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x53160a00</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<h2 id="4">4. 硬件操作<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41-pl011-uart">4.1 PL011 UART<a class="headerlink" href="#41-pl011-uart" title="Permanent link">&para;</a></h3>
+<p>boot-wrapper 使用 DTB 中的第一个 <code>arm,pl011</code> 兼容设备作为调试串口。</p>
+<p><strong>初始化流程</strong> (<code>platform.c:init_uart</code>):</p>
+<pre class="mermaid"><code>flowchart TD
+    A["init_uart()"] --&gt; B["写入 UARTIBRD = 0x10&lt;br/&gt;(波特率整数部分 → 38400)"]
+    B --&gt; C["写入 UARTFBRD = 0x0&lt;br/&gt;(波特率小数部分)"]
+    C --&gt; D["写入 UART_LCR_H = 0x70&lt;br/&gt;(8N1 + 使能 FIFO)"]
+    D --&gt; E["写入 UARTCR = 0x301&lt;br/&gt;(使能 UART + TX + RX)"]</code></pre>
+<p><strong>寄存器映射</strong>（基地址从 DTB 解析）:</p>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>偏移</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UARTDR</code></td>
+<td><code>0x00</code></td>
+<td>数据寄存器（收发字符）</td>
+</tr>
+<tr>
+<td><code>UARTFR</code></td>
+<td><code>0x18</code></td>
+<td>标志寄存器（BUSY/FIFO_FULL）</td>
+</tr>
+<tr>
+<td><code>UARTIBRD</code></td>
+<td><code>0x24</code></td>
+<td>波特率整数部分</td>
+</tr>
+<tr>
+<td><code>UARTFBRD</code></td>
+<td><code>0x28</code></td>
+<td>波特率小数部分</td>
+</tr>
+<tr>
+<td><code>UART_LCR_H</code></td>
+<td><code>0x2C</code></td>
+<td>行控制寄存器</td>
+</tr>
+<tr>
+<td><code>UARTCR</code></td>
+<td><code>0x30</code></td>
+<td>控制寄存器</td>
+</tr>
+</tbody>
+</table>
+<p>QEMU virt 平台 UART 基地址：<code>0x9000000</code></p>
+<h3 id="42-gicv2">4.2 GICv2 中断控制器<a class="headerlink" href="#42-gicv2" title="Permanent link">&para;</a></h3>
+<p>仅在 EL3 入口时初始化安全中断控制器（<code>gic.c:gic_secure_init</code>）。</p>
+<p><strong>寄存器地址</strong>（从 DTB 解析）:</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>QEMU virt 地址</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GIC Distributor</td>
+<td><code>0x8000000</code></td>
+<td>中断路由与分发</td>
+</tr>
+<tr>
+<td>GIC CPU Interface</td>
+<td><code>0x8010000</code></td>
+<td>CPU 中断控制</td>
+</tr>
+</tbody>
+</table>
+<p><strong>初始化流程</strong>:</p>
+<pre class="mermaid"><code>flowchart TD
+    A["gic_secure_init()"] --&gt; B["GICD_IGROUPRn[0] = ~0&lt;br/&gt;(本地中断 → Group 1 Non-Secure)"]
+    A --&gt; C{"是否 CPU0?"}
+    C --&gt;|是| D["遍历 GICD_IGROUPRn[1..n]&lt;br/&gt;所有 SPI → Group 1"]
+    D --&gt; E["GICD_CTLR = EnableGrp0 | EnableGrp1"]
+    C --&gt;|否| F["(跳过 Distributor 全局配置)"]
+    E --&gt; G["GICC_CTLR = EnableGrp0 | EnableGrp1"]
+    F --&gt; G
+    G --&gt; H["GICC_PMR = 0x80&lt;br/&gt;(允许 Non-Secure 访问优先级掩码)"]</code></pre>
+<h3 id="43">4.3 通用定时器<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">msr</span><span class="p">(</span><span class="n">CNTFRQ_EL0</span><span class="p">,</span><span class="w"> </span><span class="n">COUNTER_FREQ</span><span class="p">);</span><span class="w">  </span><span class="c1">// 100MHz</span>
+</code></pre></div>
+<p>设置 <code>CNTFRQ_EL0</code> 为 <code>100000000</code>（100MHz），供内核使用。</p>
+<h3 id="44-armv8-el3">4.4 ARMv8 系统寄存器配置（EL3 初始化）<a class="headerlink" href="#44-armv8-el3" title="Permanent link">&para;</a></h3>
+<p><code>cpu_init_el3()</code> 配置了完整的 EL3 运行环境：</p>
+<pre class="mermaid"><code>flowchart TD
+    A["cpu_init_el3()"] --&gt; B["配置 SCR_EL3&lt;br/&gt;NS=1, HCE=1, RW=1(64bit)"]
+    B --&gt; C{"检测 PAUTH?"}
+    C --&gt;|是| D["SCR_EL3 |= APK | API"]
+    C --&gt;|否| E["跳过"]
+    D --&gt; F{"检测 TME?"}
+    E --&gt; F
+    F --&gt; G{"检测 FGT?"}
+    G --&gt; H["SCR_EL3 |= FGTEN"]
+    H --&gt; I{"检测 SVE?"}
+    I --&gt;|是| J["CPTR_EL3 |= EZ&lt;br/&gt;ZCR_EL3 = LEN_MAX"]
+    I --&gt;|否| K{"检测 SME?"}
+    J --&gt; K
+    K --&gt;|是| L["CPTR_EL3 |= ESM&lt;br/&gt;SMCR_EL3 = LEN_MAX"]
+    K --&gt;|否| M["配置 MDCR_EL3&lt;br/&gt;调试/PMU/Trace 陷阱控制"]
+    L --&gt; M
+    M --&gt; N["完成"]</code></pre>
+<p>关键 SCR_EL3 位：
+- <code>SCR_EL3_NS</code> (bit 0): Non-Secure 状态
+- <code>SCR_EL3_HCE</code> (bit 8): 使能 HVC 指令
+- <code>SCR_EL3_RW</code> (bit 10): EL2/EL1 执行状态为 AArch64
+- <code>SCR_EL3_FGTEN</code> (bit 27): 使能 Fine-Grained Trap</p>
+<h3 id="45-cpu">4.5 CPU 栈<a class="headerlink" href="#45-cpu" title="Permanent link">&para;</a></h3>
+<p>每个 CPU 独立的栈空间，位于 <code>.boot</code> section 的 <code>.stack</code> 区域：</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph STACK[".stack 区域"]
+        S3["CPU3 stack 256 bytes"]
+        S2["CPU2 stack 256 bytes"]
+        S1["CPU1 stack 256 bytes"]
+        S0["CPU0 stack 256 bytes"]
+    end
+    S3 --&gt; S2 --&gt; S1 --&gt; S0</code></pre>
+<p>栈分配公式：<code>sp = stack_top - cpu_id * STACK_SIZE</code></p>
+<p><code>STACK_SIZE = 256</code>，<code>NR_CPUS = 4</code></p>
+<h2 id="5-psci">5. PSCI 实现<a class="headerlink" href="#5-psci" title="Permanent link">&para;</a></h2>
+<h3 id="51-psci">5.1 PSCI 启动方法<a class="headerlink" href="#51-psci" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; SpinInvalid: 次级 CPU 上电
+    SpinInvalid --&gt; SpinInvalid: wfe 等待
+    SpinInvalid --&gt; JumpKernel: branch_table 写入内核入口
+    JumpKernel --&gt; [*]: 跳转到内核
+
+    state SpinInvalid {
+        [*] --&gt; Wait: 检查 branch_table
+        Wait --&gt; Wait: 地址无效 wfe
+    }
+
+    state JumpKernel {
+        [*] --&gt; Read: 读取 branch_table
+        Read --&gt; Eret: jump_kernel
+        Eret --&gt; [*]: eret 到 EL2
+    }</code></pre>
+<h3 id="52-smc">5.2 SMC 调用链<a class="headerlink" href="#52-smc" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant K as Linux_Kernel_EL2
+    participant EL3 as Boot_wrapper_EL3
+    participant BT as branch_table
+
+    Note over K: 内核调用 PSCI_CPU_ON
+    K-&gt;&gt;EL3: smc 0 x0=0xc4000003 x1=target_mpidr x2=entry_addr
+    EL3-&gt;&gt;EL3: 异常向量进入 psci_vectors
+    EL3-&gt;&gt;EL3: smc_entry64 保存寄存器到栈
+    EL3-&gt;&gt;EL3: psci_call
+    EL3-&gt;&gt;EL3: find_logical_id target_mpidr
+    EL3-&gt;&gt;BT: bakery_lock 写入 branch_table
+
+    alt 成功
+        EL3-&gt;&gt;EL3: 返回 PSCI_RET_SUCCESS
+    else CPU 已在线
+        EL3-&gt;&gt;EL3: 返回 PSCI_RET_ALREADY_ON
+    end
+
+    EL3-&gt;&gt;EL3: eret 返回内核 EL2
+
+    Note over EL3: 次级 CPU 被唤醒
+    EL3-&gt;&gt;BT: 检测 branch_table 有效
+    EL3-&gt;&gt;K: jump_kernel eret 到内核入口</code></pre>
+<h3 id="53-psci">5.3 PSCI 接口<a class="headerlink" href="#53-psci" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Function ID</th>
+<th>功能</th>
+<th>参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x84000002</code></td>
+<td>PSCI_CPU_OFF</td>
+<td>无（当前 CPU 自身关闭）</td>
+</tr>
+<tr>
+<td><code>0xc4000003</code></td>
+<td>PSCI_CPU_ON (AArch64)</td>
+<td>x1=target_mpidr, x2=entry_address</td>
+</tr>
+</tbody>
+</table>
+<p>调用约定：通过 <code>smc #0</code> 指令触发，<code>method = "smc"</code> 在 DTB psci 节点中声明。</p>
+<h3 id="54-bakery-lock">5.4 Bakery Lock<a class="headerlink" href="#54-bakery-lock" title="Permanent link">&para;</a></h3>
+<p>PSCI 使用 Bakery Lock 算法保护 <code>branch_table</code> 的并发访问。每个 CPU 维护一个 ticket，按 ticket 顺序获取锁，保证多核安全。</p>
+<h2 id="6-dtb">6. DTB 动态修改<a class="headerlink" href="#6-dtb" title="Permanent link">&para;</a></h2>
+<p>boot-wrapper 不直接修改源 DTB，而是通过 <code>dtc</code> 在编译时生成一个新的 <code>fdt.dtb</code>：</p>
+<h3 id="61">6.1 注入的节点<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    SRC["源 DTB&lt;br/&gt;(quantum_qemu.dtb)"] --&gt; DTC["dtc 反编译&lt;br/&gt;+ 注入节点"]
+    INJECT["注入内容:&lt;br/&gt;chosen { bootargs, initrd }&lt;br/&gt;psci { method, cpu_on, cpu_off }&lt;br/&gt;cpu@x { enable-method = psci }"]
+    DTC --&gt; OUT["fdt.dtb&lt;br/&gt;(嵌入到 linux-system.axf)"]
+    INJECT --&gt; DTC</code></pre>
+<h3 id="62">6.2 具体修改内容<a class="headerlink" href="#62" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cm">/* 添加到根节点 */</span>
+<span class="nf">/</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">chosen</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">bootargs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;console=ttyAMA0 init=/init nokaslr earlycon=pl011,0x9000000 debug loglevel=8&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">linux</span><span class="p">,</span><span class="n">initrd-start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x50000000</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">linux</span><span class="p">,</span><span class="n">initrd-end</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x53160a00</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="nf">psci</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;arm,psci&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;smc&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cpu_on</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0xc4000003</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cpu_off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x84000002</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="cm">/* 修改所有 CPU 节点 */</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="p">{</span><span class="cp">/cpus/cpu@0} </span><span class="p">{</span><span class="w"> </span><span class="n">enable-method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;psci&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="p">{</span><span class="cp">/cpus/cpu@1} </span><span class="p">{</span><span class="w"> </span><span class="n">enable-method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;psci&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="p">{</span><span class="cp">/cpus/cpu@2} </span><span class="p">{</span><span class="w"> </span><span class="n">enable-method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;psci&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="p">{</span><span class="cp">/cpus/cpu@3} </span><span class="p">{</span><span class="w"> </span><span class="n">enable-method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;psci&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="63-dtb">6.3 DTB 参数自动提取<a class="headerlink" href="#63-dtb" title="Permanent link">&para;</a></h3>
+<p>编译时通过 Perl 脚本从源 DTB 自动提取硬件参数：</p>
+<table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>提取内容</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>findmem.pl</code></td>
+<td><code>memory</code> 节点首地址</td>
+<td><code>PHYS_OFFSET</code></td>
+</tr>
+<tr>
+<td><code>findbase.pl</code> (pl011)</td>
+<td>UART 基地址</td>
+<td><code>UART_BASE</code> (PL011 初始化)</td>
+</tr>
+<tr>
+<td><code>findbase.pl</code> (cortex-a15-gic)</td>
+<td>GIC Distributor/CPU 基地址</td>
+<td><code>GIC_DIST_BASE</code>, <code>GIC_CPU_BASE</code></td>
+</tr>
+<tr>
+<td><code>findcpuids.pl</code></td>
+<td>CPU 的 reg 属性</td>
+<td><code>CPU_IDS</code> (逻辑 ID 映射)</td>
+</tr>
+<tr>
+<td><code>aa64-load-offset.pl</code></td>
+<td>Image 的 TEXT 段对齐要求</td>
+<td><code>KERNEL_OFFSET</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="7">7. 构建流程<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    subgraph "autotools 构建"
+        A["autoreconf -i"] --&gt; B["./configure&lt;br/&gt;--host=aarch64-none-linux-gnu&lt;br/&gt;--with-kernel-dir=...&lt;br/&gt;--with-dtb=...&lt;br/&gt;--with-cmdline=...&lt;br/&gt;--with-initrd=...&lt;br/&gt;--enable-psci"]
+        B --&gt; C["make"]
+    end
+
+    subgraph "Make 编译步骤"
+        C --&gt; D["1. 编译 boot-wrapper 目标文件&lt;br/&gt;(boot.o, init.o, psci.o, gic.o ...)"]
+        D --&gt; E["2. 生成 model.lds&lt;br/&gt;(cpp 处理 linker script 模板)"]
+        E --&gt; F["3. 生成 fdt.dtb&lt;br/&gt;(dtc 反编译源 DTB + 注入节点 + dtc 编译)"]
+        F --&gt; G["4. 链接生成 linux-system.axf&lt;br/&gt;(ld --gc-sections)"]
+    end
+
+    subgraph "输出"
+        G --&gt; H["linux-system.axf&lt;br/&gt;(ELF 可执行文件)"]
+    end</code></pre>
+<h2 id="8">8. 异常级别转换<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<p>boot-wrapper 从 EL3 启动，最终将内核降级到 EL2 执行：</p>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; EL3: CPU 复位
+    EL3 --&gt; EL3: Boot-wrapper 初始化
+    EL3 --&gt; EL2: eret 降级到 EL2
+
+    state EL3 {
+        [*] --&gt; Init3: UART GIC PSCI 栈
+        Init3 --&gt; Ready3: 初始化完成
+    }
+
+    state EL2 {
+        [*] --&gt; KernelSetup: 内核解压启动
+        KernelSetup --&gt; KernelRun: 内核正常运行
+        KernelRun --&gt; PsciCall: 发起 PSCI smc
+        PsciCall --&gt; KernelRun: 返回结果
+    }
+
+    EL2 --&gt; EL3: smc PSCI 调用
+    EL3 --&gt; EL2: eret 返回结果</code></pre>
+<h3 id="jump_kernel">jump_kernel 详细流程<a class="headerlink" href="#jump_kernel" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// arch/aarch64/boot.S: jump_kernel</span>
+<span class="nf">mov</span><span class="w">  </span><span class="no">x19</span><span class="p">,</span><span class="w"> </span><span class="no">x0</span><span class="w">              </span><span class="c1">// 保存内核入口地址</span>
+<span class="c1">// ... 保存参数 x1-x4</span>
+<span class="nf">msr</span><span class="w">  </span><span class="no">sctlr_el1</span><span class="p">,</span><span class="w"> </span><span class="no">x0</span><span class="w">         </span><span class="c1">// 配置 EL1 系统控制寄存器</span>
+<span class="nf">msr</span><span class="w">  </span><span class="no">sctlr_el2</span><span class="p">,</span><span class="w"> </span><span class="no">x0</span><span class="w">         </span><span class="c1">// 配置 EL2 系统控制寄存器</span>
+<span class="c1">// ... 恢复参数</span>
+<span class="nf">mov</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="c1">#SPSR_KERNEL      // SPSR = EL2h (EL2, Handler mode)</span>
+<span class="nf">msr</span><span class="w">  </span><span class="no">elr_el3</span><span class="p">,</span><span class="w"> </span><span class="no">x19</span><span class="w">          </span><span class="c1">// 异常返回地址 = 内核入口</span>
+<span class="nf">msr</span><span class="w">  </span><span class="no">spsr_el3</span><span class="p">,</span><span class="w"> </span><span class="no">x4</span><span class="w">          </span><span class="c1">// 异常返回后的 PSTATE</span>
+<span class="nf">eret</span><span class="w">                      </span><span class="c1">// 降级到 EL2，跳转到内核</span>
+</code></pre></div>
+<h2 id="9-quantum_qemu">9. 配置参数参考（quantum_qemu）<a class="headerlink" href="#9-quantum_qemu" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QEMU Machine</td>
+<td><code>virt</code></td>
+<td>board conf</td>
+</tr>
+<tr>
+<td>QEMU Machine 选项</td>
+<td><code>secure=on,virtualization=on</code></td>
+<td>boot-wrapper 要求</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td><code>cortex-a57</code></td>
+<td>board conf</td>
+</tr>
+<tr>
+<td>SMP</td>
+<td>4</td>
+<td>board conf</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>1024MB</td>
+<td>board conf</td>
+</tr>
+<tr>
+<td>交叉编译</td>
+<td><code>aarch64-none-linux-gnu</code></td>
+<td>envsetup.sh</td>
+</tr>
+<tr>
+<td>内核版本</td>
+<td><code>6.1.0</code></td>
+<td>board conf</td>
+</tr>
+<tr>
+<td>DTB</td>
+<td><code>quantum/quantum_qemu.dtb</code></td>
+<td>board conf</td>
+</tr>
+<tr>
+<td>UART 基地址</td>
+<td><code>0x9000000</code></td>
+<td>从 DTB 自动提取</td>
+</tr>
+<tr>
+<td>GIC Distributor</td>
+<td><code>0x8000000</code></td>
+<td>从 DTB 自动提取</td>
+</tr>
+<tr>
+<td>GIC CPU Interface</td>
+<td><code>0x8010000</code></td>
+<td>从 DTB 自动提取</td>
+</tr>
+<tr>
+<td>COUNTER_FREQ</td>
+<td><code>100MHz</code></td>
+<td>Makefile.am 固定</td>
+</tr>
+<tr>
+<td>STACK_SIZE</td>
+<td><code>256 bytes</code></td>
+<td>Makefile.am 固定</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1510 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>DMA-BUF Demo 集成测试指导文档 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dma-buf-demo" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DMA-BUF Demo 集成测试指导文档
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 测试环境准备
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 测试环境准备">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 硬件/虚拟机要求
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 构建并部署
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 启动目标系统
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 验证模块自动加载
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 测试工具说明
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 接口参考
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 接口参考">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 设备节点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-ioctl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 用户空间 IOCTL 接口
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 用户空间 IOCTL 接口">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dma-heap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dma-heap 分配（标准内核接口）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ioctldevdemo_exp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        导出器 IOCTL（/dev/demo_exp）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ioctldevdemo_imp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        导入器 IOCTL（/dev/demo_imp）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DMA-BUF 同步接口（标准内核接口）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 自动化测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 自动化测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 运行完整测试套件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 各测试用例说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 手动测试指导
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 手动测试指导">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 运行演示程序
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 手动分步测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 手动分步测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-a-dma-buf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step A：分配 dma-buf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-b-sync_file_info-fence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step B：使用 sync_file_info 查询 fence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 模块加载/卸载测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 模块加载/卸载测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 手动控制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 重复加载/卸载测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 测试检查清单
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 测试检查清单">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 基础功能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 同步机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 边界/异常
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 稳定性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 故障排查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="dma-buf-demo">DMA-BUF Demo 集成测试指导文档<a class="headerlink" href="#dma-buf-demo" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 测试环境准备<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 硬件/虚拟机要求<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<ul>
+<li>平台：QEMU <code>virt</code>（ARM64, cortex-a57, 4核, 1GB 内存）</li>
+<li>内核：Linux 6.1（启用 <code>CONFIG_DMA_SHARED_BUFFER</code>、<code>CONFIG_DMABUF_HEAPS</code>、<code>CONFIG_SYNC_FILE</code>）</li>
+</ul>
+<h3 id="12">1.2 构建并部署<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/lion/workdir/sourcecode/quantum_main
+<span class="nb">source</span><span class="w"> </span>build/envsetup.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>lunch<span class="w"> </span><span class="m">2</span>
+make<span class="w"> </span>linux-dirclean<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>linux-rebuild
+make<span class="w"> </span>demo-dmabuf-rebuild
+<span class="c1"># 完整镜像构建（包含 rootfs overlay 中的 init.d 脚本）</span>
+make
+</code></pre></div>
+<h3 id="13">1.3 启动目标系统<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用项目提供的 QEMU 启动脚本，或手动启动</span>
+./scripts/run_qemu.sh
+<span class="c1"># 或</span>
+qemu-system-aarch64<span class="w"> </span>-machine<span class="w"> </span>virt<span class="w"> </span>-cpu<span class="w"> </span>cortex-a57<span class="w"> </span>-smp<span class="w"> </span><span class="m">4</span><span class="w"> </span>-m<span class="w"> </span><span class="m">1024</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-kernel<span class="w"> </span>out/quantum_qemu_debug/images/Image<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-dtb<span class="w"> </span>out/quantum_qemu_debug/images/quantum_qemu.dtb<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-append<span class="w"> </span><span class="s2">&quot;console=ttyAMA0 root=/dev/vda rw&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-drive<span class="w"> </span><span class="nv">file</span><span class="o">=</span>rootfs.ext4,format<span class="o">=</span>raw,if<span class="o">=</span>virtio<span class="w"> </span>-nographic
+</code></pre></div>
+<h3 id="14">1.4 验证模块自动加载<a class="headerlink" href="#14" title="Permanent link">&para;</a></h3>
+<p>系统启动后，init.d 脚本 <code>S15dmabuf</code> 会自动加载三个内核模块。验证：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看已加载模块</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>demo
+
+<span class="c1"># 预期输出：</span>
+<span class="c1"># demo_importer   20480  0</span>
+<span class="c1"># demo_exporter   16384  0</span>
+<span class="c1"># demo_heap       20480  0</span>
+
+<span class="c1"># 查看设备节点</span>
+ls<span class="w"> </span>-la<span class="w"> </span>/dev/dma_heap/demo<span class="w"> </span>/dev/demo_exp<span class="w"> </span>/dev/demo_imp
+
+<span class="c1"># 预期输出：</span>
+<span class="c1"># crw-rw-rw- 1 root root 10, 60 ... /dev/dma_heap/demo</span>
+<span class="c1"># crw-rw-rw- 1 root root ...     /dev/demo_exp</span>
+<span class="c1"># crw-rw-rw- 1 root root ...     /dev/demo_imp</span>
+</code></pre></div>
+<p>如果模块未自动加载，可手动执行：</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/S15dmabuf<span class="w"> </span>start
+</code></pre></div>
+<hr />
+<h2 id="2">2. 测试工具说明<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>路径</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>demo_dmabuf_app</code></td>
+<td><code>/usr/bin/demo_dmabuf_app</code></td>
+<td>完整 9 步 DMA-BUF 流水线演示</td>
+</tr>
+<tr>
+<td><code>test_dmabuf</code></td>
+<td><code>/usr/bin/test_dmabuf</code></td>
+<td>自动化测试套件（13 个用例）</td>
+</tr>
+<tr>
+<td><code>sync_file_info</code></td>
+<td><code>/usr/bin/sync_file_info</code></td>
+<td>查询 sync_file fence 信息</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3">3. 接口参考<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 设备节点<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>驱动</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/dev/dma_heap/demo</code></td>
+<td><code>demo_heap.ko</code></td>
+<td>自定义 DMA-BUF heap，使用 <code>vmalloc_user()</code> 分配</td>
+</tr>
+<tr>
+<td><code>/dev/demo_exp</code></td>
+<td><code>demo_exporter.ko</code></td>
+<td>DMA-BUF 导出器，支持 DMA 填充 + timer fence</td>
+</tr>
+<tr>
+<td><code>/dev/demo_imp</code></td>
+<td><code>demo_importer.ko</code></td>
+<td>DMA-BUF 导入器，支持 attach/map + 校验和处理</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-ioctl">3.2 用户空间 IOCTL 接口<a class="headerlink" href="#32-ioctl" title="Permanent link">&para;</a></h3>
+<h4 id="dma-heap">dma-heap 分配（标准内核接口）<a class="headerlink" href="#dma-heap" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// 头文件：linux/dma-heap.h（需内联定义）</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_allocation_data</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__u64</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w">          </span><span class="c1">// 分配大小（字节）</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">fd</span><span class="p">;</span><span class="w">           </span><span class="c1">// [输出] 返回的 dma-buf fd</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">fd_flags</span><span class="p">;</span><span class="w">     </span><span class="c1">// 文件描述符标志（O_RDWR | O_CLOEXEC）</span>
+<span class="w">    </span><span class="n">__u64</span><span class="w"> </span><span class="n">heap_flags</span><span class="p">;</span><span class="w">   </span><span class="c1">// heap 标志（0）</span>
+<span class="p">};</span>
+<span class="cp">#define DMA_HEAP_IOCTL_ALLOC _IOWR(&#39;H&#39;, 0x0, struct dma_heap_allocation_data)</span>
+</code></pre></div>
+<h4 id="ioctldevdemo_exp">导出器 IOCTL（<code>/dev/demo_exp</code>）<a class="headerlink" href="#ioctldevdemo_exp" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>IOCTL</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DEMO_EXP_ALLOC</code></td>
+<td><code>_IOR('E', 1, ...)</code></td>
+<td>通过导出器分配 dma-buf，返回 fd</td>
+</tr>
+<tr>
+<td><code>DEMO_EXP_DMA_FILL</code></td>
+<td><code>_IOWR('E', 2, ...)</code></td>
+<td>DMA 填充 dma-buf（timer 延迟），返回 out_fence</td>
+</tr>
+<tr>
+<td><code>DEMO_EXP_QUERY</code></td>
+<td><code>_IOWR('E', 3, ...)</code></td>
+<td>查询 dma-buf 大小和 fence 状态</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">demo_exp_fill_req</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__s32</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="p">;</span><span class="w">       </span><span class="c1">// 输入：dma-buf 文件描述符</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">fill_pattern</span><span class="p">;</span><span class="w">    </span><span class="c1">// 填充字节模式（如 0x55）</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">delay_ms</span><span class="p">;</span><span class="w">        </span><span class="c1">// timer 延迟（毫秒）</span>
+<span class="w">    </span><span class="n">__s32</span><span class="w"> </span><span class="n">out_fence_fd</span><span class="p">;</span><span class="w">    </span><span class="c1">// [输出] 完成 fence fd</span>
+<span class="p">};</span>
+</code></pre></div>
+<h4 id="ioctldevdemo_imp">导入器 IOCTL（<code>/dev/demo_imp</code>）<a class="headerlink" href="#ioctldevdemo_imp" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>IOCTL</th>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DEMO_IMP_IMPORT</code></td>
+<td><code>_IOWR('I', 1, ...)</code></td>
+<td>导入 dma-buf（attach + map）</td>
+</tr>
+<tr>
+<td><code>DEMO_IMP_PROCESS</code></td>
+<td><code>_IOWR('I', 2, ...)</code></td>
+<td>处理（校验和计算）+ completion fence</td>
+</tr>
+<tr>
+<td><code>DEMO_IMP_UNIMPORT</code></td>
+<td><code>_IO('I', 3)</code></td>
+<td>取消导入（detach + unmap）</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">demo_imp_import_req</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__s32</span><span class="w"> </span><span class="n">dmabuf_fd</span><span class="p">;</span><span class="w">       </span><span class="c1">// 输入：dma-buf fd</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">num_sg_entries</span><span class="p">;</span><span class="w">  </span><span class="c1">// [输出] scatter-gather 条目数</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">demo_imp_process_req</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">mode</span><span class="p">;</span><span class="w">            </span><span class="c1">// 处理模式</span>
+<span class="w">    </span><span class="n">__u32</span><span class="w"> </span><span class="n">checksum</span><span class="p">;</span><span class="w">        </span><span class="c1">// [输出] 数据校验和</span>
+<span class="w">    </span><span class="n">__s32</span><span class="w"> </span><span class="n">out_fence_fd</span><span class="p">;</span><span class="w">    </span><span class="c1">// [输出] 完成 fence fd</span>
+<span class="p">};</span>
+</code></pre></div>
+<h4 id="dma-buf">DMA-BUF 同步接口（标准内核接口）<a class="headerlink" href="#dma-buf" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// CPU 缓存同步</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_buf_sync</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__u64</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span><span class="w">  </span><span class="c1">// DMA_BUF_SYNC_START|DMA_BUF_SYNC_WRITE 等</span>
+<span class="p">};</span>
+<span class="cp">#define DMA_BUF_IOCTL_SYNC _IOW(&#39;b&#39;, 0, struct dma_buf_sync)</span>
+
+<span class="c1">// 导出/导入 reservation fence</span>
+<span class="cp">#define DMA_BUF_IOCTL_EXPORT_SYNC_FILE _IOWR(&#39;b&#39;, 1, ...)</span>
+<span class="cp">#define DMA_BUF_IOCTL_IMPORT_SYNC_FILE _IOWR(&#39;b&#39;, 2, ...)</span>
+</code></pre></div>
+<hr />
+<h2 id="4">4. 自动化测试<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 运行完整测试套件<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>test_dmabuf
+</code></pre></div>
+<p>预期输出示例：</p>
+<div class="highlight"><pre><span></span><code>=== Running DMA-BUF Test Suite ===
+
+[test 1/13] test_heap_alloc_free ... PASSED
+[test 2/13] test_mmap_read_write ... PASSED
+[test 3/13] test_cpu_sync_cache ... PASSED
+[test 4/13] test_exporter_alloc ... PASSED
+[test 5/13] test_exporter_sync_fill ... PASSED
+[test 6/13] test_importer_process ... PASSED
+[test 7/13] test_export_sync_file ... PASSED
+[test 8/13] test_import_sync_file ... PASSED
+[test 9/13] test_implicit_sync_wait ... PASSED
+[test 10/13] test_multi_consumer_parallel ... PASSED
+[test 11/13] test_fence_timeout ... PASSED
+[test 12/13] test_full_pipeline ... PASSED
+[test 13/13] test_stress_repeated_cycles ... PASSED
+  (completed 100 iterations)
+
+=== Results: 13/13 passed, 0 failed ===
+</code></pre></div>
+<h3 id="42">4.2 各测试用例说明<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>用例</th>
+<th>测试内容</th>
+<th>覆盖组件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>test_heap_alloc_free</code></td>
+<td>从 <code>/dev/dma_heap/demo</code> 分配 dma-buf 并释放</td>
+<td>demo_heap</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>test_mmap_read_write</code></td>
+<td>mmap 后读写验证数据一致性</td>
+<td>demo_heap + mmap</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>test_cpu_sync_cache</code></td>
+<td><code>DMA_BUF_IOCTL_SYNC</code> CPU 缓存同步</td>
+<td>dma-buf sync</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>test_exporter_alloc</code></td>
+<td>通过导出器 <code>DEMO_EXP_ALLOC</code> 分配</td>
+<td>demo_exporter</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>test_exporter_sync_fill</code></td>
+<td>DMA 填充 + fence 等待 + 数据验证</td>
+<td>demo_exporter + fence</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>test_importer_process</code></td>
+<td>完整导入 + 处理 + fence 流程</td>
+<td>demo_importer</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>test_export_sync_file</code></td>
+<td><code>DMA_BUF_IOCTL_EXPORT_SYNC_FILE</code> 导出 fence</td>
+<td>dma-buf sync</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>test_import_sync_file</code></td>
+<td><code>DMA_BUF_IOCTL_IMPORT_SYNC_FILE</code> 导入 fence 到 reservation</td>
+<td>dma-buf sync</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>test_implicit_sync_wait</code></td>
+<td>隐式同步路径验证</td>
+<td>隐式同步</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>test_multi_consumer_parallel</code></td>
+<td>两个 importer 并行消费同一 dma-buf</td>
+<td>demo_importer 并发</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>test_fence_timeout</code></td>
+<td>短超时 poll 超时 + 正常等待恢复</td>
+<td>fence 超时处理</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>test_full_pipeline</code></td>
+<td>端到端 5 步完整流水线</td>
+<td>全链路</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>test_stress_repeated_cycles</code></td>
+<td>100 次快速分配-填充-释放循环</td>
+<td>压力/稳定性</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5">5. 手动测试指导<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 运行演示程序<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>demo_dmabuf_app
+</code></pre></div>
+<p>该程序自动执行完整 9 步流水线：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>操作</th>
+<th>预期结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>从 <code>/dev/dma_heap/demo</code> 分配 4096 字节</td>
+<td>获得有效 dmabuf fd</td>
+</tr>
+<tr>
+<td>2</td>
+<td>mmap + 写入 0xAA + cache flush</td>
+<td><code>[OK] Wrote 0xAA pattern, cache flushed</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>通过 <code>/dev/demo_exp</code> DMA 填充 0x55</td>
+<td>返回 out_fence_fd</td>
+</tr>
+<tr>
+<td>4</td>
+<td>poll 等待显式 fence</td>
+<td><code>[OK] explicit fence signaled</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>通过 EXPORT_SYNC_FILE 等待隐式 fence</td>
+<td><code>[OK] no pending resv fences</code> 或 fence signaled</td>
+</tr>
+<tr>
+<td>6</td>
+<td>读回验证首个字节</td>
+<td><code>[OK] First byte verified: 0x55</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>导入到 <code>/dev/demo_imp</code></td>
+<td><code>[OK] Imported dmabuf to importer</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>处理并等待完成 fence</td>
+<td><code>[OK] Processing complete, checksum computed</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>验证 READ fence 已清除</td>
+<td><code>[OK] READ fences cleared</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="52">5.2 手动分步测试<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<h4 id="step-a-dma-buf">Step A：分配 dma-buf<a class="headerlink" href="#step-a-dma-buf" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在目标板上使用 devmem 或编写简单脚本</span>
+<span class="c1"># 推荐使用 test_dmabuf 或 demo_dmabuf_app 进行测试</span>
+<span class="c1"># 以下为概念操作流程：</span>
+
+<span class="c1"># 1. 打开 heap 设备</span>
+<span class="nb">exec</span><span class="w"> </span><span class="m">3</span>&lt;&gt;/dev/dma_heap/demo
+
+<span class="c1"># 2. 分配 dma-buf（需编写小工具或使用 demo_dmabuf_app）</span>
+</code></pre></div>
+<h4 id="step-b-sync_file_info-fence">Step B：使用 sync_file_info 查询 fence<a class="headerlink" href="#step-b-sync_file_info-fence" title="Permanent link">&para;</a></h4>
+<p><code>sync_file_info</code> 需要一个当前进程持有的 fence fd。通常在自定义测试脚本中使用：</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// 示例：分配 → 填充 → 查询 fence（不等待）</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">heap_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/dma_heap/demo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDWR</span><span class="p">);</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dma_heap_allocation_data</span><span class="w"> </span><span class="n">alloc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">fd_flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">O_RDWR</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">O_CLOEXEC</span><span class="w"> </span><span class="p">};</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">heap_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DMA_HEAP_IOCTL_ALLOC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">alloc</span><span class="p">);</span>
+<span class="c1">// alloc.fd 现在是 dmabuf fd</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">exp_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/demo_exp&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">O_RDWR</span><span class="p">);</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">demo_exp_fill_req</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">dmabuf_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloc</span><span class="p">.</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">fill_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x55</span><span class="p">,</span>
+<span class="w">                                   </span><span class="p">.</span><span class="n">delay_ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">out_fence_fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="p">};</span>
+<span class="n">ioctl</span><span class="p">(</span><span class="n">exp_fd</span><span class="p">,</span><span class="w"> </span><span class="n">DEMO_EXP_DMA_FILL</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fill</span><span class="p">);</span>
+<span class="c1">// fill.out_fence_fd 现在是 fence fd（1 秒后才 signal）</span>
+
+<span class="c1">// 查询 fence 状态（应在另一个终端）：</span>
+<span class="c1">// sync_file_info &lt;fill.out_fence_fd&gt;</span>
+
+<span class="c1">// 等待 fence</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">pollfd</span><span class="w"> </span><span class="n">pfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill</span><span class="p">.</span><span class="n">out_fence_fd</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">POLLIN</span><span class="w"> </span><span class="p">};</span>
+<span class="n">poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pfd</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">5000</span><span class="p">);</span>
+</code></pre></div>
+<hr />
+<h2 id="6">6. 模块加载/卸载测试<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<h3 id="61">6.1 手动控制<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 卸载（反向顺序）</span>
+/etc/init.d/S15dmabuf<span class="w"> </span>stop
+
+<span class="c1"># 检查模块已移除</span>
+lsmod<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>demo
+<span class="c1"># 预期：无输出</span>
+
+<span class="c1"># 重新加载</span>
+/etc/init.d/S15dmabuf<span class="w"> </span>start
+
+<span class="c1"># 重启</span>
+/etc/init.d/S15dmabuf<span class="w"> </span>restart
+</code></pre></div>
+<h3 id="62">6.2 重复加载/卸载测试<a class="headerlink" href="#62" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>seq<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">10</span><span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== Cycle </span><span class="nv">$i</span><span class="s2"> ===&quot;</span>
+<span class="w">    </span>/etc/init.d/S15dmabuf<span class="w"> </span>restart
+<span class="w">    </span>test_dmabuf<span class="w"> </span>&gt;<span class="w"> </span>/tmp/test_result_<span class="nv">$i</span>.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;0 failed&quot;</span><span class="w"> </span>/tmp/test_result_<span class="nv">$i</span>.log<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;PASS&quot;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;FAIL&quot;</span>
+<span class="w">        </span>cat<span class="w"> </span>/tmp/test_result_<span class="nv">$i</span>.log
+<span class="w">    </span><span class="k">fi</span>
+<span class="k">done</span>
+</code></pre></div>
+<hr />
+<h2 id="7">7. 测试检查清单<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71">7.1 基础功能<a class="headerlink" href="#71" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] 内核模块自动加载成功（<code>lsmod | grep demo</code>）</li>
+<li>[ ] 设备节点存在（<code>/dev/dma_heap/demo</code>、<code>/dev/demo_exp</code>、<code>/dev/demo_imp</code>）</li>
+<li>[ ] <code>test_dmabuf</code> 全部 13 个用例通过</li>
+<li>[ ] <code>demo_dmabuf_app</code> 9 步流水线全部 <code>[OK]</code></li>
+</ul>
+<h3 id="72">7.2 同步机制<a class="headerlink" href="#72" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] 显式 fence：DMA 填充后 poll 等待成功</li>
+<li>[ ] 隐式 fence：EXPORT_SYNC_FILE 正确返回</li>
+<li>[ ] IMPORT_SYNC_FILE：fence 导入到 reservation 对象成功</li>
+<li>[ ] CPU 缓存同步：SYNC_START/SYNC_END 后数据一致</li>
+</ul>
+<h3 id="73">7.3 边界/异常<a class="headerlink" href="#73" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] fence 超时测试：短超时正确返回 <code>-ETIMEDOUT</code></li>
+<li>[ ] 多消费者并行：两个 importer 同时处理同一 dma-buf</li>
+<li>[ ] 压力测试：100 次快速分配-填充-释放循环无错误</li>
+<li>[ ] 模块重复加载/卸载后功能正常</li>
+</ul>
+<h3 id="74">7.4 稳定性<a class="headerlink" href="#74" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] 连续 10 次模块 reload + test_dmabuf 全通过</li>
+<li>[ ] 压力测试后检查 <code>dmesg</code> 无内核错误/警告</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># 检查内核日志</span>
+dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s1">&#39;error|warn|fault|bug&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;Warning.*clocks_property&#39;</span>
+</code></pre></div>
+<hr />
+<h2 id="8">8. 故障排查<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>可能原因</th>
+<th>排查方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>open /dev/dma_heap/demo: No such file</code></td>
+<td>demo_heap 模块未加载</td>
+<td><code>lsmod \| grep demo</code>；手动 <code>/etc/init.d/S15dmabuf start</code></td>
+</tr>
+<tr>
+<td><code>insmod: cannot insert module: unknown symbol</code></td>
+<td>内核缺少 DMA-BUF 支持</td>
+<td>检查 <code>CONFIG_DMA_SHARED_BUFFER=y</code>、<code>CONFIG_DMABUF_HEAPS=y</code></td>
+</tr>
+<tr>
+<td><code>DMA_HEAP_IOCTL_ALLOC: Invalid argument</code></td>
+<td>内核配置缺少 <code>CONFIG_DMABUF_HEAPS</code> 或缺补丁</td>
+<td>检查内核 <code>.config</code> 和 patch 是否已应用</td>
+</tr>
+<tr>
+<td>fence poll 永久阻塞</td>
+<td>exporter timer 未触发</td>
+<td><code>dmesg \| grep demo</code> 检查内核日志</td>
+</tr>
+<tr>
+<td>mmap 返回 <code>MAP_FAILED</code></td>
+<td>分配大小为 0 或模块异常</td>
+<td>确认 alloc.len &gt; 0；检查 <code>dmesg</code></td>
+</tr>
+<tr>
+<td>测试偶发失败</td>
+<td>定时敏感的 fence 竞态</td>
+<td>多次运行确认是否可复现；增大 delay_ms</td>
+</tr>
+<tr>
+<td><code>test_export_sync_file: ASSERT failed</code></td>
+<td>内核版本不支持 <code>DMA_BUF_IOCTL_EXPORT_SYNC_FILE</code></td>
+<td>确认 <code>CONFIG_SYNC_FILE=y</code></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
