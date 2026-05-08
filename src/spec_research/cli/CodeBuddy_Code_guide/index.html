@@ -1,0 +1,3639 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>CodeBuddy Code 操作文档 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#codebuddy-code" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CodeBuddy Code 操作文档
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 环境要求与安装
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 环境要求与安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        环境要求
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        安装方式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        验证安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        更新
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 首次启动与认证
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 首次启动与认证">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        启动
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        初始化项目上下文（强烈推荐）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        设置响应语言
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 交互模式使用
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 交互模式使用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本操作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        键盘快捷键
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="键盘快捷键">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        导航与输入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        权限与模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        面板与输出
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        输入前缀
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        多行输入方式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bash 模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vim 编辑模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. CLI 命令参考
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. CLI 命令参考">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基础命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-shot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        非交互模式（One-Shot）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        会话管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        后台运行
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daemon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daemon 守护进程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常用 CLI 参数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        管道与 Unix 集成
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 斜杠命令速查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 斜杠命令速查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        会话管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        账户与状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模型管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置与环境
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        上下文与成本
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI 功能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        插件与技能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mcp-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP 与 IDE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        其他
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 常见工作流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. 常见工作流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        理解新代码库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        修复 Bug
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_27" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        代码重构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        编写测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#merge-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        创建 Merge Request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用计划模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_30" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        引用文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        处理图片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        扩展思考
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 配置系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 配置系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置文件层级
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常用配置项
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        权限配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI 配置命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 记忆系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 记忆系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#codebuddymd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        静态记忆（CODEBUDDY.md）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="静态记忆（CODEBUDDY.md）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_36" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        导入语法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_37" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        条件规则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto Memory（自动记忆）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Auto Memory（自动记忆）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_38" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四种记忆类型
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 模型管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 模型管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_39" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        切换模型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_40" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        自定义模型配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景自动切换
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 权限控制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 权限控制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四种权限模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        切换方式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_44" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        权限规则
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-skills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Skills 技能系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Skills 技能系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        与斜杠命令的区别
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        创建 Skill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontmatter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontmatter 字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        支持的语法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skills" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        查看 Skills
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 插件系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12. 插件系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_47" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        插件目录结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_48" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        插件管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_49" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本地加载插件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_50" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        创建自定义斜杠命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Hooks 钩子系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13. Hooks 钩子系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        事件类型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        交互式设置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. MCP 集成
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14. MCP 集成">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_54" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置文件位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_55" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        传输类型
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI 管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_56" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        环境变量
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. IDE 集成
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="15. IDE 集成">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        支持的 IDE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_57" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        连接方式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_58" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        集成能力
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. 高级特性
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16. 高级特性">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#git-worktree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Git Worktree 并行开发
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_59" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        沙箱运行
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP 服务模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_60" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        子代理系统
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        检查点（Checkpoint）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#headless" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        无头模式（Headless）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        定时任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置文件总览
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题排查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_65" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相关资源
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="codebuddy-code">CodeBuddy Code 操作文档<a class="headerlink" href="#codebuddy-code" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>CodeBuddy Code 是腾讯云推出的 AI 驱动终端编程助手，提供从代码编写到项目部署的全生命周期 AI 辅助开发能力。</p>
+</blockquote>
+<hr />
+<h2 id="_1">目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#1-环境要求与安装">1. 环境要求与安装</a></li>
+<li><a href="#2-首次启动与认证">2. 首次启动与认证</a></li>
+<li><a href="#3-交互模式使用">3. 交互模式使用</a></li>
+<li><a href="#4-cli-命令参考">4. CLI 命令参考</a></li>
+<li><a href="#5-斜杠命令速查">5. 斜杠命令速查</a></li>
+<li><a href="#6-常见工作流">6. 常见工作流</a></li>
+<li><a href="#7-配置系统">7. 配置系统</a></li>
+<li><a href="#8-记忆系统">8. 记忆系统</a></li>
+<li><a href="#9-模型管理">9. 模型管理</a></li>
+<li><a href="#10-权限控制">10. 权限控制</a></li>
+<li><a href="#11-skills-技能系统">11. Skills 技能系统</a></li>
+<li><a href="#12-插件系统">12. 插件系统</a></li>
+<li><a href="#13-hooks-钩子系统">13. Hooks 钩子系统</a></li>
+<li><a href="#14-mcp-集成">14. MCP 集成</a></li>
+<li><a href="#15-ide-集成">15. IDE 集成</a></li>
+<li><a href="#16-高级特性">16. 高级特性</a></li>
+</ul>
+<hr />
+<h2 id="1">1. 环境要求与安装<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="_2">环境要求<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Node.js</strong>: 18.20 或更高版本</li>
+<li><strong>操作系统</strong>: macOS / Linux / Windows</li>
+</ul>
+<h3 id="_3">安装方式<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p><strong>方式一：npm 全局安装（推荐）</strong></p>
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>@tencent-ai/codebuddy-code
+</code></pre></div>
+<p><strong>方式二：原生安装脚本（无需 Node.js）</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># macOS / Linux</span>
+curl<span class="w"> </span>-fsSL<span class="w"> </span>https://copilot.tencent.com/cli/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+
+<span class="c1"># Windows (PowerShell)</span>
+irm<span class="w"> </span>https://copilot.tencent.com/cli/install.ps1<span class="w"> </span><span class="p">|</span><span class="w"> </span>iex
+</code></pre></div>
+<h3 id="_4">验证安装<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--version
+<span class="c1"># 或使用别名</span>
+cbc<span class="w"> </span>--version
+</code></pre></div>
+<blockquote>
+<p><code>cbc</code> 是 <code>codebuddy</code> 的简写别名。</p>
+</blockquote>
+<h3 id="_5">更新<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>update
+</code></pre></div>
+<hr />
+<h2 id="2">2. 首次启动与认证<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="_6">启动<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/path/to/your/project
+codebuddy
+</code></pre></div>
+<p>首次启动时会弹出登录方式选择：</p>
+<table>
+<thead>
+<tr>
+<th>登录方式</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中国站</td>
+<td>中国大陆用户</td>
+</tr>
+<tr>
+<td>国际站</td>
+<td>海外用户</td>
+</tr>
+<tr>
+<td>企业域名</td>
+<td>私有部署，需要自定义服务器地址</td>
+</tr>
+<tr>
+<td>iOA</td>
+<td>腾讯内部员工</td>
+</tr>
+</tbody>
+</table>
+<p>使用 <code>↑↓</code> 选择，<code>Enter</code> 确认，会打开浏览器完成认证。</p>
+<h3 id="_7">初始化项目上下文（强烈推荐）<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; /init
+</code></pre></div>
+<p><code>/init</code> 的作用：</p>
+<ul>
+<li>让 CodeBuddy 更准确地理解代码结构和业务逻辑</li>
+<li>加快响应速度（避免重复文件扫描）</li>
+<li>减少 30-50% 的 Token 消耗</li>
+<li>避免提出不兼容的修改方案</li>
+</ul>
+<h3 id="_8">设置响应语言<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; /config
+</code></pre></div>
+<p>在配置面板中设置 <strong>Language</strong> 选项，例如选择"简体中文"。</p>
+<hr />
+<h2 id="3">3. 交互模式使用<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="_9">基本操作<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<p>进入交互模式后，直接输入自然语言即可与 CodeBuddy 对话：</p>
+<div class="highlight"><pre><span></span><code>&gt; 帮我分析这个项目的结构
+&gt; 为这个 API 接口写单元测试
+&gt; 这段代码有什么潜在的性能问题？
+</code></pre></div>
+<h3 id="_10">键盘快捷键<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<h4 id="_11">导航与输入<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>↑</code> / <code>↓</code></td>
+<td>浏览命令历史</td>
+</tr>
+<tr>
+<td><code>Tab</code></td>
+<td>自动补全 / 切换思考模式</td>
+</tr>
+<tr>
+<td><code>Enter</code></td>
+<td>发送消息</td>
+</tr>
+<tr>
+<td><code>Shift+Enter</code></td>
+<td>换行（需先运行 <code>/terminal-setup</code>）</td>
+</tr>
+<tr>
+<td><code>\</code> + <code>Enter</code></td>
+<td>换行（通用方式）</td>
+</tr>
+<tr>
+<td><code>Ctrl+J</code></td>
+<td>插入换行符</td>
+</tr>
+<tr>
+<td><code>Ctrl+C</code></td>
+<td>取消当前输入或生成</td>
+</tr>
+<tr>
+<td><code>Ctrl+D</code></td>
+<td>退出（输入为空时按两次）</td>
+</tr>
+<tr>
+<td><code>Ctrl+L</code></td>
+<td>清屏（对话历史保留）</td>
+</tr>
+<tr>
+<td><code>Esc</code> + <code>Esc</code></td>
+<td>回滚对话/代码到之前状态</td>
+</tr>
+<tr>
+<td><code>Ctrl+G</code></td>
+<td>在外部编辑器中编辑提示词</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_12">权限与模式<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Shift+Tab</code> (macOS/Linux)</td>
+<td>循环切换权限模式</td>
+</tr>
+<tr>
+<td><code>Alt+M</code> (Windows)</td>
+<td>循环切换权限模式</td>
+</tr>
+<tr>
+<td><code>Alt+P</code> (macOS) / <code>Alt+P</code> (Windows/Linux)</td>
+<td>切换模型</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_13">面板与输出<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl+R</code></td>
+<td>反向搜索命令历史</td>
+</tr>
+<tr>
+<td><code>Ctrl+O</code></td>
+<td>展开/折叠详细输出</td>
+</tr>
+<tr>
+<td><code>Ctrl+Y</code></td>
+<td>复制最近一条 AI 回复到剪贴板</td>
+</tr>
+<tr>
+<td><code>Ctrl+V</code> (macOS/Linux) / <code>Alt+V</code> (Windows)</td>
+<td>粘贴（支持文本、图片和图片文件路径）</td>
+</tr>
+<tr>
+<td><code>Ctrl+B</code></td>
+<td>将当前 Bash 命令移至后台执行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_14">输入前缀<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>前缀</th>
+<th>功能</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>斜杠命令</td>
+<td><code>/help</code></td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td>Bash 模式 - 直接运行命令</td>
+<td><code>! npm test</code></td>
+</tr>
+<tr>
+<td><code>@</code></td>
+<td>文件路径引用</td>
+<td><code>@src/index.ts</code></td>
+</tr>
+<tr>
+<td><code>#</code></td>
+<td>记忆快捷方式 - 添加内容到 CODEBUDDY.md</td>
+<td><code># 始终使用 TypeScript</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_15">多行输入方式<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>快捷键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>反斜杠换行</td>
+<td><code>\</code> + <code>Enter</code></td>
+<td>所有终端通用</td>
+</tr>
+<tr>
+<td>Shift+Enter</td>
+<td><code>Shift+Enter</code></td>
+<td>运行 <code>/terminal-setup</code> 后可用</td>
+</tr>
+<tr>
+<td>控制序列</td>
+<td><code>Ctrl+J</code></td>
+<td>插入换行符</td>
+</tr>
+<tr>
+<td>直接粘贴</td>
+<td>粘贴多行文本</td>
+<td>自动识别为多行输入</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bash">Bash 模式<a class="headerlink" href="#bash" title="Permanent link">&para;</a></h3>
+<p>在输入前加 <code>!</code> 可直接运行 Shell 命令，无需 AI 解释或权限审批：</p>
+<div class="highlight"><pre><span></span><code>! npm test
+! git status
+! ls -la
+</code></pre></div>
+<p>命令及输出会被添加到对话上下文中。</p>
+<h3 id="vim">Vim 编辑模式<a class="headerlink" href="#vim" title="Permanent link">&para;</a></h3>
+<p>通过 <code>/vim</code> 命令启用，支持：</p>
+<ul>
+<li><strong>模式切换</strong>: <code>Esc</code> 进入 NORMAL 模式，<code>i</code>/<code>a</code>/<code>o</code> 进入 INSERT 模式</li>
+<li><strong>导航</strong>: <code>h/j/k/l</code> 移动，<code>w</code>/<code>b</code> 跳词，<code>0</code>/<code>$</code> 行首行尾</li>
+<li><strong>编辑</strong>: <code>x</code> 删字符，<code>dd</code> 删行，<code>cc</code> 改行，<code>.</code> 重复上次修改</li>
+</ul>
+<hr />
+<h2 id="4-cli">4. CLI 命令参考<a class="headerlink" href="#4-cli" title="Permanent link">&para;</a></h2>
+<h3 id="_16">基础命令<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w">                    </span><span class="c1"># 启动交互式 REPL</span>
+codebuddy<span class="w"> </span><span class="s2">&quot;帮我优化这个函数&quot;</span><span class="w">   </span><span class="c1"># 带初始提示词启动</span>
+cbc<span class="w"> </span><span class="s2">&quot;查询&quot;</span><span class="w">                   </span><span class="c1"># 使用别名</span>
+</code></pre></div>
+<h3 id="one-shot">非交互模式（One-Shot）<a class="headerlink" href="#one-shot" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 直接查询后退出</span>
+codebuddy<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;优化这个 SQL 查询的性能&quot;</span>
+
+<span class="c1"># 管道输入</span>
+cat<span class="w"> </span>error.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>codebuddy<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;分析这些错误日志&quot;</span>
+
+<span class="c1"># 需要文件访问时必须加 -y</span>
+codebuddy<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;审查 src/utils.js 的代码质量&quot;</span><span class="w"> </span>-y
+
+<span class="c1"># 指定输出格式</span>
+codebuddy<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;查询&quot;</span><span class="w"> </span>--output-format<span class="w"> </span>json
+
+<span class="c1"># 限制代理轮次数</span>
+codebuddy<span class="w"> </span>-p<span class="w"> </span>--max-turns<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="s2">&quot;查询&quot;</span>
+</code></pre></div>
+<h3 id="_17">会话管理<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>-c<span class="w">                          </span><span class="c1"># 继续最近的对话</span>
+codebuddy<span class="w"> </span>-c<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;继续我的任务&quot;</span><span class="w">          </span><span class="c1"># SDK 模式继续对话</span>
+codebuddy<span class="w"> </span>--resume<span class="w">                    </span><span class="c1"># 交互式选择会话恢复</span>
+codebuddy<span class="w"> </span>--resume<span class="w"> </span>abc123<span class="w"> </span><span class="s2">&quot;继续工作&quot;</span><span class="w">    </span><span class="c1"># 按 ID 恢复会话</span>
+</code></pre></div>
+<h3 id="_18">后台运行<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--bg<span class="w"> </span><span class="s2">&quot;实现登录页面&quot;</span><span class="w">                  </span><span class="c1"># 后台运行</span>
+codebuddy<span class="w"> </span>--bg<span class="w"> </span>--name<span class="w"> </span>feature-x<span class="w"> </span><span class="s2">&quot;实现功能&quot;</span><span class="w">     </span><span class="c1"># 命名后台会话</span>
+codebuddy<span class="w"> </span>ps<span class="w">                                  </span><span class="c1"># 列出活跃进程</span>
+codebuddy<span class="w"> </span>logs<span class="w"> </span>feature-x<span class="w">                      </span><span class="c1"># 查看日志</span>
+codebuddy<span class="w"> </span>attach<span class="w"> </span>feature-x<span class="w">                    </span><span class="c1"># 附加到后台会话</span>
+codebuddy<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>feature-x<span class="w">                      </span><span class="c1"># 终止后台会话</span>
+</code></pre></div>
+<h3 id="daemon">Daemon 守护进程<a class="headerlink" href="#daemon" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>daemon<span class="w"> </span>start<span class="w"> </span><span class="o">[</span>--port<span class="w"> </span><span class="m">8080</span><span class="o">]</span><span class="w">  </span><span class="c1"># 启动</span>
+codebuddy<span class="w"> </span>daemon<span class="w"> </span>stop<span class="w">                 </span><span class="c1"># 停止</span>
+codebuddy<span class="w"> </span>daemon<span class="w"> </span>status<span class="w">               </span><span class="c1"># 状态查看</span>
+codebuddy<span class="w"> </span>daemon<span class="w"> </span>restart<span class="w">              </span><span class="c1"># 重启</span>
+</code></pre></div>
+<h3 id="cli">常用 CLI 参数<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-p</code> / <code>--print</code></td>
+<td>打印响应后退出（非交互模式）</td>
+</tr>
+<tr>
+<td><code>-y</code></td>
+<td>跳过权限提示（谨慎使用）</td>
+</tr>
+<tr>
+<td><code>--model &lt;model&gt;</code></td>
+<td>指定模型</td>
+</tr>
+<tr>
+<td><code>--agent &lt;name&gt;</code></td>
+<td>指定 agent</td>
+</tr>
+<tr>
+<td><code>--add-dir &lt;path&gt;</code></td>
+<td>添加额外工作目录</td>
+</tr>
+<tr>
+<td><code>--plugin-dir &lt;path&gt;</code></td>
+<td>加载本地插件</td>
+</tr>
+<tr>
+<td><code>--permission-mode &lt;mode&gt;</code></td>
+<td>设置权限模式</td>
+</tr>
+<tr>
+<td><code>--serve</code></td>
+<td>启动 HTTP 服务</td>
+</tr>
+<tr>
+<td><code>--worktree [name]</code></td>
+<td>在 git worktree 中运行</td>
+</tr>
+<tr>
+<td><code>--sandbox</code></td>
+<td>在沙箱中运行</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td>详细日志</td>
+</tr>
+<tr>
+<td><code>--debug</code></td>
+<td>调试模式</td>
+</tr>
+</tbody>
+</table>
+<h3 id="unix">管道与 Unix 集成<a class="headerlink" href="#unix" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 管道输入分析</span>
+git<span class="w"> </span>log<span class="w"> </span>--oneline<span class="w"> </span><span class="p">|</span><span class="w"> </span>codebuddy<span class="w"> </span><span class="s2">&quot;分析这些提交，找出可能的问题&quot;</span>
+cat<span class="w"> </span>error.log<span class="w"> </span><span class="p">|</span><span class="w"> </span>codebuddy<span class="w"> </span><span class="s2">&quot;帮我分析这些错误日志&quot;</span>
+
+<span class="c1"># 输出到文件</span>
+cat<span class="w"> </span>build-error.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>codebuddy<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;解释构建错误的根本原因&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>output.txt
+
+<span class="c1"># 在 CI/CD 中使用</span>
+codebuddy<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;检查代码变更中的拼写错误&#39;</span><span class="w"> </span>-y
+</code></pre></div>
+<hr />
+<h2 id="5">5. 斜杠命令速查<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="_19">会话管理<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/clear</code></td>
+<td>开始新对话（旧对话可通过 <code>/resume</code> 恢复）</td>
+</tr>
+<tr>
+<td><code>/resume</code></td>
+<td>恢复之前的会话</td>
+</tr>
+<tr>
+<td><code>/resume [session-id]</code></td>
+<td>切换到指定会话</td>
+</tr>
+<tr>
+<td><code>/resume list</code></td>
+<td>列出所有会话</td>
+</tr>
+<tr>
+<td><code>/branch [name]</code></td>
+<td>创建分支并复制历史到新会话</td>
+</tr>
+<tr>
+<td><code>/rewind</code></td>
+<td>回滚对话到之前的消息点</td>
+</tr>
+<tr>
+<td><code>/export</code></td>
+<td>导出当前对话</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_20">账户与状态<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/help</code></td>
+<td>显示帮助信息</td>
+</tr>
+<tr>
+<td><code>/login</code></td>
+<td>登录账户</td>
+</tr>
+<tr>
+<td><code>/logout</code></td>
+<td>登出</td>
+</tr>
+<tr>
+<td><code>/doctor</code></td>
+<td>检查环境状态</td>
+</tr>
+<tr>
+<td><code>/status</code></td>
+<td>显示当前仓库和会话状态</td>
+</tr>
+<tr>
+<td><code>/feedback</code></td>
+<td>打开反馈页面</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_21">模型管理<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/model</code></td>
+<td>打开模型选择面板</td>
+</tr>
+<tr>
+<td><code>/model list</code></td>
+<td>列出所有可用模型</td>
+</tr>
+<tr>
+<td><code>/model &lt;name&gt;</code></td>
+<td>切换到指定模型</td>
+</tr>
+<tr>
+<td><code>/model:text-to-image</code></td>
+<td>选择文生图模型</td>
+</tr>
+<tr>
+<td><code>/model:image-to-image</code></td>
+<td>选择图生图模型</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_22">配置与环境<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/config</code></td>
+<td>打开配置面板</td>
+</tr>
+<tr>
+<td><code>/config list</code></td>
+<td>列出所有设置</td>
+</tr>
+<tr>
+<td><code>/config get &lt;key&gt;</code></td>
+<td>读取设置项</td>
+</tr>
+<tr>
+<td><code>/config set &lt;key&gt; &lt;value&gt;</code></td>
+<td>修改设置项</td>
+</tr>
+<tr>
+<td><code>/add-dir &lt;dir&gt;</code></td>
+<td>添加工作目录</td>
+</tr>
+<tr>
+<td><code>/init</code></td>
+<td>初始化 CodeBuddy 仓库</td>
+</tr>
+<tr>
+<td><code>/permissions</code></td>
+<td>管理工具权限</td>
+</tr>
+<tr>
+<td><code>/sandbox</code></td>
+<td>管理沙箱模式</td>
+</tr>
+<tr>
+<td><code>/theme</code></td>
+<td>选择主题</td>
+</tr>
+<tr>
+<td><code>/terminal-setup</code></td>
+<td>配置 Shift+Enter 快捷键</td>
+</tr>
+<tr>
+<td><code>/statusline</code></td>
+<td>配置状态栏显示</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_23">上下文与成本<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/compact</code></td>
+<td>压缩上下文</td>
+</tr>
+<tr>
+<td><code>/context</code></td>
+<td>查看当前 Token 分布</td>
+</tr>
+<tr>
+<td><code>/cost</code></td>
+<td>显示会话成本和 Token 使用</td>
+</tr>
+<tr>
+<td><code>/stats</code></td>
+<td>显示使用统计</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ai">AI 功能<a class="headerlink" href="#ai" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/agents</code></td>
+<td>管理 AI 子代理</td>
+</tr>
+<tr>
+<td><code>/btw &lt;query&gt;</code></td>
+<td>快速提问（不中断当前工作流）</td>
+</tr>
+<tr>
+<td><code>/plan</code></td>
+<td>预览计划模式下的计划文件</td>
+</tr>
+<tr>
+<td><code>/memory</code></td>
+<td>管理长期记忆</td>
+</tr>
+<tr>
+<td><code>/todos</code></td>
+<td>显示当前待办列表</td>
+</tr>
+<tr>
+<td><code>/security-review</code></td>
+<td>代码安全审查</td>
+</tr>
+<tr>
+<td><code>/insights</code></td>
+<td>生成 AI 使用洞察报告</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_24">插件与技能<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/plugin</code></td>
+<td>打开插件管理界面</td>
+</tr>
+<tr>
+<td><code>/plugin install &lt;name&gt;</code></td>
+<td>安装插件</td>
+</tr>
+<tr>
+<td><code>/plugin enable &lt;name&gt;</code></td>
+<td>启用插件</td>
+</tr>
+<tr>
+<td><code>/plugin disable &lt;name&gt;</code></td>
+<td>禁用插件</td>
+</tr>
+<tr>
+<td><code>/plugin uninstall &lt;name&gt;</code></td>
+<td>卸载插件</td>
+</tr>
+<tr>
+<td><code>/plugin-validate [path]</code></td>
+<td>验证插件结构</td>
+</tr>
+<tr>
+<td><code>/reload-plugins</code></td>
+<td>重新加载所有插件</td>
+</tr>
+<tr>
+<td><code>/skills</code></td>
+<td>查看所有已加载的 Skills</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mcp-ide">MCP 与 IDE<a class="headerlink" href="#mcp-ide" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/mcp</code></td>
+<td>管理 MCP 连接</td>
+</tr>
+<tr>
+<td><code>/ide</code></td>
+<td>管理 IDE 集成</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_25">其他<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/bashes</code></td>
+<td>列出和管理后台任务</td>
+</tr>
+<tr>
+<td><code>/vim</code></td>
+<td>启用/禁用 Vim 编辑模式</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6">6. 常见工作流<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<h3 id="_26">理解新代码库<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; 给我这个代码库的概览
+&gt; 解释这里使用的主要架构模式
+&gt; 关键的数据模型有哪些？
+&gt; 找到处理用户身份验证的文件
+</code></pre></div>
+<h3 id="bug">修复 Bug<a class="headerlink" href="#bug" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; 运行 npm test 时看到错误 &lt;粘贴错误信息&gt;
+&gt; 建议几种修复方案
+&gt; 更新 user.ts 添加你建议的空值检查
+</code></pre></div>
+<h3 id="_27">代码重构<a class="headerlink" href="#_27" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; 在代码库中查找已弃用的 API 使用
+&gt; 建议如何重构 utils.js 以使用现代 JavaScript 特性
+&gt; 重构 utils.js，保持相同的行为
+&gt; 为重构的代码运行测试
+</code></pre></div>
+<h3 id="_28">编写测试<a class="headerlink" href="#_28" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; 查找未被测试覆盖的函数
+&gt; 为通知服务添加测试
+&gt; 为通知服务添加边缘条件的测试用例
+&gt; 运行新测试并修复任何失败
+</code></pre></div>
+<h3 id="merge-request">创建 Merge Request<a class="headerlink" href="#merge-request" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; 总结我最近的代码更改
+&gt; 创建一个 MR
+&gt; 用更多上下文增强 MR 描述
+&gt; 添加关于如何测试这些更改的信息
+</code></pre></div>
+<h3 id="_29">使用计划模式<a class="headerlink" href="#_29" title="Permanent link">&para;</a></h3>
+<p>按 <code>Shift+Tab</code>（macOS/Linux）或 <code>Alt+M</code>（Windows）切换到计划模式：</p>
+<div class="highlight"><pre><span></span><code>&gt; 我需要重构身份验证系统以使用 OAuth2。创建详细的迁移计划。
+&gt; 向后兼容性怎么办？
+&gt; 我们应该如何处理数据库迁移？
+</code></pre></div>
+<p>计划确认后再执行，适合多步骤实现和安全分析。</p>
+<h3 id="_30">引用文件<a class="headerlink" href="#_30" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; 解释 @src/utils/auth.js 中的逻辑        # 引用单个文件
+&gt; @src/components 的结构是什么？          # 引用目录
+&gt; @file1.js 和 @file2.js 的区别是什么？    # 引用多个文件
+</code></pre></div>
+<h3 id="_31">处理图片<a class="headerlink" href="#_31" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>拖放</strong>：将图片拖入 CodeBuddy 窗口</li>
+<li><strong>粘贴</strong>：<code>Ctrl+V</code> 粘贴</li>
+<li><strong>路径引用</strong>：<code>&gt; 分析这张图片：/path/to/image.png</code></li>
+</ul>
+<h3 id="_32">扩展思考<a class="headerlink" href="#_32" title="Permanent link">&para;</a></h3>
+<p>在提示词中加入"思考"或"深入思考"关键词启用深度推理：</p>
+<div class="highlight"><pre><span></span><code>&gt; 深入思考实现 OAuth2 认证系统的最佳方法
+&gt; 思考这种方法的潜在安全漏洞
+</code></pre></div>
+<hr />
+<h2 id="7">7. 配置系统<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="_33">配置文件层级<a class="headerlink" href="#_33" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>文件路径</th>
+<th>用途</th>
+<th>Git 跟踪</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户级</td>
+<td><code>~/.codebuddy/settings.json</code></td>
+<td>全局个人偏好</td>
+<td>否</td>
+</tr>
+<tr>
+<td>项目共享</td>
+<td><code>.codebuddy/settings.json</code></td>
+<td>团队共享的项目标准</td>
+<td>是</td>
+</tr>
+<tr>
+<td>项目本地</td>
+<td><code>.codebuddy/settings.local.json</code></td>
+<td>个人的项目覆盖</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<p><strong>优先级</strong>（高到低）：CLI 参数 &gt; 项目本地 &gt; 项目共享 &gt; 用户级</p>
+<h3 id="_34">常用配置项<a class="headerlink" href="#_34" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;language&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;简体中文&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gpt-5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;agent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-reviewer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;includeCoAuthoredBy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;autoCompactEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;alwaysThinkingEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;showTokensCounter&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;reasoningEffort&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;trustedDirectories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;~/workspace/myproj&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;NODE_ENV&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;development&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="_35">权限配置<a class="headerlink" href="#_35" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;permissions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;allow&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Bash(npm run lint)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Bash(npm run test:*)&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;ask&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Bash(git push:*)&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;deny&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;WebFetch&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Bash(curl:*)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Read(./.env)&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;additionalDirectories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;../docs/&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;defaultMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;acceptEdits&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;disableBypassPermissionsMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;disable&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;subagentPermissionMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bypassPermissions&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="cli_1">CLI 配置命令<a class="headerlink" href="#cli_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>config<span class="w"> </span>list<span class="w">                        </span><span class="c1"># 列出所有配置</span>
+codebuddy<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>&lt;key&gt;<span class="w">                   </span><span class="c1"># 获取配置项</span>
+codebuddy<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>&lt;key&gt;<span class="w"> </span>&lt;value&gt;<span class="w">           </span><span class="c1"># 设置项目级配置</span>
+codebuddy<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>-g<span class="w"> </span>&lt;key&gt;<span class="w"> </span>&lt;value&gt;<span class="w">        </span><span class="c1"># 设置全局配置</span>
+codebuddy<span class="w"> </span>config<span class="w"> </span>add<span class="w"> </span>&lt;key&gt;<span class="w"> </span>&lt;value&gt;<span class="w">           </span><span class="c1"># 添加数组配置项</span>
+codebuddy<span class="w"> </span>config<span class="w"> </span>remove<span class="w"> </span>&lt;key&gt;<span class="w"> </span><span class="o">[</span>values...<span class="o">]</span><span class="w">    </span><span class="c1"># 删除配置项</span>
+</code></pre></div>
+<hr />
+<h2 id="8">8. 记忆系统<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<h3 id="codebuddymd">静态记忆（CODEBUDDY.md）<a class="headerlink" href="#codebuddymd" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>位置</th>
+<th>作用域</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户记忆</td>
+<td><code>~/.codebuddy/CODEBUDDY.md</code></td>
+<td>所有项目（个人）</td>
+</tr>
+<tr>
+<td>用户规则</td>
+<td><code>~/.codebuddy/rules/*.md</code></td>
+<td>所有项目（个人）</td>
+</tr>
+<tr>
+<td>项目记忆</td>
+<td><code>./CODEBUDDY.md</code></td>
+<td>当前项目（团队共享）</td>
+</tr>
+<tr>
+<td>项目规则</td>
+<td><code>./.codebuddy/rules/*.md</code></td>
+<td>当前项目（团队共享）</td>
+</tr>
+<tr>
+<td>项目本地记忆</td>
+<td><code>./CODEBUDDY.local.md</code></td>
+<td>当前项目（个人）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_36">导入语法<a class="headerlink" href="#_36" title="Permanent link">&para;</a></h4>
+<p>CODEBUDDY.md 支持使用 <code>@</code> 引用其他文件：</p>
+<div class="highlight"><pre><span></span><code>查看 <span class="ni">@README</span> 了解项目概览，@docs/api.md 了解 API 设计。
+</code></pre></div>
+<h4 id="_37">条件规则<a class="headerlink" href="#_37" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>---
+alwaysApply: false
+<span class="gu">paths: src/api/**/*.ts</span>
+<span class="gu">---</span>
+<span class="gh"># API 开发规则</span>
+<span class="k">-</span><span class="w"> </span>所有 API 端点必须包含输入验证
+<span class="k">-</span><span class="w"> </span>使用标准错误响应格式
+</code></pre></div>
+<h3 id="auto-memory">Auto Memory（自动记忆）<a class="headerlink" href="#auto-memory" title="Permanent link">&para;</a></h3>
+<p>CodeBuddy 会自动在会话中保存和检索持久化记忆。</p>
+<ul>
+<li><strong>存储位置</strong>：<code>~/.codebuddy/memories/{project-id}/</code></li>
+<li><strong>管理命令</strong>：<code>/memory</code></li>
+<li><strong>启用/禁用</strong>：通过 <code>/config</code> 或 <code>/memory</code> 面板切换</li>
+</ul>
+<h4 id="_38">四种记忆类型<a class="headerlink" href="#_38" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>用户角色、目标、偏好</td>
+</tr>
+<tr>
+<td><code>feedback</code></td>
+<td>用户对 CodeBuddy 行为的纠正</td>
+</tr>
+<tr>
+<td><code>project</code></td>
+<td>进行中的工作、目标和决策</td>
+</tr>
+<tr>
+<td><code>reference</code></td>
+<td>外部系统和资源指针</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9">9. 模型管理<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<h3 id="_39">切换模型<a class="headerlink" href="#_39" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>命令/操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>交互面板</td>
+<td><code>/model</code></td>
+</tr>
+<tr>
+<td>CLI 参数</td>
+<td><code>codebuddy --model &lt;model-name&gt;</code></td>
+</tr>
+<tr>
+<td>环境变量</td>
+<td><code>export CODEBUDDY_MODEL="model-name"</code></td>
+</tr>
+<tr>
+<td>快捷键</td>
+<td><code>Alt+P</code>（macOS/Linux/Windows）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_40">自定义模型配置<a class="headerlink" href="#_40" title="Permanent link">&para;</a></h3>
+<p>在 <code>.codebuddy/models.json</code> 或 <code>~/.codebuddy/models.json</code> 中配置：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;models&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-v4-pro&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DeepSeek V4 Pro&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vendor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DeepSeek&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.deepseek.com/v1/chat/completions&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;apiKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${DEEPSEEK_API_KEY}&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;maxInputTokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">128000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;maxOutputTokens&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8192</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;supportsToolCall&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;relatedModels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;lite&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-v4-flash&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;reasoning&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;deepseek-v4-pro&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;availableModels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;deepseek-v4-pro&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;deepseek-v4-flash&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>重要</strong>：<code>url</code> 必须以 <code>/chat/completions</code> 结尾。支持 <code>${ENV_VAR}</code> 环境变量引用。</p>
+</blockquote>
+<h3 id="_41">场景自动切换<a class="headerlink" href="#_41" title="Permanent link">&para;</a></h3>
+<p>CodeBuddy 根据任务场景自动切换模型变体：</p>
+<table>
+<thead>
+<tr>
+<th>变体</th>
+<th>用途</th>
+<th>环境变量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lite</code></td>
+<td>轻量任务（提取、摘要）</td>
+<td><code>CODEBUDDY_SMALL_FAST_MODEL</code></td>
+</tr>
+<tr>
+<td><code>reasoning</code></td>
+<td>深度推理（复杂分析）</td>
+<td><code>CODEBUDDY_BIG_SLOW_MODEL</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10">10. 权限控制<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<h3 id="_42">四种权限模式<a class="headerlink" href="#_42" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>说明</th>
+<th>CLI 参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal（默认）</td>
+<td>根据权限规则逐个确认</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Auto-accept Edits</td>
+<td>自动批准文件编辑，其他仍需确认</td>
+<td><code>--permission-mode acceptEdits</code></td>
+</tr>
+<tr>
+<td>Bypass Permissions</td>
+<td>跳过所有权限检查</td>
+<td><code>--permission-mode bypassPermissions</code></td>
+</tr>
+<tr>
+<td>Plan Mode</td>
+<td>AI 创建计划，等待审批后执行</td>
+<td><code>--permission-mode plan</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_43">切换方式<a class="headerlink" href="#_43" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>键盘切换</td>
+<td><code>Shift+Tab</code>（macOS/Linux）/ <code>Alt+M</code>（Windows）循环切换</td>
+</tr>
+<tr>
+<td>CLI 参数</td>
+<td><code>codebuddy --permission-mode &lt;mode&gt;</code></td>
+</tr>
+<tr>
+<td>配置文件</td>
+<td><code>settings.json</code> 中的 <code>permissions.defaultMode</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_44">权限规则<a class="headerlink" href="#_44" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;permissions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;allow&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Bash(npm run test:*)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Read&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;ask&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Bash(git push:*)&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;deny&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;WebFetch&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Read(./.env)&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>allow</strong>：自动批准的操作</li>
+<li><strong>ask</strong>：需要确认的操作</li>
+<li><strong>deny</strong>：拒绝的操作</li>
+</ul>
+<hr />
+<h2 id="11-skills">11. Skills 技能系统<a class="headerlink" href="#11-skills" title="Permanent link">&para;</a></h2>
+<p>Skills 是 AI 根据任务需求自动选择的专业能力模块。</p>
+<h3 id="_45">与斜杠命令的区别<a class="headerlink" href="#_45" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Skills</th>
+<th>斜杠命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>触发方式</td>
+<td>AI 自动识别调用</td>
+<td>用户手动输入</td>
+</tr>
+<tr>
+<td>使用场景</td>
+<td>专业领域任务</td>
+<td>快捷操作</td>
+</tr>
+<tr>
+<td>可见性</td>
+<td>对用户透明</td>
+<td>用户主动发起</td>
+</tr>
+</tbody>
+</table>
+<h3 id="skill">创建 Skill<a class="headerlink" href="#skill" title="Permanent link">&para;</a></h3>
+<p>在 <code>.codebuddy/skills/&lt;skill-name&gt;/SKILL.md</code>（项目级）或 <code>~/.codebuddy/skills/&lt;skill-name&gt;/SKILL.md</code>（用户级）创建文件：</p>
+<div class="highlight"><pre><span></span><code>---
+name: pdf
+description: PDF 文档处理专家。当用户需要处理 PDF 相关任务时使用。
+<span class="gu">allowed-tools: Read, Write, Bash</span>
+<span class="gu">---</span>
+你是一个 PDF 文档处理专家。
+
+<span class="gu">## 核心能力</span>
+<span class="k">-</span><span class="w"> </span>提取 PDF 文本内容
+<span class="k">-</span><span class="w"> </span>转换 PDF 格式
+<span class="k">-</span><span class="w"> </span>合并和拆分 PDF
+
+<span class="gu">## 工作流程</span>
+<span class="k">1.</span> 检查 PDF 文件是否存在
+<span class="k">2.</span> 使用适当工具提取内容
+<span class="k">3.</span> 根据需求处理
+</code></pre></div>
+<h3 id="frontmatter">Frontmatter 字段<a class="headerlink" href="#frontmatter" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>Skill 名称（默认使用目录名）</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>描述（帮助 AI 决定何时使用）</td>
+</tr>
+<tr>
+<td><code>allowed-tools</code></td>
+<td>允许使用的工具白名单</td>
+</tr>
+<tr>
+<td><code>disable-model-invocation</code></td>
+<td>设为 <code>true</code> 时仅支持手动调用</td>
+</tr>
+<tr>
+<td><code>context</code></td>
+<td>设为 <code>fork</code> 时在独立子代理中执行</td>
+</tr>
+<tr>
+<td><code>agent</code></td>
+<td>指定子代理类型（配合 <code>context: fork</code>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_46">支持的语法<a class="headerlink" href="#_46" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>$ARGUMENTS</code></strong>：参数占位符</li>
+<li><strong><code>@file</code></strong>：文件引用</li>
+<li><strong><code>!`command`</code></strong>：Shell 命令执行</li>
+<li><strong><code>${CODEBUDDY_SKILL_DIR}</code></strong>：Skill 目录路径</li>
+<li><strong><code>${ENV_VAR}</code></strong>：环境变量</li>
+</ul>
+<h3 id="skills">查看 Skills<a class="headerlink" href="#skills" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>/skills
+</code></pre></div>
+<hr />
+<h2 id="12">12. 插件系统<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<p>插件是可分发、可共享的功能扩展包。</p>
+<h3 id="_47">插件目录结构<a class="headerlink" href="#_47" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>my-plugin/
+├── .codebuddy-plugin/
+│   └── plugin.json       # 插件清单
+├── commands/             # 斜杠命令
+├── agents/               # 自定义 agent
+├── skills/               # Skills
+├── hooks/                # 钩子
+├── bin/                  # 可执行文件（自动加入 PATH）
+├── .mcp.json             # MCP 服务器配置
+├── .lsp.json             # LSP 服务器配置
+└── settings.json         # 默认设置
+</code></pre></div>
+<h3 id="_48">插件管理<a class="headerlink" href="#_48" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>/plugin                    # 打开插件管理器
+/plugin marketplace add &lt;name&gt;   # 从市场安装
+/plugin install &lt;name&gt;     # 安装插件
+/plugin enable &lt;name&gt;      # 启用
+/plugin disable &lt;name&gt;     # 禁用
+/plugin uninstall &lt;name&gt;   # 卸载
+/reload-plugins            # 重新加载所有插件（无需重启）
+</code></pre></div>
+<h3 id="_49">本地加载插件<a class="headerlink" href="#_49" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--plugin-dir<span class="w"> </span>./my-plugin
+codebuddy<span class="w"> </span>--plugin-dir<span class="w"> </span>./plugin-one<span class="w"> </span>--plugin-dir<span class="w"> </span>./plugin-two
+</code></pre></div>
+<h3 id="_50">创建自定义斜杠命令<a class="headerlink" href="#_50" title="Permanent link">&para;</a></h3>
+<p><strong>项目级</strong>（<code>.codebuddy/commands/*.md</code>）：</p>
+<div class="highlight"><pre><span></span><code>---
+description: &quot;审查代码质量&quot;
+argument-hint: &quot;[file-paths...]&quot;
+<span class="gu">allowed-tools: Read</span>
+<span class="gu">---</span>
+审查以下文件的代码质量：
+$ARGUMENTS
+</code></pre></div>
+<p>使用方式：<code>/code-review src/utils.ts</code></p>
+<p><strong>用户级</strong>（<code>~/.codebuddy/commands/*.md</code>）：在所有项目中可用。</p>
+<hr />
+<h2 id="13-hooks">13. Hooks 钩子系统<a class="headerlink" href="#13-hooks" title="Permanent link">&para;</a></h2>
+<p>Hooks 是在 CodeBuddy 生命周期各阶段自动执行的 Shell 命令。</p>
+<h3 id="_51">事件类型<a class="headerlink" href="#_51" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>触发时机</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PreToolUse</code></td>
+<td>工具调用前（可阻止执行）</td>
+<td>权限控制、验证、日志</td>
+</tr>
+<tr>
+<td><code>PostToolUse</code></td>
+<td>工具调用后</td>
+<td>自动格式化、后处理</td>
+</tr>
+<tr>
+<td><code>UserPromptSubmit</code></td>
+<td>用户提交提示词后</td>
+<td>输入验证/修改</td>
+</tr>
+<tr>
+<td><code>Notification</code></td>
+<td>发送通知时</td>
+<td>自定义提醒</td>
+</tr>
+<tr>
+<td><code>Stop</code></td>
+<td>完成响应时</td>
+<td>清理、总结</td>
+</tr>
+<tr>
+<td><code>SubagentStop</code></td>
+<td>子代理完成时</td>
+<td>子任务跟踪</td>
+</tr>
+<tr>
+<td><code>SessionStart</code></td>
+<td>会话开始时</td>
+<td>环境设置</td>
+</tr>
+<tr>
+<td><code>SessionEnd</code></td>
+<td>会话结束时</td>
+<td>清理、日志</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_52">配置示例<a class="headerlink" href="#_52" title="Permanent link">&para;</a></h3>
+<p>在 <code>settings.json</code> 中配置：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;hooks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;PostToolUse&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;matcher&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Edit|Write&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;hooks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;command&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jq -r &#39;.tool_input.file_path&#39; | { read f; if echo \&quot;$f\&quot; | grep -q &#39;\\.ts$&#39;; then npx prettier --write \&quot;$f\&quot;; fi; }&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="_53">交互式设置<a class="headerlink" href="#_53" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>/hooks
+</code></pre></div>
+<p>选择事件 -&gt; 添加 matcher -&gt; 添加 hook 命令 -&gt; 选择存储位置。</p>
+<blockquote>
+<p><strong>安全提示</strong>：Hooks 使用当前用户环境凭证自动运行，仅注册可信的 Hook。</p>
+</blockquote>
+<hr />
+<h2 id="14-mcp">14. MCP 集成<a class="headerlink" href="#14-mcp" title="Permanent link">&para;</a></h2>
+<p>MCP（Model Context Protocol）用于集成第三方工具和服务。</p>
+<h3 id="_54">配置文件位置<a class="headerlink" href="#_54" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>范围</th>
+<th>文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户级</td>
+<td><code>~/.codebuddy/.mcp.json</code></td>
+<td>全局工具</td>
+</tr>
+<tr>
+<td>项目级</td>
+<td><code>&lt;project&gt;/.mcp.json</code></td>
+<td>项目工具</td>
+</tr>
+<tr>
+<td>本地级</td>
+<td>存储在 <code>~/.codebuddy.json</code></td>
+<td>临时/实验性</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_55">传输类型<a class="headerlink" href="#_55" title="Permanent link">&para;</a></h3>
+<p><strong>STDIO（本地进程）</strong></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;my-tool&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stdio&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;python&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;my_mcp_server&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;PYTHONPATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/tools&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>HTTP（远程服务）</strong></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;api-server&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.example.com/mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;Authorization&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer ${API_TOKEN}&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>SSE（Server-Sent Events）</strong></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;sse-server&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://api.example.com/mcp/sse&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;X-API-Key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;${API_KEY}&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="cli_2">CLI 管理<a class="headerlink" href="#cli_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>--scope<span class="w"> </span>user<span class="w"> </span>my-tool<span class="w"> </span>--<span class="w"> </span>/path/to/tool<span class="w"> </span>arg1<span class="w"> </span>arg2
+codebuddy<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>--scope<span class="w"> </span>project<span class="w"> </span>--transport<span class="w"> </span>http<span class="w"> </span>http-server<span class="w"> </span>https://example.com/mcp
+codebuddy<span class="w"> </span>mcp<span class="w"> </span>add-json<span class="w"> </span>--scope<span class="w"> </span>user<span class="w"> </span>my-server<span class="w"> </span><span class="s1">&#39;{&quot;type&quot;:&quot;stdio&quot;,&quot;command&quot;:&quot;/usr/local/bin/tool&quot;}&#39;</span>
+codebuddy<span class="w"> </span>mcp<span class="w"> </span>list<span class="w">                              </span><span class="c1"># 列出所有服务器</span>
+codebuddy<span class="w"> </span>mcp<span class="w"> </span>get<span class="w"> </span>my-server<span class="w">                     </span><span class="c1"># 查看详情</span>
+codebuddy<span class="w"> </span>mcp<span class="w"> </span>remove<span class="w"> </span>my-server<span class="w">                  </span><span class="c1"># 移除服务器</span>
+</code></pre></div>
+<h3 id="_56">环境变量<a class="headerlink" href="#_56" title="Permanent link">&para;</a></h3>
+<p>配置文件支持 <code>${ENV_VAR}</code> 和 <code>${ENV_VAR:-default}</code> 语法引用环境变量。</p>
+<hr />
+<h2 id="15-ide">15. IDE 集成<a class="headerlink" href="#15-ide" title="Permanent link">&para;</a></h2>
+<h3 id="ide">支持的 IDE<a class="headerlink" href="#ide" title="Permanent link">&para;</a></h3>
+<ul>
+<li>VS Code</li>
+<li>Cursor</li>
+<li>Windsurf</li>
+<li>JetBrains 系列（IntelliJ、PyCharm、WebStorm 等）</li>
+</ul>
+<h3 id="_57">连接方式<a class="headerlink" href="#_57" title="Permanent link">&para;</a></h3>
+<p><strong>方式一：安装 IDE 插件（推荐）</strong></p>
+<p>从 IDE 的插件市场安装 CodeBuddy 插件。</p>
+<p><strong>方式二：<code>--ide</code> 参数</strong></p>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--ide
+</code></pre></div>
+<p><strong>方式三：<code>/ide</code> 命令</strong></p>
+<p>在交互模式中使用 <code>/ide</code> 管理连接。</p>
+<h3 id="_58">集成能力<a class="headerlink" href="#_58" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>openFile</code></td>
+<td>在 IDE 中预览文件</td>
+</tr>
+<tr>
+<td><code>openDiff</code></td>
+<td>差异对比预览</td>
+</tr>
+<tr>
+<td><code>getDiagnostics</code></td>
+<td>获取 IDE 诊断/ lint 信息</td>
+</tr>
+<tr>
+<td><code>close_tab</code></td>
+<td>关闭编辑器标签页</td>
+</tr>
+<tr>
+<td><code>selection_changed</code></td>
+<td>实时监听文本选择变化</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="16">16. 高级特性<a class="headerlink" href="#16" title="Permanent link">&para;</a></h2>
+<h3 id="git-worktree">Git Worktree 并行开发<a class="headerlink" href="#git-worktree" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 创建 worktree</span>
+git<span class="w"> </span>worktree<span class="w"> </span>add<span class="w"> </span>../project-feature-a<span class="w"> </span>-b<span class="w"> </span>feature-a
+
+<span class="c1"># 在不同 worktree 中独立运行 CodeBuddy</span>
+<span class="nb">cd</span><span class="w"> </span>../project-feature-a<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>codebuddy
+
+<span class="c1"># 管理 worktree</span>
+git<span class="w"> </span>worktree<span class="w"> </span>list
+git<span class="w"> </span>worktree<span class="w"> </span>remove<span class="w"> </span>../project-feature-a
+</code></pre></div>
+<p>CodeBuddy 也内置支持：</p>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--worktree<span class="w">              </span><span class="c1"># 自动创建 worktree</span>
+codebuddy<span class="w"> </span>--worktree<span class="w"> </span>my-feature<span class="w">   </span><span class="c1"># 指定名称</span>
+codebuddy<span class="w"> </span>--worktree<span class="w"> </span>--tmux<span class="w">       </span><span class="c1"># 配合 tmux 使用</span>
+</code></pre></div>
+<h3 id="_59">沙箱运行<a class="headerlink" href="#_59" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--sandbox<span class="w">                        </span><span class="c1"># 容器沙箱（Docker/Podman）</span>
+codebuddy<span class="w"> </span>--sandbox<span class="w"> </span>https://api.e2b.dev<span class="w">    </span><span class="c1"># E2B 云端沙箱</span>
+codebuddy<span class="w"> </span>--sandbox<span class="w"> </span>--sandbox-new<span class="w">          </span><span class="c1"># 强制创建新沙箱</span>
+codebuddy<span class="w"> </span>--sandbox<span class="w"> </span>--sandbox-kill<span class="w">         </span><span class="c1"># 退出时清理沙箱</span>
+</code></pre></div>
+<h3 id="http">HTTP 服务模式<a class="headerlink" href="#http" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--serve<span class="w"> </span>--port<span class="w"> </span><span class="m">8080</span>
+</code></pre></div>
+<p>提供 Web UI、REST API 和 ACP 协议支持。</p>
+<h3 id="_60">子代理系统<a class="headerlink" href="#_60" title="Permanent link">&para;</a></h3>
+<p>使用 <code>--agents</code> 参数动态定义子代理：</p>
+<div class="highlight"><pre><span></span><code>codebuddy<span class="w"> </span>--agents<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">  &quot;code-reviewer&quot;: {</span>
+<span class="s1">    &quot;description&quot;: &quot;专业代码审查员&quot;,</span>
+<span class="s1">    &quot;prompt&quot;: &quot;你是高级代码审查员。&quot;,</span>
+<span class="s1">    &quot;tools&quot;: [&quot;Read&quot;, &quot;Grep&quot;, &quot;Glob&quot;],</span>
+<span class="s1">    &quot;model&quot;: &quot;sonnet&quot;</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+</code></pre></div>
+<p>或在交互模式中通过 <code>/agents</code> 管理。</p>
+<h3 id="checkpoint">检查点（Checkpoint）<a class="headerlink" href="#checkpoint" title="Permanent link">&para;</a></h3>
+<p>CodeBuddy 支持创建检查点以保存和恢复代码状态。</p>
+<h3 id="headless">无头模式（Headless）<a class="headerlink" href="#headless" title="Permanent link">&para;</a></h3>
+<p>适用于 CI/CD 和自动化场景的非交互模式。</p>
+<h3 id="_61">定时任务<a class="headerlink" href="#_61" title="Permanent link">&para;</a></h3>
+<p>使用 <code>/loop</code> Skill 实现定时任务：</p>
+<div class="highlight"><pre><span></span><code>/loop 5m /standup-report    # 每 5 分钟运行
+</code></pre></div>
+<p>或使用 CronCreate 工具调度任务。</p>
+<hr />
+<h2 id="_62">附录<a class="headerlink" href="#_62" title="Permanent link">&para;</a></h2>
+<h3 id="_63">配置文件总览<a class="headerlink" href="#_63" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>~/.codebuddy/
+├── settings.json           # 用户全局配置
+├── models.json             # 自定义模型配置
+├── .mcp.json               # 用户级 MCP 配置
+├── CODEBUDDY.md            # 用户级记忆
+├── rules/                  # 用户级规则
+├── commands/               # 用户级斜杠命令
+├── skills/                 # 用户级 Skills
+├── memories/               # Auto Memory 存储
+├── plugins/                # 插件市场数据
+└── logs/                   # 日志文件
+
+&lt;project&gt;/
+├── CODEBUDDY.md            # 项目记忆（团队共享）
+├── CODEBUDDY.local.md      # 项目本地记忆（个人）
+├── .codebuddy/
+│   ├── settings.json       # 项目共享配置
+│   ├── settings.local.json # 项目本地配置
+│   ├── .mcp.json           # 项目 MCP 配置
+│   ├── rules/              # 项目规则
+│   ├── commands/           # 项目斜杠命令
+│   ├── skills/             # 项目 Skills
+│   └── agents/             # 项目子代理
+</code></pre></div>
+<h3 id="_64">常见问题排查<a class="headerlink" href="#_64" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/doctor</code></td>
+<td>检查 CodeBuddy 环境状态</td>
+</tr>
+<tr>
+<td><code>codebuddy --debug</code></td>
+<td>启用调试日志</td>
+</tr>
+<tr>
+<td><code>codebuddy --verbose</code></td>
+<td>启用详细输出</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_65">相关资源<a class="headerlink" href="#_65" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>资源</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>问题反馈</td>
+<td>https://cnb.cool/codebuddy/codebuddy-code/-/issues</td>
+</tr>
+<tr>
+<td>邮件支持</td>
+<td>codebuddy@tencent.com</td>
+</tr>
+<tr>
+<td>中国站</td>
+<td>https://copilot.tencent.com/cli</td>
+</tr>
+<tr>
+<td>国际站</td>
+<td>https://www.codebuddy.ai/cli</td>
+</tr>
+<tr>
+<td>官方文档</td>
+<td>https://cnb.cool/codebuddy/codebuddy-code</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,4154 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Repo 命令行工具操作指南 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#repo" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Repo 命令行工具操作指南
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        工作区结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 安装与更新
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 安装与更新">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        安装
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        更新
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用国内镜像加速
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 全局选项
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 核心工作流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 核心工作流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 初始化与同步
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 日常开发流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 代码审查流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 命令详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 命令详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-init-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 init - 初始化客户端
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-sync-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 sync - 同步项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-start-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 start - 创建分支
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-upload-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 upload - 上传代码审查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-download-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 download - 下载变更
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-abandon-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 abandon - 放弃分支
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-branches-branch-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 branches / branch - 查看分支
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-checkout-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 checkout - 切换分支
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#59-rebase-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.9 rebase - 变基操作
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#510-prune-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10 prune - 清理已合并分支
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#511-diff-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.11 diff - 查看差异
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#512-status-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.12 status - 查看状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#513-stage-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.13 stage - 暂存文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#514-forall-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.14 forall - 批量执行命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#515-grep-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.15 grep - 跨项目搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#516-list-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.16 list - 列出项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#517-manifest-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.17 manifest - 清单检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#518-diffmanifests-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.18 diffmanifests - 清单对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#519-info-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.19 info - 项目信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#520-overview-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.20 overview - 分支概览
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#521-cherry-pick-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.21 cherry-pick - 挑选变更
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-smartsync-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.22 smartsync - 智能同步
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523-gc-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.23 gc - 垃圾回收
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#524-wipe-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.24 wipe - 清除项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#525-selfupdate-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.25 selfupdate - 更新 repo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#526-version-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.26 version - 查看版本
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#527-help-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.27 help - 帮助
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Manifest 清单文件格式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Manifest 清单文件格式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 基本结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 元素详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 元素详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remote-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;remote&gt; - 远程仓库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;default&gt; - 默认值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#project-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;project&gt; - 项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extend-project-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;extend-project&gt; - 扩展项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-project-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;remove-project&gt; - 移除项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#include-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;include&gt; - 包含清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifest-server-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;manifest-server&gt; - 清单服务器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#submanifest-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;submanifest&gt; - 子清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repo-hooks-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;repo-hooks&gt; - Repo 钩子
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#superproject-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;superproject&gt; - 超级项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contactinfo-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;contactinfo&gt; - 联系信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 完整示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-multi-manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 多清单管理 (Multi-manifest)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-local-manifests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 本地清单 (Local Manifests)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-gerrit-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Gerrit 集成与 upload 配置
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Gerrit 集成与 upload 配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 上传自动确认
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 自动审查者和抄送
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-topic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 自动 Topic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-hashtag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 自动 Hashtag
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 上传标签
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#96" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6 上传警告阈值
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 常见场景与最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 常见场景与最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 镜像管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 大型项目同步优化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 代码审查工作流
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 多人协作分支
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 CI/CD 集成
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-repo-west" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Repo 与 West 对比
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. 命令速查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="repo">Repo 命令行工具操作指南<a class="headerlink" href="#repo" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>版本: v2.62 | 项目主页: https://gerrit.googlesource.com/git-repo
+Bug 报告: https://issues.gerritcodereview.com/issues/new?component=1370071</p>
+</blockquote>
+<h2 id="_1">目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#1-概述">1. 概述</a></li>
+<li><a href="#2-安装与更新">2. 安装与更新</a></li>
+<li><a href="#3-全局选项">3. 全局选项</a></li>
+<li><a href="#4-核心工作流">4. 核心工作流</a></li>
+<li><a href="#5-命令详解">5. 命令详解</a></li>
+<li><a href="#51-init---初始化客户端">5.1 init - 初始化客户端</a></li>
+<li><a href="#52-sync---同步项目">5.2 sync - 同步项目</a></li>
+<li><a href="#53-start---创建分支">5.3 start - 创建分支</a></li>
+<li><a href="#54-upload---上传代码审查">5.4 upload - 上传代码审查</a></li>
+<li><a href="#55-download---下载变更">5.5 download - 下载变更</a></li>
+<li><a href="#56-abandon---放弃分支">5.6 abandon - 放弃分支</a></li>
+<li><a href="#57-branches--branch---查看分支">5.7 branches / branch - 查看分支</a></li>
+<li><a href="#58-checkout---切换分支">5.8 checkout - 切换分支</a></li>
+<li><a href="#59-rebase---变基操作">5.9 rebase - 变基操作</a></li>
+<li><a href="#510-prune---清理已合并分支">5.10 prune - 清理已合并分支</a></li>
+<li><a href="#511-diff---查看差异">5.11 diff - 查看差异</a></li>
+<li><a href="#512-status---查看状态">5.12 status - 查看状态</a></li>
+<li><a href="#513-stage---暂存文件">5.13 stage - 暂存文件</a></li>
+<li><a href="#514-forall---批量执行命令">5.14 forall - 批量执行命令</a></li>
+<li><a href="#515-grep---跨项目搜索">5.15 grep - 跨项目搜索</a></li>
+<li><a href="#516-list---列出项目">5.16 list - 列出项目</a></li>
+<li><a href="#517-manifest---清单检查">5.17 manifest - 清单检查</a></li>
+<li><a href="#518-diffmanifests---清单对比">5.18 diffmanifests - 清单对比</a></li>
+<li><a href="#519-info---项目信息">5.19 info - 项目信息</a></li>
+<li><a href="#520-overview---分支概览">5.20 overview - 分支概览</a></li>
+<li><a href="#521-cherry-pick---挑选变更">5.21 cherry-pick - 挑选变更</a></li>
+<li><a href="#522-smartsync---智能同步">5.22 smartsync - 智能同步</a></li>
+<li><a href="#523-gc---垃圾回收">5.23 gc - 垃圾回收</a></li>
+<li><a href="#524-wipe---清除项目">5.24 wipe - 清除项目</a></li>
+<li><a href="#525-selfupdate---更新-repo">5.25 selfupdate - 更新 repo</a></li>
+<li><a href="#526-version---查看版本">5.26 version - 查看版本</a></li>
+<li><a href="#527-help---帮助">5.27 help - 帮助</a></li>
+<li><a href="#6-manifest-清单文件格式">6. Manifest 清单文件格式</a></li>
+<li><a href="#7-多清单管理-multi-manifest">7. 多清单管理 (Multi-manifest)</a></li>
+<li><a href="#8-本地清单-local-manifests">8. 本地清单 (Local Manifests)</a></li>
+<li><a href="#9-gerrit-集成与-upload-配置">9. Gerrit 集成与 upload 配置</a></li>
+<li><a href="#10-常见场景与最佳实践">10. 常见场景与最佳实践</a></li>
+<li><a href="#11-repo-与-west-对比">11. Repo 与 West 对比</a></li>
+<li><a href="#12-命令速查表">12. 命令速查表</a></li>
+</ul>
+<hr />
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>Repo 是 Google 为管理多个 Git 仓库而开发的工具，广泛用于 Android、Chromium OS 等大型项目中。它与 Gerrit Code Review 系统紧密集成，主要功能包括：</p>
+<ul>
+<li><strong>多仓库管理</strong>: 通过清单文件（Manifest）定义和同步数百个 Git 仓库</li>
+<li><strong>代码审查集成</strong>: 与 Gerrit 无缝对接，支持上传、下载、cherry-pick 变更</li>
+<li><strong>批量操作</strong>: 在所有或选定的项目上并行执行命令</li>
+<li><strong>分支管理</strong>: 跨项目的 topic 分支创建、切换、变基和清理</li>
+<li><strong>多清单支持</strong>: 支持嵌套清单和子清单树结构</li>
+</ul>
+<h3 id="_2">工作区结构<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&lt;workspace&gt;/
+├── .repo/                          # Repo 内部数据目录
+│   ├── manifests/                  # 清单仓库（包含 default.xml 等）
+│   │   ├── default.xml             # 默认清单文件
+│   │   └── ...
+│   ├── manifest.xml                # 当前使用的清单软链接
+│   ├── local_manifests/            # 本地清单（用户自定义）
+│   ├── project-objects/            # 共享对象存储
+│   ├── projects/                   # 项目 git 数据
+│   ├── repo/                       # repo 工具自身
+│   └── ...
+├── &lt;project-1&gt;/                    # 项目 1 的检出目录
+├── &lt;project-2&gt;/                    # 项目 2 的检出目录
+└── ...
+</code></pre></div>
+<hr />
+<h2 id="2">2. 安装与更新<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="_3">安装<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 方法 1: 通过包管理器（Ubuntu/Debian）</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>repo
+
+<span class="c1"># 方法 2: 手动安装（推荐）</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/.bin
+curl<span class="w"> </span>https://storage.googleapis.com/git-repo-downloads/repo<span class="w"> </span>&gt;<span class="w"> </span>~/.bin/repo
+chmod<span class="w"> </span>a+x<span class="w"> </span>~/.bin/repo
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span>~/.bin:<span class="nv">$PATH</span>
+
+<span class="c1"># 方法 3: 使用国内镜像</span>
+curl<span class="w"> </span>https://mirrors.tuna.tsinghua.edu.cn/git/git-repo<span class="w"> </span>&gt;<span class="w"> </span>~/.bin/repo
+chmod<span class="w"> </span>a+x<span class="w"> </span>~/.bin/repo
+</code></pre></div>
+<h3 id="_4">更新<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 手动更新</span>
+repo<span class="w"> </span>selfupdate
+
+<span class="c1"># repo sync 时自动更新（默认行为）</span>
+</code></pre></div>
+<h3 id="_5">使用国内镜像加速<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 设置环境变量使用清华镜像</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REPO_URL</span><span class="o">=</span><span class="s1">&#39;https://mirrors.tuna.tsinghua.edu.cn/git/git-repo&#39;</span>
+</code></pre></div>
+<hr />
+<h2 id="3">3. 全局选项<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>repo [-p|--paginate|--no-pager] [--color=COLOR] [--trace] [--time] [--version] COMMAND [ARGS]
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-h, --help</code></td>
+<td>显示帮助信息</td>
+</tr>
+<tr>
+<td><code>--help-all</code></td>
+<td>显示所有子命令的帮助信息</td>
+</tr>
+<tr>
+<td><code>-p, --paginate</code></td>
+<td>使用分页器显示输出</td>
+</tr>
+<tr>
+<td><code>--no-pager</code></td>
+<td>禁用分页器</td>
+</tr>
+<tr>
+<td><code>--color=COLOR</code></td>
+<td>控制颜色输出: <code>auto</code>, <code>always</code>, <code>never</code></td>
+</tr>
+<tr>
+<td><code>--trace</code></td>
+<td>跟踪 git 命令执行（等同于 <code>REPO_TRACE=1</code>）</td>
+</tr>
+<tr>
+<td><code>--trace-to-stderr</code></td>
+<td>跟踪输出同时发送到 stderr 和 <code>.repo/TRACE_FILE</code></td>
+</tr>
+<tr>
+<td><code>--trace-python</code></td>
+<td>跟踪 Python 命令执行</td>
+</tr>
+<tr>
+<td><code>--time</code></td>
+<td>计时 repo 命令执行时间</td>
+</tr>
+<tr>
+<td><code>--version</code></td>
+<td>显示 repo 版本</td>
+</tr>
+<tr>
+<td><code>--show-toplevel</code></td>
+<td>显示工作区顶级目录路径</td>
+</tr>
+<tr>
+<td><code>--event-log=FILE</code></td>
+<td>事件日志文件路径</td>
+</tr>
+<tr>
+<td><code>--git-trace2-event-log=DIR</code></td>
+<td>Git trace2 事件日志目录</td>
+</tr>
+<tr>
+<td><code>--submanifest-path=REL_PATH</code></td>
+<td>子清单路径</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4">4. 核心工作流<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 初始化与同步<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 初始化工作区</span>
+mkdir<span class="w"> </span>my-project<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>my-project
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>-b<span class="w"> </span>main
+
+<span class="c1"># 2. 同步所有项目</span>
+repo<span class="w"> </span>sync
+
+<span class="c1"># 3. （可选）同步到已知良好版本</span>
+repo<span class="w"> </span>smartsync
+</code></pre></div>
+<h3 id="42">4.2 日常开发流程<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 创建开发分支</span>
+repo<span class="w"> </span>start<span class="w"> </span>my-feature<span class="w"> </span>--all
+
+<span class="c1"># 2. 修改代码...</span>
+
+<span class="c1"># 3. 查看状态</span>
+repo<span class="w"> </span>status
+
+<span class="c1"># 4. 暂存文件</span>
+repo<span class="w"> </span>stage<span class="w"> </span>-i
+
+<span class="c1"># 5. 提交代码</span>
+git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">&quot;feat: add new feature&quot;</span>
+
+<span class="c1"># 6. 变基到最新</span>
+repo<span class="w"> </span>rebase
+
+<span class="c1"># 7. 上传审查</span>
+repo<span class="w"> </span>upload
+
+<span class="c1"># 8. 审查通过后清理分支</span>
+repo<span class="w"> </span>prune
+</code></pre></div>
+<h3 id="43">4.3 代码审查流程<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 下载他人的变更到本地</span>
+repo<span class="w"> </span>download<span class="w"> </span>project-name<span class="w"> </span><span class="m">12345</span>/2
+
+<span class="c1"># 审查后挑选变更到另一个分支</span>
+repo<span class="w"> </span>cherry-pick<span class="w"> </span>&lt;sha1&gt;
+
+<span class="c1"># 上传自己的变更</span>
+repo<span class="w"> </span>upload<span class="w"> </span>--re<span class="o">=</span>reviewer@example.com<span class="w"> </span>--cc<span class="o">=</span>team@example.com
+</code></pre></div>
+<hr />
+<h2 id="5">5. 命令详解<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-init-">5.1 init - 初始化客户端<a class="headerlink" href="#51-init-" title="Permanent link">&para;</a></h3>
+<p>在当前目录初始化一个 repo 客户端。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>options<span class="o">]</span><span class="w"> </span><span class="o">[</span>manifest<span class="w"> </span>url<span class="o">]</span>
+</code></pre></div>
+<p><strong>清单选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-u URL, --manifest-url=URL</code></td>
+<td>清单仓库地址（也可作为第一个位置参数）</td>
+</tr>
+<tr>
+<td><code>-b REVISION, --manifest-branch=REVISION</code></td>
+<td>清单分支或修订版本（使用 HEAD 表示默认分支）</td>
+</tr>
+<tr>
+<td><code>--manifest-upstream-branch=BRANCH</code></td>
+<td>当 -b 指定为 commit 时，指定包含该 commit 的 ref 名称</td>
+</tr>
+<tr>
+<td><code>-m NAME.xml, --manifest-name=NAME.xml</code></td>
+<td>初始清单文件名（默认 <code>default.xml</code>）</td>
+</tr>
+<tr>
+<td><code>-g GROUP, --groups=GROUP</code></td>
+<td>限制同步的项目组，如 <code>default\|all\|G1,G2,G3\|G4,-G5</code></td>
+</tr>
+<tr>
+<td><code>-p PLATFORM, --platform=PLATFORM</code></td>
+<td>限制平台组: <code>auto\|all\|none\|linux\|darwin\|...</code></td>
+</tr>
+<tr>
+<td><code>--submodules</code></td>
+<td>同步清单仓库的子模块</td>
+</tr>
+<tr>
+<td><code>--standalone-manifest</code></td>
+<td>下载清单为静态文件而非 git 仓库</td>
+</tr>
+<tr>
+<td><code>--manifest-depth=DEPTH</code></td>
+<td>清单仓库浅克隆深度（0 为完整克隆，默认 0）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>清单检出选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-c, --current-branch</code></td>
+<td>仅获取当前清单分支（默认）</td>
+</tr>
+<tr>
+<td><code>--no-current-branch</code></td>
+<td>获取所有清单分支</td>
+</tr>
+<tr>
+<td><code>--tags</code></td>
+<td>获取清单标签</td>
+</tr>
+<tr>
+<td><code>--no-tags</code></td>
+<td>不获取清单标签</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检出模式:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--mirror</code></td>
+<td>创建远程仓库的镜像副本而非工作目录</td>
+</tr>
+<tr>
+<td><code>--archive</code></td>
+<td>以归档方式检出每个项目（见 <code>git archive</code>）</td>
+</tr>
+<tr>
+<td><code>--worktree</code></td>
+<td>使用 <code>git-worktree</code> 管理项目</td>
+</tr>
+</tbody>
+</table>
+<p><strong>项目检出优化:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--reference=DIR</code></td>
+<td>引用镜像目录（加速克隆）</td>
+</tr>
+<tr>
+<td><code>--dissociate</code></td>
+<td>克隆后与引用镜像断开关联</td>
+</tr>
+<tr>
+<td><code>--depth=DEPTH</code></td>
+<td>浅克隆深度（见 <code>git clone</code>）</td>
+</tr>
+<tr>
+<td><code>--partial-clone</code></td>
+<td>启用部分克隆（默认 clone-filter 为 <code>blob:none</code>）</td>
+</tr>
+<tr>
+<td><code>--no-partial-clone</code></td>
+<td>禁用部分克隆</td>
+</tr>
+<tr>
+<td><code>--partial-clone-exclude=PROJECTS</code></td>
+<td>排除指定项目不使用部分克隆</td>
+</tr>
+<tr>
+<td><code>--clone-filter=CLONE_FILTER</code></td>
+<td>部分克隆的过滤选项（默认 <code>blob:none</code>）</td>
+</tr>
+<tr>
+<td><code>--clone-bundle</code></td>
+<td>启用 HTTP/HTTPS 的 /clone.bundle（默认）</td>
+</tr>
+<tr>
+<td><code>--no-clone-bundle</code></td>
+<td>禁用 clone.bundle</td>
+</tr>
+<tr>
+<td><code>--git-lfs</code></td>
+<td>启用 Git LFS 支持</td>
+</tr>
+<tr>
+<td><code>--no-git-lfs</code></td>
+<td>禁用 Git LFS 支持</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Repo 版本选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--repo-url=URL</code></td>
+<td>Repo 仓库地址（<code>$REPO_URL</code>）</td>
+</tr>
+<tr>
+<td><code>--repo-rev=REV</code></td>
+<td>Repo 分支或修订版本（<code>$REPO_REV</code>）</td>
+</tr>
+<tr>
+<td><code>--no-repo-verify</code></td>
+<td>不验证 repo 源代码</td>
+</tr>
+</tbody>
+</table>
+<p><strong>其他选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--config-name</code></td>
+<td>总是提示输入 name/email</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 基本初始化</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://android.googlesource.com/platform/manifest<span class="w"> </span>-b<span class="w"> </span>main
+
+<span class="c1"># 使用浅克隆加速</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>-b<span class="w"> </span>main<span class="w"> </span>--depth<span class="o">=</span><span class="m">1</span>
+
+<span class="c1"># 引用本地镜像加速</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--reference<span class="w"> </span>/path/to/mirror
+
+<span class="c1"># 使用部分克隆节省空间</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--partial-clone
+
+<span class="c1"># 使用静态清单文件</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://example.com/manifest.xml<span class="w"> </span>--standalone-manifest
+
+<span class="c1"># 同步指定组的项目</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>-g<span class="w"> </span>all
+
+<span class="c1"># 切换清单分支（在已有客户端中）</span>
+repo<span class="w"> </span>init<span class="w"> </span>-b<span class="w"> </span>release-branch
+repo<span class="w"> </span>sync
+</code></pre></div>
+<hr />
+<h3 id="52-sync-">5.2 sync - 同步项目<a class="headerlink" href="#52-sync-" title="Permanent link">&para;</a></h3>
+<p>同步本地项目目录与清单中指定的远程仓库。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>sync<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<p><strong>核心选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数（默认: 基于 CPU 核数）</td>
+</tr>
+<tr>
+<td><code>--jobs-network=JOBS</code></td>
+<td>网络并行任务数（需配合 <code>--no-interleaved</code>）</td>
+</tr>
+<tr>
+<td><code>--jobs-checkout=JOBS</code></td>
+<td>本地检出并行任务数（需配合 <code>--no-interleaved</code>）</td>
+</tr>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>第一个错误时立即停止</td>
+</tr>
+<tr>
+<td><code>-f, --force-sync</code></td>
+<td>强制覆盖指向不同对象目录的 git 目录（可能丢失数据）</td>
+</tr>
+<tr>
+<td><code>--force-checkout</code></td>
+<td>强制检出，即使有未提交修改（可能丢失数据）</td>
+</tr>
+<tr>
+<td><code>--force-remove-dirty</code></td>
+<td>强制移除清单中已不存在的脏项目（可能丢失数据）</td>
+</tr>
+<tr>
+<td><code>--rebase</code></td>
+<td>变基本地提交，无论是否已发布</td>
+</tr>
+<tr>
+<td><code>-l, --local-only</code></td>
+<td>仅更新工作树，不抓取</td>
+</tr>
+<tr>
+<td><code>--no-manifest-update, --nmu</code></td>
+<td>使用现有清单，不更新到最新修订</td>
+</tr>
+<tr>
+<td><code>-n, --network-only</code></td>
+<td>仅抓取，不更新工作树</td>
+</tr>
+<tr>
+<td><code>-d, --detach</code></td>
+<td>将项目分离回清单修订版本</td>
+</tr>
+<tr>
+<td><code>-c, --current-branch</code></td>
+<td>仅获取当前分支</td>
+</tr>
+<tr>
+<td><code>--no-current-branch</code></td>
+<td>获取所有分支</td>
+</tr>
+</tbody>
+</table>
+<p><strong>智能同步:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-s, --smart-sync</code></td>
+<td>使用清单服务器的最新已知良好构建进行同步</td>
+</tr>
+<tr>
+<td><code>-t SMART_TAG, --smart-tag=SMART_TAG</code></td>
+<td>使用指定标签的已知良好构建同步</td>
+</tr>
+<tr>
+<td><code>-u USERNAME, --manifest-server-username</code></td>
+<td>清单服务器认证用户名</td>
+</tr>
+<tr>
+<td><code>-p PASSWORD, --manifest-server-password</code></td>
+<td>清单服务器认证密码</td>
+</tr>
+</tbody>
+</table>
+<p><strong>高级选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--interleaved</code></td>
+<td>并行执行 fetch 和 checkout（默认）</td>
+</tr>
+<tr>
+<td><code>--no-interleaved</code></td>
+<td>分阶段执行 fetch 和 checkout</td>
+</tr>
+<tr>
+<td><code>-m NAME.xml, --manifest-name=NAME.xml</code></td>
+<td>临时使用指定清单</td>
+</tr>
+<tr>
+<td><code>--fetch-submodules</code></td>
+<td>从服务器获取子模块</td>
+</tr>
+<tr>
+<td><code>--tags</code></td>
+<td>获取标签</td>
+</tr>
+<tr>
+<td><code>--no-tags</code></td>
+<td>不获取标签（默认）</td>
+</tr>
+<tr>
+<td><code>--optimized-fetch</code></td>
+<td>仅获取本地不存在的 SHA1 固定项目</td>
+</tr>
+<tr>
+<td><code>--retry-fetches=N</code></td>
+<td>瞬态错误时的重试次数</td>
+</tr>
+<tr>
+<td><code>--prune</code></td>
+<td>删除远程已不存在的 ref（默认）</td>
+</tr>
+<tr>
+<td><code>--no-prune</code></td>
+<td>不删除远程已不存在的 ref</td>
+</tr>
+<tr>
+<td><code>--auto-gc</code></td>
+<td>在所有同步项目上运行垃圾回收</td>
+</tr>
+<tr>
+<td><code>--no-auto-gc</code></td>
+<td>不运行垃圾回收（默认）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hook 选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--no-verify</code></td>
+<td>不运行 post-sync hook</td>
+</tr>
+<tr>
+<td><code>--verify</code></td>
+<td>不提示直接运行 post-sync hook</td>
+</tr>
+<tr>
+<td><code>--ignore-hooks</code></td>
+<td>post-sync hook 失败时不中止</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SSH 连接特性:</strong></p>
+<p>当项目远程 URL 使用 SSH 连接（<code>ssh://</code>, <code>git+ssh://</code>, <code>user@host:path</code>）时，repo 会自动启用 SSH ControlMaster 选项，允许多个项目复用同一 SSH 隧道。</p>
+<p>要禁用此功能: <code>export GIT_SSH=ssh</code></p>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 同步所有项目</span>
+repo<span class="w"> </span>sync
+
+<span class="c1"># 并行同步（8 个任务）</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-j8
+
+<span class="c1"># 同步指定项目</span>
+repo<span class="w"> </span>sync<span class="w"> </span>platform/system/core<span class="w"> </span>build/soong
+
+<span class="c1"># 强制同步（覆盖本地变更）</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-f<span class="w"> </span>-j8
+
+<span class="c1"># 仅获取不检出</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-n
+
+<span class="c1"># 分离回清单版本</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-d
+
+<span class="c1"># 使用智能同步</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-s
+
+<span class="c1"># 第一个失败时停止</span>
+repo<span class="w"> </span>sync<span class="w"> </span>--fail-fast
+
+<span class="c1"># 智能同步并指定认证</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-s<span class="w"> </span>-u<span class="w"> </span>myuser<span class="w"> </span>-p<span class="w"> </span>mypassword
+</code></pre></div>
+<hr />
+<h3 id="53-start-">5.3 start - 创建分支<a class="headerlink" href="#53-start-" title="Permanent link">&para;</a></h3>
+<p>从清单指定的修订版本创建新的开发分支。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>start<span class="w"> </span>&lt;newbranchname&gt;<span class="w"> </span><span class="o">[</span>--all<span class="w"> </span><span class="p">|</span><span class="w"> </span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+<tr>
+<td><code>--all</code></td>
+<td>在所有项目中创建分支</td>
+</tr>
+<tr>
+<td><code>-r REVISION, --rev=REVISION</code></td>
+<td>将分支指向指定修订版本而非 upstream</td>
+</tr>
+<tr>
+<td><code>--head, --HEAD</code></td>
+<td><code>--rev HEAD</code> 的缩写</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在所有项目中创建分支</span>
+repo<span class="w"> </span>start<span class="w"> </span>my-feature<span class="w"> </span>--all
+
+<span class="c1"># 在指定项目中创建分支</span>
+repo<span class="w"> </span>start<span class="w"> </span>my-feature<span class="w"> </span>platform/system/core<span class="w"> </span>build/soong
+
+<span class="c1"># 从 HEAD 创建分支</span>
+repo<span class="w"> </span>start<span class="w"> </span>hotfix<span class="w"> </span>--all<span class="w"> </span>--HEAD
+</code></pre></div>
+<hr />
+<h3 id="54-upload-">5.4 upload - 上传代码审查<a class="headerlink" href="#54-upload-" title="Permanent link">&para;</a></h3>
+<p>将变更发送到 Gerrit Code Review 系统。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>upload<span class="w"> </span><span class="o">[</span>--re<span class="w"> </span>--cc<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;project&gt;<span class="o">]</span>...
+</code></pre></div>
+<p><strong>核心选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+<tr>
+<td><code>-t, --topic-branch</code></td>
+<td>将 topic 设置为本地分支名</td>
+</tr>
+<tr>
+<td><code>--topic=TOPIC</code></td>
+<td>设置变更的 topic</td>
+</tr>
+<tr>
+<td><code>--hashtag=HASHTAGS, --ht=HASHTAGS</code></td>
+<td>添加 hashtag（逗号分隔）</td>
+</tr>
+<tr>
+<td><code>--hashtag-branch, --htb</code></td>
+<td>将本地分支名添加为 hashtag</td>
+</tr>
+<tr>
+<td><code>-l LABELS, --label=LABELS</code></td>
+<td>上传时添加标签</td>
+</tr>
+<tr>
+<td><code>--pd=DESC, --patchset-description=DESC</code></td>
+<td>补丁集描述</td>
+</tr>
+<tr>
+<td><code>--re=REVIEWERS, --reviewers=REVIEWERS</code></td>
+<td>请求审查者</td>
+</tr>
+<tr>
+<td><code>--cc=CC</code></td>
+<td>抄送邮箱地址</td>
+</tr>
+<tr>
+<td><code>--br=BRANCH, --branch=BRANCH</code></td>
+<td>上传的本地分支</td>
+</tr>
+<tr>
+<td><code>-c, --current-branch</code></td>
+<td>上传当前 git 分支</td>
+</tr>
+<tr>
+<td><code>--no-current-branch</code></td>
+<td>上传所有 git 分支</td>
+</tr>
+<tr>
+<td><code>-D BRANCH, --dest=BRANCH</code></td>
+<td>提交审查的目标分支</td>
+</tr>
+<tr>
+<td><code>-n, --dry-run</code></td>
+<td>试运行（不实际上传）</td>
+</tr>
+<tr>
+<td><code>-y, --yes</code></td>
+<td>自动回答 yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>状态控制:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-w, --wip</code></td>
+<td>上传为 Work-in-Progress 变更</td>
+</tr>
+<tr>
+<td><code>-r, --ready</code></td>
+<td>标记为 Ready（清除 WIP 状态）</td>
+</tr>
+<tr>
+<td><code>-ne, --no-emails</code></td>
+<td>上传时不发送邮件</td>
+</tr>
+</tbody>
+</table>
+<p><strong>安全选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--no-cert-checks</code></td>
+<td>禁用 SSL 证书验证（不安全）</td>
+</tr>
+<tr>
+<td><code>--ignore-untracked-files</code></td>
+<td>忽略工作目录中的未跟踪文件</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 上传当前分支</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-c
+
+<span class="c1"># 上传并指定审查者和抄送</span>
+repo<span class="w"> </span>upload<span class="w"> </span>--re<span class="o">=</span>reviewer@company.com<span class="w"> </span>--cc<span class="o">=</span>team@company.com
+
+<span class="c1"># 上传为 WIP</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-w<span class="w"> </span>-c
+
+<span class="c1"># 标记为 Ready</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-r<span class="w"> </span>-c
+
+<span class="c1"># 试运行</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-n<span class="w"> </span>-c
+
+<span class="c1"># 上传到指定目标分支</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-c<span class="w"> </span>-D<span class="w"> </span>release-branch
+
+<span class="c1"># 添加 hashtag</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-c<span class="w"> </span>--ht<span class="w"> </span><span class="s2">&quot;feature,jira-1234&quot;</span>
+
+<span class="c1"># 自动确认上传</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-c<span class="w"> </span>-y
+</code></pre></div>
+<hr />
+<h3 id="55-download-">5.5 download - 下载变更<a class="headerlink" href="#55-download-" title="Permanent link">&para;</a></h3>
+<p>从审查系统下载变更到本地工作目录。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>download<span class="w"> </span><span class="o">{[</span>project<span class="o">]</span><span class="w"> </span>change<span class="o">[</span>/patchset<span class="o">]}</span>...
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-b BRANCH, --branch=BRANCH</code></td>
+<td>先创建新分支</td>
+</tr>
+<tr>
+<td><code>-c, --cherry-pick</code></td>
+<td>使用 cherry-pick 而非 checkout</td>
+</tr>
+<tr>
+<td><code>-x, --record-origin</code></td>
+<td>cherry-pick 时传递 <code>-x</code> 参数</td>
+</tr>
+<tr>
+<td><code>-r, --revert</code></td>
+<td>使用 revert 而非 checkout</td>
+</tr>
+<tr>
+<td><code>-f, --ff-only</code></td>
+<td>强制快进合并</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 下载 Gerrit 变更 12345 的 patchset 2</span>
+repo<span class="w"> </span>download<span class="w"> </span><span class="m">12345</span>/2
+
+<span class="c1"># 下载指定项目的变更</span>
+repo<span class="w"> </span>download<span class="w"> </span>platform/system/core<span class="w"> </span><span class="m">12345</span>/2
+
+<span class="c1"># 下载到新分支</span>
+repo<span class="w"> </span>download<span class="w"> </span>-b<span class="w"> </span>my-review<span class="w"> </span><span class="m">12345</span>/2
+
+<span class="c1"># 使用 cherry-pick 方式</span>
+repo<span class="w"> </span>download<span class="w"> </span>-c<span class="w"> </span><span class="m">12345</span>/2
+</code></pre></div>
+<hr />
+<h3 id="56-abandon-">5.6 abandon - 放弃分支<a class="headerlink" href="#56-abandon-" title="Permanent link">&para;</a></h3>
+<p>永久删除开发分支（等同于 <code>git branch -D</code>）。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>abandon<span class="w"> </span><span class="o">[</span>--all<span class="w"> </span><span class="p">|</span><span class="w"> </span>&lt;branchname&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+<tr>
+<td><code>--all</code></td>
+<td>删除所有项目中的所有分支</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 删除指定分支</span>
+repo<span class="w"> </span>abandon<span class="w"> </span>my-feature
+
+<span class="c1"># 删除指定项目中的分支</span>
+repo<span class="w"> </span>abandon<span class="w"> </span>my-feature<span class="w"> </span>platform/system/core
+
+<span class="c1"># 删除所有项目中的所有分支</span>
+repo<span class="w"> </span>abandon<span class="w"> </span>--all
+</code></pre></div>
+<hr />
+<h3 id="57-branches-branch-">5.7 branches / branch - 查看分支<a class="headerlink" href="#57-branches-branch-" title="Permanent link">&para;</a></h3>
+<p>查看当前可用的 topic 分支。<code>branch</code> 和 <code>branches</code> 是同一命令的别名。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>branches<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<p><strong>输出格式说明:</strong></p>
+<div class="highlight"><pre><span></span><code> *P nocolor                   | in repo
+    repo2                     |
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第 1 列</td>
+<td><code>*</code> 表示该分支在某个项目中被检出，空格表示没有</td>
+</tr>
+<tr>
+<td>第 2 列</td>
+<td>空: 未发布 / <code>P</code>: 所有 commit 已发布 / <code>p</code>: 部分 commit 已发布</td>
+</tr>
+<tr>
+<td>第 3 列</td>
+<td>分支名称</td>
+</tr>
+<tr>
+<td>第 4 列 (<code>|</code> 后)</td>
+<td>该分支出现的项目列表（未列出则表示在所有项目中）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="58-checkout-">5.8 checkout - 切换分支<a class="headerlink" href="#58-checkout-" title="Permanent link">&para;</a></h3>
+<p>检出由 <code>repo start</code> 创建的已有分支。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>checkout<span class="w"> </span>&lt;branchname&gt;<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<p>等同于: <code>repo forall [&lt;project&gt;...] -c git checkout &lt;branchname&gt;</code></p>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 切换到指定分支</span>
+repo<span class="w"> </span>checkout<span class="w"> </span>my-feature
+
+<span class="c1"># 在指定项目中切换</span>
+repo<span class="w"> </span>checkout<span class="w"> </span>my-feature<span class="w"> </span>platform/system/core
+</code></pre></div>
+<hr />
+<h3 id="59-rebase-">5.9 rebase - 变基操作<a class="headerlink" href="#59-rebase-" title="Permanent link">&para;</a></h3>
+<p>将本地 topic 分支的变更变基到 upstream HEAD。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>rebase<span class="w"> </span><span class="o">{[</span>&lt;project&gt;...<span class="o">]</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>-i<span class="w"> </span>&lt;project&gt;...<span class="o">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--fail-fast</code></td>
+<td>第一个错误时停止</td>
+</tr>
+<tr>
+<td><code>-f, --force-rebase</code></td>
+<td>传递 <code>--force-rebase</code> 给 git rebase</td>
+</tr>
+<tr>
+<td><code>--no-ff</code></td>
+<td>传递 <code>--no-ff</code> 给 git rebase</td>
+</tr>
+<tr>
+<td><code>--autosquash</code></td>
+<td>传递 <code>--autosquash</code> 给 git rebase</td>
+</tr>
+<tr>
+<td><code>--whitespace=WS</code></td>
+<td>传递 <code>--whitespace</code> 给 git rebase</td>
+</tr>
+<tr>
+<td><code>--auto-stash</code></td>
+<td>变基前 stash 本地修改</td>
+</tr>
+<tr>
+<td><code>-m, --onto-manifest</code></td>
+<td>变基到清单版本而非 upstream HEAD</td>
+</tr>
+<tr>
+<td><code>-i, --interactive</code></td>
+<td>交互式变基（仅限单个项目）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在所有项目中变基</span>
+repo<span class="w"> </span>rebase
+
+<span class="c1"># 变基前自动 stash</span>
+repo<span class="w"> </span>rebase<span class="w"> </span>--auto-stash
+
+<span class="c1"># 交互式变基（单个项目）</span>
+repo<span class="w"> </span>rebase<span class="w"> </span>-i<span class="w"> </span>platform/system/core
+
+<span class="c1"># 变基到清单版本</span>
+repo<span class="w"> </span>rebase<span class="w"> </span>-m
+</code></pre></div>
+<hr />
+<h3 id="510-prune-">5.10 prune - 清理已合并分支<a class="headerlink" href="#510-prune-" title="Permanent link">&para;</a></h3>
+<p>删除已经合并到 upstream 的 topic 分支。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>prune<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="511-diff-">5.11 diff - 查看差异<a class="headerlink" href="#511-diff-" title="Permanent link">&para;</a></h3>
+<p>显示提交与工作树之间的更改。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>diff<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-u, --absolute</code></td>
+<td>路径相对于仓库根目录（适用于 <code>patch</code> 命令）</td>
+</tr>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="512-status-">5.12 status - 查看状态<a class="headerlink" href="#512-status-" title="Permanent link">&para;</a></h3>
+<p>显示每个项目的工作树状态。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-o, --orphans</code></td>
+<td>包含不在 repo 管理中的工作目录对象</td>
+</tr>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出格式（三列）:</strong></p>
+<div class="highlight"><pre><span></span><code>project repo/                                   branch devwork
+ -m     subcmds/status.py
+</code></pre></div>
+<p><strong>第 1 列（大写）- 暂存区 vs HEAD:</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-</code></td>
+<td>无差异</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td>新增</td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>修改</td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td>删除</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>重命名</td>
+</tr>
+<tr>
+<td><code>C</code></td>
+<td>复制</td>
+</tr>
+<tr>
+<td><code>T</code></td>
+<td>模式变更</td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>未合并，需要冲突解决</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第 2 列（小写）- 工作目录 vs 暂存区:</strong></p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-</code></td>
+<td>未知/新文件</td>
+</tr>
+<tr>
+<td><code>m</code></td>
+<td>修改</td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>删除</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="513-stage-">5.13 stage - 暂存文件<a class="headerlink" href="#513-stage-" title="Permanent link">&para;</a></h3>
+<p>交互式暂存文件以准备下次提交。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>stage<span class="w"> </span>-i<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-i, --interactive</code></td>
+<td>使用交互式暂存（<code>git add -i</code>）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="514-forall-">5.14 forall - 批量执行命令<a class="headerlink" href="#514-forall-" title="Permanent link">&para;</a></h3>
+<p>在每个项目中执行相同的 shell 命令。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>forall<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span><span class="w"> </span>-c<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;arg&gt;...<span class="o">]</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-r<span class="w"> </span>str1<span class="w"> </span><span class="o">[</span>str2<span class="o">]</span><span class="w"> </span>...<span class="w"> </span>-c<span class="w"> </span>&lt;command&gt;<span class="w"> </span><span class="o">[</span>&lt;arg&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-c, --command</code></td>
+<td>要执行的命令（必选）</td>
+</tr>
+<tr>
+<td><code>-r, --regex</code></td>
+<td>仅在匹配正则/通配符的项目上执行</td>
+</tr>
+<tr>
+<td><code>-i, --inverse-regex</code></td>
+<td>仅在不匹配的项目上执行</td>
+</tr>
+<tr>
+<td><code>-g GROUPS, --groups=GROUPS</code></td>
+<td>仅在指定组的项目上执行</td>
+</tr>
+<tr>
+<td><code>-e, --abort-on-errors</code></td>
+<td>命令执行失败时中止</td>
+</tr>
+<tr>
+<td><code>--ignore-missing</code></td>
+<td>忽略缺失的检出，不报错</td>
+</tr>
+<tr>
+<td><code>--interactive</code></td>
+<td>强制交互模式（等同 <code>-j1</code>）</td>
+</tr>
+<tr>
+<td><code>-p</code></td>
+<td>在输出前显示项目标题（适合搜索）</td>
+</tr>
+<tr>
+<td><code>-j JOBS, --jobs=JOBS</code></td>
+<td>并行任务数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>可用环境变量:</strong></p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REPO_PROJECT</code></td>
+<td>项目唯一名称</td>
+</tr>
+<tr>
+<td><code>REPO_PATH</code></td>
+<td>相对于客户端根目录的路径</td>
+</tr>
+<tr>
+<td><code>REPO_OUTERPATH</code></td>
+<td>子清单根目录相对于客户端根目录的路径</td>
+</tr>
+<tr>
+<td><code>REPO_INNERPATH</code></td>
+<td>相对于子清单根目录的路径</td>
+</tr>
+<tr>
+<td><code>REPO_REMOTE</code></td>
+<td>清单中定义的远程名称</td>
+</tr>
+<tr>
+<td><code>REPO_LREV</code></td>
+<td>清单修订版本翻译为本地跟踪分支名</td>
+</tr>
+<tr>
+<td><code>REPO_RREV</code></td>
+<td>清单中原始修订版本字符串</td>
+</tr>
+<tr>
+<td><code>REPO_COUNT</code></td>
+<td>总项目数</td>
+</tr>
+<tr>
+<td><code>REPO_I</code></td>
+<td>当前迭代计数（从 1 开始）</td>
+</tr>
+<tr>
+<td><code>REPO__*</code></td>
+<td>项目 <code>annotation</code> 元素中定义的自定义变量</td>
+</tr>
+</tbody>
+</table>
+<p><code>pwd</code> 设为项目工作目录。<code>$1, $2, ..., $#</code> 设为 <code>&lt;command&gt;</code> 之后的参数。</p>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 列出所有项目名</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo $REPO_PROJECT&#39;</span>
+
+<span class="c1"># 查看所有项目的当前分支</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;git branch --show-current&#39;</span>
+
+<span class="c1"># 在所有项目中搜索某个字符串</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-p<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;git log -SFoo&#39;</span>
+
+<span class="c1"># 仅在匹配的项目中执行</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.*system.*&#39;</span><span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;git status&#39;</span>
+
+<span class="c1"># 仅在指定组中执行</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-g<span class="w"> </span>darwin<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo $REPO_PATH&#39;</span>
+
+<span class="c1"># 使用进度指示</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo &quot;[$REPO_I/$REPO_COUNT] $REPO_PROJECT&quot;&#39;</span>
+
+<span class="c1"># 使用项目 annotation 中的变量</span>
+repo<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo $REPO__MY_ANNOTATION&#39;</span>
+</code></pre></div>
+<hr />
+<h3 id="515-grep-">5.15 grep - 跨项目搜索<a class="headerlink" href="#515-grep-" title="Permanent link">&para;</a></h3>
+<p>在所有项目文件中搜索指定模式。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>grep<span class="w"> </span><span class="o">{</span>pattern<span class="w"> </span><span class="p">|</span><span class="w"> </span>-e<span class="w"> </span>pattern<span class="o">}</span><span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<p><strong>搜索源:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--cached</code></td>
+<td>搜索索引而非工作树</td>
+</tr>
+<tr>
+<td><code>-r TREEish, --revision=TREEish</code></td>
+<td>搜索指定 TREEish 而非工作树</td>
+</tr>
+</tbody>
+</table>
+<p><strong>模式选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-e PATTERN</code></td>
+<td>搜索模式</td>
+</tr>
+<tr>
+<td><code>-i, --ignore-case</code></td>
+<td>忽略大小写</td>
+</tr>
+<tr>
+<td><code>-a, --text</code></td>
+<td>将二进制文件作为文本处理</td>
+</tr>
+<tr>
+<td><code>-I</code></td>
+<td>不在二进制文件中匹配</td>
+</tr>
+<tr>
+<td><code>-w, --word-regexp</code></td>
+<td>仅在单词边界匹配</td>
+</tr>
+<tr>
+<td><code>-v, --invert-match</code></td>
+<td>选择不匹配的行</td>
+</tr>
+<tr>
+<td><code>-G, --basic-regexp</code></td>
+<td>POSIX 基本正则表达式（默认）</td>
+</tr>
+<tr>
+<td><code>-E, --extended-regexp</code></td>
+<td>POSIX 扩展正则表达式</td>
+</tr>
+<tr>
+<td><code>-F, --fixed-strings</code></td>
+<td>固定字符串匹配（非正则）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>模式组合:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--all-match</code></td>
+<td>仅匹配包含所有模式的行</td>
+</tr>
+<tr>
+<td><code>--and, --or, --not</code></td>
+<td>布尔运算符组合模式</td>
+</tr>
+<tr>
+<td><code>-(, -)</code></td>
+<td>布尔运算符分组</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-n</code></td>
+<td>显示匹配行的行号</td>
+</tr>
+<tr>
+<td><code>-C CONTEXT</code></td>
+<td>显示匹配行上下文</td>
+</tr>
+<tr>
+<td><code>-B CONTEXT</code></td>
+<td>显示匹配行前方行</td>
+</tr>
+<tr>
+<td><code>-A CONTEXT</code></td>
+<td>显示匹配行后方行</td>
+</tr>
+<tr>
+<td><code>-l, --name-only</code></td>
+<td>仅显示文件名</td>
+</tr>
+<tr>
+<td><code>-L, --files-without-match</code></td>
+<td>仅显示不匹配的文件名</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 简单搜索</span>
+repo<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span>
+
+<span class="c1"># 忽略大小写</span>
+repo<span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;config_uart&quot;</span>
+
+<span class="c1"># 搜索包含 #define 和 MAX_PATH 或 PATH_MAX 的行</span>
+repo<span class="w"> </span>grep<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;#define&#39;</span><span class="w"> </span>--and<span class="w"> </span>-<span class="se">\(</span><span class="w"> </span>-e<span class="w"> </span>MAX_PATH<span class="w"> </span>-e<span class="w"> </span>PATH_MAX<span class="w"> </span><span class="se">\)</span>
+
+<span class="c1"># 仅显示文件名</span>
+repo<span class="w"> </span>grep<span class="w"> </span>-l<span class="w"> </span><span class="s2">&quot;TODO&quot;</span>
+
+<span class="c1"># 搜索指定项目</span>
+repo<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;main&quot;</span><span class="w"> </span>build/soong
+
+<span class="c1"># 搜索特定 TREEish</span>
+repo<span class="w"> </span>grep<span class="w"> </span>-r<span class="w"> </span>HEAD~5<span class="w"> </span><span class="s2">&quot;deprecated&quot;</span>
+</code></pre></div>
+<hr />
+<h3 id="516-list-">5.16 list - 列出项目<a class="headerlink" href="#516-list-" title="Permanent link">&para;</a></h3>
+<p>列出项目及其关联的目录。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>-f<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+repo<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>-f<span class="o">]</span><span class="w"> </span>-r<span class="w"> </span>str1<span class="w"> </span><span class="o">[</span>str2<span class="o">]</span>...
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-r, --regex</code></td>
+<td>基于正则/通配符过滤项目列表</td>
+</tr>
+<tr>
+<td><code>-g GROUPS, --groups=GROUPS</code></td>
+<td>基于项目组过滤</td>
+</tr>
+<tr>
+<td><code>-a, --all</code></td>
+<td>显示所有项目，不考虑检出状态</td>
+</tr>
+<tr>
+<td><code>-n, --name-only</code></td>
+<td>仅显示仓库名称</td>
+</tr>
+<tr>
+<td><code>-p, --path-only</code></td>
+<td>仅显示仓库路径</td>
+</tr>
+<tr>
+<td><code>-f, --fullpath</code></td>
+<td>显示完整工作树路径（非相对路径）</td>
+</tr>
+<tr>
+<td><code>--relative-to=PATH</code></td>
+<td>显示相对于指定路径的路径</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 列出所有项目</span>
+repo<span class="w"> </span>list
+
+<span class="c1"># 列出所有项目（含未检出的）</span>
+repo<span class="w"> </span>list<span class="w"> </span>-a<span class="w"> </span>-g<span class="w"> </span>all
+
+<span class="c1"># 仅显示名称</span>
+repo<span class="w"> </span>list<span class="w"> </span>-n
+
+<span class="c1"># 显示完整路径</span>
+repo<span class="w"> </span>list<span class="w"> </span>-f
+
+<span class="c1"># 正则过滤</span>
+repo<span class="w"> </span>list<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.*system.*&#39;</span>
+
+<span class="c1"># 相对于指定路径</span>
+repo<span class="w"> </span>list<span class="w"> </span>--relative-to<span class="o">=</span>vendor
+</code></pre></div>
+<hr />
+<h3 id="517-manifest-">5.17 manifest - 清单检查<a class="headerlink" href="#517-manifest-" title="Permanent link">&para;</a></h3>
+<p>导出或检查当前清单。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>manifest<span class="w"> </span><span class="o">[</span>-o<span class="w"> </span><span class="o">{</span>-<span class="p">|</span>NAME.xml<span class="o">}]</span><span class="w"> </span><span class="o">[</span>-m<span class="w"> </span>MANIFEST.xml<span class="o">]</span><span class="w"> </span><span class="o">[</span>-r<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-r, --revision-as-HEAD</code></td>
+<td>将修订版本保存为当前 HEAD（锁定版本清单）</td>
+</tr>
+<tr>
+<td><code>-m NAME.xml, --manifest-name=NAME.xml</code></td>
+<td>临时使用的清单</td>
+</tr>
+<tr>
+<td><code>--suppress-upstream-revision</code></td>
+<td><code>-r</code> 模式下不写入 upstream 字段</td>
+</tr>
+<tr>
+<td><code>--suppress-dest-branch</code></td>
+<td><code>-r</code> 模式下不写入 dest-branch 字段</td>
+</tr>
+<tr>
+<td><code>--format=FORMAT</code></td>
+<td>输出格式: <code>xml</code>, <code>json</code>（默认: <code>xml</code>）</td>
+</tr>
+<tr>
+<td><code>--pretty</code></td>
+<td>格式化输出便于阅读</td>
+</tr>
+<tr>
+<td><code>--no-local-manifests</code></td>
+<td>忽略本地清单</td>
+</tr>
+<tr>
+<td><code>-o -|NAME.xml, --output-file=NAME.xml</code></td>
+<td>保存到文件（<code>-</code> 表示标准输出）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 导出当前清单</span>
+repo<span class="w"> </span>manifest<span class="w"> </span>-o<span class="w"> </span>manifest.xml
+
+<span class="c1"># 导出锁定版本清单（SHA）</span>
+repo<span class="w"> </span>manifest<span class="w"> </span>-r<span class="w"> </span>-o<span class="w"> </span>locked-manifest.xml
+
+<span class="c1"># 导出为 JSON 格式</span>
+repo<span class="w"> </span>manifest<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span>--pretty<span class="w"> </span>-o<span class="w"> </span>manifest.json
+
+<span class="c1"># 导出到标准输出</span>
+repo<span class="w"> </span>manifest<span class="w"> </span>-o<span class="w"> </span>-
+</code></pre></div>
+<hr />
+<h3 id="518-diffmanifests-">5.18 diffmanifests - 清单对比<a class="headerlink" href="#518-diffmanifests-" title="Permanent link">&para;</a></h3>
+<p>比较两个清单文件之间的差异。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>diffmanifests<span class="w"> </span>manifest1.xml<span class="w"> </span><span class="o">[</span>manifest2.xml<span class="o">]</span><span class="w"> </span><span class="o">[</span>options<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--raw</code></td>
+<td>显示原始差异（便于脚本解析）</td>
+</tr>
+<tr>
+<td><code>--no-color</code></td>
+<td>不使用彩色输出</td>
+</tr>
+<tr>
+<td><code>--pretty-format=FORMAT</code></td>
+<td>使用自定义 git pretty 格式字符串</td>
+</tr>
+</tbody>
+</table>
+<p><strong>状态码:</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td>新增项目</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>移除项目</td>
+</tr>
+<tr>
+<td><code>C</code></td>
+<td>变更项目</td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>不可达修订版本</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 比较两个清单</span>
+repo<span class="w"> </span>diffmanifests<span class="w"> </span>old-manifest.xml<span class="w"> </span>new-manifest.xml
+
+<span class="c1"># 与当前清单比较</span>
+repo<span class="w"> </span>diffmanifests<span class="w"> </span>saved-manifest.xml
+
+<span class="c1"># 原始格式输出</span>
+repo<span class="w"> </span>diffmanifests<span class="w"> </span>old.xml<span class="w"> </span>new.xml<span class="w"> </span>--raw
+</code></pre></div>
+<hr />
+<h3 id="519-info-">5.19 info - 项目信息<a class="headerlink" href="#519-info-" title="Permanent link">&para;</a></h3>
+<p>获取清单分支、当前分支或未合并分支的信息。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>info<span class="w"> </span><span class="o">[</span>-dl<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span><span class="o">[</span>-c<span class="o">]]</span><span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-d, --diff</code></td>
+<td>显示完整信息和 commit diff（含远程分支）</td>
+</tr>
+<tr>
+<td><code>-o, --overview</code></td>
+<td>显示所有本地 commit 的概览</td>
+</tr>
+<tr>
+<td><code>-c, --current-branch</code></td>
+<td>仅考虑已检出的分支</td>
+</tr>
+<tr>
+<td><code>--no-current-branch</code></td>
+<td>考虑所有本地分支</td>
+</tr>
+<tr>
+<td><code>-l, --local-only</code></td>
+<td>禁用所有远程操作</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看项目基本信息</span>
+repo<span class="w"> </span>info
+
+<span class="c1"># 查看详细信息（含 diff）</span>
+repo<span class="w"> </span>info<span class="w"> </span>-d<span class="w"> </span>platform/system/core
+
+<span class="c1"># 查看概览</span>
+repo<span class="w"> </span>info<span class="w"> </span>-o
+</code></pre></div>
+<hr />
+<h3 id="520-overview-">5.20 overview - 分支概览<a class="headerlink" href="#520-overview-" title="Permanent link">&para;</a></h3>
+<p>显示未合并项目分支的概览。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>overview<span class="w"> </span><span class="o">[</span>--current-branch<span class="o">]</span><span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-c, --current-branch</code></td>
+<td>仅考虑已检出的分支</td>
+</tr>
+<tr>
+<td><code>--no-current-branch</code></td>
+<td>考虑所有本地分支</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="521-cherry-pick-">5.21 cherry-pick - 挑选变更<a class="headerlink" href="#521-cherry-pick-" title="Permanent link">&para;</a></h3>
+<p>从一个分支挑选变更到另一个分支。Change ID 会被更新，并添加对旧 Change ID 的引用。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>cherry-pick<span class="w"> </span>&lt;sha1&gt;
+</code></pre></div>
+<hr />
+<h3 id="522-smartsync-">5.22 smartsync - 智能同步<a class="headerlink" href="#522-smartsync-" title="Permanent link">&para;</a></h3>
+<p><code>repo smartsync</code> 是 <code>repo sync -s</code> 的快捷方式。使用清单服务器中最新已知良好构建的清单进行同步。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>smartsync<span class="w"> </span><span class="o">[</span>&lt;project&gt;...<span class="o">]</span>
+</code></pre></div>
+<p>选项与 <code>repo sync -s</code> 相同。</p>
+<hr />
+<h3 id="523-gc-">5.23 gc - 垃圾回收<a class="headerlink" href="#523-gc-" title="Permanent link">&para;</a></h3>
+<p>清理 repo 和 Git 的内部状态。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>gc
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-n, --dry-run</code></td>
+<td>试运行，不实际删除</td>
+</tr>
+<tr>
+<td><code>-y, --yes</code></td>
+<td>自动回答 yes</td>
+</tr>
+<tr>
+<td><code>--repack</code></td>
+<td>对所有使用 <code>partial clone</code> 的项目重新打包</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="524-wipe-">5.24 wipe - 清除项目<a class="headerlink" href="#524-wipe-" title="Permanent link">&para;</a></h3>
+<p>从工作树中移除指定项目，并删除项目在 <code>.repo</code> 中的 git 数据。<strong>此操作不可撤销。</strong></p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>wipe<span class="w"> </span>&lt;project&gt;...
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-f, --force</code></td>
+<td>强制清除共享项目和未提交变更</td>
+</tr>
+<tr>
+<td><code>--force-uncommitted</code></td>
+<td>强制清除，即使有未提交变更</td>
+</tr>
+<tr>
+<td><code>--force-shared</code></td>
+<td>强制清除，即使项目共享对象目录</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 按名称清除</span>
+repo<span class="w"> </span>wipe<span class="w"> </span>platform/build
+
+<span class="c1"># 按路径清除</span>
+repo<span class="w"> </span>wipe<span class="w"> </span>build/make
+
+<span class="c1"># 强制清除</span>
+repo<span class="w"> </span>wipe<span class="w"> </span>-f<span class="w"> </span>platform/build
+</code></pre></div>
+<hr />
+<h3 id="525-selfupdate-repo">5.25 selfupdate - 更新 repo<a class="headerlink" href="#525-selfupdate-repo" title="Permanent link">&para;</a></h3>
+<p>将 repo 更新到最新版本。通常 <code>repo sync</code> 会自动完成此操作。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>selfupdate
+</code></pre></div>
+<hr />
+<h3 id="526-version-">5.26 version - 查看版本<a class="headerlink" href="#526-version-" title="Permanent link">&para;</a></h3>
+<p>显示 repo 版本信息。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span>version
+</code></pre></div>
+<hr />
+<h3 id="527-help-">5.27 help - 帮助<a class="headerlink" href="#527-help-" title="Permanent link">&para;</a></h3>
+<p>显示命令的详细帮助信息。</p>
+<div class="highlight"><pre><span></span><code>repo<span class="w"> </span><span class="nb">help</span><span class="w"> </span><span class="o">[</span>command_name<span class="o">]</span>
+</code></pre></div>
+<hr />
+<h2 id="6-manifest">6. Manifest 清单文件格式<a class="headerlink" href="#6-manifest" title="Permanent link">&para;</a></h2>
+<p>清单文件是 XML 格式，描述了 repo 客户端的结构。清单保存在一个 Git 仓库中，通常为 <code>default.xml</code>。</p>
+<h3 id="61">6.1 基本结构<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;manifest&gt;</span>
+<span class="w">  </span><span class="nt">&lt;notice&gt;</span>可选的通知文本<span class="nt">&lt;/notice&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;remote</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;origin&quot;</span><span class="w"> </span><span class="na">fetch=</span><span class="s">&quot;https://github.com/myorg&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;default</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;origin&quot;</span><span class="w"> </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span><span class="w"> </span><span class="na">sync-j=</span><span class="s">&quot;4&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;manifest-server</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;https://manifest-server.example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/system/core&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;system/core&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/build&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;build&quot;</span><span class="w"> </span><span class="na">groups=</span><span class="s">&quot;notdefault&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;include</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;extra.xml&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/manifest&gt;</span>
+</code></pre></div>
+<h3 id="62">6.2 元素详解<a class="headerlink" href="#62" title="Permanent link">&para;</a></h3>
+<h4 id="remote-"><code>&lt;remote&gt;</code> - 远程仓库<a class="headerlink" href="#remote-" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;remote</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;origin&quot;</span>
+<span class="w">        </span><span class="na">alias=</span><span class="s">&quot;upstream&quot;</span>
+<span class="w">        </span><span class="na">fetch=</span><span class="s">&quot;https://github.com/myorg&quot;</span>
+<span class="w">        </span><span class="na">pushurl=</span><span class="s">&quot;ssh://git@github.com/myorg&quot;</span>
+<span class="w">        </span><span class="na">review=</span><span class="s">&quot;https://review.example.com/&quot;</span>
+<span class="w">        </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>必选</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>是</td>
+<td>唯一短名称（用于 <code>.git/config</code>）</td>
+</tr>
+<tr>
+<td><code>alias</code></td>
+<td>否</td>
+<td>覆盖 <code>name</code> 作为实际 remote 名称（可重复）</td>
+</tr>
+<tr>
+<td><code>fetch</code></td>
+<td>是</td>
+<td>URL 前缀，<code>fetch</code> + <code>/</code> + <code>project.name</code> + <code>.git</code> 组成完整 URL</td>
+</tr>
+<tr>
+<td><code>pushurl</code></td>
+<td>否</td>
+<td>push URL 前缀</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td>否</td>
+<td>Gerrit 审查服务器地址</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>否</td>
+<td>该远程的默认分支</td>
+</tr>
+</tbody>
+</table>
+<h4 id="default-"><code>&lt;default&gt;</code> - 默认值<a class="headerlink" href="#default-" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;default</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;origin&quot;</span>
+<span class="w">         </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span>
+<span class="w">         </span><span class="na">dest-branch=</span><span class="s">&quot;main&quot;</span>
+<span class="w">         </span><span class="na">upstream=</span><span class="s">&quot;main&quot;</span>
+<span class="w">         </span><span class="na">sync-j=</span><span class="s">&quot;4&quot;</span>
+<span class="w">         </span><span class="na">sync-j-max=</span><span class="s">&quot;32&quot;</span>
+<span class="w">         </span><span class="na">sync-c=</span><span class="s">&quot;true&quot;</span>
+<span class="w">         </span><span class="na">sync-s=</span><span class="s">&quot;true&quot;</span>
+<span class="w">         </span><span class="na">sync-tags=</span><span class="s">&quot;false&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>remote</code></td>
+<td>未指定 remote 的项目使用此远程</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>未指定 revision 的项目使用此分支</td>
+</tr>
+<tr>
+<td><code>dest-branch</code></td>
+<td><code>repo upload</code> 的目标分支</td>
+</tr>
+<tr>
+<td><code>upstream</code></td>
+<td>SHA1 所在的 ref 名称（用于锁定版本清单的 <code>-c</code> 模式同步）</td>
+</tr>
+<tr>
+<td><code>sync-j</code></td>
+<td>同步时的并行任务数</td>
+</tr>
+<tr>
+<td><code>sync-j-max</code></td>
+<td>最大并行任务数</td>
+</tr>
+<tr>
+<td><code>sync-c</code></td>
+<td><code>true</code> 表示仅同步指定分支</td>
+</tr>
+<tr>
+<td><code>sync-s</code></td>
+<td><code>true</code> 表示也同步子项目</td>
+</tr>
+<tr>
+<td><code>sync-tags</code></td>
+<td><code>false</code> 表示不同步标签</td>
+</tr>
+</tbody>
+</table>
+<h4 id="project-"><code>&lt;project&gt;</code> - 项目<a class="headerlink" href="#project-" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/system/core&quot;</span>
+<span class="w">         </span><span class="na">path=</span><span class="s">&quot;system/core&quot;</span>
+<span class="w">         </span><span class="na">remote=</span><span class="s">&quot;origin&quot;</span>
+<span class="w">         </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span>
+<span class="w">         </span><span class="na">dest-branch=</span><span class="s">&quot;main&quot;</span>
+<span class="w">         </span><span class="na">groups=</span><span class="s">&quot;default,linux&quot;</span>
+<span class="w">         </span><span class="na">upstream=</span><span class="s">&quot;main&quot;</span>
+<span class="w">         </span><span class="na">clone-depth=</span><span class="s">&quot;1&quot;</span>
+<span class="w">         </span><span class="na">sync-c=</span><span class="s">&quot;true&quot;</span>
+<span class="w">         </span><span class="na">sync-s=</span><span class="s">&quot;false&quot;</span>
+<span class="w">         </span><span class="na">sync-tags=</span><span class="s">&quot;true&quot;</span>
+<span class="w">         </span><span class="na">force-path=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;annotation</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;my-annotation&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;my-value&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;copyfile</span><span class="w"> </span><span class="na">src=</span><span class="s">&quot;LICENSE&quot;</span><span class="w"> </span><span class="na">dest=</span><span class="s">&quot;TOP_LEVEL_LICENSE&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;linkfile</span><span class="w"> </span><span class="na">src=</span><span class="s">&quot;build.sh&quot;</span><span class="w"> </span><span class="na">dest=</span><span class="s">&quot;build.sh&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>唯一名称（必选），用于构建 URL: <code>${remote_fetch}/${name}.git</code></td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>本地检出路径（默认与 <code>name</code> 相同）</td>
+</tr>
+<tr>
+<td><code>remote</code></td>
+<td>使用的远程（默认为 <code>&lt;default&gt;</code> 中的设置）</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>跟踪的分支/标签/SHA</td>
+</tr>
+<tr>
+<td><code>dest-branch</code></td>
+<td><code>repo upload</code> 目标分支</td>
+</tr>
+<tr>
+<td><code>groups</code></td>
+<td>所属项目组（默认属于 <code>all</code>, <code>name:&lt;name&gt;</code>, <code>path:&lt;path&gt;</code>）</td>
+</tr>
+<tr>
+<td><code>clone-depth</code></td>
+<td>克隆深度（覆盖 <code>--depth</code> 选项）</td>
+</tr>
+<tr>
+<td><code>upstream</code></td>
+<td>SHA1 所在 ref</td>
+</tr>
+<tr>
+<td><code>sync-c</code></td>
+<td>是否仅同步指定分支</td>
+</tr>
+<tr>
+<td><code>sync-s</code></td>
+<td>是否同步子项目</td>
+</tr>
+<tr>
+<td><code>force-path</code></td>
+<td>使用 <code>path</code> 而非 <code>name</code> 创建本地镜像</td>
+</tr>
+</tbody>
+</table>
+<p><strong>子元素:</strong></p>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;annotation&gt;</code></td>
+<td>名称-值对，在 <code>forall</code> 中可通过 <code>REPO__&lt;name&gt;</code> 访问</td>
+</tr>
+<tr>
+<td><code>&lt;copyfile&gt;</code></td>
+<td>同步时将 <code>src</code> 文件复制到 <code>dest</code>（相对于工作区顶层）</td>
+</tr>
+<tr>
+<td><code>&lt;linkfile&gt;</code></td>
+<td>同步时创建从 <code>dest</code> 到 <code>src</code> 的符号链接</td>
+</tr>
+</tbody>
+</table>
+<h4 id="extend-project-"><code>&lt;extend-project&gt;</code> - 扩展项目<a class="headerlink" href="#extend-project-" title="Permanent link">&para;</a></h4>
+<p>修改已有项目的属性，常用于本地清单。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;extend-project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/system/core&quot;</span>
+<span class="w">                </span><span class="na">revision=</span><span class="s">&quot;my-branch&quot;</span>
+<span class="w">                </span><span class="na">groups=</span><span class="s">&quot;default,my-group&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="remove-project-"><code>&lt;remove-project&gt;</code> - 移除项目<a class="headerlink" href="#remove-project-" title="Permanent link">&para;</a></h4>
+<p>从内部清单表中删除项目。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;remove-project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/system/core&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;remove-project</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;system/core&quot;</span><span class="w"> </span><span class="na">optional=</span><span class="s">&quot;true&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="include-"><code>&lt;include&gt;</code> - 包含清单<a class="headerlink" href="#include-" title="Permanent link">&para;</a></h4>
+<p>包含另一个清单文件。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;include</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;extra.xml&quot;</span><span class="w"> </span><span class="na">groups=</span><span class="s">&quot;group1&quot;</span><span class="w"> </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="manifest-server-"><code>&lt;manifest-server&gt;</code> - 清单服务器<a class="headerlink" href="#manifest-server-" title="Permanent link">&para;</a></h4>
+<p>用于智能同步的 XML RPC 服务地址。</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;manifest-server</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;https://manifest-server.example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="submanifest-"><code>&lt;submanifest&gt;</code> - 子清单<a class="headerlink" href="#submanifest-" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;submanifest</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;chromeos&quot;</span>
+<span class="w">             </span><span class="na">project=</span><span class="s">&quot;chromiumos/manifest&quot;</span>
+<span class="w">             </span><span class="na">manifest-name=</span><span class="s">&quot;default.xml&quot;</span>
+<span class="w">             </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span>
+<span class="w">             </span><span class="na">path=</span><span class="s">&quot;src&quot;</span>
+<span class="w">             </span><span class="na">groups=</span><span class="s">&quot;chromeos&quot;</span>
+<span class="w">             </span><span class="na">default-groups=</span><span class="s">&quot;chromeos,default&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="repo-hooks-repo"><code>&lt;repo-hooks&gt;</code> - Repo 钩子<a class="headerlink" href="#repo-hooks-repo" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;repo-hooks</span><span class="w"> </span><span class="na">in-project=</span><span class="s">&quot;tools/repo&quot;</span>
+<span class="w">            </span><span class="na">enabled-list=</span><span class="s">&quot;pre-upload,post-upload&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="superproject-"><code>&lt;superproject&gt;</code> - 超级项目<a class="headerlink" href="#superproject-" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;superproject</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/superproject&quot;</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;origin&quot;</span><span class="w"> </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h4 id="contactinfo-"><code>&lt;contactinfo&gt;</code> - 联系信息<a class="headerlink" href="#contactinfo-" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;contactinfo</span><span class="w"> </span><span class="na">bugurl=</span><span class="s">&quot;https://bugs.example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h3 id="63">6.3 完整示例<a class="headerlink" href="#63" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;manifest&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;notice&gt;</span>
+<span class="w">    </span>This<span class="w"> </span>manifest<span class="w"> </span>is<span class="w"> </span>for<span class="w"> </span>internal<span class="w"> </span>development<span class="w"> </span>only.
+<span class="w">  </span><span class="nt">&lt;/notice&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;remote</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;origin&quot;</span>
+<span class="w">          </span><span class="na">fetch=</span><span class="s">&quot;https://github.com/myorg&quot;</span>
+<span class="w">          </span><span class="na">review=</span><span class="s">&quot;https://review.example.com/&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;remote</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;upstream&quot;</span>
+<span class="w">          </span><span class="na">fetch=</span><span class="s">&quot;https://github.com/upstream-org&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;default</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;origin&quot;</span>
+<span class="w">           </span><span class="na">revision=</span><span class="s">&quot;main&quot;</span>
+<span class="w">           </span><span class="na">dest-branch=</span><span class="s">&quot;main&quot;</span>
+<span class="w">           </span><span class="na">sync-j=</span><span class="s">&quot;8&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="nt">&lt;manifest-server</span><span class="w"> </span><span class="na">url=</span><span class="s">&quot;https://manifest-server.example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 核心项目 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;kernel&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;kernel&quot;</span><span class="w"> </span><span class="na">groups=</span><span class="s">&quot;linux&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/system/core&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;system/core&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;platform/build/soong&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;build/soong&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 可选项目 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;vendor/hal/nordic&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;vendor/hal/nordic&quot;</span><span class="w"> </span><span class="na">groups=</span><span class="s">&quot;bluetooth,notdefault&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;vendor/hal/stm32&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;vendor/hal/stm32&quot;</span><span class="w"> </span><span class="na">groups=</span><span class="s">&quot;stm32,notdefault&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 上游项目 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;cmsis&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;external/cmsis&quot;</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;upstream&quot;</span><span class="w"> </span><span class="na">revision=</span><span class="s">&quot;v5.9.0&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 带文件操作的项目 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;project</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;build/make&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;build/make&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;copyfile</span><span class="w"> </span><span class="na">src=</span><span class="s">&quot;core/root.mk&quot;</span><span class="w"> </span><span class="na">dest=</span><span class="s">&quot;root.mk&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;linkfile</span><span class="w"> </span><span class="na">src=</span><span class="s">&quot;envsetup.sh&quot;</span><span class="w"> </span><span class="na">dest=</span><span class="s">&quot;envsetup.sh&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;annotation</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;maintainer&quot;</span><span class="w"> </span><span class="na">value=</span><span class="s">&quot;build-team@example.com&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/project&gt;</span>
+
+<span class="w">  </span><span class="cm">&lt;!-- 包含额外清单 --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;include</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;extras/default.xml&quot;</span><span class="w"> </span><span class="na">groups=</span><span class="s">&quot;extras&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+
+<span class="nt">&lt;/manifest&gt;</span>
+</code></pre></div>
+<hr />
+<h2 id="7-multi-manifest">7. 多清单管理 (Multi-manifest)<a class="headerlink" href="#7-multi-manifest" title="Permanent link">&para;</a></h2>
+<p>大多数 repo 命令支持以下多清单选项:</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--outer-manifest</code></td>
+<td>从最外层清单开始操作</td>
+</tr>
+<tr>
+<td><code>--no-outer-manifest</code></td>
+<td>不在外部清单上操作</td>
+</tr>
+<tr>
+<td><code>--this-manifest-only</code></td>
+<td>仅在当前（子）清单上操作</td>
+</tr>
+<tr>
+<td><code>--no-this-manifest-only, --all-manifests</code></td>
+<td>在当前清单及其子清单上操作</td>
+</tr>
+</tbody>
+</table>
+<p>使用 <code>--submanifest-path=REL_PATH</code> 全局选项可指定子清单路径。</p>
+<hr />
+<h2 id="8-local-manifests">8. 本地清单 (Local Manifests)<a class="headerlink" href="#8-local-manifests" title="Permanent link">&para;</a></h2>
+<p>本地清单允许用户添加额外的项目，存放在 <code>$TOP_DIR/.repo/local_manifests/*.xml</code>。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 创建本地清单目录</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>.repo/local_manifests
+
+<span class="c1"># 创建本地清单</span>
+cat<span class="w"> </span>&gt;<span class="w"> </span>.repo/local_manifests/local.xml<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+<span class="s">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="s">&lt;manifest&gt;</span>
+<span class="s">  &lt;!-- 覆盖上游项目的修订 --&gt;</span>
+<span class="s">  &lt;extend-project name=&quot;platform/system/core&quot; revision=&quot;my-feature&quot; /&gt;</span>
+
+<span class="s">  &lt;!-- 添加自定义项目 --&gt;</span>
+<span class="s">  &lt;project name=&quot;my/custom/project&quot; path=&quot;my-project&quot; /&gt;</span>
+
+<span class="s">  &lt;!-- 移除不需要的项目 --&gt;</span>
+<span class="s">  &lt;remove-project name=&quot;vendor/unused&quot; optional=&quot;true&quot; /&gt;</span>
+<span class="s">&lt;/manifest&gt;</span>
+<span class="s">EOF</span>
+
+<span class="c1"># 同步以应用本地清单</span>
+repo<span class="w"> </span>sync
+</code></pre></div>
+<p>本地清单中的项目会被自动添加到 <code>local::&lt;filename&gt;</code> 组。</p>
+<hr />
+<h2 id="9-gerrit-upload">9. Gerrit 集成与 upload 配置<a class="headerlink" href="#9-gerrit-upload" title="Permanent link">&para;</a></h2>
+<h3 id="91">9.1 上传自动确认<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<p>在 <code>.git/config</code> 中设置:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[review &quot;https://review.example.com/&quot;]</span>
+<span class="w">    </span><span class="na">autoupload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</code></pre></div>
+<p>或:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>review.https://review.example.com/.autoupload<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+<h3 id="92">9.2 自动审查者和抄送<a class="headerlink" href="#92" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">[review &quot;https://review.example.com/&quot;]</span>
+<span class="w">    </span><span class="na">autoreviewer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">reviewer1@example.com,reviewer2@example.com</span>
+<span class="w">    </span><span class="na">autocopy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">team@example.com</span>
+</code></pre></div>
+<h3 id="93-topic">9.3 自动 Topic<a class="headerlink" href="#93-topic" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">[review &quot;https://review.example.com/&quot;]</span>
+<span class="w">    </span><span class="na">uploadtopic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">true</span>
+</code></pre></div>
+<h3 id="94-hashtag">9.4 自动 Hashtag<a class="headerlink" href="#94-hashtag" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">[review &quot;https://review.example.com/&quot;]</span>
+<span class="w">    </span><span class="na">uploadhashtags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">feature,jira-123</span>
+</code></pre></div>
+<h3 id="95">9.5 上传标签<a class="headerlink" href="#95" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">[review &quot;https://review.example.com/&quot;]</span>
+<span class="w">    </span><span class="na">uploadlabels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Code-Review+1,Verified+1</span>
+</code></pre></div>
+<h3 id="96">9.6 上传警告阈值<a class="headerlink" href="#96" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 超过 10 个 commit 时警告</span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>review.https://review.example.com/.uploadwarningthreshold<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<hr />
+<h2 id="10">10. 常见场景与最佳实践<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<h3 id="101">10.1 镜像管理<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 创建镜像</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--mirror
+repo<span class="w"> </span>sync
+
+<span class="c1"># 从镜像初始化客户端（加速）</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>/path/to/mirror<span class="w"> </span>--reference<span class="w"> </span>/path/to/mirror
+repo<span class="w"> </span>sync
+
+<span class="c1"># 使用镜像后断开关联</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--reference<span class="w"> </span>/path/to/mirror<span class="w"> </span>--dissociate
+</code></pre></div>
+<h3 id="102">10.2 大型项目同步优化<a class="headerlink" href="#102" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 部分克隆节省磁盘空间</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--partial-clone
+
+<span class="c1"># 浅克隆</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--depth<span class="o">=</span><span class="m">1</span>
+
+<span class="c1"># 高并行同步</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-j32
+
+<span class="c1"># 仅获取不检出（CI 缓存）</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-n<span class="w"> </span>-j32
+
+<span class="c1"># 使用 clone.bundle 加速</span>
+repo<span class="w"> </span>init<span class="w"> </span>-u<span class="w"> </span>https://github.com/myorg/manifest
+repo<span class="w"> </span>sync<span class="w"> </span>--clone-bundle<span class="w"> </span>-j16
+</code></pre></div>
+<h3 id="103">10.3 代码审查工作流<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 1. 创建分支</span>
+repo<span class="w"> </span>start<span class="w"> </span>feature-x<span class="w"> </span>--all
+
+<span class="c1"># 2. 修改并提交...</span>
+
+<span class="c1"># 3. 变基到最新</span>
+repo<span class="w"> </span>rebase
+
+<span class="c1"># 4. 上传审查</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-c<span class="w"> </span>-w<span class="w"> </span>--re<span class="o">=</span>reviewer@example.com
+
+<span class="c1"># 5. 根据反馈修改...</span>
+
+<span class="c1"># 6. 重新上传（标记为 Ready）</span>
+repo<span class="w"> </span>upload<span class="w"> </span>-c<span class="w"> </span>-r
+
+<span class="c1"># 7. 合并后清理</span>
+repo<span class="w"> </span>prune
+</code></pre></div>
+<h3 id="104">10.4 多人协作分支<a class="headerlink" href="#104" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看所有未合并的分支</span>
+repo<span class="w"> </span>overview
+
+<span class="c1"># 查看某人的工作</span>
+repo<span class="w"> </span>info<span class="w"> </span>-d<span class="w"> </span>-o<span class="w"> </span>--current-branch
+
+<span class="c1"># 批量变基所有项目</span>
+repo<span class="w"> </span>rebase<span class="w"> </span>--fail-fast
+</code></pre></div>
+<h3 id="105-cicd">10.5 CI/CD 集成<a class="headerlink" href="#105-cicd" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 同步后验证状态</span>
+repo<span class="w"> </span>sync<span class="w"> </span>-j8<span class="w"> </span>--fail-fast<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>repo<span class="w"> </span>status
+
+<span class="c1"># 导出锁定版本清单</span>
+repo<span class="w"> </span>manifest<span class="w"> </span>-r<span class="w"> </span>-o<span class="w"> </span>pinned-manifest.xml
+
+<span class="c1"># 比较清单变更</span>
+repo<span class="w"> </span>diffmanifests<span class="w"> </span>base-manifest.xml<span class="w"> </span>current-manifest.xml<span class="w"> </span>--raw
+
+<span class="c1"># 垃圾回收</span>
+repo<span class="w"> </span>gc<span class="w"> </span>-y
+</code></pre></div>
+<hr />
+<h2 id="11-repo-west">11. Repo 与 West 对比<a class="headerlink" href="#11-repo-west" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Repo</th>
+<th>West</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>清单格式</td>
+<td>XML</td>
+<td>YAML</td>
+</tr>
+<tr>
+<td>主要用途</td>
+<td>Android/大型项目</td>
+<td>Zephyr RTOS</td>
+</tr>
+<tr>
+<td>代码审查</td>
+<td>Gerrit 集成</td>
+<td>无内置</td>
+</tr>
+<tr>
+<td>配置系统</td>
+<td>Git 配置风格</td>
+<td>Git 配置风格</td>
+</tr>
+<tr>
+<td>扩展机制</td>
+<td>Repo hooks</td>
+<td>Python 扩展命令</td>
+</tr>
+<tr>
+<td>项目组</td>
+<td>groups 属性</td>
+<td>groups + group-filter</td>
+</tr>
+<tr>
+<td>清单导入</td>
+<td><code>&lt;include&gt;</code></td>
+<td><code>import</code> 字段</td>
+</tr>
+<tr>
+<td>镜像支持</td>
+<td><code>--mirror</code> 模式</td>
+<td>无内置</td>
+</tr>
+<tr>
+<td>智能同步</td>
+<td>manifest-server</td>
+<td>无</td>
+</tr>
+<tr>
+<td>分支管理</td>
+<td>start/checkout/abandon/prune</td>
+<td>无内置</td>
+</tr>
+<tr>
+<td>upload/download</td>
+<td>Gerrit 原生支持</td>
+<td>无内置</td>
+</tr>
+<tr>
+<td>本地清单</td>
+<td><code>.repo/local_manifests/</code></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12">12. 命令速查表<a class="headerlink" href="#12" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+<th>常用示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>repo init</code></td>
+<td>初始化客户端</td>
+<td><code>repo init -u &lt;url&gt; -b main</code></td>
+</tr>
+<tr>
+<td><code>repo sync</code></td>
+<td>同步项目</td>
+<td><code>repo sync -j8</code></td>
+</tr>
+<tr>
+<td><code>repo start</code></td>
+<td>创建分支</td>
+<td><code>repo start feature --all</code></td>
+</tr>
+<tr>
+<td><code>repo upload</code></td>
+<td>上传审查</td>
+<td><code>repo upload -c --re=user@ex.com</code></td>
+</tr>
+<tr>
+<td><code>repo download</code></td>
+<td>下载变更</td>
+<td><code>repo download 12345/2</code></td>
+</tr>
+<tr>
+<td><code>repo abandon</code></td>
+<td>放弃分支</td>
+<td><code>repo abandon feature</code></td>
+</tr>
+<tr>
+<td><code>repo branches</code></td>
+<td>查看分支</td>
+<td><code>repo branches</code></td>
+</tr>
+<tr>
+<td><code>repo checkout</code></td>
+<td>切换分支</td>
+<td><code>repo checkout feature</code></td>
+</tr>
+<tr>
+<td><code>repo rebase</code></td>
+<td>变基</td>
+<td><code>repo rebase</code></td>
+</tr>
+<tr>
+<td><code>repo prune</code></td>
+<td>清理已合并分支</td>
+<td><code>repo prune</code></td>
+</tr>
+<tr>
+<td><code>repo diff</code></td>
+<td>查看差异</td>
+<td><code>repo diff</code></td>
+</tr>
+<tr>
+<td><code>repo status</code></td>
+<td>查看状态</td>
+<td><code>repo status</code></td>
+</tr>
+<tr>
+<td><code>repo stage</code></td>
+<td>暂存文件</td>
+<td><code>repo stage -i</code></td>
+</tr>
+<tr>
+<td><code>repo forall</code></td>
+<td>批量执行</td>
+<td><code>repo forall -c 'git status'</code></td>
+</tr>
+<tr>
+<td><code>repo grep</code></td>
+<td>跨项目搜索</td>
+<td><code>repo grep "pattern"</code></td>
+</tr>
+<tr>
+<td><code>repo list</code></td>
+<td>列出项目</td>
+<td><code>repo list</code></td>
+</tr>
+<tr>
+<td><code>repo manifest</code></td>
+<td>清单检查</td>
+<td><code>repo manifest -r -o locked.xml</code></td>
+</tr>
+<tr>
+<td><code>repo diffmanifests</code></td>
+<td>清单对比</td>
+<td><code>repo diffmanifests a.xml b.xml</code></td>
+</tr>
+<tr>
+<td><code>repo info</code></td>
+<td>项目信息</td>
+<td><code>repo info -d</code></td>
+</tr>
+<tr>
+<td><code>repo overview</code></td>
+<td>分支概览</td>
+<td><code>repo overview</code></td>
+</tr>
+<tr>
+<td><code>repo cherry-pick</code></td>
+<td>挑选变更</td>
+<td><code>repo cherry-pick &lt;sha1&gt;</code></td>
+</tr>
+<tr>
+<td><code>repo smartsync</code></td>
+<td>智能同步</td>
+<td><code>repo smartsync</code></td>
+</tr>
+<tr>
+<td><code>repo gc</code></td>
+<td>垃圾回收</td>
+<td><code>repo gc</code></td>
+</tr>
+<tr>
+<td><code>repo wipe</code></td>
+<td>清除项目</td>
+<td><code>repo wipe project-name</code></td>
+</tr>
+<tr>
+<td><code>repo selfupdate</code></td>
+<td>更新 repo</td>
+<td><code>repo selfupdate</code></td>
+</tr>
+<tr>
+<td><code>repo version</code></td>
+<td>查看版本</td>
+<td><code>repo version</code></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2797 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>West 命令行工具操作指南 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#west" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              West 命令行工具操作指南
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        工作区结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 安装
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 全局选项
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 核心工作流
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 核心工作流">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 从远程仓库初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 从本地仓库初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 典型日常操作
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 命令详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 命令详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-init-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 init - 初始化工作区
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-update-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 update - 更新项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-list-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 list - 列出项目
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-manifest-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 manifest - 管理清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-compare-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 compare - 对比状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-diff-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 diff - 项目差异
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-status-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 status - 项目状态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-forall-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 forall - 批量执行命令
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#59-grep-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.9 grep - 跨项目搜索
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#510-config-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10 config - 配置管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#511-topdir-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.11 topdir - 获取顶级目录
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#512-help-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.12 help - 帮助
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Manifest 清单文件格式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Manifest 清单文件格式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 顶级结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 字段详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 字段详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        version（可选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        defaults（可选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remotes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remotes（可选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#projects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        projects（可选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#self" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        self（可选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        group-filter（可选）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 完整示例
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 配置系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 配置系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 三级配置优先级
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 常用配置项
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.2 常用配置项">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manifestpath" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manifest.path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifestgroup-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manifest.group-filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        color.ui
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compareignore-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compare.ignore-branches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        grep.tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grepcolor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        grep.color
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buildcmake-args" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        build.cmake-args
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 扩展命令
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 常用配置项参考
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 工作区管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 锁定版本
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 项目组管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 CI/CD 集成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#105" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 跨项目操作
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命令速查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="west">West 命令行工具操作指南<a class="headerlink" href="#west" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>版本: v1.5.0 | 许可证: Apache License 2.0
+项目主页: https://github.com/zephyrproject-rtos/west</p>
+</blockquote>
+<h2 id="_1">目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#1-概述">1. 概述</a></li>
+<li><a href="#2-安装">2. 安装</a></li>
+<li><a href="#3-全局选项">3. 全局选项</a></li>
+<li><a href="#4-核心工作流">4. 核心工作流</a></li>
+<li><a href="#5-命令详解">5. 命令详解</a></li>
+<li><a href="#51-init---初始化工作区">5.1 init - 初始化工作区</a></li>
+<li><a href="#52-update---更新项目">5.2 update - 更新项目</a></li>
+<li><a href="#53-list---列出项目">5.3 list - 列出项目</a></li>
+<li><a href="#54-manifest---管理清单">5.4 manifest - 管理清单</a></li>
+<li><a href="#55-compare---对比状态">5.5 compare - 对比状态</a></li>
+<li><a href="#56-diff---项目差异">5.6 diff - 项目差异</a></li>
+<li><a href="#57-status---项目状态">5.7 status - 项目状态</a></li>
+<li><a href="#58-forall---批量执行命令">5.8 forall - 批量执行命令</a></li>
+<li><a href="#59-grep---跨项目搜索">5.9 grep - 跨项目搜索</a></li>
+<li><a href="#510-config---配置管理">5.10 config - 配置管理</a></li>
+<li><a href="#511-topdir---获取顶级目录">5.11 topdir - 获取顶级目录</a></li>
+<li><a href="#512-help---帮助">5.12 help - 帮助</a></li>
+<li><a href="#6-manifest-清单文件格式">6. Manifest 清单文件格式</a></li>
+<li><a href="#7-配置系统">7. 配置系统</a></li>
+<li><a href="#8-扩展命令">8. 扩展命令</a></li>
+<li><a href="#9-常用配置项参考">9. 常用配置项参考</a></li>
+<li><a href="#10-最佳实践">10. 最佳实践</a></li>
+</ul>
+<hr />
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>West 是 Zephyr RTOS 的元工具（meta-tool），用于管理由多个 Git 仓库组成的工作区。它类似于 Android 的 <code>repo</code> 工具，主要功能包括：</p>
+<ul>
+<li><strong>工作区初始化</strong>: 克隆清单仓库，建立多仓库工作区</li>
+<li><strong>项目管理</strong>: 根据清单文件克隆、更新多个 Git 仓库</li>
+<li><strong>批量操作</strong>: 在所有项目上执行 git 命令</li>
+<li><strong>配置管理</strong>: Git 风格的三级配置系统</li>
+<li><strong>扩展机制</strong>: 支持项目自定义扩展命令</li>
+</ul>
+<h3 id="_2">工作区结构<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&lt;workspace&gt;/
+├── .west/                    # West 内部数据目录
+│   └── config                # 本地配置文件
+├── &lt;manifest-project&gt;/       # 清单仓库（包含 west.yml）
+│   └── west.yml              # 主清单文件
+├── &lt;project-1&gt;/              # 清单中定义的项目 1
+├── &lt;project-2&gt;/              # 清单中定义的项目 2
+└── ...
+</code></pre></div>
+<hr />
+<h2 id="2">2. 安装<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>west
+</code></pre></div>
+<p>依赖项: colorama, packaging, pykwalify, PyYAML</p>
+<p>验证安装:</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>--version
+<span class="c1"># West version: v1.5.0</span>
+</code></pre></div>
+<hr />
+<h2 id="3">3. 全局选项<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>west [-h] [-z ZEPHYR_BASE] [-v] [-q] [-V] &lt;command&gt; ...
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-h, --help</code></td>
+<td>获取帮助信息</td>
+</tr>
+<tr>
+<td><code>-z, --zephyr-base</code></td>
+<td>覆盖 Zephyr 基础目录，默认为清单中路径为 "zephyr" 的项目</td>
+</tr>
+<tr>
+<td><code>-v, --verbose</code></td>
+<td>显示详细输出，可多次使用以增加详细程度</td>
+</tr>
+<tr>
+<td><code>-q, --quiet</code></td>
+<td>减少输出详细程度，可多次使用</td>
+</tr>
+<tr>
+<td><code>-V, --version</code></td>
+<td>打印版本号并退出</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4">4. 核心工作流<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 从远程仓库初始化<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用默认的 Zephyr 仓库初始化</span>
+west<span class="w"> </span>init<span class="w"> </span>&lt;workspace&gt;
+
+<span class="c1"># 指定清单仓库 URL</span>
+west<span class="w"> </span>init<span class="w"> </span>-m<span class="w"> </span>https://github.com/my-org/manifest-repo<span class="w"> </span>&lt;workspace&gt;
+
+<span class="c1"># 指定清单仓库 URL 和分支</span>
+west<span class="w"> </span>init<span class="w"> </span>-m<span class="w"> </span>https://github.com/my-org/manifest-repo<span class="w"> </span>--mr<span class="w"> </span>v2.0<span class="w"> </span>&lt;workspace&gt;
+
+<span class="c1"># 使用浅克隆加速</span>
+west<span class="w"> </span>init<span class="w"> </span>-m<span class="w"> </span>https://github.com/my-org/manifest-repo<span class="w"> </span>-o<span class="w"> </span>--depth<span class="o">=</span><span class="m">1</span><span class="w"> </span>&lt;workspace&gt;
+
+<span class="c1"># 切换到工作区并更新所有项目</span>
+<span class="nb">cd</span><span class="w"> </span>&lt;workspace&gt;
+west<span class="w"> </span>update
+</code></pre></div>
+<h3 id="42">4.2 从本地仓库初始化<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 基于已有的本地清单仓库创建工作区</span>
+west<span class="w"> </span>init<span class="w"> </span>-l<span class="w"> </span>/path/to/local/manifest-repo
+
+<span class="nb">cd</span><span class="w"> </span>/path/to/local/manifest-repo
+west<span class="w"> </span>update
+</code></pre></div>
+<h3 id="43">4.3 典型日常操作<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看所有项目状态</span>
+west<span class="w"> </span>status
+
+<span class="c1"># 更新所有项目</span>
+west<span class="w"> </span>update
+
+<span class="c1"># 更新指定项目</span>
+west<span class="w"> </span>update<span class="w"> </span>hal_drivers<span class="w"> </span>cmsis
+
+<span class="c1"># 查看项目列表</span>
+west<span class="w"> </span>list
+
+<span class="c1"># 在所有项目中搜索</span>
+west<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="5">5. 命令详解<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-init-">5.1 init - 初始化工作区<a class="headerlink" href="#51-init-" title="Permanent link">&para;</a></h3>
+<p>创建一个新的 west 工作区。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 用法 1: 从远程克隆清单仓库</span>
+west<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>-m<span class="w"> </span>URL<span class="o">]</span><span class="w"> </span><span class="o">[</span>--mr<span class="w"> </span>REVISION<span class="o">]</span><span class="w"> </span><span class="o">[</span>--mf<span class="w"> </span>FILE<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>GIT_CLONE_OPT<span class="o">]</span><span class="w"> </span><span class="o">[</span>directory<span class="o">]</span>
+
+<span class="c1"># 用法 2: 使用本地清单仓库</span>
+west<span class="w"> </span>init<span class="w"> </span>-l<span class="w"> </span><span class="o">[</span>--mf<span class="w"> </span>FILE<span class="o">]</span><span class="w"> </span>directory
+</code></pre></div>
+<p><strong>参数:</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>directory</code></td>
+<td>使用 <code>-l</code> 时为本地清单仓库路径；不使用 <code>-l</code> 时为要创建的工作区目录（默认为当前目录）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-m, --manifest-url</code></td>
+<td>清单仓库 URL，不能与 <code>-l</code> 同时使用</td>
+</tr>
+<tr>
+<td><code>--mr, --manifest-rev</code></td>
+<td>清单仓库的分支或标签名，默认使用远程默认分支</td>
+</tr>
+<tr>
+<td><code>--mf, --manifest-file</code></td>
+<td>清单文件名（默认为 <code>west.yml</code>）</td>
+</tr>
+<tr>
+<td><code>-l, --local</code></td>
+<td>将 directory 作为已有的本地清单仓库，<code>.west</code> 目录创建在其旁边</td>
+</tr>
+<tr>
+<td><code>-o, --clone-opt</code></td>
+<td>传递给 <code>git clone</code> 的额外选项（如 <code>-o=--depth=1</code>），可多次使用</td>
+</tr>
+<tr>
+<td><code>--rename-delay</code></td>
+<td>重命名临时目录前的等待秒数（NTFS 文件系统兼容性选项）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 使用自定义清单仓库初始化</span>
+west<span class="w"> </span>init<span class="w"> </span>-m<span class="w"> </span>https://github.com/myorg/my-manifest<span class="w"> </span>--mr<span class="w"> </span>main<span class="w"> </span>my-workspace
+
+<span class="c1"># 使用本地清单仓库</span>
+west<span class="w"> </span>init<span class="w"> </span>-l<span class="w"> </span>~/repos/my-manifest
+
+<span class="c1"># 浅克隆 + 自定义清单文件</span>
+west<span class="w"> </span>init<span class="w"> </span>-m<span class="w"> </span>https://github.com/myorg/manifest<span class="w"> </span>--mf<span class="w"> </span>manifest-custom.yml<span class="w"> </span>-o<span class="o">=</span>--depth<span class="o">=</span><span class="m">1</span><span class="w"> </span>my-workspace
+</code></pre></div>
+<hr />
+<h3 id="52-update-">5.2 update - 更新项目<a class="headerlink" href="#52-update-" title="Permanent link">&para;</a></h3>
+<p>根据清单文件更新活动项目。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>update<span class="w"> </span><span class="o">[</span>PROJECT<span class="w"> </span>...<span class="o">]</span>
+</code></pre></div>
+<p><strong>参数:</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROJECT</code></td>
+<td>要操作的项目（按名称或路径），默认为所有活动项目</td>
+</tr>
+</tbody>
+</table>
+<p><strong>选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--stats</code></td>
+<td>打印更新操作的性能统计信息</td>
+</tr>
+</tbody>
+</table>
+<p><strong>抓取行为:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-f, --fetch {always,smart}</code></td>
+<td>抓取策略: <code>always</code> 总是抓取，<code>smart</code>（默认）跳过本地已有的 SHA 或标签</td>
+</tr>
+<tr>
+<td><code>-o, --fetch-opt</code></td>
+<td>传递给 <code>git fetch</code> 的额外选项（如 <code>o=--depth=1</code>），可多次使用</td>
+</tr>
+<tr>
+<td><code>-n, --narrow</code></td>
+<td>仅抓取项目修订版本，不传递 <code>--tags</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>已检出分支行为:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-k, --keep-descendants</code></td>
+<td>如果已检出的分支是新 manifest-rev 的后代，保持检出状态（优先级高于 <code>--rebase</code>）</td>
+</tr>
+<tr>
+<td><code>-r, --rebase</code></td>
+<td>将已检出的分支变基到新的 manifest-rev 上（错误时保留部分变基结果）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>本地缓存:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>优先级</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--name-cache</code></td>
+<td>0（最高）</td>
+<td>缓存目录结构与项目名称匹配的扁平布局</td>
+</tr>
+<tr>
+<td><code>--path-cache</code></td>
+<td>1</td>
+<td>缓存目录结构与工作区路径布局一致</td>
+</tr>
+<tr>
+<td><code>--auto-cache</code></td>
+<td>2（最低）</td>
+<td>自动管理的缓存，每个仓库存储在以 URL 基名命名的目录下</td>
+</tr>
+</tbody>
+</table>
+<p><strong>高级选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--group-filter, --gf</code></td>
+<td>追加组过滤器，可多次使用</td>
+</tr>
+<tr>
+<td><code>--submodule-init-config</code></td>
+<td><code>git submodule init</code> 时设置的 git 配置选项，格式为 <code>&lt;option&gt;=&lt;value&gt;</code>，可多次使用</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 更新所有项目</span>
+west<span class="w"> </span>update
+
+<span class="c1"># 仅更新指定项目</span>
+west<span class="w"> </span>update<span class="w"> </span>hal_drivers<span class="w"> </span>cmsis
+
+<span class="c1"># 强制从远程抓取所有项目的最新代码</span>
+west<span class="w"> </span>update<span class="w"> </span>-f<span class="w"> </span>always
+
+<span class="c1"># 保持已有分支的变基</span>
+west<span class="w"> </span>update<span class="w"> </span>-r
+
+<span class="c1"># 使用本地 name 缓存加速初始化</span>
+west<span class="w"> </span>update<span class="w"> </span>--name-cache<span class="w"> </span>/path/to/cache
+
+<span class="c1"># 使用自动缓存（首次自动创建，后续自动同步）</span>
+west<span class="w"> </span>update<span class="w"> </span>--auto-cache<span class="w"> </span>/path/to/auto-cache
+</code></pre></div>
+<hr />
+<h3 id="53-list-">5.3 list - 列出项目<a class="headerlink" href="#53-list-" title="Permanent link">&para;</a></h3>
+<p>打印清单中定义的项目信息。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>PROJECT<span class="w"> </span>...<span class="o">]</span>
+</code></pre></div>
+<p><strong>选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-a, --all</code></td>
+<td>包含非活动项目</td>
+</tr>
+<tr>
+<td><code>-i, --inactive</code></td>
+<td>仅列出非活动项目</td>
+</tr>
+<tr>
+<td><code>--manifest-path-from-yaml</code></td>
+<td>打印清单文件 YAML 中定义的清单仓库路径</td>
+</tr>
+<tr>
+<td><code>-f, --format FORMAT</code></td>
+<td>自定义格式字符串</td>
+</tr>
+</tbody>
+</table>
+<p><strong>格式字符串变量:</strong></p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{name}</code></td>
+<td>项目名称</td>
+</tr>
+<tr>
+<td><code>{description}</code></td>
+<td>项目描述</td>
+</tr>
+<tr>
+<td><code>{url}</code></td>
+<td>完整的远程 URL</td>
+</tr>
+<tr>
+<td><code>{path}</code></td>
+<td>相对于顶级目录的路径</td>
+</tr>
+<tr>
+<td><code>{abspath}</code></td>
+<td>绝对路径</td>
+</tr>
+<tr>
+<td><code>{posixpath}</code></td>
+<td>POSIX 风格的绝对路径（使用 <code>/</code> 分隔符）</td>
+</tr>
+<tr>
+<td><code>{revision}</code></td>
+<td>清单中定义的修订版本</td>
+</tr>
+<tr>
+<td><code>{sha}</code></td>
+<td>修订版本对应的 SHA（需要项目已克隆）</td>
+</tr>
+<tr>
+<td><code>{cloned}</code></td>
+<td><code>cloned</code> 或 <code>not-cloned</code></td>
+</tr>
+<tr>
+<td><code>{active}</code></td>
+<td><code>active</code> 或 <code>inactive</code></td>
+</tr>
+<tr>
+<td><code>{clone_depth}</code></td>
+<td>克隆深度，未指定则为 <code>None</code></td>
+</tr>
+<tr>
+<td><code>{groups}</code></td>
+<td>项目所属组，逗号分隔</td>
+</tr>
+</tbody>
+</table>
+<p>默认格式: <code>{name:12} {path:28} {revision:40} {url}</code></p>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 列出所有活动项目</span>
+west<span class="w"> </span>list
+
+<span class="c1"># 列出所有项目（含非活动的）</span>
+west<span class="w"> </span>list<span class="w"> </span>-a
+
+<span class="c1"># 仅列出非活动项目</span>
+west<span class="w"> </span>list<span class="w"> </span>-i
+
+<span class="c1"># 自定义输出格式</span>
+west<span class="w"> </span>list<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;{name:20} {sha:12} {path}&quot;</span>
+
+<span class="c1"># 查看指定项目</span>
+west<span class="w"> </span>list<span class="w"> </span>hal_drivers<span class="w"> </span>cmsis
+
+<span class="c1"># 列出所有已克隆项目</span>
+west<span class="w"> </span>list<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;{name} {cloned}&quot;</span><span class="w"> </span>-a
+</code></pre></div>
+<hr />
+<h3 id="54-manifest-">5.4 manifest - 管理清单<a class="headerlink" href="#54-manifest-" title="Permanent link">&para;</a></h3>
+<p>管理 west 清单文件。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>manifest<span class="w"> </span><span class="o">(</span>--resolve<span class="w"> </span><span class="p">|</span><span class="w"> </span>--freeze<span class="w"> </span><span class="p">|</span><span class="w"> </span>--validate<span class="w"> </span><span class="p">|</span><span class="w"> </span>--path<span class="w"> </span><span class="p">|</span><span class="w"> </span>--untracked<span class="o">)</span>
+</code></pre></div>
+<p><strong>操作（必须且只能指定一个）:</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--resolve</code></td>
+<td>解析所有 import 后打印等效的单个清单文件（需要导入的清单已通过 <code>west update</code> 克隆）</td>
+</tr>
+<tr>
+<td><code>--freeze</code></td>
+<td>类似 <code>--resolve</code>，但将所有项目修订版本转换为当前 SHA（需要所有项目已克隆）</td>
+</tr>
+<tr>
+<td><code>--validate</code></td>
+<td>验证清单文件是否能成功解析，成功则无输出并正常退出</td>
+</tr>
+<tr>
+<td><code>--path</code></td>
+<td>打印顶级清单文件的路径</td>
+</tr>
+<tr>
+<td><code>--untracked</code></td>
+<td>打印工作区中不被 west 管理或跟踪的所有文件和目录（类似 <code>git status</code> 的未跟踪文件）</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>--resolve</code> 和 <code>--freeze</code> 的额外选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-o, --out OUT</code></td>
+<td>输出到文件，默认为标准输出</td>
+</tr>
+<tr>
+<td><code>--active-only</code></td>
+<td>仅解析活动项目</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 验证清单文件</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--validate
+
+<span class="c1"># 查看清单文件路径</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--path
+
+<span class="c1"># 解析所有导入，输出合并后的清单</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--resolve
+
+<span class="c1"># 解析并输出到文件</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--resolve<span class="w"> </span>-o<span class="w"> </span>resolved.yml
+
+<span class="c1"># 冻结所有修订为 SHA</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--freeze<span class="w"> </span>-o<span class="w"> </span>locked.yml
+
+<span class="c1"># 查看未跟踪的文件</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--untracked
+</code></pre></div>
+<hr />
+<h3 id="55-compare-">5.5 compare - 对比状态<a class="headerlink" href="#55-compare-" title="Permanent link">&para;</a></h3>
+<p>将每个项目的当前状态与最近一次 <code>west update</code> 的结果进行对比。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>compare<span class="w"> </span><span class="o">[</span>PROJECT<span class="w"> </span>...<span class="o">]</span>
+</code></pre></div>
+<p>对每个项目，以下任一条件为真时会输出信息:</p>
+<ol>
+<li>HEAD 与 <code>manifest-rev</code> 分支指向的提交不同</li>
+<li>工作目录有未提交的更改</li>
+<li>有本地检出的分支（可通过配置或 <code>--ignore-branches</code> 禁用此检查）</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-a, --all</code></td>
+<td>包含非活动项目</td>
+</tr>
+<tr>
+<td><code>--exit-code</code></td>
+<td>如果有任何项目输出了状态信息，则以状态码 1 退出</td>
+</tr>
+<tr>
+<td><code>--ignore-branches</code></td>
+<td>对检出的分支且工作目录干净、分支位于 <code>west update</code> 相同提交的项目跳过输出</td>
+</tr>
+<tr>
+<td><code>--no-ignore-branches</code></td>
+<td>覆盖 <code>--ignore-branches</code> 或 <code>compare.ignore-branches</code> 配置选项</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看所有项目与清单的差异</span>
+west<span class="w"> </span>compare
+
+<span class="c1"># 包含非活动项目</span>
+west<span class="w"> </span>compare<span class="w"> </span>-a
+
+<span class="c1"># 在 CI 中使用退出码判断</span>
+west<span class="w"> </span>compare<span class="w"> </span>--exit-code
+</code></pre></div>
+<hr />
+<h3 id="56-diff-">5.6 diff - 项目差异<a class="headerlink" href="#56-diff-" title="Permanent link">&para;</a></h3>
+<p>在指定项目上运行 <code>git diff</code>。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>diff<span class="w"> </span><span class="o">[</span>PROJECT<span class="w"> </span>...<span class="o">]</span>
+</code></pre></div>
+<p>未识别的参数会直接传递给 <code>git diff</code>。</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-a, --all</code></td>
+<td>包含非活动项目</td>
+</tr>
+<tr>
+<td><code>-m, --manifest</code></td>
+<td>显示相对于 <code>manifest-rev</code> 的更改</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看所有项目的差异</span>
+west<span class="w"> </span>diff
+
+<span class="c1"># 查看指定项目的差异</span>
+west<span class="w"> </span>diff<span class="w"> </span>hal_drivers
+
+<span class="c1"># 相对于 manifest-rev 的差异</span>
+west<span class="w"> </span>diff<span class="w"> </span>-m
+
+<span class="c1"># 传递 git diff 参数</span>
+west<span class="w"> </span>diff<span class="w"> </span>--stat<span class="w"> </span>hal_drivers
+</code></pre></div>
+<hr />
+<h3 id="57-status-">5.7 status - 项目状态<a class="headerlink" href="#57-status-" title="Permanent link">&para;</a></h3>
+<p>在指定项目上运行 <code>git status</code>。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>status<span class="w"> </span><span class="o">[</span>PROJECT<span class="w"> </span>...<span class="o">]</span>
+</code></pre></div>
+<p>未识别的参数会直接传递给 <code>git status</code>。</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-a, --all</code></td>
+<td>包含非活动项目</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意</strong>: 若要查找工作区中未被 west 管理的未跟踪文件，请使用 <code>west manifest --untracked</code>。</p>
+</blockquote>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看所有项目的 git 状态</span>
+west<span class="w"> </span>status
+
+<span class="c1"># 查看指定项目</span>
+west<span class="w"> </span>status<span class="w"> </span>hal_drivers<span class="w"> </span>cmsis
+
+<span class="c1"># 包含非活动项目</span>
+west<span class="w"> </span>status<span class="w"> </span>-a
+</code></pre></div>
+<hr />
+<h3 id="58-forall-">5.8 forall - 批量执行命令<a class="headerlink" href="#58-forall-" title="Permanent link">&para;</a></h3>
+<p>在每个指定项目的仓库中运行 shell 命令。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>PROJECT<span class="w"> </span>...<span class="o">]</span>
+</code></pre></div>
+<p><strong>可用环境变量:</strong></p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WEST_PROJECT_NAME</code></td>
+<td>项目名称</td>
+</tr>
+<tr>
+<td><code>WEST_PROJECT_PATH</code></td>
+<td>项目相对路径</td>
+</tr>
+<tr>
+<td><code>WEST_PROJECT_ABSPATH</code></td>
+<td>项目绝对路径</td>
+</tr>
+<tr>
+<td><code>WEST_PROJECT_REVISION</code></td>
+<td>项目修订版本</td>
+</tr>
+<tr>
+<td><code>WEST_PROJECT_URL</code></td>
+<td>项目远程 URL</td>
+</tr>
+<tr>
+<td><code>WEST_PROJECT_REMOTE</code></td>
+<td>项目远程名称</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-c COMMAND</code></td>
+<td>要执行的命令（必选）</td>
+</tr>
+<tr>
+<td><code>-C CWD</code></td>
+<td>命令执行目录，默认为各项目路径</td>
+</tr>
+<tr>
+<td><code>-a, --all</code></td>
+<td>包含非活动项目</td>
+</tr>
+<tr>
+<td><code>-g, --group GROUPS</code></td>
+<td>仅在指定组中的项目上运行命令，可多次使用（任一匹配即运行）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看所有项目的当前分支</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;git branch --show-current&quot;</span>
+
+<span class="c1"># 查看所有项目到最后一次提交的日期</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;git log -1 --format=&quot;%cd&quot; --date=short&#39;</span>
+
+<span class="c1"># 仅在 hal 组的项目中执行</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;git status&quot;</span><span class="w"> </span>-g<span class="w"> </span>hal
+
+<span class="c1"># 在所有项目中搜索特定字符串（使用环境变量）</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;echo \$WEST_PROJECT_NAME: \$(grep -r &#39;CONFIG_UART&#39; --include=&#39;*.h&#39; -l | head -5)&quot;</span>
+
+<span class="c1"># 从统一目录执行命令（但环境变量仍指向各项目）</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;make \$WEST_PROJECT_NAME&quot;</span><span class="w"> </span>-C<span class="w"> </span>/path/to/build
+</code></pre></div>
+<hr />
+<h3 id="59-grep-">5.9 grep - 跨项目搜索<a class="headerlink" href="#59-grep-" title="Permanent link">&para;</a></h3>
+<p>在一个或多个项目中运行 grep 或类似 grep 的工具。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>grep<span class="w"> </span><span class="o">[</span>PATTERN<span class="o">]</span>
+</code></pre></div>
+<p><strong>选项:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--tool {git-grep,ripgrep,grep}</code></td>
+<td>选择搜索工具（默认 <code>git-grep</code>）</td>
+</tr>
+<tr>
+<td><code>--tool-path PATH</code></td>
+<td>指定工具的可执行文件路径</td>
+</tr>
+<tr>
+<td><code>-p, --project PROJECT</code></td>
+<td>指定要搜索的项目，可多次使用（默认为所有已克隆的活动项目）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>工具说明:</strong></p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+<th>默认搜索路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git-grep</code></td>
+<td>使用 <code>git grep</code>（默认）</td>
+<td>搜索 <code>git</code></td>
+</tr>
+<tr>
+<td><code>ripgrep</code></td>
+<td>使用 ripgrep</td>
+<td>搜索 <code>rg</code>，然后 <code>ripgrep</code></td>
+</tr>
+<tr>
+<td><code>grep</code></td>
+<td>使用系统 <code>grep --recursive</code></td>
+<td>搜索 <code>grep</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>颜色控制:</strong></p>
+<p>默认情况下，当 <code>color.ui</code> 配置为 true 时强制彩色输出。可通过命令行覆盖:</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>grep<span class="w"> </span>--color<span class="o">=</span>never<span class="w"> </span><span class="s2">&quot;pattern&quot;</span>
+</code></pre></div>
+<p>或通过配置永久设置:</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>grep.color<span class="w"> </span>never
+</code></pre></div>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在所有已克隆项目中搜索（使用 git grep）</span>
+west<span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span>
+
+<span class="c1"># 使用 ripgrep 搜索</span>
+west<span class="w"> </span>grep<span class="w"> </span>--tool<span class="w"> </span>ripgrep<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span>
+
+<span class="c1"># 在特定项目中搜索</span>
+west<span class="w"> </span>grep<span class="w"> </span>-p<span class="w"> </span>hal_drivers<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span>
+
+<span class="c1"># 使用 git grep 的未跟踪文件选项</span>
+west<span class="w"> </span>grep<span class="w"> </span>--untracked<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span>
+
+<span class="c1"># 传递额外参数给搜索工具</span>
+west<span class="w"> </span>grep<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot;CONFIG_UART&quot;</span><span class="w"> </span>--<span class="w"> </span><span class="s1">&#39;*.h&#39;</span>
+
+<span class="c1"># 持久化更改默认工具</span>
+west<span class="w"> </span>config<span class="w"> </span>grep.tool<span class="w"> </span>ripgrep
+</code></pre></div>
+<hr />
+<h3 id="510-config-">5.10 config - 配置管理<a class="headerlink" href="#510-config-" title="Permanent link">&para;</a></h3>
+<p>West 配置文件管理，遵循 Git 风格的三级配置文件约定。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>name<span class="o">]</span><span class="w"> </span><span class="o">[</span>value<span class="o">]</span>
+</code></pre></div>
+<p><strong>操作（最多指定一个）:</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>（无）</td>
+<td>读取配置值</td>
+</tr>
+<tr>
+<td><code>-l, --list</code></td>
+<td>列出所有配置项及其值</td>
+</tr>
+<tr>
+<td><code>-d, --delete</code></td>
+<td>删除一个配置项（在设置它的第一个文件中删除）</td>
+</tr>
+<tr>
+<td><code>-D, --delete-all</code></td>
+<td>在所有配置文件中删除该配置项</td>
+</tr>
+<tr>
+<td><code>-a, --append</code></td>
+<td>追加到已有值（配置项必须已存在）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>配置文件位置（最多指定一个）:</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--system</code></td>
+<td>系统级配置</td>
+</tr>
+<tr>
+<td><code>--global</code></td>
+<td>用户级配置</td>
+</tr>
+<tr>
+<td><code>--local</code></td>
+<td>当前工作区配置</td>
+</tr>
+</tbody>
+</table>
+<p>未指定时，读取使用所有三个文件（优先级: local &gt; global &gt; system），写入使用 local 文件。</p>
+<p><strong>配置文件默认路径:</strong></p>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>Linux</th>
+<th>macOS</th>
+<th>Windows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>系统</td>
+<td><code>/etc/westconfig</code></td>
+<td><code>/usr/local/etc/westconfig</code></td>
+<td><code>%PROGRAMDATA%\west\config</code></td>
+</tr>
+<tr>
+<td>全局</td>
+<td><code>~/.westconfig</code> 或 <code>$XDG_CONFIG_HOME/west/config</code></td>
+<td><code>~/.westconfig</code></td>
+<td>用户主目录下 <code>.westconfig</code></td>
+</tr>
+<tr>
+<td>本地</td>
+<td><code>&lt;workspace&gt;/.west/config</code></td>
+<td><code>&lt;workspace&gt;/.west/config</code></td>
+<td><code>&lt;workspace&gt;/.west/config</code></td>
+</tr>
+</tbody>
+</table>
+<p>可通过环境变量 <code>WEST_CONFIG_SYSTEM</code>、<code>WEST_CONFIG_GLOBAL</code>、<code>WEST_CONFIG_LOCAL</code> 覆盖。</p>
+<p><strong>示例:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 读取配置值</span>
+west<span class="w"> </span>config<span class="w"> </span>manifest.path
+
+<span class="c1"># 设置配置值（写入 local）</span>
+west<span class="w"> </span>config<span class="w"> </span>manifest.path<span class="w"> </span>zephyr
+
+<span class="c1"># 追加到配置值</span>
+west<span class="w"> </span>config<span class="w"> </span>-a<span class="w"> </span>build.cmake-args<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot; -DEXTRA_CFLAGS=&#39;-Wextra&#39;&quot;</span>
+
+<span class="c1"># 追加组过滤器</span>
+west<span class="w"> </span>config<span class="w"> </span>-a<span class="w"> </span>manifest.group-filter<span class="w"> </span>,+optional
+
+<span class="c1"># 列出所有配置</span>
+west<span class="w"> </span>config<span class="w"> </span>-l
+
+<span class="c1"># 删除配置项</span>
+west<span class="w"> </span>config<span class="w"> </span>-d<span class="w"> </span>build.cmake-args
+
+<span class="c1"># 在全局文件中设置</span>
+west<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>color.ui<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+<hr />
+<h3 id="511-topdir-">5.11 topdir - 获取顶级目录<a class="headerlink" href="#511-topdir-" title="Permanent link">&para;</a></h3>
+<p>打印当前 west 工作区的顶级目录的绝对路径。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>topdir
+</code></pre></div>
+<p>该目录包含 <code>.west</code> 目录，所有项目路径都相对于此目录。</p>
+<hr />
+<h3 id="512-help-">5.12 help - 帮助<a class="headerlink" href="#512-help-" title="Permanent link">&para;</a></h3>
+<p>获取 west 或某个命令的帮助信息。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span><span class="nb">help</span><span class="w"> </span><span class="o">[</span>command_name<span class="o">]</span>
+</code></pre></div>
+<hr />
+<h2 id="6-manifest">6. Manifest 清单文件格式<a class="headerlink" href="#6-manifest" title="Permanent link">&para;</a></h2>
+<p>清单文件（默认为 <code>west.yml</code>）是 YAML 格式，定义了工作区中所有项目的信息。</p>
+<h3 id="61">6.1 顶级结构<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">manifest</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.2&quot;</span><span class="w">           </span><span class="c1"># 清单架构版本（可选）</span>
+<span class="w">  </span><span class="nt">defaults</span><span class="p">:</span><span class="w">                </span><span class="c1"># 默认值（可选）</span>
+<span class="w">    </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myremote</span>
+<span class="w">    </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+<span class="w">  </span><span class="nt">remotes</span><span class="p">:</span><span class="w">                 </span><span class="c1"># 远程仓库定义（可选）</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myremote</span>
+<span class="w">      </span><span class="nt">url-base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/myorg</span>
+<span class="w">  </span><span class="nt">projects</span><span class="p">:</span><span class="w">                </span><span class="c1"># 项目列表</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project1</span>
+<span class="w">      </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myremote</span>
+<span class="w">      </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.0</span>
+<span class="w">  </span><span class="nt">group-filter</span><span class="p">:</span><span class="w">            </span><span class="c1"># 组过滤器（可选）</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+group1</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-group2</span>
+<span class="w">  </span><span class="nt">self</span><span class="p">:</span><span class="w">                    </span><span class="c1"># 清单仓库自身配置（可选）</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manifest-repo</span>
+</code></pre></div>
+<h3 id="62">6.2 字段详解<a class="headerlink" href="#62" title="Permanent link">&para;</a></h3>
+<h4 id="version"><code>version</code>（可选）<a class="headerlink" href="#version" title="Permanent link">&para;</a></h4>
+<p>清单架构最低版本号。当前版本为 <code>1.2</code>。</p>
+<h4 id="defaults"><code>defaults</code>（可选）<a class="headerlink" href="#defaults" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myremote</span><span class="w">    </span><span class="c1"># 默认远程名称</span>
+<span class="w">  </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span><span class="w">      </span><span class="c1"># 默认修订版本（不指定时为 master）</span>
+</code></pre></div>
+<h4 id="remotes"><code>remotes</code>（可选）<a class="headerlink" href="#remotes" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">remotes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myremote</span><span class="w">          </span><span class="c1"># 远程名称（必选）</span>
+<span class="w">    </span><span class="nt">url-base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/myorg</span><span class="w">   </span><span class="c1"># URL 前缀（必选）</span>
+</code></pre></div>
+<p>项目的完整 URL = <code>remote.url-base</code> + <code>/</code> + <code>project.repo-path</code>（默认为 <code>project.name</code>）</p>
+<h4 id="projects"><code>projects</code>（可选）<a class="headerlink" href="#projects" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nt">projects</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project1</span><span class="w">                </span><span class="c1"># 项目唯一名称（必选）</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;项目描述&quot;</span><span class="w">        </span><span class="c1"># 描述（可选，无实际作用）</span>
+<span class="w">    </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myremote</span><span class="w">              </span><span class="c1"># 远程名称（不能与 url 同时使用）</span>
+<span class="w">    </span><span class="nt">repo-path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom-path</span><span class="w">        </span><span class="c1"># 仓库路径（默认与 name 相同）</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://example.com/repo</span><span class="w"> </span><span class="c1"># 完整 URL（不能与 remote 同时使用）</span>
+<span class="w">    </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.0</span><span class="w">                </span><span class="c1"># 分支、标签或 SHA（默认为 master）</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-project</span><span class="w">              </span><span class="c1"># 本地检出路径（默认与 name 相同）</span>
+<span class="w">    </span><span class="nt">submodules</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">              </span><span class="c1"># 子模块配置（bool 或列表）</span>
+<span class="w">    </span><span class="nt">clone-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">                </span><span class="c1"># 克隆深度限制</span>
+<span class="w">    </span><span class="nt">west-commands</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">commands.yml</span><span class="w">   </span><span class="c1"># 扩展命令文件路径</span>
+<span class="w">    </span><span class="nt">import</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">                  </span><span class="c1"># 导入该项目的清单数据</span>
+<span class="w">    </span><span class="nt">groups</span><span class="p">:</span><span class="w">                       </span><span class="c1"># 项目所属组</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">group1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">group2</span>
+<span class="w">    </span><span class="nt">userdata</span><span class="p">:</span><span class="w">                     </span><span class="c1"># 自定义数据</span>
+<span class="w">      </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">value</span>
+</code></pre></div>
+<p><strong>import 字段详解:</strong></p>
+<p><code>import</code> 用于从其他项目中导入清单数据，实现清单的模块化管理:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 导入所有内容</span>
+<span class="nt">import</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="c1"># 仅导入指定项目</span>
+<span class="nt">import</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hal_drivers</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cmsis</span>
+
+<span class="c1"># 使用 name-filter 导入</span>
+<span class="nt">import</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name-filter</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hal_*</span>
+
+<span class="c1"># 使用 name-prefix 添加前缀</span>
+<span class="nt">import</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name-prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myproj_</span>
+
+<span class="c1"># 使用 name-only 避免名称冲突</span>
+<span class="nt">import</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name-only</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<h4 id="self"><code>self</code>（可选）<a class="headerlink" href="#self" title="Permanent link">&para;</a></h4>
+<p>清单仓库自身的配置:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">self</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">manifest-repo</span><span class="w">       </span><span class="c1"># 清单仓库的路径</span>
+<span class="w">  </span><span class="nt">west-commands</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cmd.yml</span><span class="w">    </span><span class="c1"># 扩展命令文件路径</span>
+<span class="w">  </span><span class="nt">import</span><span class="p">:</span><span class="w">                   </span><span class="c1"># 从清单仓库导入额外清单</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">extra-manifest.yml</span>
+<span class="w">  </span><span class="nt">userdata</span><span class="p">:</span><span class="w">                 </span><span class="c1"># 自定义数据</span>
+<span class="w">    </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">value</span>
+</code></pre></div>
+<h4 id="group-filter"><code>group-filter</code>（可选）<a class="headerlink" href="#group-filter" title="Permanent link">&para;</a></h4>
+<p>控制哪些项目组被启用或禁用:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">group-filter</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+group1</span><span class="w">       </span><span class="c1"># 启用 group1</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-group2</span><span class="w">       </span><span class="c1"># 禁用 group2</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+group3</span>
+</code></pre></div>
+<p>也可通过配置设置:</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>manifest.group-filter<span class="w"> </span>,-group2,+group1
+</code></pre></div>
+<h3 id="63">6.3 完整示例<a class="headerlink" href="#63" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">manifest</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.2&quot;</span>
+
+<span class="w">  </span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myorg</span>
+<span class="w">    </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+
+<span class="w">  </span><span class="nt">remotes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myorg</span>
+<span class="w">      </span><span class="nt">url-base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/myorg</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">upstream</span>
+<span class="w">      </span><span class="nt">url-base</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/upstream-org</span>
+
+<span class="w">  </span><span class="nt">group-filter</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-optional-modules</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">+bluetooth</span>
+
+<span class="w">  </span><span class="nt">projects</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kernel</span>
+<span class="w">      </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v2.5.0</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zephyr</span>
+<span class="w">      </span><span class="nt">import</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hal_nordic</span>
+<span class="w">      </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bluetooth</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hal_stm32</span>
+<span class="w">      </span><span class="nt">groups</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">optional-modules</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stm32</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom_lib</span>
+<span class="w">      </span><span class="nt">remote</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">upstream</span>
+<span class="w">      </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1.2.3</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs</span>
+<span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/myorg/docs-repo</span>
+<span class="w">      </span><span class="nt">revision</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+
+<span class="w">  </span><span class="nt">self</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">workspace-manifest</span>
+<span class="w">    </span><span class="nt">west-commands</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/west-commands.yml</span>
+</code></pre></div>
+<hr />
+<h2 id="7">7. 配置系统<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71">7.1 三级配置优先级<a class="headerlink" href="#71" title="Permanent link">&para;</a></h3>
+<p>配置值按以下优先级加载（后者覆盖前者）:</p>
+<div class="highlight"><pre><span></span><code>系统配置 (最低) &lt; 全局配置 &lt; 本地配置 (最高)
+</code></pre></div>
+<h3 id="72">7.2 常用配置项<a class="headerlink" href="#72" title="Permanent link">&para;</a></h3>
+<h4 id="manifestpath"><code>manifest.path</code><a class="headerlink" href="#manifestpath" title="Permanent link">&para;</a></h4>
+<p>清单仓库的路径（默认在 <code>west init</code> 时自动设置）。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>manifest.path
+</code></pre></div>
+<h4 id="manifestgroup-filter"><code>manifest.group-filter</code><a class="headerlink" href="#manifestgroup-filter" title="Permanent link">&para;</a></h4>
+<p>组过滤器，控制哪些项目组处于活动状态。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>manifest.group-filter<span class="w"> </span>,-optional,+bluetooth
+</code></pre></div>
+<h4 id="colorui"><code>color.ui</code><a class="headerlink" href="#colorui" title="Permanent link">&para;</a></h4>
+<p>控制彩色输出。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>color.ui<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+<h4 id="compareignore-branches"><code>compare.ignore-branches</code><a class="headerlink" href="#compareignore-branches" title="Permanent link">&para;</a></h4>
+<p><code>west compare</code> 是否忽略已检出分支的输出。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>compare.ignore-branches<span class="w"> </span><span class="nb">true</span>
+</code></pre></div>
+<h4 id="greptool"><code>grep.tool</code><a class="headerlink" href="#greptool" title="Permanent link">&para;</a></h4>
+<p>默认的 grep 工具。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>grep.tool<span class="w"> </span>ripgrep
+</code></pre></div>
+<h4 id="grepcolor"><code>grep.color</code><a class="headerlink" href="#grepcolor" title="Permanent link">&para;</a></h4>
+<p>grep 命令的颜色设置。</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>grep.color<span class="w"> </span>never
+</code></pre></div>
+<h4 id="buildcmake-args"><code>build.cmake-args</code><a class="headerlink" href="#buildcmake-args" title="Permanent link">&para;</a></h4>
+<p>CMake 构建参数（追加模式示例）:</p>
+<div class="highlight"><pre><span></span><code>west<span class="w"> </span>config<span class="w"> </span>-a<span class="w"> </span>build.cmake-args<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot; -DEXTRA_CFLAGS=&#39;-Wextra&#39;&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="8">8. 扩展命令<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<p>West 支持通过 <code>west-commands.yml</code> 文件扩展命令。项目可以在清单中声明扩展命令:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># west-commands.yml</span>
+<span class="nt">west-commands</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/my_commands.py</span>
+<span class="w">    </span><span class="nt">commands</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build</span>
+<span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build</span>
+<span class="w">        </span><span class="nt">help</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Build</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">project&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flash</span>
+<span class="w">        </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Flash</span>
+<span class="w">        </span><span class="nt">help</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Flash</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">board&quot;</span>
+</code></pre></div>
+<p>然后在 <code>west.yml</code> 中引用:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">projects</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_project</span>
+<span class="w">    </span><span class="nt">west-commands</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/west-commands.yml</span>
+</code></pre></div>
+<p>或用于清单仓库自身:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">self</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">west-commands</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts/west-commands.yml</span>
+</code></pre></div>
+<p>扩展命令通过继承 <code>WestCommand</code> 类实现:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">west.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">WestCommand</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Build</span><span class="p">(</span><span class="n">WestCommand</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s1">&#39;build&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Build the project&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Builds the firmware image.&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_add_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser_adder</span><span class="p">):</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">parser_adder</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="s1">&#39;--board&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parser</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">unknown_args</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building for board: </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">board</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="9">9. 常用配置项参考<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>manifest.path</code></td>
+<td>清单仓库路径</td>
+<td><code>zephyr</code></td>
+</tr>
+<tr>
+<td><code>manifest.group-filter</code></td>
+<td>组过滤器</td>
+<td><code>,-optional,+bluetooth</code></td>
+</tr>
+<tr>
+<td><code>manifest.project-filter</code></td>
+<td>项目过滤器（正则）</td>
+<td><code>,-hal_.*,+hal_vendor</code></td>
+</tr>
+<tr>
+<td><code>color.ui</code></td>
+<td>彩色输出</td>
+<td><code>true</code> / <code>false</code></td>
+</tr>
+<tr>
+<td><code>compare.ignore-branches</code></td>
+<td>compare 忽略分支</td>
+<td><code>true</code> / <code>false</code></td>
+</tr>
+<tr>
+<td><code>grep.tool</code></td>
+<td>默认 grep 工具</td>
+<td><code>git-grep</code> / <code>ripgrep</code> / <code>grep</code></td>
+</tr>
+<tr>
+<td><code>grep.color</code></td>
+<td>grep 颜色设置</td>
+<td><code>never</code> / <code>always</code> / <code>auto</code></td>
+</tr>
+<tr>
+<td><code>grep.ripgrep-path</code></td>
+<td>ripgrep 路径</td>
+<td><code>/usr/bin/rg</code></td>
+</tr>
+<tr>
+<td><code>grep.git-grep-args</code></td>
+<td>git-grep 固定参数</td>
+<td>（默认为空）</td>
+</tr>
+<tr>
+<td><code>grep.ripgrep-args</code></td>
+<td>ripgrep 固定参数</td>
+<td>（默认为空）</td>
+</tr>
+<tr>
+<td><code>grep.grep-args</code></td>
+<td>grep 固定参数</td>
+<td><code>--recursive</code></td>
+</tr>
+<tr>
+<td><code>build.cmake-args</code></td>
+<td>CMake 构建参数</td>
+<td><code>-DBOARD=nucleo</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10">10. 最佳实践<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<h3 id="101">10.1 工作区管理<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 初始化新工作区后，先验证清单</span>
+west<span class="w"> </span>init<span class="w"> </span>-m<span class="w"> </span>&lt;url&gt;<span class="w"> </span>workspace<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>workspace
+west<span class="w"> </span>manifest<span class="w"> </span>--validate
+
+<span class="c1"># 更新前查看将要发生的变化</span>
+west<span class="w"> </span>update<span class="w"> </span>-n<span class="w">    </span><span class="c1"># -n 使用窄抓取，减少数据量</span>
+
+<span class="c1"># 大型团队协作中使用本地缓存</span>
+west<span class="w"> </span>update<span class="w"> </span>--auto-cache<span class="w"> </span>/shared/cache
+</code></pre></div>
+<h3 id="102">10.2 锁定版本<a class="headerlink" href="#102" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 生成锁定版本的清单（所有修订转为 SHA）</span>
+west<span class="w"> </span>manifest<span class="w"> </span>--freeze<span class="w"> </span>-o<span class="w"> </span>locked-manifest.yml
+
+<span class="c1"># 后续可使用锁定清单进行精确复现</span>
+</code></pre></div>
+<h3 id="103">10.3 项目组管理<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 按需启用/禁用功能模块</span>
+west<span class="w"> </span>config<span class="w"> </span>manifest.group-filter<span class="w"> </span>,-wifi,+bluetooth,+usb
+
+<span class="c1"># 仅更新特定组的项目</span>
+west<span class="w"> </span>update<span class="w"> </span>--gf<span class="w"> </span>+bluetooth
+</code></pre></div>
+<h3 id="104-cicd">10.4 CI/CD 集成<a class="headerlink" href="#104-cicd" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 验证工作区状态（适合 CI 检查）</span>
+west<span class="w"> </span>compare<span class="w"> </span>--exit-code
+
+<span class="c1"># 检查未提交的更改</span>
+west<span class="w"> </span>diff
+
+<span class="c1"># 使用浅克隆加速 CI</span>
+west<span class="w"> </span>update<span class="w"> </span>-o<span class="o">=</span>--depth<span class="o">=</span><span class="m">1</span><span class="w"> </span>-f<span class="w"> </span>always
+</code></pre></div>
+<h3 id="105">10.5 跨项目操作<a class="headerlink" href="#105" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在所有项目中统计代码行数</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;git ls-files | xargs wc -l | tail -1&quot;</span>
+
+<span class="c1"># 在所有项目中清理未跟踪文件</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;git clean -fd&quot;</span>
+
+<span class="c1"># 批量拉取最新代码（不使用 west update）</span>
+west<span class="w"> </span>forall<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;git pull --rebase&quot;</span>
+</code></pre></div>
+<hr />
+<h2 id="_3">命令速查表<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+<th>常用示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>west init</code></td>
+<td>初始化工作区</td>
+<td><code>west init -m &lt;url&gt; ws</code></td>
+</tr>
+<tr>
+<td><code>west update</code></td>
+<td>更新项目</td>
+<td><code>west update -f always</code></td>
+</tr>
+<tr>
+<td><code>west list</code></td>
+<td>列出项目</td>
+<td><code>west list -a -f "{name} {sha}"</code></td>
+</tr>
+<tr>
+<td><code>west status</code></td>
+<td>Git 状态</td>
+<td><code>west status</code></td>
+</tr>
+<tr>
+<td><code>west diff</code></td>
+<td>Git 差异</td>
+<td><code>west diff -m</code></td>
+</tr>
+<tr>
+<td><code>west compare</code></td>
+<td>对比清单</td>
+<td><code>west compare --exit-code</code></td>
+</tr>
+<tr>
+<td><code>west forall</code></td>
+<td>批量执行</td>
+<td><code>west forall -c "git log -1"</code></td>
+</tr>
+<tr>
+<td><code>west grep</code></td>
+<td>跨项目搜索</td>
+<td><code>west grep "pattern"</code></td>
+</tr>
+<tr>
+<td><code>west manifest</code></td>
+<td>清单管理</td>
+<td><code>west manifest --freeze</code></td>
+</tr>
+<tr>
+<td><code>west config</code></td>
+<td>配置管理</td>
+<td><code>west config -l</code></td>
+</tr>
+<tr>
+<td><code>west topdir</code></td>
+<td>顶级目录</td>
+<td><code>west topdir</code></td>
+</tr>
+<tr>
+<td><code>west help</code></td>
+<td>帮助</td>
+<td><code>west help &lt;command&gt;</code></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
