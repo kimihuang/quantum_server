@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>18. LPDDR5 DVFS（动态电压频率调整）机制 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="19. 安装 reStructuredText" href="install_rst.html" />
+    <link rel="prev" title="17. LPDDR5 SDRAM 规范知识点梳理" href="lpddr5.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">18. LPDDR5 DVFS（动态电压频率调整）机制</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dvfsc-mode-dvfs-core">18.1. DVFSC Mode (DVFS Core - 核心电压动态调整)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">18.1.1. 基本原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">18.1.2. 配置方法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">18.1.3. 关键特性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dvfsc">18.1.4. 不使用DVFSC的系统要求</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">18.1.5. DVFSC时序图</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dvfsq-mode-dvfs-vddq-i-o">18.2. DVFSQ Mode (DVFS VDDQ - I/O电压动态调整)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">18.2.1. 基本原理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dvfsq-high-to-low-transition">18.2.2. DVFSQ High-to-Low Transition (高到低转换)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dvfsq-low-to-high-transition">18.2.3. DVFSQ Low-to-High Transition (低到高转换)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dvfsq">18.2.4. DVFSQ操作指南</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#frequency-set-point-fsp">18.3. Frequency Set Point (FSP - 频率设定点)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">18.3.1. 核心机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">18.3.2. 控制位定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">18.3.3. 三重寄存器参数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fsp">18.3.4. FSP切换工作流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">18.3.5. FSP时序参数</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dvfs">18.4. DVFS模式总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">18.5. DVFS优势</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">18.6. 参考文档</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">18. </span>LPDDR5 DVFS（动态电压频率调整）机制</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lpddr5_dvfs.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lpddr5-dvfs">
+<span id="id1"></span><h1><span class="section-number">18. </span>LPDDR5 DVFS（动态电压频率调整）机制<a class="headerlink" href="#lpddr5-dvfs" title="链接到此标题。"></a></h1>
+<p>LPDDR5的DVFS（Dynamic Voltage and Frequency Scaling）包含两种模式，旨在降低LPDRAM的能耗：</p>
+<ul class="simple">
+<li><p><strong>DVFSC (DVFS Core)</strong> - 核心电压动态调整</p></li>
+<li><p><strong>DVFSQ (DVFS VDDQ)</strong> - I/O电压动态调整</p></li>
+</ul>
+<section id="dvfsc-mode-dvfs-core">
+<span id="dvfsc-mode"></span><h2><span class="section-number">18.1. </span>DVFSC Mode (DVFS Core - 核心电压动态调整)<a class="headerlink" href="#dvfsc-mode-dvfs-core" title="链接到此标题。"></a></h2>
+<section id="id2">
+<h3><span class="section-number">18.1.1. </span>基本原理<a class="headerlink" href="#id2" title="链接到此标题。"></a></h3>
+<p>DVFSC模式允许LPDRAM内部电路在两个电压轨之间切换：</p>
+<ul class="simple">
+<li><p><strong>VDD2H</strong> - 高电压轨</p></li>
+<li><p><strong>VDD2L</strong> - 低电压轨</p></li>
+</ul>
+<p>当内存控制器命令FSP（频率设定点）改变时，LPDRAM可以在内部将某些电路从一个电压轨切换到另一个。</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">18.1.2. </span>配置方法<a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>通过 <code class="docutils literal notranslate"><span class="pre">MR19</span> <span class="pre">OP[1:0]=01B</span></code> 启用DVFSC模式</p></li>
+<li><p>DVFSC模式切换**只能在FSP-OP切换时进行**</p></li>
+<li><p>直接编程MR19 OP[1:0]来改变当前工作点的DVFSC模式是**非法的**</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3><span class="section-number">18.1.3. </span>关键特性<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>启用DVFSC时，某些操作需要更长时间完成</p></li>
+<li><p>延迟和AC时序参数根据当前DVFSC状态有独立的规格表</p></li>
+<li><p>参见规范中的DVFSC时序表</p></li>
+</ul>
+</section>
+<section id="dvfsc">
+<h3><span class="section-number">18.1.4. </span>不使用DVFSC的系统要求<a class="headerlink" href="#dvfsc" title="链接到此标题。"></a></h3>
+<p>对于不实现DVFSC的系统：</p>
+<ol class="arabic simple">
+<li><p>必须向VDD2H和VDD2L轨提供相同的VDD2H电压</p></li>
+<li><p>必须设置 <code class="docutils literal notranslate"><span class="pre">MR13</span> <span class="pre">OP[7]=1</span></code> 和 <code class="docutils literal notranslate"><span class="pre">MR19</span> <span class="pre">OP[1:0]=00B</span></code></p></li>
+</ol>
+</section>
+<section id="id5">
+<h3><span class="section-number">18.1.5. </span>DVFSC时序图<a class="headerlink" href="#id5" title="链接到此标题。"></a></h3>
+<p>DVFSC High-to-Low Transition (VDD2H → VDD2L):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span>  <span class="n">t1</span>  <span class="n">t2</span>  <span class="n">ta0</span> <span class="n">tb0</span> <span class="n">tb1</span> <span class="n">tb2</span> <span class="n">tc0</span> <span class="o">...</span>
+<span class="o">|---|---|---|---|---|---|---|---|</span>
+<span class="n">CK_t</span><span class="o">/</span><span class="n">CK_c</span><span class="p">:</span> <span class="p">[</span><span class="n">toggle</span><span class="p">]</span>
+<span class="n">Command</span><span class="p">:</span>    <span class="n">CAS</span> <span class="n">WR</span> <span class="n">WR</span> <span class="n">Des</span> <span class="n">Des</span> <span class="n">Des</span> <span class="n">MRW1</span> <span class="n">MRW1</span> <span class="n">MRW2</span> <span class="n">MRW2</span> <span class="o">...</span>
+            <span class="p">[</span><span class="n">VRCG</span><span class="o">=</span><span class="n">On</span><span class="p">]</span>          <span class="p">[</span><span class="n">VRCG</span><span class="o">=</span><span class="n">Off</span><span class="p">]</span>
+<span class="n">VDD2H</span><span class="p">:</span>      <span class="p">[</span><span class="n">High</span> <span class="n">level</span> <span class="n">then</span> <span class="n">transition</span> <span class="n">to</span> <span class="n">Low</span><span class="p">]</span>
+<span class="n">VDD2L</span><span class="p">:</span>      <span class="p">[</span><span class="n">Low</span> <span class="n">level</span><span class="p">]</span>
+
+<span class="n">tFC</span><span class="p">:</span> <span class="n">Frequency</span> <span class="n">change</span> <span class="n">time</span>
+<span class="n">tVRCG_DISABLE</span><span class="p">:</span> <span class="n">VRCG</span> <span class="n">disable</span> <span class="n">time</span>
+</pre></div>
+</div>
+<p>DVFSC Low-to-High Transition (VDD2L → VDD2H):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t0</span>  <span class="n">t1</span>  <span class="n">t2</span>  <span class="n">ta0</span> <span class="n">tb0</span> <span class="n">tb1</span> <span class="n">tb2</span> <span class="n">tc0</span> <span class="o">...</span>
+<span class="o">|---|---|---|---|---|---|---|---|</span>
+<span class="n">CK_t</span><span class="o">/</span><span class="n">CK_c</span><span class="p">:</span> <span class="p">[</span><span class="n">toggle</span><span class="p">]</span>
+<span class="n">Command</span><span class="p">:</span>    <span class="n">CAS</span> <span class="n">WR</span> <span class="n">WR</span> <span class="n">Des</span> <span class="n">Des</span> <span class="n">Des</span> <span class="n">MRW1</span> <span class="n">MRW1</span> <span class="n">MRW2</span> <span class="n">MRW2</span> <span class="o">...</span>
+            <span class="p">[</span><span class="n">VRCG</span><span class="o">=</span><span class="n">On</span><span class="p">]</span>          <span class="p">[</span><span class="n">VRCG</span><span class="o">=</span><span class="n">Off</span><span class="p">]</span>
+<span class="n">VDD2H</span><span class="p">:</span>      <span class="p">[</span><span class="n">High</span> <span class="n">level</span><span class="p">]</span>
+<span class="n">VDD2L</span><span class="p">:</span>      <span class="p">[</span><span class="n">Low</span> <span class="n">level</span> <span class="n">then</span> <span class="n">transition</span> <span class="n">to</span> <span class="n">High</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="dvfsq-mode-dvfs-vddq-i-o">
+<span id="dvfsq-mode"></span><h2><span class="section-number">18.2. </span>DVFSQ Mode (DVFS VDDQ - I/O电压动态调整)<a class="headerlink" href="#dvfsq-mode-dvfs-vddq-i-o" title="链接到此标题。"></a></h2>
+<section id="id6">
+<h3><span class="section-number">18.2.1. </span>基本原理<a class="headerlink" href="#id6" title="链接到此标题。"></a></h3>
+<p>DVFSQ模式允许在操作期间（包括读写事务）调整VDDQ电压：</p>
+<ul class="simple">
+<li><p><strong>高电压</strong> - VDDQ = 0.5V 标称值</p></li>
+<li><p><strong>低电压</strong> - VDDQ = 0.3V 标称值</p></li>
+</ul>
+</section>
+<section id="dvfsq-high-to-low-transition">
+<h3><span class="section-number">18.2.2. </span>DVFSQ High-to-Low Transition (高到低转换)<a class="headerlink" href="#dvfsq-high-to-low-transition" title="链接到此标题。"></a></h3>
+<p>转换序列如下：</p>
+<ol class="arabic simple">
+<li><p>在VDDQ=0.5V标称值下高速运行</p></li>
+<li><p>FSP从高频切换到适合非ODT操作的低频，并使能VRCG</p></li>
+<li><p>等待tFC（暂停流量）</p></li>
+<li><p>发送MRW MR16 – 设置VRCG=0</p></li>
+<li><p>等待tVRCG_DISABLE（暂停流量）</p></li>
+<li><p>发送MRW MR28 – 设置ZQ Reset OP[0]=1，设置默认ZQ强度以满足VDDQ=0.3V操作</p></li>
+<li><p>等待tZQRESET（无需ZQ latch）</p></li>
+<li><p>发送MRW MR28 – 设置ZQ Stop=1以禁用后台校准</p></li>
+<li><p>等待tZQSTOP</p></li>
+<li><p>进入DVFSQ（将VDDQ降低到0.5V标称值以下）</p></li>
+<li><p>在降低的VDDQ下继续操作</p></li>
+</ol>
+</section>
+<section id="dvfsq-low-to-high-transition">
+<h3><span class="section-number">18.2.3. </span>DVFSQ Low-to-High Transition (低到高转换)<a class="headerlink" href="#dvfsq-low-to-high-transition" title="链接到此标题。"></a></h3>
+<p><strong>方法一：不使用VRCG的转换序列</strong></p>
+<ol class="arabic simple">
+<li><p>在VDDQ&lt;0.5V标称值下低速运行</p></li>
+<li><p>将VDDQ升至0.5V标称值</p></li>
+<li><p>发送MRW MR28 – 设置ZQ Stop=0以启用后台校准</p></li>
+<li><p>等待tZQCALx</p></li>
+<li><p>FSP从低频切换到高频，并使能VRCG</p></li>
+<li><p>等待tFC（暂停流量）</p></li>
+<li><p>发送MRW 16以禁用VRCG</p></li>
+<li><p>等待tVRCG_DISABLE（暂停流量）</p></li>
+<li><p>在VDDQ=0.5V标称值下开始高速操作</p></li>
+</ol>
+<p><strong>方法二：使用VRCG的转换序列（更快）</strong></p>
+<p>在VDDQ转换前启用VRCG，允许VREF电路在更高的VDDQ压摆率下准确跟踪：</p>
+<ol class="arabic simple">
+<li><p>在VDDQ&lt;0.5V标称值下低速运行</p></li>
+<li><p>使能VRCG</p></li>
+<li><p>等待tVRCG_enable（暂停流量）</p></li>
+<li><p>将VDDQ升至0.5V标称值</p></li>
+<li><p>发送MRW MR28 – 设置ZQ Stop=0以启用后台校准</p></li>
+<li><p>等待tZQCALx</p></li>
+<li><p>FSP从低频切换到高频</p></li>
+<li><p>等待tFC（暂停流量）</p></li>
+<li><p>禁用VRCG</p></li>
+<li><p>等待tVRCG_disable（继续暂停流量）</p></li>
+<li><p>在VDDQ=0.5V标称值下开始高速操作</p></li>
+</ol>
+</section>
+<section id="dvfsq">
+<h3><span class="section-number">18.2.4. </span>DVFSQ操作指南<a class="headerlink" href="#dvfsq" title="链接到此标题。"></a></h3>
+<p><strong>如果在VDDQ电压调整期间暂停操作：</strong></p>
+<ol class="arabic simple">
+<li><p>将设备置于power-down模式或保持CS为低，直到电压调整完成</p></li>
+<li><p>在VDDQ=0.5V标称值下高速操作前建议重新校准</p></li>
+<li><p>应在新电平操作前进行FSP切换到适当的新设置</p></li>
+</ol>
+<p><strong>如果在VDDQ电压调整期间继续操作：</strong></p>
+<ol class="arabic simple">
+<li><p>应在适合最低VDDQ电平的设置和速度下操作</p></li>
+<li><p>强烈建议禁用ODT操作（VDDQ低于0.5V标称值时通常需要）</p></li>
+<li><p>VDDQ电压调整应等于或慢于规定的限制</p></li>
+<li><p>建议设置VRCG使能以确保内部Vref跟踪变化的VDDQ电平</p></li>
+<li><p>在VDDQ=0.5V标称值下高速操作前建议重新校准</p></li>
+<li><p>应在更高速操作前进行FSP切换到适当的新设置</p></li>
+</ol>
+</section>
+</section>
+<section id="frequency-set-point-fsp">
+<span id="fsp-mechanism"></span><h2><span class="section-number">18.3. </span>Frequency Set Point (FSP - 频率设定点)<a class="headerlink" href="#frequency-set-point-fsp" title="链接到此标题。"></a></h2>
+<section id="id7">
+<h3><span class="section-number">18.3.1. </span>核心机制<a class="headerlink" href="#id7" title="链接到此标题。"></a></h3>
+<p>FSP允许LPDDR5在**三个不同工作频率**之间切换，通过复制所有CA总线模式寄存器参数，避免在切换过程中出现未训练状态导致通信丢失。</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">18.3.2. </span>控制位定义<a class="headerlink" href="#id8" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>控制位</p></th>
+<th class="head"><p>寄存器位置</p></th>
+<th class="head"><p>功能描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FSP-WR</p></td>
+<td><p>MR16 OP[1:0]</p></td>
+<td><p>选择要读/写的物理寄存器组
+00B/01B/10B 对应三组寄存器</p></td>
+</tr>
+<tr class="row-odd"><td><p>FSP-OP</p></td>
+<td><p>MR16 OP[3:2]</p></td>
+<td><p>选择当前操作使用的物理寄存器组
+00B/01B/10B 对应三组寄存器</p></td>
+</tr>
+</tbody>
+</table>
+<p>FSP-WR和FSP-OP功能完全独立操作。</p>
+</section>
+<section id="id9">
+<h3><span class="section-number">18.3.3. </span>三重寄存器参数<a class="headerlink" href="#id9" title="链接到此标题。"></a></h3>
+<p>以下参数有三份物理寄存器，由FSP-WR和FSP-OP控制：</p>
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">FSP控制的模式寄存器</span><a class="headerlink" href="#id13" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 13.3%" />
+<col style="width: 20.0%" />
+<col style="width: 53.3%" />
+<col style="width: 13.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>MR#</p></th>
+<th class="head"><p>Operand</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MR1</p></td>
+<td><p>OP[3]</p></td>
+<td><p>CK mode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR1</p></td>
+<td><p>OP[7:4]</p></td>
+<td><p>WL (Write Latency)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR2</p></td>
+<td><p>OP[3:0]</p></td>
+<td><p>RL (Read latency) and nRBTP</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR2</p></td>
+<td><p>OP[7:4]</p></td>
+<td><p>nWR (Write-Recovery)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR3</p></td>
+<td><p>OP[2:0]</p></td>
+<td><p>PDDS (Pull-Down Drive Strength)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR3</p></td>
+<td><p>OP[4:3]</p></td>
+<td><p>BK/BG ORG</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR3</p></td>
+<td><p>OP[5]</p></td>
+<td><p>WLS (Write Latency Set)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR3</p></td>
+<td><p>OP[6]</p></td>
+<td><p>DBI-RD</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR3</p></td>
+<td><p>OP[7]</p></td>
+<td><p>DBI-WR</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR10</p></td>
+<td><p>OP[0]</p></td>
+<td><p>RDQS Post-amble mode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR10</p></td>
+<td><p>OP[3:2]</p></td>
+<td><p>WCK PST</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR10</p></td>
+<td><p>OP[5:4]</p></td>
+<td><p>RDQS PRE</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR10</p></td>
+<td><p>OP[7:6]</p></td>
+<td><p>RDQS PST</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR11</p></td>
+<td><p>OP[2:0]</p></td>
+<td><p>DQ ODT</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR11</p></td>
+<td><p>OP[3]</p></td>
+<td><p>NT-ODT Enable</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR11</p></td>
+<td><p>OP[6:4]</p></td>
+<td><p>CA ODT</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR12</p></td>
+<td><p>OP[6:0]</p></td>
+<td><p>VREF(CA) Setting</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR14</p></td>
+<td><p>OP[6:0]</p></td>
+<td><p>VREF(DQ[7:0]) Setting</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR15</p></td>
+<td><p>OP[6:0]</p></td>
+<td><p>VREF(DQ[15:8]) Setting</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR17</p></td>
+<td><p>OP[2:0]</p></td>
+<td><p>SoC ODT</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR17</p></td>
+<td><p>OP[3]</p></td>
+<td><p>ODTD-CK</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR17</p></td>
+<td><p>OP[4]</p></td>
+<td><p>ODTD-CS</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR17</p></td>
+<td><p>OP[5]</p></td>
+<td><p>ODTD-CA</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR18</p></td>
+<td><p>OP[2:0]</p></td>
+<td><p>WCK ODT</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR18</p></td>
+<td><p>OP[3]</p></td>
+<td><p>WCK FM</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR18</p></td>
+<td><p>OP[4]</p></td>
+<td><p>WCK ON</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR18</p></td>
+<td><p>OP[7]</p></td>
+<td><p>CKR (WCK to CK ratio)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR19</p></td>
+<td><p>OP[1:0]</p></td>
+<td><p>DVFSC</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR19</p></td>
+<td><p>OP[3:2]</p></td>
+<td><p>DVFSQ</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR19</p></td>
+<td><p>OP[4]</p></td>
+<td><p>WCK2DQ OSC FM</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR20</p></td>
+<td><p>OP[1:0]</p></td>
+<td><p>RDQS</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR20</p></td>
+<td><p>OP[3:2]</p></td>
+<td><p>WCK mode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR22</p></td>
+<td><p>OP[5:4]</p></td>
+<td><p>WECC (Write link ECC)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR22</p></td>
+<td><p>OP[7:6]</p></td>
+<td><p>RECC (Read link ECC)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR24</p></td>
+<td><p>OP[2:0]</p></td>
+<td><p>DFEQL</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR24</p></td>
+<td><p>OP[6:4]</p></td>
+<td><p>DFEQU</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR30</p></td>
+<td><p>OP[3:0]</p></td>
+<td><p>DCAL</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MR30</p></td>
+<td><p>OP[7:4]</p></td>
+<td><p>DCAU</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MR41</p></td>
+<td><p>OP[7:5]</p></td>
+<td><p>NT DQ ODT</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fsp">
+<h3><span class="section-number">18.3.4. </span>FSP切换工作流程<a class="headerlink" href="#fsp" title="链接到此标题。"></a></h3>
+<ol class="arabic simple">
+<li><p>设置FSP-WR选择目标寄存器组（例如：01B选择FSP-OP[1]）</p></li>
+<li><p>写入新频率下的所有参数（WL、RL、ODT、VREF等）</p></li>
+<li><p>设置FSP-OP切换到新配置</p></li>
+<li><p>在tFC时间内完成切换</p></li>
+</ol>
+</section>
+<section id="id10">
+<h3><span class="section-number">18.3.5. </span>FSP时序参数<a class="headerlink" href="#id10" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>参数</p></th>
+<th class="head"><p>时间</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tFC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Frequency change time</p></td>
+</tr>
+<tr class="row-odd"><td><p>tCKFSPE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Frequency set point entry time</p></td>
+</tr>
+<tr class="row-even"><td><p>tCKFSPX</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Frequency set point exit time</p></td>
+</tr>
+<tr class="row-odd"><td><p>tVRCG_DISABLE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>VRCG disable time</p></td>
+</tr>
+<tr class="row-even"><td><p>tVRCG_ENABLE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>VRCG enable time</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="dvfs">
+<span id="dvfs-summary"></span><h2><span class="section-number">18.4. </span>DVFS模式总结<a class="headerlink" href="#dvfs" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">DVFS模式对比</span><a class="headerlink" href="#id14" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>模式</p></th>
+<th class="head"><p>调整对象</p></th>
+<th class="head"><p>主要用途</p></th>
+<th class="head"><p>关键寄存器</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DVFSC</p></td>
+<td><p>VDD2H/VDD2L
+(核心电压)</p></td>
+<td><p>降低核心电路功耗</p></td>
+<td><p>MR19 OP[1:0]</p></td>
+</tr>
+<tr class="row-odd"><td><p>DVFSQ</p></td>
+<td><p>VDDQ
+(I/O电压)</p></td>
+<td><p>降低I/O功耗，
+支持低功耗待机</p></td>
+<td><p>MR19 OP[3:2]</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id11">
+<h2><span class="section-number">18.5. </span>DVFS优势<a class="headerlink" href="#id11" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>降低功耗</strong> - 通过动态调整电压实现节能</p></li>
+<li><p><strong>无缝切换</strong> - FSP机制确保在频率/电压切换时不会丢失与DRAM的通信</p></li>
+<li><p><strong>灵活配置</strong> - 支持三个独立的工作频率点</p></li>
+<li><p><strong>实时操作</strong> - DVFSQ支持在读写事务期间调整电压</p></li>
+</ol>
+</section>
+<section id="id12">
+<h2><span class="section-number">18.6. </span>参考文档<a class="headerlink" href="#id12" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p>LPDDR5 Specification (JEDEC Standard)</p></li>
+<li><p>LPDDR5 Mode Register Definition</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="lpddr5.html" class="btn btn-neutral float-left" title="17. LPDDR5 SDRAM 规范知识点梳理" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="install_rst.html" class="btn btn-neutral float-right" title="19. 安装 reStructuredText" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

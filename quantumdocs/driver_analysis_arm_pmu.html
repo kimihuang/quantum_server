@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="53. CodeBuddy CLI 用户问题处理流程与高效使用指南" href="codebuddy_cli_usage_guide.html" />
+    <link rel="prev" title="31. Linux 内核源码分析 — 提示词编写指南" href="prompt_guide_kernel_source_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">40. </span>Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/driver_analysis_arm_pmu.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="linux-arm-pmu-c">
+<h1><span class="section-number">40. </span>Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例<a class="headerlink" href="#linux-arm-pmu-c" title="链接到此标题。"></a></h1>
+<p>本文档以 <a href="#id1"><span class="problematic" id="id2">``</span></a>drivers/perf/arm_pmu.c``（ARM PMU 驱动框架）为例，
+给出阅读 Linux 内核驱动代码时应理解的关键检查点。
+阅读完驱动代码后，若能回答以下所有问题，即表明已理解该驱动的核心设计。</p>
+<p>源文件: <code class="docutils literal notranslate"><span class="pre">src/linux-6.1-rc6/drivers/perf/arm_pmu.c</span></code></p>
+</section>
+<section id="id3">
+<h1><span class="section-number">41. </span>1. 驱动概述<a class="headerlink" href="#id3" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>这个驱动的功能是什么？</p></li>
+<li><p>属于哪个内核子系统？（drivers/perf → perf 事件子系统）</p></li>
+<li><p>它是平台驱动、字符设备驱动，还是其他类型？（PMU 驱动，通过 perf 框架注册）</p></li>
+<li><p>对应的硬件规范是什么？（ARM PMU 架构，ARMv8 PMUv3）</p></li>
+<li><p>与用户空间的接口是什么？（<code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">stat</span></code>, <code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">record</span></code> 等工具）</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<ul class="simple">
+<li><p>功能：ARM 处理器性能监控单元（PMU）的通用驱动框架</p></li>
+<li><p>子系统：<code class="docutils literal notranslate"><span class="pre">drivers/perf</span></code>，Linux perf 事件子系统</p></li>
+<li><p>类型：不是传统平台驱动，而是通过 <code class="docutils literal notranslate"><span class="pre">perf_pmu_register()</span></code> 向 perf 框架注册</p></li>
+<li><p>硬件：ARM PMU（Performance Monitoring Unit），每个 CPU 核心一个</p></li>
+<li><p>用户接口：通过 <code class="docutils literal notranslate"><span class="pre">/sys/devices/&lt;pmu&gt;/</span></code> sysfs 和 perf 命令行工具</p></li>
+</ul>
+</section>
+<section id="id4">
+<h1><span class="section-number">42. </span>2. 头文件依赖与核心数据结构<a class="headerlink" href="#id4" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>包含了哪些关键头文件？各自提供什么能力？</p></li>
+<li><p>驱动定义了哪些核心数据结构？</p></li>
+<li><p>与硬件寄存器的对应关系是什么？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<p>核心头文件:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>头文件</p></th>
+<th class="head"><p>作用</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">linux/perf/arm_pmu.h</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_pmu</span></code> 定义（驱动的核心抽象）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">linux/cpumask.h</span></code></p></td>
+<td><p>CPU 亲和性掩码（异构系统中的 PMU CPU 绑定）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">linux/cpu_pm.h</span></code></p></td>
+<td><p>CPU 电源管理通知（休眠/唤醒时保存恢复 PMU 状态）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">linux/irq.h</span></code></p></td>
+<td><p>中断请求/释放（PMU 溢出中断）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">linux/bitmap.h</span></code></p></td>
+<td><p>位图操作（硬件计数器分配状态跟踪）</p></td>
+</tr>
+</tbody>
+</table>
+<p>核心数据结构:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_pmu</span></code> — PMU 抽象，包含硬件操作函数指针和 percpu 事件存储</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pmu_hw_events</span></code> — 每个 CPU 上的硬件事件集合和计数器分配状态</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pmu_irq_ops</span></code> — 中断操作的抽象（IRQ vs NMI vs per-CPU IRQ）</p></li>
+</ul>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">pmu_irq_ops</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">enable_pmuirq</span><span class="p">)(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">irq</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">disable_pmuirq</span><span class="p">)(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">irq</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">free_pmuirq</span><span class="p">)(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cpu</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">__percpu</span><span class="w"> </span><span class="o">*</span><span class="n">devid</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h1><span class="section-number">43. </span>3. 驱动初始化与注册流程<a class="headerlink" href="#id5" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>驱动的入口点在哪里？（<code class="docutils literal notranslate"><span class="pre">module_init</span></code>, <code class="docutils literal notranslate"><span class="pre">subsys_initcall</span></code>, 平台 probe 等）</p></li>
+<li><p>从入口到硬件可用，经过了哪些步骤？</p></li>
+<li><p>驱动是如何被内核发现的？（设备树、ACPI、手动注册等）</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<p>入口点: <a href="#id6"><span class="problematic" id="id7">``</span></a>subsys_initcall(arm_pmu_hp_init)``（<code class="xref c c-func docutils literal notranslate"><span class="pre">arm_pmu_hp_init()</span></code> 第 964 行）</p>
+<p>注册流程:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>subsys_initcall(arm_pmu_hp_init)
+  └─ cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_STARTING)
+       ├─ arm_perf_starting_cpu()   ← CPU 上线时调用
+       │    ├─ pmu-&gt;reset()          ← 重置 PMU 硬件寄存器
+       │    ├─ per_cpu(cpu_armpmu)   ← 绑定 CPU → PMU
+       │    └─ enable_pmuirq()       ← 使能溢出中断
+       └─ arm_perf_teardown_cpu()   ← CPU 下线时调用
+            ├─ disable_pmuirq()
+            └─ per_cpu(cpu_armpmu) = NULL
+</pre></div>
+</div>
+<p>注意: <code class="docutils literal notranslate"><span class="pre">arm_pmu.c</span></code> 是**框架层**代码。具体的 PMU 驱动（如 <code class="docutils literal notranslate"><span class="pre">armv8_pmu.c</span></code>）
+负责调用 <code class="docutils literal notranslate"><span class="pre">armpmu_alloc()</span></code> → 设置回调 → <code class="docutils literal notranslate"><span class="pre">armpmu_register()</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>具体驱动（如 armv8_pmu_probe）
+  └─ armpmu_alloc()              ← 分配 arm_pmu + percpu hw_events
+  └─ 设置回调函数指针:
+       pmu-&gt;map_event            ← 事件 ID 映射
+       pmu-&gt;get_event_idx        ← 硬件计数器分配
+       pmu-&gt;enable / disable     ← 使能/禁用单个计数器
+       pmu-&gt;start / stop         ← 使能/禁用整个 PMU
+       pmu-&gt;read_counter / write_counter
+       pmu-&gt;handle_irq           ← 溢出中断处理
+       pmu-&gt;reset                ← 重置硬件
+  └─ armpmu_register()           ← 注册到 perf 子系统
+       └─ perf_pmu_register()     ← 创建 /sys/devices/&lt;pmu&gt;/
+</pre></div>
+</div>
+</section>
+<section id="callbacks">
+<h1><span class="section-number">44. </span>4. 操作函数集（ callbacks ）<a class="headerlink" href="#callbacks" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>驱动向内核框架注册了哪些操作函数？（open/read/write/ioctl/mmap 等）</p></li>
+<li><p>每个函数的职责是什么？</p></li>
+<li><p>函数之间的调用关系是什么？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pmu</span></code> 注册到 perf 框架（<code class="xref c c-func docutils literal notranslate"><span class="pre">__armpmu_alloc()</span></code> 第 879 行）:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>pmu 回调</p></th>
+<th class="head"><p>对应函数</p></th>
+<th class="head"><p>职责</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">event_init</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_event_init</span></code></p></td>
+<td><p>验证事件合法性、映射事件 ID、检查分组约束</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">add</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_add</span></code></p></td>
+<td><p>分配硬件计数器、将事件绑定到计数器槽位</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">del</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_del</span></code></p></td>
+<td><p>停止事件、释放计数器槽位</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">start</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_start</span></code></p></td>
+<td><p>设置采样周期、使能计数器</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">stop</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_stop</span></code></p></td>
+<td><p>禁用计数器、更新事件计数</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">read</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_read</span></code></p></td>
+<td><p>读取当前计数器值并更新事件计数</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pmu_enable</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_enable</span></code></p></td>
+<td><p>使能整个 PMU</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pmu_disable</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_disable</span></code></p></td>
+<td><p>禁用整个 PMU</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">filter_match</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">armpmu_filter_match</span></code></p></td>
+<td><p>异构系统中过滤不匹配的 CPU</p></td>
+</tr>
+</tbody>
+</table>
+<p>关键内部函数:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>函数</p></th>
+<th class="head"><p>职责</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">armpmu_event_set_period</span></code></p></td>
+<td><p>设置计数器溢出周期。将 <code class="docutils literal notranslate"><span class="pre">-left</span></code> 写入计数器，使其在 <code class="docutils literal notranslate"><span class="pre">left</span></code> 个事件后溢出</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">armpmu_event_update</span></code></p></td>
+<td><p>读取计数器当前值，计算与上次读数之间的 delta，累加到 <code class="docutils literal notranslate"><span class="pre">event-&gt;count</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">armpmu_map_event</span></code></p></td>
+<td><p>将 perf 抽象事件映射为硬件事件编码（raw/hardware/cache 三种类型）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">armpmu_dispatch_irq</span></code></p></td>
+<td><p>中断分发，调用具体的 <code class="docutils literal notranslate"><span class="pre">pmu-&gt;handle_irq</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">validate_group</span></code></p></td>
+<td><p>验证事件组是否可以同时调度到硬件（计数器数量够不够）</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id8">
+<h1><span class="section-number">45. </span>5. 中断处理<a class="headerlink" href="#id8" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>使用什么类型的中断？（共享中断、per-CPU 中断、NMI？）</p></li>
+<li><p>中断触发条件是什么？（计数器溢出）</p></li>
+<li><p>中断处理流程是什么？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<p>中断类型优先级（<code class="xref c c-func docutils literal notranslate"><span class="pre">armpmu_request_irq()</span></code> 第 626 行）:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>优先尝试 NMI（不可屏蔽中断）
+  ├─ 成功 → pmunmi_ops / percpu_pmunmi_ops
+  └─ 失败 → 回退到普通 IRQ
+               ├─ per-CPU devid IRQ → percpu_pmuirq_ops
+               └─ 普通 IRQ → pmuirq_ops
+</pre></div>
+</div>
+<p>四种 <code class="docutils literal notranslate"><span class="pre">pmu_irq_ops</span></code> 实现:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ops</p></th>
+<th class="head"><p>enable</p></th>
+<th class="head"><p>disable</p></th>
+<th class="head"><p>场景</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pmuirq_ops</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enable_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">disable_irq_nosync</span></code></p></td>
+<td><p>非 per-CPU 的普通 IRQ</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pmunmi_ops</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enable_nmi</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">disable_nmi_nosync</span></code></p></td>
+<td><p>非 per-CPU 的 NMI</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">percpu_pmuirq_ops</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enable_percpu_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">disable_percpu_irq</span></code></p></td>
+<td><p>per-CPU devid IRQ</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">percpu_pmunmi_ops</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enable_percpu_nmi</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">disable_percpu_nmi</span></code></p></td>
+<td><p>per-CPU NMI</p></td>
+</tr>
+</tbody>
+</table>
+<p>中断处理链:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>硬件计数器溢出
+  → IRQ/NMI 触发
+  → armpmu_dispatch_irq()       ← 顶层分发
+       └─ pmu-&gt;handle_irq()     ← 具体驱动实现（armv8_pmu 等）
+            └─ handle_irq() 遍历溢出计数器
+                 ├─ armpmu_event_update()  ← 读计数器 delta
+                 ├─ perf_event_overflow()  ← 通知 perf 框架
+                 └─ armpmu_event_set_period() ← 重设周期
+</pre></div>
+</div>
+</section>
+<section id="cpu">
+<h1><span class="section-number">46. </span>6. CPU 热插拔处理<a class="headerlink" href="#cpu" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>CPU 上线/下线时，驱动做了什么？</p></li>
+<li><p>PMU 状态如何保存和恢复？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<p>CPU hotplug（第 706-740 行）:</p>
+<ul class="simple">
+<li><p><strong>上线</strong> <code class="docutils literal notranslate"><span class="pre">arm_perf_starting_cpu</span></code>: 重置 PMU 寄存器 → 绑定 <code class="docutils literal notranslate"><span class="pre">cpu_armpmu</span></code> → 使能中断</p></li>
+<li><p><strong>下线</strong> <code class="docutils literal notranslate"><span class="pre">arm_perf_teardown_cpu</span></code>: 禁用中断 → 清除 <code class="docutils literal notranslate"><span class="pre">cpu_armpmu</span></code> 绑定</p></li>
+</ul>
+<p>CPU 电源管理（第 742-833 行，<code class="docutils literal notranslate"><span class="pre">CONFIG_CPU_PM</span></code>）:</p>
+<ul class="simple">
+<li><p><strong>休眠进入</strong> <code class="docutils literal notranslate"><span class="pre">CPU_PM_ENTER</span></code>: 停止整个 PMU → 逐个停止事件并更新计数</p></li>
+<li><p><strong>休眠唤醒</strong> <code class="docutils literal notranslate"><span class="pre">CPU_PM_EXIT</span></code>: 重置 PMU → 逐个恢复事件并重载周期 → 启动 PMU</p></li>
+<li><p><strong>休眠失败</strong> <code class="docutils literal notranslate"><span class="pre">CPU_PM_ENTER_FAILED</span></code>: 同唤醒处理</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>PMU 硬件在 CPU 掉电后寄存器状态丢失，因此唤醒时必须完全重新初始化。
+这就是为什么 <code class="docutils literal notranslate"><span class="pre">CPU_PM_EXIT</span></code> 时先调用 <code class="docutils literal notranslate"><span class="pre">pmu-&gt;reset()</span></code>。</p>
+</div>
+</section>
+<section id="id9">
+<h1><span class="section-number">47. </span>7. 并发与锁<a class="headerlink" href="#id9" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>哪些数据需要并发保护？</p></li>
+<li><p>使用了什么锁机制？</p></li>
+<li><p>是否有 per-CPU 数据的无锁设计？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>保护对象</p></th>
+<th class="head"><p>锁类型</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pmu_hw_events.pmu_lock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">raw_spinlock_t</span></code></p></td>
+<td><p>每个 CPU 一把，保护该 CPU 的事件计数器操作</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hw_perf_event.count</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local64_t</span></code></p></td>
+<td><p>无锁原子操作，每个 CPU 读写自己的计数</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hw_perf_event.prev_count</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local64_t</span></code></p></td>
+<td><p>使用 <code class="docutils literal notranslate"><span class="pre">local64_cmpxchg</span></code> 做 CAS 更新（<code class="xref c c-func docutils literal notranslate"><span class="pre">armpmu_event_update()</span></code> 第 251 行）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cpu_armpmu</span></code> / <code class="docutils literal notranslate"><span class="pre">cpu_irq</span></code></p></td>
+<td><p>per-CPU 变量</p></td>
+<td><p>无锁，每个 CPU 只访问自己的</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// armpmu_event_update() 中的无锁读-改-写:</span>
+<span class="nl">again</span><span class="p">:</span>
+<span class="w">    </span><span class="n">prev_raw_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">local64_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hwc</span><span class="o">-&gt;</span><span class="n">prev_count</span><span class="p">);</span>
+<span class="w">    </span><span class="n">new_raw_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">armpmu</span><span class="o">-&gt;</span><span class="n">read_counter</span><span class="p">(</span><span class="n">event</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">local64_cmpxchg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hwc</span><span class="o">-&gt;</span><span class="n">prev_count</span><span class="p">,</span><span class="w"> </span><span class="n">prev_raw_count</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">new_raw_count</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">prev_raw_count</span><span class="p">)</span>
+<span class="w">        </span><span class="k">goto</span><span class="w"> </span><span class="n">again</span><span class="p">;</span><span class="w">  </span><span class="c1">// CAS 失败则重试</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h1><span class="section-number">48. </span>8. 硬件资源管理<a class="headerlink" href="#id10" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>硬件资源是什么？（计数器数量、寄存器等）</p></li>
+<li><p>资源如何分配和释放？</p></li>
+<li><p>资源不足时的行为？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<ul class="simple">
+<li><p>硬件资源：有限数量的硬件计数器（<code class="docutils literal notranslate"><span class="pre">pmu-&gt;num_events</span></code>）</p></li>
+<li><p>分配：<code class="docutils literal notranslate"><span class="pre">pmu-&gt;get_event_idx(hw_events,</span> <span class="pre">event)</span></code> — 由具体驱动实现，返回可用计数器索引</p></li>
+<li><p>状态跟踪：<code class="docutils literal notranslate"><span class="pre">hw_events-&gt;used_mask</span></code> bitmap 记录已分配的计数器</p></li>
+<li><p>释放：<code class="docutils literal notranslate"><span class="pre">pmu-&gt;clear_event_idx(hw_events,</span> <span class="pre">event)</span></code> — 清除 bitmap 中对应位</p></li>
+<li><p>不足：<code class="docutils literal notranslate"><span class="pre">armpmu_add()</span></code> 返回负值（如 <code class="docutils literal notranslate"><span class="pre">-ENOSPC</span></code>），事件无法添加</p></li>
+</ul>
+</section>
+<section id="sysfs">
+<h1><span class="section-number">49. </span>9. Sysfs 接口<a class="headerlink" href="#sysfs" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>在 <code class="docutils literal notranslate"><span class="pre">/sys</span></code> 下暴露了哪些属性？</p></li>
+<li><p>用户空间如何使用这些属性？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/devices/arm_pmu_&lt;N&gt;/
+  ├── cpus           ← 支持的 CPU 列表（异构系统中至关重要）
+  ├── type           ← perf 事件类型 ID
+  ├── nr_counters    ← 硬件计数器数量（具体驱动提供）
+  └── events/        ← 可用事件列表（具体驱动提供）
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">cpus</span></code> 属性的实现（第 566-571 行）:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">ssize_t</span><span class="w"> </span><span class="nf">cpus_show</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span>
+<span class="w">                         </span><span class="k">struct</span><span class="w"> </span><span class="nc">device_attribute</span><span class="w"> </span><span class="o">*</span><span class="n">attr</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_pmu</span><span class="w"> </span><span class="o">*</span><span class="n">armpmu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_arm_pmu</span><span class="p">(</span><span class="n">dev_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">cpumap_print_to_pagebuf</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">armpmu</span><span class="o">-&gt;</span><span class="n">supported_cpus</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p><code class="docutils literal notranslate"><span class="pre">supported_cpus</span></code> 在异构系统（如 big.LITTLE）中至关重要 — 不同微架构的
+CPU 有不同的 PMU，用户空间通过 <code class="docutils literal notranslate"><span class="pre">cpus</span></code> 属性判断事件应该在哪些 CPU 上计数。</p>
+</div>
+</section>
+<section id="id11">
+<h1><span class="section-number">50. </span>10. 与具体驱动的接口关系<a class="headerlink" href="#id11" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>本文件是框架层还是具体驱动？</p></li>
+<li><p>具体驱动需要实现哪些回调？</p></li>
+<li><p>接口抽象的边界在哪里？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">arm_pmu.c</span></code> 是**框架层**（framework），不直接操作硬件寄存器。
+具体驱动（如 <code class="docutils literal notranslate"><span class="pre">drivers/perf/armv8_pmu.c</span></code>）通过函数指针接入框架:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>回调函数</p></th>
+<th class="head"><p>职责（由具体驱动实现）</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">map_event</span></code></p></td>
+<td><p>将 perf 事件 ID 映射为硬件事件编码</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_event_idx</span></code></p></td>
+<td><p>从可用计数器中分配一个给该事件</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">clear_event_idx</span></code></p></td>
+<td><p>释放计数器</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">enable</span></code> / <code class="docutils literal notranslate"><span class="pre">disable</span></code></p></td>
+<td><p>使能/禁用单个硬件计数器</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">start</span></code> / <code class="docutils literal notranslate"><span class="pre">stop</span></code></p></td>
+<td><p>使能/禁用整个 PMU（全局控制）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">read_counter</span></code> / <code class="docutils literal notranslate"><span class="pre">write_counter</span></code></p></td>
+<td><p>读写单个计数器的当前值</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">handle_irq</span></code></p></td>
+<td><p>溢出中断处理（识别哪个计数器溢出）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reset</span></code></p></td>
+<td><p>重置 PMU 到已知状态</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_event_filter</span></code></p></td>
+<td><p>设置事件过滤（内核态/用户态/特权态）</p></td>
+</tr>
+</tbody>
+</table>
+<p>典型注册序列（具体驱动视角）:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// 1. 分配</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">arm_pmu</span><span class="w"> </span><span class="o">*</span><span class="n">pmu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">armpmu_alloc</span><span class="p">();</span>
+
+<span class="c1">// 2. 设置硬件参数</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;armv8_pmuv3&quot;</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">num_events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="n">硬件计数器数量</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">map_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_map_event</span><span class="p">;</span>
+
+<span class="c1">// 3. 设置硬件操作回调</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">enable</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_enable_event</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">disable</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_disable_event</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">read_counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_read_counter</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">write_counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_write_counter</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">handle_irq</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_handle_irq</span><span class="p">;</span>
+<span class="n">pmu</span><span class="o">-&gt;</span><span class="n">reset</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">armv8pmu_reset</span><span class="p">;</span>
+
+<span class="c1">// 4. 注册</span>
+<span class="n">armpmu_register</span><span class="p">(</span><span class="n">pmu</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h1><span class="section-number">51. </span>11. 事件生命周期<a class="headerlink" href="#id12" title="链接到此标题。"></a></h1>
+<p><strong>应回答的问题:</strong></p>
+<ul class="simple">
+<li><p>从用户调用 <code class="docutils literal notranslate"><span class="pre">perf</span> <span class="pre">stat</span> <span class="pre">-e</span> <span class="pre">cycles</span></code> 到计数完成，经过了哪些代码路径？</p></li>
+</ul>
+<p><strong>arm_pmu.c 的回答:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>用户空间: perf stat -e cycles
+  │
+  ▼ 系统调用: perf_event_open()
+perf 子系统
+  ├─ pmu-&gt;event_init()         ← armpmu_event_init
+  │    ├─ 检查 CPU 是否在 supported_cpus
+  │    ├─ pmu-&gt;map_event()     ← 事件 ID → 硬件编码
+  │    ├─ __hw_perf_event_init()
+  │    │    ├─ set_event_filter() ← 设置特权级过滤
+  │    │    └─ validate_group()  ← 检查分组约束
+  │    └─ 返回 0（成功）
+  │
+  ▼ ioctl: PERF_EVENT_IOC_ENABLE
+  ├─ pmu-&gt;add()                ← armpmu_add
+  │    ├─ get_event_idx()      ← 分配硬件计数器
+  │    ├─ hw_events-&gt;events[idx] = event
+  │    └─ pmu-&gt;start()         ← armpmu_start
+  │         ├─ armpmu_event_set_period() ← 设置溢出周期
+  │         └─ pmu-&gt;enable()   ← 使能硬件计数器
+  │
+  ▼ 硬件运行中...
+  │
+  ▼ 计数器溢出 → IRQ/NMI
+  ├─ armpmu_dispatch_irq()
+  │    └─ pmu-&gt;handle_irq()
+  │         ├─ armpmu_event_update()  ← 读取 delta
+  │         ├─ perf_event_overflow()  ← 通知用户空间
+  │         └─ armpmu_event_set_period() ← 重设周期
+  │
+  ▼ ioctl: PERF_EVENT_IOC_DISABLE / 进程退出
+  └─ pmu-&gt;del()                ← armpmu_del
+       ├─ pmu-&gt;stop()          ← 禁用计数器
+       ├─ armpmu_event_update() ← 最终更新计数
+       └─ clear_event_idx()    ← 释放计数器
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h1><span class="section-number">52. </span>12. 代码阅读自检清单<a class="headerlink" href="#id13" title="链接到此标题。"></a></h1>
+<p>阅读任何 Linux 驱动代码时，应确认以下检查点:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>检查项</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>驱动入口</p></td>
+<td><p>如何被发现、加载、初始化</p></td>
+</tr>
+<tr class="row-odd"><td><p>核心数据结构</p></td>
+<td><p>设备私有数据、硬件状态、per-CPU 数据</p></td>
+</tr>
+<tr class="row-even"><td><p>注册/注销</p></td>
+<td><p>向内核框架注册了什么、何时注销</p></td>
+</tr>
+<tr class="row-odd"><td><p>操作函数集</p></td>
+<td><p>open/read/write/ioctl/mmap 或框架特定回调</p></td>
+</tr>
+<tr class="row-even"><td><p>中断处理</p></td>
+<td><p>中断类型、触发条件、处理流程</p></td>
+</tr>
+<tr class="row-odd"><td><p>资源管理</p></td>
+<td><p>硬件资源分配/释放、错误处理</p></td>
+</tr>
+<tr class="row-even"><td><p>并发保护</p></td>
+<td><p>锁机制、原子操作、per-CPU 无锁设计</p></td>
+</tr>
+<tr class="row-odd"><td><p>CPU 热插拔</p></td>
+<td><p>上线/下线/休眠时的状态管理</p></td>
+</tr>
+<tr class="row-even"><td><p>电源管理</p></td>
+<td><p>runtime PM、系统休眠时的处理</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sysfs/debugfs</p></td>
+<td><p>向用户空间暴露了哪些接口</p></td>
+</tr>
+<tr class="row-even"><td><p>错误处理</p></td>
+<td><p>资源不足、硬件故障、参数非法时的处理</p></td>
+</tr>
+<tr class="row-odd"><td><p>框架层 vs 具体驱动</p></td>
+<td><p>哪些是通用逻辑、哪些需要具体实现</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="prompt_guide_kernel_source_analysis.html" class="btn btn-neutral float-left" title="31. Linux 内核源码分析 — 提示词编写指南" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="codebuddy_cli_usage_guide.html" class="btn btn-neutral float-right" title="53. CodeBuddy CLI 用户问题处理流程与高效使用指南" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

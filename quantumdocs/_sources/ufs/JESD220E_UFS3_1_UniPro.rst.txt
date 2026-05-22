@@ -1,0 +1,895 @@
+JESD220E UFS 3.1 UniPro 互连层深度分析
+========================================
+
+本文档基于 JEDEC Universal Flash Storage (UFS) Version 3.1 规范 (JESD220E, January 2020) 第 9 章，
+深入分析 UFS 互连层 (UIC) 中 MIPI UniPro 协议栈的架构、接口、寻址映射和关键配置参数。
+
+参考文档：``docs/pdf/UFS/JESD220E_UFS3_1.md``
+
+.. contents::
+   :depth: 3
+   :local:
+
+UniPro 层概述
+==============
+
+UniPro 在 UFS 中的定位 [Section 9.1]_
+---------------------------------------
+
+UFS 使用 MIPI 统一协议 (UniPro) 作为其互连 (服务交付子系统)，为 UFS 传输协议 (UTP) 层提供基本传输能力。
+
+**核心功能**:
+
+- **数据平面**: UTP 和 UniPro 通过 UniPro 传输层 CPort(T_CO_SAPs) 的服务原语进行通信
+- **控制平面**: 高层协议功能 (发现、枚举、链路配置) 与 UniPro 的交互通过设备管理实体 (DME) 服务原语完成
+- **协议栈集成**: 构建在 MIPI M-PHY 物理层之上
+
+**参考标准**:
+
+- MIPI UniPro Specification [MIPI-UniPro], Version 1.8
+- MIPI Application Note for UniPro v1.8 [MIPI-AP]
+
+UniPro 架构模型 [Section 9.2, Figure 9.1]_
+--------------------------------------------
+
+::
+
+   +----------------------------------+
+   |    Application Protocol (UAP)    |  <- UFS 应用层
+   +----------------------------------+
+                  |
+   +==============|  UniPro Boundary |======================+
+   |              v                  |                       |
+   |  +--------------------------+   |                       |
+   |  |   Transport Layer (L4)   |   |                       |
+   |  |   (CPorts: C0,C1,C2...)  |   |                       |
+   |  +------------+-------------+   |                       |
+   |                | DME            |                       |
+   |  +------------v-------------+   |    UniPro 内部层级视图  |
+   |  |   Network Layer (L3)     |   |    (a) vs 黑盒视图 (b) |
+   |  +------------+-------------+   |                       |
+   |                | DME            |                       |
+   |  +------------v-------------+   |                       |
+   |  |   Data Link Layer (L2)   |   |                       |
+   |  +------------+-------------+   |                       |
+   |                | DME            |                       |
+   |  +------------v-------------+   |                       |
+   |  | PHY Adapter Layer (L1.5) |   |                       |
+   |  +------------+-------------+   |                       |
+   |               |                 |                       |
+   |  +-----------v-----------+      |                       |
+   |  |  PHY Tx  |   PHY Rx   |      |                       |
+   |  +-----------+-----------+      |                       |
+   |                                 |                       |
+   +=================================+=======================+
+                  |
+   +==============|  UniPro Black Box View |================+
+   |              v                  |                      |
+   |  +--------------------------+   |                      |
+   |  |     UIO_SAP (DME_SAP)    |   |                      |
+   |  |     T_CO_SAP (CPort)     |   |                      |
+   |  +--------------------------+   |                      |
+   |                                 |                      |
+   +================================================================
+
+**关键概念**:
+
+- UFS 将 UniPro 视为**黑盒模型**,最大程度抽象内部实现细节
+- 仅指定接口类型、数量以及寻址映射关系
+- 选择 UniPro 规范中的可选功能和可配置属性
+
+数据平面接口
+============
+
+T_CO_SAP 服务原语 [Section 9.3]_
+----------------------------------
+
+UniPro 提供 CPort(连接端口) 作为概念接口，供 UniPro 之上的应用或协议层使用。
+CPort 可视为 UniPro 规范 8.8 节定义的 T_CO_SAP(传输层连接导向服务访问点) 的实例化。
+
+**核心数据传输服务原语**:
+
+1. **T_CO_DATA.req(MessageFragment, EOM)**
+   
+   - **发起方**: UniPro 服务用户 (UTP 层)
+   - **功能**: 发送消息片段
+   - **参数**: 
+     - MessageFragment: 消息片段数据
+     - EOM (End Of Message): 消息结束标志
+   
+   **使用约束** [NOTE]:
+   
+   - UFS 层请求 UIC 层传输数据时，必须确保最后一个片段设置 EOM 标志
+   - 建议每个原子协议数据单元 (如每个 UPIU) 调用一次此原语，且 EOM 始终设为'true'
+
+2. **T_CO_DATA.cnf_L(L4CPortResultCode)**
+   
+   - **发起方**: UniPro
+   - **功能**: 报告消息片段传输请求的结果
+   - **参数**: L4CPortResultCode (L4 CPort 结果码)
+
+3. **T_CO_DATA.ind(MessageFragment, EOM, SOM, MsgStatus)**
+   
+   - **发起方**: UniPro
+   - **功能**: 向服务用户递送接收到的消息片段
+   - **参数**:
+     - MessageFragment: 消息片段数据
+     - EOM: 告知这是最后一个消息片段
+     - SOM (Start Of Message): 告知这是第一个消息片段
+     - MsgStatus: 消息状态
+
+4. **T_CO_DATA.rsp_L()**
+   
+   - **发起方**: UniPro 服务用户
+   - **功能**: 报告准备好接收下一个消息片段
+
+流控制 [Section 9.3.1]_
+-------------------------
+
+**UFS 策略**: 不使用 UniPro 的端到端流控制功能
+
+**原因**:
+
+- UFS 传输层已通过严格的客户端 - 服务器通信模型避免溢出
+- 使用标签命令队列机制
+- 设备端数据传输节流
+
+**实现要求**:
+
+- UFS 不需要实现 T_CO_FLOWCONTROL 服务原语
+
+对象尺寸定义 [Section 9.3.2]_
+-------------------------------
+
+**UniPro Message(消息)**:
+
+- 可以是任意大小
+- 内容不被 UniPro 解释
+- 可作为多个消息片段传递
+
+**Message Fragment(消息片段)**:
+
+- 可传递给 CPort 或由 CPort 接收的消息部分
+- 接收的片段与发送的片段通常不完全相同
+- 可能携带或不携带 End-of-Message(EoM) 标志
+
+**最大尺寸约束**:
+
+::
+
+   Message Fragment ≤ T_MTU bytes
+
+   T_MTU: 传输层最大传输单元
+   
+   目的：避免在低层进一步分片
+
+控制平面接口
+============
+
+DME SAP 服务架构 [Section 9.4]_
+---------------------------------
+
+UniPro 通过设备管理实体 (DME) 提供服务访问点 (DME SAP),UFS 可借此控制 UniPro 的属性和行为。
+
+DME 配置原语
+--------------
+
+**DME_GET / DME_SET** [Section 9.4]:
+
+- **功能**: 提供对本地 UniPort 所有 UniPro 和 M-PHY 属性的读写访问
+- **使用场景**: 读取/设置本地链路参数
+
+**DME_PEER_GET (可选) / DME_PEER_SET (可选)** [Section 9.4]:
+
+- **功能**: 提供对远端 UniPort 所有 UniPro 和 M-PHY 属性的读写访问
+- **使用场景**: 读取/设置对端链路参数
+
+**排序约束** [NOTE]:
+
+::
+
+   某些情况下，属性设置的顺序对 UniPro 的正确操作至关重要。
+   
+   因此，高层 UFS 应保持 UFS 应用调用 DME 配置原语的顺序。
+   如果由 UFS 内部生成，DME 配置原语应按 UniPro 规范定义的正确顺序发出。
+
+DME 控制原语
+--------------
+
+**电源管理原语**:
+
+1. **DME_POWERON (可选) / DME_POWEROFF (可选)**
+   
+   - 允许上电或下电所有 UniPro 层 (L1.5 到 L4)
+
+2. **DME_ENABLE**
+   
+   - 允许使能整个本地 UniPro 协议栈 (UniPro L1.5-L4)
+
+**复位原语**:
+
+3. **DME_RESET**
+   
+   - 允许复位整个本地 UniPro 协议栈 (UniPro L1.5-L4)
+   - **使用约束** [Section 9.6.5]:
+     - UFS 设备仅在以下情况使用 DME_RESET:
+       - 上电时
+       - 硬件复位后
+       - 收到 DME_LINKLOST.ind 后
+
+4. **DME_ENDPOINTRESET**
+   
+   - 允许向链路端点发送端点复位请求命令
+   - **使用约束** [Section 9.6.5]: UFS 设备不得使用 DME_ENDPOINTRESET.req
+
+**链路管理原语**:
+
+5. **DME_LINKSTARTUP**
+   
+   - 允许本地启动链路并通知远端链路启动调用
+
+6. **DME_HIBERNATE_ENTER / DME_HIBERNATE_EXIT**
+   
+   - 允许将整个链路置于 HIBERNATE 电源模式并唤醒链路
+   - **影响范围**: 本地和对端 UniPort(UniPro L1.5-L4 和 M-PHY)
+   
+   **重要约束** [NOTE]:
+   
+   ::
+   
+      退出 Hibernate 后，所有 UniPro 传输层属性将复位到默认值，包括:
+      - L4 T_PeerDeviceID
+      - L4 T_PeerCPortID
+      - L4 T_ConnectionState
+      
+      通信恢复前，必须在两端正确恢复所有必需属性。
+
+7. **DME_POWERMODE**
+   
+   - 允许更改 M-PHY 链路一个或两个方向的电源模式
+   - **使用约束** [Section 9.6.5]: UFS 设备不得使用 DME_POWERMODE.req
+
+**测试和错误处理原语**:
+
+8. **DME_TEST_MODE (可选)**
+   
+   - 允许将链路上的对端 UniPro 设备设置为特定测试模式
+   - **使用约束** [Section 9.6.5]: UFS 设备不得使用 DME_TEST_MODE.req
+
+9. **DME_LINKLOST**
+   
+   - UniPro 协议栈向高层指示链路已丢失
+
+10. **DME_ERROR**
+    
+    - UniPro 协议栈向高层指示在某个 UniPro 层遇到错误条件
+
+UFS 设备原语使用限制 [Section 9.6.5]_
+----------------------------------------
+
+**UFS 设备不得使用的原语**:
+
+- DME_PEER_GET.req, DME_PEER_SET.req
+- DME_POWERON.req, DME_POWEROFF.req
+- DME_ENDPOINTRESET.req
+- DME_HIBERNATE_ENTER.req, DME_HIBERNATE_EXIT.req
+- DME_POWERMODE.req, DME_TEST_MODE.req
+
+**UFS 设备特殊约束**:
+
+- 不得使用 DME_SET 原语修改本地 PA_PWRMode 属性
+
+寻址映射
+========
+
+UniPro 寻址层次 [Section 9.5]_
+--------------------------------
+
+UniPro 有两级寻址来控制远程 UniPro 实体间的信息交换:
+
+**网络层 (L3) 寻址**:
+
+- **标识符**: Device ID
+- **级别**: 最低级别的可寻址性
+- **用途**: 面向未来 UniPro 设备网络
+- **特性**: 
+  - 连接建立时用于选择远端的物理实体
+  - 连接生命周期内视为静态
+
+**传输层 (L4) 寻址**:
+
+- **标识符**: CPort ID
+- **级别**: 最高级别的端到端可寻址性
+- **用途**: 选择目标 UniPro 设备内的逻辑实体
+- **特性**:
+  - 连接建立时用于选择远端设备内的逻辑实体
+  - 连接生命周期内视为静态
+
+SCSI Nexus 模型 [Section 9.5]_
+--------------------------------
+
+UFS 采用 SCSI 架构模型 [SAM] 基于 Nexus 定义的寻址表示法。
+
+**I_T_L_Q Nexus 组成**:
+
+::
+
+   I_T_L_Q Nexus = {
+       I: Initiator Port Identifier (发起方端口标识符)
+       T: Target Port Identifier (目标方端口标识符)
+       L: Logical Unit Number (逻辑单元号)
+       Q: Command Identifier (命令标识符)
+   }
+
+**语义**:
+
+- I_T_L_Q Nexus 唯一标识特定命令槽 (Q)
+- 位于特定逻辑单元 (L) 内
+- 连接到特定设备目标端口 (T)
+- 通过特定主机发起方端口 (I) 访问
+
+**UFS Interconnect 层地址范围**:
+
+- Device ID 和 CPort ID 仅与 Nexus 的 I_T 部分相关
+- L(逻辑单元) 和 Q(命令) 由上层处理
+
+映射规则 [Section 9.5]_
+-------------------------
+
+**16 位端口标识符结构**:
+
+::
+
+   UFS Initiator Port Identifier (I) [15:0]:
+   +-------------------+-------------------+
+   |   Device ID[6:0]  |   CPort ID[4:0]   |
+   |   (7 bits)        |   (5 bits)        |
+   +-------------------+-------------------+
+   |     000 0000b     |     0 0000b       |
+   |   (Host Device)   |   (CPort 0)       |
+   +-------------------+-------------------+
+                                        |
+                                        v
+                                   IID[3:0]
+                                  (4 bits)
+
+   UFS Target Port Identifier (T) [15:0]:
+   +-------------------+-------------------+
+   |   Device ID[6:0]  |   CPort ID[4:0]   |
+   |   (7 bits)        |   (5 bits)        |
+   +-------------------+-------------------+
+   |     000 0001b     |     0 0000b       |
+   |  (Device Device)  |   (CPort 0)       |
+   +-------------------+-------------------+
+                                        |
+                                        v
+                                      0000b
+                                     (固定)
+
+**复位值定义** [Table 9.1]:
+
+.. list-table:: UFS 端口标识符复位值
+   :header-rows: 1
+   :widths: 25 25 25 25
+
+   * - 字段
+     - Host 复位值
+     - Device 复位值
+     - 说明
+   * - Device ID
+     - 000 0000b (0)
+     - 000 0001b (1)
+     - 网络层设备标识
+   * - CPort ID
+     - 0 0000b (0)
+     - 0 0000b (0)
+     - 传输层 CPort 标识
+   * - IID
+     - 可变 (0-15)
+     - 0000b (固定)
+     - 发起方 ID(4 位)
+
+**I_T Nexus 唯一性**:
+
+单个 UniPro 连接 (UFS Host UTP 层 ↔ UFS Device UTP 层) 可通过上述 UFS I_T Nexus 唯一标识。
+
+**动态修改能力** [NOTE]:
+
+UFS I_T Nexus 元素可在复位后由主机使用 DME 服务原语修改:
+
+- **"I"元素**: 主机使用 DME_SET 原语修改
+- **"T"元素**: 主机使用 DME_PEER_SET 原语修改
+
+**CPort 属性管理**:
+
+- **Host 侧 CPort**: 主机使用 DME_GET 和 DME_SET 原语检查和修改 (包括 T_ConnectionState 等)
+- **Device 侧 CPort**: 主机使用 DME_PEER_GET 和 DME_PEER_SET 原语检查和修改
+
+物理层配置
+==========
+
+PHY Adapter 要求 [Section 9.6.1]_
+----------------------------------
+
+**M-PHY 相关属性**:
+
+参见 Section 8.7 "UFS PHY Attributes":
+
+- UFS PHY M-TX Capability Attributes (Table 8.1)
+- UFS PHY M-RX Capability Attributes (Table 8.2)
+
+**Skip Symbol 插入功能**:
+
+::
+
+   UFS 系统中，Host 和 Device 使用相同的参考时钟。
+   
+   因此，skip symbol 插入功能未使用，其实现为可选。
+
+物理 Lane 连接要求 [Section 9.6.1]_
+-------------------------------------
+
+UFS 设备应支持以下物理 Lane 连接配置:
+
+**单 Lane 配置**:
+
+::
+
+   UFS Host                    UFS Device
+   +--------+                  +--------+
+   |  Tx 0  | ---------------->|  Rx 0  |
+   +--------+                  +--------+
+   
+   +--------+                  +--------+
+   |  Rx 0  | <----------------|  Tx 0  |
+   +--------+                  +--------+
+
+**双 Lane 配置**:
+
+::
+
+   UFS Host                    UFS Device
+   +--------+                  +--------+
+   |  Tx 0  | ---------------->|  Rx 0  |
+   +--------+                  +--------+
+   |  Tx 1  | ---------------->|  Rx 1  |
+   +--------+                  +--------+
+   
+   +--------+                  +--------+
+   |  Rx 0  | <----------------|  Tx 0  |
+   +--------+                  +--------+
+   |  Rx 1  | <----------------|  Tx 1  |
+   +--------+                  +--------+
+
+物理 Lane 连接图 [Figure 9.2]_
+--------------------------------
+
+::
+
+   2-lane UFS Host              2-lane UFS Device
+   +------------------+         +------------------+
+   |  Tx  | PL#0      |         |      PL#0 | Rx   |
+   |      +----------+|         |+----------+      |
+   |      | PL#1      |         || PL#1     |      |
+   +------+----------++         ++----------+------+
+          |                     |
+          |  Lane 0 & Lane 1    |
+          |<===================>|
+          |                     |
+   +------+----------++         ++----------+------+
+   |      | PL#0      |         || PL#0     |      |
+   |      +----------+|         |+----------+      |
+   |  Rx  | PL#1      |         || PL#1     | Tx   |
+   +------------------+         +------------------+
+
+   注：PL = Physical Lane
+   
+   连接规则:
+   - Tx physical lane N 连接到 Rx physical lane N
+   - 支持 Lane 聚合提高带宽
+
+各层选项和参数
+==============
+
+Data Link Layer (L2) 要求 [Section 9.6.2]_
+-------------------------------------------
+
+**强制要求**:
+
+- ✅ 实现 Data Link Layer Traffic Class "Best Effort" (TC 0)
+- ✅ 提供至少 DL_MTU 字节的 Data Link Layer RX 和 TX 缓冲
+- ✅ 支持最大尺寸 L2 帧的发送和接收 (DL_MTU)
+
+**非强制要求**:
+
+- ❌ Data Link Layer Traffic Class 1 (TC1: 'Low Latency') - 不需要
+- ❌ TX 抢占能力 - 不需要
+
+Network Layer (L3) 要求 [Section 9.6.3]_
+-----------------------------------------
+
+**强制要求**:
+
+- ✅ 支持最大尺寸 L3 数据包的发送和接收 (N_MTU)
+
+Transport Layer (L4) 要求 [Section 9.6.4]_
+-------------------------------------------
+
+**CPort 配置**:
+
+- ✅ UFS Host 和 UFS Device 应至少实现 1 个 CPort
+
+**说明** [NOTE]:
+
+::
+
+   本规范仅要求和使用链路两端的单个 CPort。
+
+**CPort 仲裁**:
+
+- ❌ UFS 不强制任何 CPort 仲裁方案 (如果实现多个 CPort，使用 UniPro 默认)
+
+**功能支持**:
+
+- ✅ 应支持 UniPro Test Feature
+- ❌ 不需要 UniPro 端到端流控制机制
+- ❌ 不使用'Controlled Segment Dropping'(CSD) - 应禁用
+- ❌ 不使用"CPort Safety Valve"(CSV) - 应禁用
+
+**MTU 支持**:
+
+- ✅ 应支持最大尺寸 L4 段的发送和接收 (T_MTU)
+
+设备管理实体 (DME) 要求 [Section 9.6.5]_
+-------------------------------------------
+
+**DME 服务原语功能**:
+
+::
+
+   DME 服务原语提供以下手段:
+   
+   1. 检索或设置属性
+   2. 控制整个 UniPro 协议栈的复位和运行模式
+
+**UFS Host 和 UFS Device 应实现的 DME 原语**:
+
+.. list-table::
+   :widths: 35 65
+
+   * - 原语
+     - 功能
+   * - DME_GET, DME_SET
+     - 获取/设置属性
+   * - DME_ENABLE
+     - 使能协议栈
+   * - DME_RESET, DME_ENDPOINTRESET
+     - 复位操作
+   * - DME_LINKSTARTUP, DME_LINKLOST
+     - 链路启动/丢失指示
+   * - DME_HIBERNATE_ENTER, DME_HIBERNATE_EXIT
+     - 休眠进入/退出
+   * - DME_POWERMODE
+     - 电源模式切换
+   * - DME_ERROR
+     - 错误指示
+
+**UFS Host 特殊要求**:
+
+- ✅ 应实现 DME_PEER_GET 原语和 DME_PEER_SET 原语 (在 UniPro 中为可选)
+
+**UFS Device 使用限制**:
+
+详见"控制平面接口"章节。
+
+UniPro 属性
+============
+
+属性复位值策略 [Section 9.6.6]_
+----------------------------------
+
+**优化启动过程**:
+
+为优化 UFS 启动过程，UFS UIC 实现应使用 MIPI UniPro 规范定义的所有 UniPro 属性的默认复位值。
+
+**例外情况**:
+
+网络层属性和 CPort 0 的特定属性复位值应反映上述章节定义的设置，即包含 Table 9.2 所示的值。
+
+关键 UniPro 属性复位值 [Table 9.2]_
+--------------------------------------
+
+.. list-table:: UniPro 属性复位值
+   :header-rows: 1
+   :widths: 35 25 25 15
+
+   * - UniPro 属性名称
+     - UFS Host 复位值
+     - UFS Device 复位值
+     - 说明
+   * - N_DeviceID
+     - 0
+     - 1
+     - 网络层设备 ID
+   * - N_DeviceID_valid
+     - TRUE
+     - TRUE
+     - 设备 ID 有效标志
+   * - T_PeerDeviceID
+     - 1
+     - 0
+     - 对端设备 ID
+   * - T_PeerCPortID
+     - 0
+     - 0
+     - 对端 CPort ID
+   * - T_CPortFlags
+     - 6
+     - 6
+     - CPort 标志
+   * - T_ConnectionState
+     - 1 (CONNECTED)
+     - 1 (CONNECTED)
+     - 连接状态
+   * - T_TrafficClass
+     - 0
+     - 0
+     - 流量类别
+   * - PA_MaxDataLanes
+     - 2
+     - 2
+     - 最大数据 Lane 数
+   * - PA_AvailTxDataLanes
+     - 1, 2
+     - 1, 2
+     - 可用 TX 数据 Lane
+   * - PA_AvailRxDataLanes
+     - 1, 2
+     - 1, 2
+     - 可用 RX 数据 Lane
+
+**T_CPortFlags = 6 的含义**:
+
+::
+
+   Bit 编码：0110b
+   
+   - E2E_FC (End-to-End Flow Control): OFF (bit 2 = 1)
+   - CSD (Controlled Segment Dropping): OFF (bit 1 = 1)
+   - CSV (CPort Safety Valve): OFF (bit 0 = 0)
+   
+   注：实际编码需参照 UniPro 规范详细定义
+
+**Lane 配置说明** [NOTE]:
+
+::
+
+   UFS 设备将支持以下两种配置之一:
+   
+   1. 一个 TX Lane + 一个 RX Lane (单 Lane 设备)
+   2. 两个 TX Lanes + 两个 RX Lanes (双 Lane 设备)
+
+关键设计决策总结
+================
+
+流控制策略
+------------
+
+**决策**: 禁用 UniPro 端到端流控制
+
+**理由**:
+
+- UFS 已有严格的客户端 - 服务器模型
+- 标签命令队列提供天然流控
+- 设备端可主动节流数据传输
+
+**实现影响**:
+
+::
+
+   - 无需实现 T_CO_FLOWCONTROL 原语
+   - T_CPortFlags 中 E2E_FC 位应设为 OFF
+   - 简化协议栈实现
+
+CPort 配置策略
+----------------
+
+**决策**: 单 CPort 配置
+
+**理由**:
+
+- UFS 点对点拓扑结构简单
+- 单一连接足以满足带宽需求
+- 简化链路管理和枚举
+
+**实现影响**:
+
+::
+
+   - 最少实现 1 个 CPort(CPort 0)
+   - 无需复杂 CPort 仲裁逻辑
+   - CPort ID 复位值固定为 0
+
+电源管理策略
+--------------
+
+**决策**: 集中式电源管理
+
+**理由**:
+
+- Host 主导链路状态转换
+- Device 被动响应电源模式请求
+
+**实现影响**:
+
+::
+
+   - Device 不得使用 DME_POWERMODE.req
+   - Device 不得使用 DME_HIBERNATE_ENTER/EXIT.req
+   - Host 统一管理所有电源状态转换
+
+复位策略
+----------
+
+**决策**: 分级复位机制
+
+**复位类型**:
+
+1. **DME_RESET**: 复位整个 UniPro 协议栈
+2. **DME_ENDPOINTRESET**: 端点复位 (仅 Host 可使用)
+
+**使用约束**:
+
+::
+
+   UFS Device 仅在以下情况使用 DME_RESET:
+   - 上电时
+   - 硬件复位后
+   - 收到 DME_LINKLOST.ind 后
+
+Hibernate 管理
+---------------
+
+**关键约束**:
+
+::
+
+   退出 Hibernate 后，所有 UniPro 传输层属性复位到默认值!
+   
+   必须恢复的属性包括:
+   - T_PeerDeviceID
+   - T_PeerCPortID
+   - T_ConnectionState
+   - 其他 CPort 配置属性
+
+**恢复流程**:
+
+::
+
+   1. Exit Hibernate
+   2. Host 使用 DME_GET/DME_SET 恢复本地属性
+   3. Host 使用 DME_PEER_GET/DME_PEER_SET 恢复对端属性
+   4. 确认两端属性正确配置
+   5. 恢复通信
+
+框图索引
+========
+
+Figure 9.1 — UniPro internal layering view and Black Box view
+---------------------------------------------------------------
+
+::
+
+   (a) Internal Layering View:
+   
+   +---------------------------+
+   |   Application Protocol    |
+   +---------------------------+
+           |    |    |    |
+         C 0  C 1  C 2  C 3   <- CPorts
+   +---------------------------+
+   |   Transport Layer (L4)    |
+   |         + LM              |
+   +---------------------------+
+   |   Network Layer (L3)      |
+   |         + LM + DME        |
+   +---------------------------+
+   |   Data Link Layer (L2)    |
+   |         + LM              |
+   +---------------------------+
+   |   PHY Adapter (L1.5)      |
+   |         + LM              |
+   +---------------------------+
+   |   PHY Tx  |  PHY Rx       |
+   +---------------------------+
+   
+   (b) Black Box View:
+   
+   +---------------------------+
+   |   Application Protocol    |
+   +---------------------------+
+           |    |
+      UIO_SAP  T_CO_SAP
+   +---------------------------+
+   |       UniPro Stack        |
+   |    (L1.5 - L4 + DME)      |
+   +---------------------------+
+
+Figure 9.2 — Physical lane connections
+----------------------------------------
+
+详见"物理 Lane 连接要求"章节中的 ASCII 图示。
+
+表格索引
+========
+
+.. list-table:: 本文档引用的关键表格
+   :header-rows: 1
+   :widths: 20 60
+
+   * - 表格编号
+     - 内容描述
+   * - Table 9.1
+     - UFS Initiator and Target Port Identifiers (UFS 发起方和目标方端口标识符)
+   * - Table 9.2
+     - UniPro Attribute (UniPro 属性复位值)
+   * - Table 8.1
+     - UFS PHY M-TX Capability Attributes (UFS PHY M-TX 能力属性)
+   * - Table 8.2
+     - UFS PHY M-RX Capability Attributes (UFS PHY M-RX 能力属性)
+
+关键术语
+========
+
+.. list-table::
+   :widths: 20 80
+
+   * - 术语
+     - 定义
+   * - CPort
+     - Connection Port，UniPro 传输层的连接导向服务访问点
+   * - DME
+     - Device Management Entity，设备管理实体
+   * - DME_SAP
+     - DME Service Access Point，DME 服务访问点
+   * - EOM
+     - End Of Message，消息结束标志
+   * - I_T_L_Q Nexus
+     - SCSI 架构中的连接定义，包含 Initiator、Target、LU、Command
+   * - L2/L3/L4
+     - Data Link/Network/Transport Layer，数据链路/网络/传输层
+   * - LM
+     - Layer Management，层管理
+   * - MTU
+     - Maximum Transmission Unit，最大传输单元
+   * - SAM
+     - SCSI Architecture Model，SCSI 架构模型
+   * - SOM
+     - Start Of Message，消息开始标志
+   * - T_CO_SAP
+     - Transport Connection-Oriented Service Access Point，传输层连接导向服务访问点
+   * - UIC
+     - UFS InterConnect，UFS 互连层
+   * - UniPro
+     - Unified Protocol，统一协议 (MIPI 联盟定义)
+
+.. [Section 9.1] JESD220E Section 9.1 "Overview"
+.. [Section 9.2] JESD220E Section 9.2 "Architectural Model"
+.. [Section 9.3] JESD220E Section 9.3 "UniPro/UFS Transport Protocol Interface (Data Plane)"
+.. [Section 9.3.1] JESD220E Section 9.3.1 "Flow control"
+.. [Section 9.3.2] JESD220E Section 9.3.2 "Object sizes"
+.. [Section 9.4] JESD220E Section 9.4 "UniPro/UFS Control Interface (Control Plane)"
+.. [Section 9.5] JESD220E Section 9.5 "UniPro/UFS Transport Protocol Address Mapping"
+.. [Section 9.6] JESD220E Section 9.6 "Options and Tunable Parameters of UniPro"
+.. [Section 9.6.1] JESD220E Section 9.6.1 "UniPro PHY Adapter"
+.. [Section 9.6.2] JESD220E Section 9.6.2 "UniPro Data Link Layer"
+.. [Section 9.6.3] JESD220E Section 9.6.3 "UniPro Network Layer"
+.. [Section 9.6.4] JESD220E Section 9.6.4 "UniPro Transport Layer"
+.. [Section 9.6.5] JESD220E Section 9.6.5 "UniPro Device Management Entity Transport Layer"
+.. [Section 9.6.6] JESD220E Section 9.6.6 "UniPro Attributes"
+.. [Table 9.1] JESD220E Table 9.1 "UFS Initiator and Target Port Identifiers"
+.. [Table 9.2] JESD220E Table 9.2 "UniPro Attribute"
+.. [Table 8.1] JESD220E Table 8.1 "UFS PHY M-TX Capability Attributes"
+.. [Table 8.2] JESD220E Table 8.2 "UFS PHY M-RX Capability Attributes"
+.. [Figure 9.1] JESD220E Figure 9.1 "UniPro internal layering view (a) and UniPro Black Box view (b)"
+.. [Figure 9.2] JESD220E Figure 9.2 "Physical lane connections"

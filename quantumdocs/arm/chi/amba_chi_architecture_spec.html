@@ -1,0 +1,1479 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. AMBA CHI Architecture Specification 结构梳理 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/translations.js?v=540d3cec"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="4. AMBA® CHI 一致性协议深度分析" href="amba_chi_architecture_coherency.html" />
+    <link rel="prev" title="2. ARM AArch64 MMU (VMSA) 架构深度解析" href="../mmu_arch.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. AMBA CHI Architecture Specification 结构梳理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 文档基本信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">3.2. 文档总体结构</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#part-a-preface">3.2.1. Part A -- Preface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#about-this-specification-b1-0-1">3.2.1.1. About this specification (B1.0.1)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-this-specification-b1-0-2">3.2.1.2. Using this specification (B1.0.2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conventions">3.2.1.3. Conventions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#additional-reading">3.2.1.4. Additional reading</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feedback">3.2.1.5. Feedback</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#part-b-specification">3.2.2. Part B -- Specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b1-introduction">3.2.3. Chapter B1 -- Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#b1-1-architecture-overview">3.2.3.1. B1.1 Architecture overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b1-1-3-architecture-layers">3.2.3.2. B1.1.3 Architecture layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b1-2-topology">3.2.3.3. B1.2 Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b1-3-terminology">3.2.3.4. B1.3 Terminology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b1-4-transaction-classification">3.2.3.5. B1.4 Transaction classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b1-5-coherence-overview">3.2.3.6. B1.5 Coherence overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b1-7-read-data-source">3.2.3.7. B1.7 Read data source</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b2-transactions">3.2.4. Chapter B2 -- Transactions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#b2-1-channels-overview">3.2.4.1. B2.1 Channels overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-2-channel-fields">3.2.4.2. B2.2 Channel fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-3-transaction-structure">3.2.4.3. B2.3 Transaction structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-4-transaction-identifier-fields">3.2.4.4. B2.4 Transaction identifier fields</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-5-transaction-identifier-field-flows">3.2.4.5. B2.5 Transaction identifier field flows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-6-ordering">3.2.4.6. B2.6 Ordering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-7-address-control-and-data">3.2.4.7. B2.7 Address, Control, and Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-8-data-transfer">3.2.4.8. B2.8 Data transfer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b2-9-request-retry">3.2.4.9. B2.9 Request Retry</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b3-network-layer">3.2.5. Chapter B3 -- Network Layer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#b3-1-system-address-map-sam">3.2.5.1. B3.1 System Address Map (SAM)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b3-2-node-id">3.2.5.2. B3.2 Node ID</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b3-3-tgtid-determination">3.2.5.3. B3.3 TgtID determination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b3-4-network-layer-flow-examples">3.2.5.4. B3.4 Network layer flow examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b4-coherence-protocol">3.2.6. Chapter B4 -- Coherence Protocol</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#b4-1-cache-line-states">3.2.6.1. B4.1 Cache line states</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-2-request-types">3.2.6.2. B4.2 Request types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-3-snoop-request-types">3.2.6.3. B4.3 Snoop request types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-4-request-snoop-correspondence">3.2.6.4. B4.4 Request/Snoop correspondence</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-5-response-types">3.2.6.5. B4.5 Response types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-6-silent-cache-state-transitions">3.2.6.6. B4.6 Silent cache state transitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-7-cache-state-transitions-at-a-requester">3.2.6.7. B4.7 Cache state transitions at a Requester</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-8-cache-state-transitions-at-a-snoopee">3.2.6.8. B4.8 Cache state transitions at a Snoopee</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-9-returning-data-with-snoop-response">3.2.6.9. B4.9 Returning Data with Snoop response</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-10-do-not-transition-to-sd">3.2.6.10. B4.10 Do not transition to SD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b4-11-hazard-conditions">3.2.6.11. B4.11 Hazard conditions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b5-interconnect-protocol-flows">3.2.7. Chapter B5 -- Interconnect Protocol Flows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b6-exclusive-accesses">3.2.8. Chapter B6 -- Exclusive accesses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b7-cache-stashing">3.2.9. Chapter B7 -- Cache Stashing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b8-dvm-operations">3.2.10. Chapter B8 -- DVM Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b9-error-handling">3.2.11. Chapter B9 -- Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b10-realm-management-extension">3.2.12. Chapter B10 -- Realm Management Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b11-system-control-debug-trace-and-monitoring">3.2.13. Chapter B11 -- System Control, Debug, Trace, and Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b12-memory-tagging">3.2.14. Chapter B12 -- Memory Tagging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b13-link-layer">3.2.15. Chapter B13 -- Link Layer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#b13-1-introduction">3.2.15.1. B13.1 Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-2-link">3.2.15.2. B13.2 Link</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-3-flit">3.2.15.3. B13.3 Flit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-4-channel">3.2.15.4. B13.4 Channel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-5-port">3.2.15.5. B13.5 Port</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-6-node-interface-definitions">3.2.15.6. B13.6 Node interface definitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-7-increasing-inter-port-bandwidth">3.2.15.7. B13.7 Increasing inter-port bandwidth</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-8-channel-interface-signals">3.2.15.8. B13.8 Channel interface signals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-9-flit-packet-definitions">3.2.15.9. B13.9 Flit packet definitions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b13-10-protocol-flit-fields">3.2.15.10. B13.10 Protocol flit fields</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b14-link-handshake">3.2.16. Chapter B14 -- Link Handshake</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b15-system-coherency-interface">3.2.17. Chapter B15 -- System Coherency Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-b16-properties-parameters-and-broadcast-signals">3.2.18. Chapter B16 -- Properties, Parameters, and Broadcast Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-c1-message-field-mappings">3.2.19. Chapter C1 -- Message Field Mappings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-c2-communicating-nodes">3.2.20. Chapter C2 -- Communicating Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-c3-revisions">3.2.21. Chapter C3 -- Revisions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chapter-d1-glossary">3.2.22. Chapter D1 -- Glossary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>AMBA CHI Architecture Specification 结构梳理</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/arm/chi/amba_chi_architecture_spec.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="amba-chi-architecture-specification">
+<h1><span class="section-number">3. </span>AMBA CHI Architecture Specification 结构梳理<a class="headerlink" href="#amba-chi-architecture-specification" title="链接到此标题。"></a></h1>
+<p>本文档基于 <strong>IHI0050G (Issue G, Mar 2024)</strong> -- AMBA CHI Architecture Specification，
+对全篇文档结构进行系统性梳理。</p>
+<p>参考文档：docs/pdf/arm/IHI0050G_amba_chi_architecture_spec.md</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#id2" id="id8">文档基本信息</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id9">文档总体结构</a></p>
+<ul>
+<li><p><a class="reference internal" href="#part-a-preface" id="id10">Part A -- Preface</a></p>
+<ul>
+<li><p><a class="reference internal" href="#about-this-specification-b1-0-1" id="id11">About this specification (B1.0.1)</a></p></li>
+<li><p><a class="reference internal" href="#using-this-specification-b1-0-2" id="id12">Using this specification (B1.0.2)</a></p></li>
+<li><p><a class="reference internal" href="#conventions" id="id13">Conventions</a></p></li>
+<li><p><a class="reference internal" href="#additional-reading" id="id14">Additional reading</a></p></li>
+<li><p><a class="reference internal" href="#feedback" id="id15">Feedback</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#part-b-specification" id="id16">Part B -- Specification</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b1-introduction" id="id17">Chapter B1 -- Introduction</a></p>
+<ul>
+<li><p><a class="reference internal" href="#b1-1-architecture-overview" id="id18">B1.1 Architecture overview</a></p></li>
+<li><p><a class="reference internal" href="#b1-1-3-architecture-layers" id="id19">B1.1.3 Architecture layers</a></p></li>
+<li><p><a class="reference internal" href="#b1-2-topology" id="id20">B1.2 Topology</a></p></li>
+<li><p><a class="reference internal" href="#b1-3-terminology" id="id21">B1.3 Terminology</a></p></li>
+<li><p><a class="reference internal" href="#b1-4-transaction-classification" id="id22">B1.4 Transaction classification</a></p></li>
+<li><p><a class="reference internal" href="#b1-5-coherence-overview" id="id23">B1.5 Coherence overview</a></p></li>
+<li><p><a class="reference internal" href="#b1-7-read-data-source" id="id24">B1.7 Read data source</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-b2-transactions" id="id25">Chapter B2 -- Transactions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#b2-1-channels-overview" id="id26">B2.1 Channels overview</a></p></li>
+<li><p><a class="reference internal" href="#b2-2-channel-fields" id="id27">B2.2 Channel fields</a></p></li>
+<li><p><a class="reference internal" href="#b2-3-transaction-structure" id="id28">B2.3 Transaction structure</a></p></li>
+<li><p><a class="reference internal" href="#b2-4-transaction-identifier-fields" id="id29">B2.4 Transaction identifier fields</a></p></li>
+<li><p><a class="reference internal" href="#b2-5-transaction-identifier-field-flows" id="id30">B2.5 Transaction identifier field flows</a></p></li>
+<li><p><a class="reference internal" href="#b2-6-ordering" id="id31">B2.6 Ordering</a></p></li>
+<li><p><a class="reference internal" href="#b2-7-address-control-and-data" id="id32">B2.7 Address, Control, and Data</a></p></li>
+<li><p><a class="reference internal" href="#b2-8-data-transfer" id="id33">B2.8 Data transfer</a></p></li>
+<li><p><a class="reference internal" href="#b2-9-request-retry" id="id34">B2.9 Request Retry</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-b3-network-layer" id="id35">Chapter B3 -- Network Layer</a></p>
+<ul>
+<li><p><a class="reference internal" href="#b3-1-system-address-map-sam" id="id36">B3.1 System Address Map (SAM)</a></p></li>
+<li><p><a class="reference internal" href="#b3-2-node-id" id="id37">B3.2 Node ID</a></p></li>
+<li><p><a class="reference internal" href="#b3-3-tgtid-determination" id="id38">B3.3 TgtID determination</a></p></li>
+<li><p><a class="reference internal" href="#b3-4-network-layer-flow-examples" id="id39">B3.4 Network layer flow examples</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-b4-coherence-protocol" id="id40">Chapter B4 -- Coherence Protocol</a></p>
+<ul>
+<li><p><a class="reference internal" href="#b4-1-cache-line-states" id="id41">B4.1 Cache line states</a></p></li>
+<li><p><a class="reference internal" href="#b4-2-request-types" id="id42">B4.2 Request types</a></p></li>
+<li><p><a class="reference internal" href="#b4-3-snoop-request-types" id="id43">B4.3 Snoop request types</a></p></li>
+<li><p><a class="reference internal" href="#b4-4-request-snoop-correspondence" id="id44">B4.4 Request/Snoop correspondence</a></p></li>
+<li><p><a class="reference internal" href="#b4-5-response-types" id="id45">B4.5 Response types</a></p></li>
+<li><p><a class="reference internal" href="#b4-6-silent-cache-state-transitions" id="id46">B4.6 Silent cache state transitions</a></p></li>
+<li><p><a class="reference internal" href="#b4-7-cache-state-transitions-at-a-requester" id="id47">B4.7 Cache state transitions at a Requester</a></p></li>
+<li><p><a class="reference internal" href="#b4-8-cache-state-transitions-at-a-snoopee" id="id48">B4.8 Cache state transitions at a Snoopee</a></p></li>
+<li><p><a class="reference internal" href="#b4-9-returning-data-with-snoop-response" id="id49">B4.9 Returning Data with Snoop response</a></p></li>
+<li><p><a class="reference internal" href="#b4-10-do-not-transition-to-sd" id="id50">B4.10 Do not transition to SD</a></p></li>
+<li><p><a class="reference internal" href="#b4-11-hazard-conditions" id="id51">B4.11 Hazard conditions</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-b5-interconnect-protocol-flows" id="id52">Chapter B5 -- Interconnect Protocol Flows</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b6-exclusive-accesses" id="id53">Chapter B6 -- Exclusive accesses</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b7-cache-stashing" id="id54">Chapter B7 -- Cache Stashing</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b8-dvm-operations" id="id55">Chapter B8 -- DVM Operations</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b9-error-handling" id="id56">Chapter B9 -- Error Handling</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b10-realm-management-extension" id="id57">Chapter B10 -- Realm Management Extension</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b11-system-control-debug-trace-and-monitoring" id="id58">Chapter B11 -- System Control, Debug, Trace, and Monitoring</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b12-memory-tagging" id="id59">Chapter B12 -- Memory Tagging</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b13-link-layer" id="id60">Chapter B13 -- Link Layer</a></p>
+<ul>
+<li><p><a class="reference internal" href="#b13-1-introduction" id="id61">B13.1 Introduction</a></p></li>
+<li><p><a class="reference internal" href="#b13-2-link" id="id62">B13.2 Link</a></p></li>
+<li><p><a class="reference internal" href="#b13-3-flit" id="id63">B13.3 Flit</a></p></li>
+<li><p><a class="reference internal" href="#b13-4-channel" id="id64">B13.4 Channel</a></p></li>
+<li><p><a class="reference internal" href="#b13-5-port" id="id65">B13.5 Port</a></p></li>
+<li><p><a class="reference internal" href="#b13-6-node-interface-definitions" id="id66">B13.6 Node interface definitions</a></p></li>
+<li><p><a class="reference internal" href="#b13-7-increasing-inter-port-bandwidth" id="id67">B13.7 Increasing inter-port bandwidth</a></p></li>
+<li><p><a class="reference internal" href="#b13-8-channel-interface-signals" id="id68">B13.8 Channel interface signals</a></p></li>
+<li><p><a class="reference internal" href="#b13-9-flit-packet-definitions" id="id69">B13.9 Flit packet definitions</a></p></li>
+<li><p><a class="reference internal" href="#b13-10-protocol-flit-fields" id="id70">B13.10 Protocol flit fields</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-b14-link-handshake" id="id71">Chapter B14 -- Link Handshake</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b15-system-coherency-interface" id="id72">Chapter B15 -- System Coherency Interface</a></p></li>
+<li><p><a class="reference internal" href="#chapter-b16-properties-parameters-and-broadcast-signals" id="id73">Chapter B16 -- Properties, Parameters, and Broadcast Signals</a></p></li>
+<li><p><a class="reference internal" href="#chapter-c1-message-field-mappings" id="id74">Chapter C1 -- Message Field Mappings</a></p></li>
+<li><p><a class="reference internal" href="#chapter-c2-communicating-nodes" id="id75">Chapter C2 -- Communicating Nodes</a></p></li>
+<li><p><a class="reference internal" href="#chapter-c3-revisions" id="id76">Chapter C3 -- Revisions</a></p></li>
+<li><p><a class="reference internal" href="#chapter-d1-glossary" id="id77">Chapter D1 -- Glossary</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="id2">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">3.1. </span>文档基本信息</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p><strong>文档编号</strong>: IHI0050G</p></li>
+<li><p><strong>版本</strong>: Issue G (2024年3月)</p></li>
+<li><p><strong>总行数</strong>: ~23,240 行</p></li>
+<li><p><strong>保密级别</strong>: Non-Confidential</p></li>
+<li><p><strong>文档状态</strong>: Final (developed product)</p></li>
+<li><p><strong>发布历史</strong>: A (2014/06) -&gt; B (2017/08) -&gt; C (2018/05) -&gt; D (2019/08) -&gt; E.a (2020/08) -&gt; E.b (2021/08) -&gt; E.c (2022/09) -&gt; F (2022/09) -&gt; F.b (2024/02) -&gt; G (2024/03)</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">3.2. </span>文档总体结构</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<p>文档分为 <strong>4 个 Part</strong>，包含 <strong>19 个 Chapter</strong>，外加前置页面（封面、版权、许可证）和目录。</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Part</p></th>
+<th class="head"><p>行号范围</p></th>
+<th class="head"><p>行数</p></th>
+<th class="head"><p>内容概述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>前置页面 + 目录</p></td>
+<td><p>1-827</p></td>
+<td><p>~827</p></td>
+<td><p>封面、版权声明、AMBA许可证、保密性声明、目录</p></td>
+</tr>
+<tr class="row-odd"><td><p>Part A -- Preface</p></td>
+<td><p>828-1051</p></td>
+<td><p>~224</p></td>
+<td><p>文档约定、术语、阅读建议</p></td>
+</tr>
+<tr class="row-even"><td><p>Part B -- Specification</p></td>
+<td><p>1052-21552</p></td>
+<td><p>~20,501</p></td>
+<td><p>核心规范，含 16 个 Chapter</p></td>
+</tr>
+<tr class="row-odd"><td><p>Part C -- Appendices</p></td>
+<td><p>21553-22833</p></td>
+<td><p>~1,281</p></td>
+<td><p>附录：消息字段映射、通信节点、版本变更</p></td>
+</tr>
+<tr class="row-even"><td><p>Part D -- Glossary</p></td>
+<td><p>22834-23240</p></td>
+<td><p>~407</p></td>
+<td><p>术语表</p></td>
+</tr>
+</tbody>
+</table>
+<section id="part-a-preface">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink"><span class="section-number">3.2.1. </span>Part A -- Preface</a><a class="headerlink" href="#part-a-preface" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 828-1051</em></p>
+<section id="about-this-specification-b1-0-1">
+<h4><a class="toc-backref" href="#id11" role="doc-backlink"><span class="section-number">3.2.1.1. </span>About this specification (B1.0.1)</a><a class="headerlink" href="#about-this-specification-b1-0-1" title="链接到此标题。"></a></h4>
+<p>定义了本文档的**目标读者**：系统集成人员、SoC 设计人员、验证工程师、软件工具开发人员。</p>
+</section>
+<section id="using-this-specification-b1-0-2">
+<h4><a class="toc-backref" href="#id12" role="doc-backlink"><span class="section-number">3.2.1.2. </span>Using this specification (B1.0.2)</a><a class="headerlink" href="#using-this-specification-b1-0-2" title="链接到此标题。"></a></h4>
+<p>说明了本文档的使用约定，包括版本标记方式（<strong>IMPLEMENTATION DEFINED</strong> 表示由实现定义、<strong>IMPLEMENTATION SPECIFIC</strong> 表示特定实现的行为）。</p>
+</section>
+<section id="conventions">
+<h4><a class="toc-backref" href="#id13" role="doc-backlink"><span class="section-number">3.2.1.3. </span>Conventions</a><a class="headerlink" href="#conventions" title="链接到此标题。"></a></h4>
+<p>定义了文档中使用的排版约定、时序图、Time-Space 图、信号命名、数字表示法。</p>
+</section>
+<section id="additional-reading">
+<h4><a class="toc-backref" href="#id14" role="doc-backlink"><span class="section-number">3.2.1.4. </span>Additional reading</a><a class="headerlink" href="#additional-reading" title="链接到此标题。"></a></h4>
+<p>推荐的相关 ARM 出版物，包括 AMBA AXI/ATB/APB 规范、Arm 架构参考手册、SMMU 规范等。</p>
+</section>
+<section id="feedback">
+<h4><a class="toc-backref" href="#id15" role="doc-backlink"><span class="section-number">3.2.1.5. </span>Feedback</a><a class="headerlink" href="#feedback" title="链接到此标题。"></a></h4>
+<p>文档反馈渠道和术语包容性承诺。</p>
+</section>
+</section>
+<section id="part-b-specification">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink"><span class="section-number">3.2.2. </span>Part B -- Specification</a><a class="headerlink" href="#part-b-specification" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 1052-21552</em></p>
+<p>Part B 是文档的**绝对主体**（约占总行数 88%），包含 16 个 Chapter，覆盖协议、网络层、链路层等完整规范。</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>行号</p></th>
+<th class="head"><p>Chapter</p></th>
+<th class="head"><p>行数</p></th>
+<th class="head"><p>核心内容</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1056</p></td>
+<td><p>B1 Introduction</p></td>
+<td><p>~552</p></td>
+<td><p>架构概述、拓扑、术语、事务分类、一致性概述</p></td>
+</tr>
+<tr class="row-odd"><td><p>1608</p></td>
+<td><p>B2 Transactions</p></td>
+<td><p>~6,555</p></td>
+<td><p>通道、字段、事务结构、标识符、排序、数据传输</p></td>
+</tr>
+<tr class="row-even"><td><p>8163</p></td>
+<td><p>B3 Network Layer</p></td>
+<td><p>~302</p></td>
+<td><p>SAM、Node ID、TgtID 确定</p></td>
+</tr>
+<tr class="row-odd"><td><p>8465</p></td>
+<td><p>B4 Coherence Protocol</p></td>
+<td><p>~3,445</p></td>
+<td><p>缓存行状态、请求/响应类型、Snoop、状态转换</p></td>
+</tr>
+<tr class="row-even"><td><p>11910</p></td>
+<td><p>B5 Interconnect Protocol Flows</p></td>
+<td><p>~1,434</p></td>
+<td><p>Read/Dataless/Write/Atomic/Stash 事务流</p></td>
+</tr>
+<tr class="row-odd"><td><p>13344</p></td>
+<td><p>B6 Exclusive accesses</p></td>
+<td><p>~359</p></td>
+<td><p>独占访问、独占监视器</p></td>
+</tr>
+<tr class="row-even"><td><p>13703</p></td>
+<td><p>B7 Cache Stashing</p></td>
+<td><p>~309</p></td>
+<td><p>Stash 写入、独立 Stash 请求</p></td>
+</tr>
+<tr class="row-odd"><td><p>14012</p></td>
+<td><p>B8 DVM Operations</p></td>
+<td><p>~909</p></td>
+<td><p>分布式虚拟内存事务、DVM 消息</p></td>
+</tr>
+<tr class="row-even"><td><p>14921</p></td>
+<td><p>B9 Error Handling</p></td>
+<td><p>~879</p></td>
+<td><p>包级/子包级错误、奇偶校验</p></td>
+</tr>
+<tr class="row-odd"><td><p>15800</p></td>
+<td><p>B10 Realm Management Extension</p></td>
+<td><p>~575</p></td>
+<td><p>PAS、缓存维护、DVM、MPAM、MEC、DA/CDA</p></td>
+</tr>
+<tr class="row-even"><td><p>16375</p></td>
+<td><p>B11 System Control, Debug, Trace, Monitoring</p></td>
+<td><p>~710</p></td>
+<td><p>QoS、数据源/目标、MPAM、Completer Busy、Trace</p></td>
+</tr>
+<tr class="row-odd"><td><p>17085</p></td>
+<td><p>B12 Memory Tagging</p></td>
+<td><p>~643</p></td>
+<td><p>MTE 消息扩展、Tag 一致性、各事务 Tag 规则</p></td>
+</tr>
+<tr class="row-even"><td><p>17728</p></td>
+<td><p>B13 Link Layer</p></td>
+<td><p>~2,104</p></td>
+<td><p>链路、Flit、通道、端口、接口信号、协议 Flit 字段</p></td>
+</tr>
+<tr class="row-odd"><td><p>19832</p></td>
+<td><p>B14 Link Handshake</p></td>
+<td><p>~841</p></td>
+<td><p>时钟初始化、Credit、低功耗、激活/去激活</p></td>
+</tr>
+<tr class="row-even"><td><p>20673</p></td>
+<td><p>B15 System Coherency Interface</p></td>
+<td><p>~131</p></td>
+<td><p>系统一致性接口概述与握手</p></td>
+</tr>
+<tr class="row-odd"><td><p>20804</p></td>
+<td><p>B16 Properties, Parameters, Broadcast Signals</p></td>
+<td><p>~749</p></td>
+<td><p>接口属性/参数（26个子参数）、广播信号</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="chapter-b1-introduction">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink"><span class="section-number">3.2.3. </span>Chapter B1 -- Introduction</a><a class="headerlink" href="#chapter-b1-introduction" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 1056-1607</em></p>
+<section id="b1-1-architecture-overview">
+<h4><a class="toc-backref" href="#id18" role="doc-backlink"><span class="section-number">3.2.3.1. </span>B1.1 Architecture overview</a><a class="headerlink" href="#b1-1-architecture-overview" title="链接到此标题。"></a></h4>
+<p>CHI 架构是一种**可扩展的一致性 Hub 接口和片上互连**，支持灵活的组件连接拓扑。</p>
+<p><strong>关键特性</strong>:</p>
+<ul class="simple">
+<li><p>可扩展架构，支持从小型到大型系统的模块化设计</p></li>
+<li><p>独立的分层方法：<strong>Protocol 层</strong>、<strong>Network 层</strong>、<strong>Link 层</strong></p></li>
+<li><p>基于包的通信</p></li>
+<li><p>所有事务由互连中的 <strong>Home Node</strong> 协调所需的 Snoop、缓存和内存访问</p></li>
+<li><p>一致性协议支持 64 字节缓存行粒度</p></li>
+<li><p>支持 MESI 和 MOESI 缓存模型，支持从任意缓存状态转发数据</p></li>
+<li><p>支持 Snoop Filter 和 Directory 系统以实现 Snoop 扩展</p></li>
+<li><p>支持原子操作、独占访问、Cache Stashing、DVM 操作</p></li>
+<li><p>端到端 QoS 支持</p></li>
+<li><p>支持 Arm MTE (Memory Tagging Extension)</p></li>
+<li><p>支持 Arm RME (Realm Management Extension)</p></li>
+<li><p>可配置数据宽度</p></li>
+<li><p>逐事务的 TrustZone 支持</p></li>
+<li><p>错误报告与传播</p></li>
+<li><p>低功耗信号（Flit 级时钟门控、组件激活/去激活）</p></li>
+</ul>
+<p><strong>支持的组件类型</strong>:</p>
+<p>独立处理器、处理器集群、图形处理器、内存控制器、I/O 桥、PCIe 子系统、互连。</p>
+</section>
+<section id="b1-1-3-architecture-layers">
+<h4><a class="toc-backref" href="#id19" role="doc-backlink"><span class="section-number">3.2.3.2. </span>B1.1.3 Architecture layers</a><a class="headerlink" href="#b1-1-3-architecture-layers" title="链接到此标题。"></a></h4>
+<p>CHI 架构分为三层：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>层</p></th>
+<th class="head"><p>通信粒度</p></th>
+<th class="head"><p>典型实体</p></th>
+<th class="head"><p>主要功能</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Protocol</p></td>
+<td><p>Transaction</p></td>
+<td><p>协议消息</p></td>
+<td><p>生成/处理请求和响应；定义缓存状态转换规则；定义事务流；管理协议级流控</p></td>
+</tr>
+<tr class="row-odd"><td><p>Network</p></td>
+<td><p>Packet</p></td>
+<td><p>网络包</p></td>
+<td><p>对协议消息进行包化；确定源/目标 Node ID 并添加路由信息</p></td>
+</tr>
+<tr class="row-even"><td><p>Link</p></td>
+<td><p>Flit</p></td>
+<td><p>链路 Flit</p></td>
+<td><p>网络设备间的流控；管理链路通道，提供无死锁切换</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>在 CHI 中，所有包（Packet）由单个 Flit 组成，所有 Flit 由单个 Phit 组成。</p>
+</div>
+</section>
+<section id="b1-2-topology">
+<h4><a class="toc-backref" href="#id20" role="doc-backlink"><span class="section-number">3.2.3.3. </span>B1.2 Topology</a><a class="headerlink" href="#b1-2-topology" title="链接到此标题。"></a></h4>
+<p>CHI 架构主要与拓扑无关，但包含某些拓扑相关的优化。文档给出了三种典型拓扑：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>拓扑</p></th>
+<th class="head"><p>特点</p></th>
+<th class="head"><p>适用场景</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Crossbar</p></td>
+<td><p>结构简单、自然有序、低延迟、布线开销随节点数平方增长</p></td>
+<td><p>小规模互连</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ring</p></td>
+<td><p>布线效率与延迟的折中，延迟随节点数线性增加</p></td>
+<td><p>中等规模互连</p></td>
+</tr>
+<tr class="row-even"><td><p>Mesh</p></td>
+<td><p>高带宽、更多布线、高度模块化，可通过增加行列数扩展</p></td>
+<td><p>大规模互连</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b1-3-terminology">
+<h4><a class="toc-backref" href="#id21" role="doc-backlink"><span class="section-number">3.2.3.4. </span>B1.3 Terminology</a><a class="headerlink" href="#b1-3-terminology" title="链接到此标题。"></a></h4>
+<p>文档定义的核心术语：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>术语</p></th>
+<th class="head"><p>定义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Message</p></td>
+<td><p>协议层术语，定义两个组件间交换的粒度（如 Request、Data response、Snoop request）。单个消息可由多个包组成</p></td>
+</tr>
+<tr class="row-odd"><td><p>Packet</p></td>
+<td><p>互连上的传输粒度。一个消息可由一个或多个包组成。每个包包含路由信息</p></td>
+</tr>
+<tr class="row-even"><td><p>Flit</p></td>
+<td><p>FLow control unIT，最小流控单元。一个包可由一个或多个 Flit 组成（CHI 中 1 Packet = 1 Flit）</p></td>
+</tr>
+<tr class="row-odd"><td><p>Phit</p></td>
+<td><p>PHysical layer transfer unIT，两个相邻网络设备间的一次传输（CHI 中 1 Flit = 1 Phit）</p></td>
+</tr>
+<tr class="row-even"><td><p>PoS (Point of Serialization)</p></td>
+<td><p>互连中确定来自不同 Agent 的请求之间排序关系的点</p></td>
+</tr>
+<tr class="row-odd"><td><p>PoC (Point of Coherence)</p></td>
+<td><p>所有可访问内存的 Agent 保证看到相同内存位置副本的点。典型实现为互连中的 HN-F</p></td>
+</tr>
+<tr class="row-even"><td><p>PoE (Point of Encryption)</p></td>
+<td><p>内存系统中写入到达该点即被加密的位置</p></td>
+</tr>
+<tr class="row-odd"><td><p>PoP (Point of Persistence)</p></td>
+<td><p>系统断电时写入被维持且可靠恢复的位置（位于 PoC 或更深处）</p></td>
+</tr>
+<tr class="row-even"><td><p>PoDP (Point of Deep Persistence)</p></td>
+<td><p>即使电源和备份电池同时故障仍能保存数据的位置</p></td>
+</tr>
+<tr class="row-odd"><td><p>PoPA (Point of Physical Aliasing)</p></td>
+<td><p>一个 PAS 中的更新对其他所有 PAS 可见的点</p></td>
+</tr>
+<tr class="row-even"><td><p>Requester</p></td>
+<td><p>发起事务（发出请求消息）的组件</p></td>
+</tr>
+<tr class="row-odd"><td><p>Completer</p></td>
+<td><p>响应接收到的来自其他组件的事务的组件（HN、MN、SN 等）</p></td>
+</tr>
+<tr class="row-even"><td><p>Subordinate / Endpoint</p></td>
+<td><p>接收事务并适当完成的 Agent，通常是系统中最下游的 Agent</p></td>
+</tr>
+<tr class="row-odd"><td><p>ICN</p></td>
+<td><p>Interconnect，协议节点间通信的 CHI 传输机制</p></td>
+</tr>
+<tr class="row-even"><td><p>Snoopee</p></td>
+<td><p>正在接收 Snoop 的 Request Node</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>节点类型缩写</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>缩写</p></th>
+<th class="head"><p>全称</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RN</p></td>
+<td><p>Request Node</p></td>
+<td><p>生成协议事务（读/写）到互连</p></td>
+</tr>
+<tr class="row-odd"><td><p>RN-F</p></td>
+<td><p>Fully Coherent RN</p></td>
+<td><p>包含硬件一致性缓存，可生成所有事务类型，支持所有 Snoop</p></td>
+</tr>
+<tr class="row-even"><td><p>RN-D</p></td>
+<td><p>IO Coherent RN with DVM</p></td>
+<td><p>无硬件一致性缓存，接收 DVM 事务，生成事务子集</p></td>
+</tr>
+<tr class="row-odd"><td><p>RN-I</p></td>
+<td><p>IO Coherent RN</p></td>
+<td><p>无硬件一致性缓存，不接收 DVM，生成事务子集，无需 Snoop</p></td>
+</tr>
+<tr class="row-even"><td><p>HN</p></td>
+<td><p>Home Node</p></td>
+<td><p>互连中接收 RN 事务的节点</p></td>
+</tr>
+<tr class="row-odd"><td><p>HN-F</p></td>
+<td><p>Fully Coherent HN</p></td>
+<td><p>包含 PoC，管理一致性，管理排序（PoS），可包含目录或 Snoop Filter</p></td>
+</tr>
+<tr class="row-even"><td><p>HN-I</p></td>
+<td><p>Non-coherent HN</p></td>
+<td><p>处理有限的请求子集，不包含 PoC，处理 IO 请求排序</p></td>
+</tr>
+<tr class="row-odd"><td><p>MN</p></td>
+<td><p>Miscellaneous Node</p></td>
+<td><p>接收 DVM 事务，完成所需操作并返回响应</p></td>
+</tr>
+<tr class="row-even"><td><p>SN</p></td>
+<td><p>Subordinate Node</p></td>
+<td><p>接收来自 HN 的请求并完成</p></td>
+</tr>
+<tr class="row-odd"><td><p>SN-F</p></td>
+<td><p>Subordinate Node (Normal)</p></td>
+<td><p>用于 Normal memory，处理 Non-snoopable Read/Write/Atomic 和 CMO</p></td>
+</tr>
+<tr class="row-even"><td><p>SN-I</p></td>
+<td><p>Subordinate Node (I/O)</p></td>
+<td><p>用于外设或 Normal memory</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b1-4-transaction-classification">
+<h4><a class="toc-backref" href="#id22" role="doc-backlink"><span class="section-number">3.2.3.5. </span>B1.4 Transaction classification</a><a class="headerlink" href="#b1-4-transaction-classification" title="链接到此标题。"></a></h4>
+<p>事务按以下类别分类：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>分类</p></th>
+<th class="head"><p>支持的事务</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>ReadNoSnp, ReadNoSnpSep, ReadOnce, ReadOnceCleanInvalid, ReadOnceMakeInvalid, ReadClean, ReadNotSharedDirty, ReadShared, ReadUnique, ReadPreferUnique, MakeReadUnique</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless</p></td>
+<td><p>CleanUnique, MakeUnique, Evict, StashOnceUnique/SepUnique/SepShared, CleanShared, CleanSharedPersist/Sep, CleanInvalid, CleanInvalidPoPA, MakeInvalid</p></td>
+</tr>
+<tr class="row-even"><td><p>Write</p></td>
+<td><p>WriteNoSnpPtl/Full/Zero/Def, WriteUniquePtl/Full/Zero/PtlStash/FullStash, WriteBackPtl/Full, WriteCleanFull, WriteEvictFull/OrEvict</p></td>
+</tr>
+<tr class="row-odd"><td><p>Combined Write</p></td>
+<td><p>WriteNoSnpPtl/Full + CleanInv/CleanSh/CleanShPerSep/CleanInvPoPA 等</p></td>
+</tr>
+<tr class="row-even"><td><p>Atomic</p></td>
+<td><p>AtomicStore, AtomicLoad, AtomicSwap, AtomicCompare</p></td>
+</tr>
+<tr class="row-odd"><td><p>Other</p></td>
+<td><p>DVMOp, PrefetchTgt, PCrdReturn</p></td>
+</tr>
+<tr class="row-even"><td><p>Snoop</p></td>
+<td><p>SnpOnceFwd/Once/StashUnique/StashShared, SnpCleanFwd/Clean, SnpNotSharedDirtyFwd/NotSharedDirty, SnpSharedFwd/Shared, SnpUniqueFwd/Unique/UniqueStash, SnpPreferUniqueFwd/PreferUnique, SnpCleanShared/CleanInvalid/MakeInvalid/MakeInvalidStash, SnpQuery, SnpDVMOp</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b1-5-coherence-overview">
+<h4><a class="toc-backref" href="#id23" role="doc-backlink"><span class="section-number">3.2.3.6. </span>B1.5 Coherence overview</a><a class="headerlink" href="#b1-5-coherence-overview" title="链接到此标题。"></a></h4>
+<p>硬件一致性使系统组件能够**无需软件缓存维护**即可共享内存。</p>
+<p>一致性协议的核心保证：</p>
+<ul class="simple">
+<li><p>当发生 Store 时，一个数据值最多只存在一个副本</p></li>
+<li><p>所有 Requester 在任意地址位置都能观察到正确的数据值</p></li>
+<li><p>缓存行粒度为 <strong>64 字节对齐的内存区域</strong></p></li>
+<li><p>主内存不需要在所有时间保持最新状态</p></li>
+</ul>
+<section id="b1-5-1-coherency-model">
+<h5><span class="section-number">3.2.3.6.1. </span>B1.5.1 Coherency model<a class="headerlink" href="#b1-5-1-coherency-model" title="链接到此标题。"></a></h5>
+<p>典型一致性系统包含多个 Requester（各带本地缓存）通过互连访问主内存。互连中包含可选的 ICN Cache。</p>
+</section>
+<section id="b1-5-2-cache-state-model">
+<h5><span class="section-number">3.2.3.6.2. </span>B1.5.2 Cache state model<a class="headerlink" href="#b1-5-2-cache-state-model" title="链接到此标题。"></a></h5>
+<p>缓存状态基于以下特性组合：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>特性维度</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Valid / Invalid</p></td>
+<td><p>Valid: 缓存行在缓存中存在; Invalid: 不存在</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unique / Shared</p></td>
+<td><p>Unique: 仅在本缓存中存在; Shared: 可在多个缓存中存在</p></td>
+</tr>
+<tr class="row-even"><td><p>Clean / Dirty</p></td>
+<td><p>Clean: 无需负责更新主内存; Dirty: 已相对于主内存被修改</p></td>
+</tr>
+<tr class="row-odd"><td><p>Full / Partial / Empty</p></td>
+<td><p>Full: 所有字节有效; Partial: 部分字节有效; Empty: 无有效字节</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>七状态缓存模型</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 20.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>状态</p></th>
+<th class="head"><p>分类</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>I</strong></p></td>
+<td><p>Invalid</p></td>
+<td><p>缓存行不在缓存中</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>UC</strong></p></td>
+<td><p>Unique Clean</p></td>
+<td><p>仅在本缓存中，未修改，可自由修改</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>UD</strong></p></td>
+<td><p>Unique Dirty</p></td>
+<td><p>仅在本缓存中，已修改，驱逐时必须写回</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>SC</strong></p></td>
+<td><p>Shared Clean</p></td>
+<td><p>可能有其他共享副本，不能直接修改</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SD</strong></p></td>
+<td><p>Shared Dirty</p></td>
+<td><p>可能有其他共享副本，已修改，驱逐时必须写回</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>UCE</strong></p></td>
+<td><p>Unique Clean Empty</p></td>
+<td><p>仅在本缓存中，无有效字节，不能返回数据</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>UDP</strong></p></td>
+<td><p>Unique Dirty Partial</p></td>
+<td><p>仅在本缓存中，部分字节有效，已修改</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="b1-7-read-data-source">
+<h4><a class="toc-backref" href="#id24" role="doc-backlink"><span class="section-number">3.2.3.7. </span>B1.7 Read data source</a><a class="headerlink" href="#b1-7-read-data-source" title="链接到此标题。"></a></h4>
+<p>Read 请求可以从以下数据源获取数据：</p>
+<ul class="simple">
+<li><p>互连中的缓存</p></li>
+<li><p>Subordinate Node（主内存）</p></li>
+<li><p>Peer RN-F（其他 Requester 的缓存）</p></li>
+</ul>
+<p>减少数据传输跳数的优化技术：</p>
+<ul class="simple">
+<li><p><strong>DMT (Direct Memory Transfer)</strong>: 允许 SN 直接将数据发送给 Requester</p></li>
+<li><p><strong>DCT (Direct Cache Transfer)</strong>: 允许 Peer RN-F 直接将数据发送给 Requester</p></li>
+<li><p><strong>DWT (Direct Write-data Transfer)</strong>: 写数据的直接传输优化</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-b2-transactions">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink"><span class="section-number">3.2.4. </span>Chapter B2 -- Transactions</a><a class="headerlink" href="#chapter-b2-transactions" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 1608-8162 (文档最大章节)</em></p>
+<section id="b2-1-channels-overview">
+<h4><a class="toc-backref" href="#id26" role="doc-backlink"><span class="section-number">3.2.4.1. </span>B2.1 Channels overview</a><a class="headerlink" href="#b2-1-channels-overview" title="链接到此标题。"></a></h4>
+<p>节点间基于**通道**进行通信。CHI 定义了 5 种通道类型：</p>
+</section>
+<section id="b2-2-channel-fields">
+<h4><a class="toc-backref" href="#id27" role="doc-backlink"><span class="section-number">3.2.4.2. </span>B2.2 Channel fields</a><a class="headerlink" href="#b2-2-channel-fields" title="链接到此标题。"></a></h4>
+<section id="b2-2-1-transaction-request-fields">
+<h5><span class="section-number">3.2.4.2.1. </span>B2.2.1 Transaction request fields<a class="headerlink" href="#b2-2-1-transaction-request-fields" title="链接到此标题。"></a></h5>
+<p>请求通道字段中，<a href="#id4"><span class="problematic" id="id5">**</span></a>影响事务结构**的字段：</p>
+<ul class="simple">
+<li><p><strong>Opcode</strong>: 请求操作码，指定事务类型，是决定事务结构的主要字段</p></li>
+<li><p><strong>Size</strong>: 数据大小，决定事务中的数据包数量</p></li>
+<li><p><strong>AllowRetry</strong>: 是否允许目标返回 Retry 响应</p></li>
+<li><p><strong>Order</strong>: 排序要求，决定同一 Agent 的请求间排序</p></li>
+<li><p><strong>DoDWT</strong>: 是否执行直接写传输</p></li>
+<li><p><strong>CAH (CopyAtHome)</strong>: CopyBack 请求中指示 Home 是否保留行的副本</p></li>
+<li><p><strong>ExpCompAck</strong>: 事务是否包含完成确认消息</p></li>
+<li><p><strong>TagOp</strong>: Tag 操作类型</p></li>
+</ul>
+<p>其他关键字段（不影响结构）：QoS, TgtID, SrcID, TxnID, ReturnNID, StashNID, Endian, Deep, Addr, NS/NSE, MemAttr, SnpAttr, LPID, Excl, SnoopMe, TraceTag, MPAM, PBHA, MECID, StreamID 等。</p>
+</section>
+<section id="b2-2-3-snoop-request-fields">
+<h5><span class="section-number">3.2.4.2.2. </span>B2.2.3 Snoop request fields<a class="headerlink" href="#b2-2-3-snoop-request-fields" title="链接到此标题。"></a></h5>
+<p>Snoop 请求字段与请求通道字段有很多重叠，额外的字段包括：</p>
+<ul class="simple">
+<li><p><strong>FwdNID</strong>: 原始 Requester 的节点 ID</p></li>
+<li><p><strong>FwdTxnID</strong>: 原始 Requester 的事务 ID</p></li>
+<li><p><strong>DoNotGoToSD</strong>: 控制 Snoopee 对 SD 状态的使用</p></li>
+<li><p><strong>RetToSrc</strong>: 指示 Snoop 接收方在 Snoop 响应中返回数据</p></li>
+<li><p><strong>VMIDExt</strong>: 虚拟机 ID 扩展（用于 DVM）</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>Snoop 请求**不定义 TgtID 字段**。Snoop 请求的路由机制是 IMPLEMENTATION DEFINED 的。</p>
+</div>
+</section>
+<section id="b2-2-4-data-fields">
+<h5><span class="section-number">3.2.4.2.3. </span>B2.2.4 Data fields<a class="headerlink" href="#b2-2-4-data-fields" title="链接到此标题。"></a></h5>
+<p>数据包字段包括：QoS, TgtID, SrcID, TxnID, HomeNID, Opcode, Resp, RespErr, DataSource, FwdState, DataPull, CBusy, MECID, DBID, CCID, DataID, TagOp, Tag, TU, TraceTag, CAH, NumDat, Replicate, BE, Data, DataCheck, Poison。</p>
+</section>
+</section>
+<section id="b2-3-transaction-structure">
+<h4><a class="toc-backref" href="#id28" role="doc-backlink"><span class="section-number">3.2.4.3. </span>B2.3 Transaction structure</a><a class="headerlink" href="#b2-3-transaction-structure" title="链接到此标题。"></a></h4>
+<p>描述事务完成的各种方式，包括所有事务类型的允许选项。</p>
+<p>事务类型覆盖：</p>
+<ul class="simple">
+<li><p>B2.3.1 Read transactions（Allocating Read / Non-allocating Read）</p></li>
+<li><p>B2.3.2 Write transactions（Immediate Write / CopyBack Write / Combined Write）</p></li>
+<li><p>B2.3.3 Atomic transactions（AtomicStore / AtomicLoad / AtomicSwap / AtomicCompare）</p></li>
+<li><p>B2.3.4 Stash transactions</p></li>
+<li><p>B2.3.5 Dataless transactions</p></li>
+<li><p>B2.3.6 Prefetch transactions</p></li>
+<li><p>B2.3.7 Retry</p></li>
+<li><p>B2.3.8 Home Initiated transactions（Home to Subordinate / Home to Snoopee）</p></li>
+</ul>
+</section>
+<section id="b2-4-transaction-identifier-fields">
+<h4><a class="toc-backref" href="#id29" role="doc-backlink"><span class="section-number">3.2.4.4. </span>B2.4 Transaction identifier fields</a><a class="headerlink" href="#b2-4-transaction-identifier-fields" title="链接到此标题。"></a></h4>
+<p>CHI 定义了 <strong>15 种事务标识符字段</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>标识符</p></th>
+<th class="head"><p>用途</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>TgtID</strong> / <strong>SrcID</strong></p></td>
+<td><p>目标/源节点标识符，用于包路由</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TxnID</strong></p></td>
+<td><p>事务标识符，每个源节点内唯一</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DBID</strong></p></td>
+<td><p>数据缓冲标识符，用作数据消息响应中的 TxnID</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ReturnTxnID</strong></p></td>
+<td><p>返回事务标识符，用于 SN 到 Requester 的数据响应</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>FwdTxnID</strong></p></td>
+<td><p>转发事务标识符，Snoop 中携带的原始请求 TxnID</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>DataID</strong> / <strong>CCID</strong></p></td>
+<td><p>数据标识符 / 关键块标识符，用于多数据包传输</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>LPID</strong></p></td>
+<td><p>逻辑处理器标识符</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>StashLPID</strong></p></td>
+<td><p>Stash 目标的逻辑处理器标识符</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>StashNID</strong></p></td>
+<td><p>Stash 目标的节点标识符</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ReturnNID</strong></p></td>
+<td><p>数据/持久化/Tag 匹配响应的接收者节点 ID</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>HomeNID</strong></p></td>
+<td><p>Home 节点标识符，用于 CompAck 响应路由</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>FwdNID</strong></p></td>
+<td><p>转发节点标识符，Snoop 中携带的原始请求者 ID</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>PGroupID</strong></p></td>
+<td><p>持久化组标识符</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>StashGroupID</strong></p></td>
+<td><p>Stash 组标识符</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>TagGroupID</strong></p></td>
+<td><p>Tag 组标识符</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b2-5-transaction-identifier-field-flows">
+<h4><a class="toc-backref" href="#id30" role="doc-backlink"><span class="section-number">3.2.4.5. </span>B2.5 Transaction identifier field flows</a><a class="headerlink" href="#b2-5-transaction-identifier-field-flows" title="链接到此标题。"></a></h4>
+<p>描述不同事务中 ID 值的传递方式，包括：</p>
+<ul class="simple">
+<li><p>DMT（Direct Memory Transfer）中的 ID 传递</p></li>
+<li><p>DCT（Direct Cache Transfer）中的 ID 传递</p></li>
+<li><p>无直接数据传输的 ID 传递</p></li>
+<li><p>Dataless 事务的 ID 传递</p></li>
+<li><p>DVMOp 事务的 ID 传递</p></li>
+<li><p>Retry 请求的 ID 传递</p></li>
+<li><p>Protocol Credit Return 事务</p></li>
+</ul>
+</section>
+<section id="b2-6-ordering">
+<h4><a class="toc-backref" href="#id31" role="doc-backlink"><span class="section-number">3.2.4.6. </span>B2.6 Ordering</a><a class="headerlink" href="#b2-6-ordering" title="链接到此标题。"></a></h4>
+<p>定义事务排序规则，包括：</p>
+<ul class="simple">
+<li><p><strong>Multi-copy atomicity（多拷贝原子性）</strong>: 确保所有 Agent 以相同顺序观察到内存更新</p></li>
+<li><p><strong>Completion response and ordering</strong>: 完成响应的排序语义</p></li>
+<li><p><strong>Completion acknowledgment</strong>: 完成确认机制</p></li>
+<li><p><strong>RespSepData / DataSepResp 排序语义</strong>: 分离的响应和数据</p></li>
+<li><p><strong>Transaction ordering</strong>: 事务排序要求、CopyBack 请求排序、流式有序写事务</p></li>
+</ul>
+</section>
+<section id="b2-7-address-control-and-data">
+<h4><a class="toc-backref" href="#id32" role="doc-backlink"><span class="section-number">3.2.4.7. </span>B2.7 Address, Control, and Data</a><a class="headerlink" href="#b2-7-address-control-and-data" title="链接到此标题。"></a></h4>
+<ul class="simple">
+<li><p><strong>B2.7.1 Address</strong>: 地址定义和对齐要求</p></li>
+<li><p><strong>B2.7.2 Physical Address Space (PAS)</strong>: NS 和 NSE 字段组合确定物理地址空间</p></li>
+<li><p><strong>B2.7.3 Memory Attributes</strong>: 包括 EWA（Early Write Acknowledgment）、Cacheable、Allocate 等</p></li>
+<li><p><strong>B2.7.5 Likely Shared</strong>: 下游缓存分配提示</p></li>
+<li><p><strong>B2.7.6 Snoop attribute</strong>: Snoop 属性</p></li>
+<li><p><strong>B2.7.7 Mismatched Memory attributes</strong>: 属性不匹配的处理</p></li>
+<li><p><strong>B2.7.8 CopyAtHome (CAH)</strong>: 在 Home 和 Request Node 的使用</p></li>
+</ul>
+</section>
+<section id="b2-8-data-transfer">
+<h4><a class="toc-backref" href="#id33" role="doc-backlink"><span class="section-number">3.2.4.8. </span>B2.8 Data transfer</a><a class="headerlink" href="#b2-8-data-transfer" title="链接到此标题。"></a></h4>
+<ul class="simple">
+<li><p><strong>Data size</strong>: 支持的数据大小定义</p></li>
+<li><p><strong>Bytes access in memory</strong>: 内存字节访问规则</p></li>
+<li><p><strong>Byte Enables</strong>: 字节使能，用于写/原子/Snoop 事务</p></li>
+<li><p><strong>Data packetization</strong>: 数据打包方式</p></li>
+<li><p><strong>Limited Data Elision</strong>: 有限数据省略机制</p></li>
+<li><p><strong>Atomic transactions 中的大小/地址/数据对齐</strong>: 包括大小端处理</p></li>
+<li><p><strong>Critical Chunk Identifier (CCID)</strong>: 关键块标识符</p></li>
+<li><p><strong>Data Beat ordering</strong>: 数据拍排序</p></li>
+</ul>
+</section>
+<section id="b2-9-request-retry">
+<h4><a class="toc-backref" href="#id34" role="doc-backlink"><span class="section-number">3.2.4.9. </span>B2.9 Request Retry</a><a class="headerlink" href="#b2-9-request-retry" title="链接到此标题。"></a></h4>
+<ul class="simple">
+<li><p><strong>Credit Return</strong>: 信用返回机制</p></li>
+<li><p><strong>Transaction Retry mechanism</strong>: AllowRetry 字段、PCRdType 等重试机制</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-b3-network-layer">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink"><span class="section-number">3.2.5. </span>Chapter B3 -- Network Layer</a><a class="headerlink" href="#chapter-b3-network-layer" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 8163-8464</em></p>
+<section id="b3-1-system-address-map-sam">
+<h4><a class="toc-backref" href="#id36" role="doc-backlink"><span class="section-number">3.2.5.1. </span>B3.1 System Address Map (SAM)</a><a class="headerlink" href="#b3-1-system-address-map-sam" title="链接到此标题。"></a></h4>
+<p>Requester 必须拥有 <strong>System Address Map (SAM)</strong> 来确定请求的 TgtID。SAM 的具体格式和结构是 <strong>IMPLEMENTATION DEFINED</strong> 的。</p>
+<p>要求：
+- SAM 必须对整个地址空间提供完整解码
+- 不对应物理组件的地址应发送到能提供适当错误响应的 Agent</p>
+</section>
+<section id="b3-2-node-id">
+<h4><a class="toc-backref" href="#id37" role="doc-backlink"><span class="section-number">3.2.5.2. </span>B3.2 Node ID</a><a class="headerlink" href="#b3-2-node-id" title="链接到此标题。"></a></h4>
+<p>每个连接到互连 Port 的组件分配一个 <strong>Node ID</strong>：
+- 变量宽度：<strong>7 位到 11 位</strong>
+- 一个 Port 可分配多个 Node ID
+- 一个 Node ID 值只能分配给一个 Port
+- Node ID 的定义和分配是 IMPLEMENTATION DEFINED 的</p>
+</section>
+<section id="b3-3-tgtid-determination">
+<h4><a class="toc-backref" href="#id38" role="doc-backlink"><span class="section-number">3.2.5.3. </span>B3.3 TgtID determination</a><a class="headerlink" href="#b3-3-tgtid-determination" title="链接到此标题。"></a></h4>
+<p>不同消息类型的 TgtID 确定方式：</p>
+<ul class="simple">
+<li><p><strong>Request 消息</strong>: 由 Opcode（DVMOp）或地址到 Node ID 映射确定；PrefetchTgt 使用不同的映射器（始终指向 SN-F）</p></li>
+<li><p><strong>Response 消息</strong>: TgtID 必须匹配接收到的请求消息中的 SrcID、HomeNID、ReturnNID 或 FwdNID</p></li>
+<li><p><strong>Snoop 消息</strong>: 不包含 TgtID，路由机制是 IMPLEMENTATION DEFINED 的</p></li>
+</ul>
+</section>
+<section id="b3-4-network-layer-flow-examples">
+<h4><a class="toc-backref" href="#id39" role="doc-backlink"><span class="section-number">3.2.5.4. </span>B3.4 Network layer flow examples</a><a class="headerlink" href="#b3-4-network-layer-flow-examples" title="链接到此标题。"></a></h4>
+<p>给出了三种网络层事务流示例：</p>
+<ul class="simple">
+<li><p><strong>Simple flow</strong>: 无重映射的 TgtID 分配</p></li>
+<li><p><strong>Flow with interconnect-based SAM</strong>: 互连中重映射 TgtID</p></li>
+<li><p><strong>Flow with interconnect-based SAM and Retry request</strong>: 带重映射和 Retry 的流</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-b4-coherence-protocol">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink"><span class="section-number">3.2.6. </span>Chapter B4 -- Coherence Protocol</a><a class="headerlink" href="#chapter-b4-coherence-protocol" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 8465-11909 (第二大章节)</em></p>
+<section id="b4-1-cache-line-states">
+<h4><a class="toc-backref" href="#id41" role="doc-backlink"><span class="section-number">3.2.6.1. </span>B4.1 Cache line states</a><a class="headerlink" href="#b4-1-cache-line-states" title="链接到此标题。"></a></h4>
+<p>协议定义了 7 种缓存行状态（详见 B1.5.2 节的缓存状态模型）。每种状态定义了对 Snoop 的响应行为：</p>
+<ul class="simple">
+<li><p><strong>UCE</strong>: 不能返回或转发数据</p></li>
+<li><p><strong>UDP</strong>: 必须返回 Home，不能转发</p></li>
+<li><p><strong>UD</strong>: 必须返回，期望转发</p></li>
+<li><p><strong>UC</strong>: 允许（但不要求）返回和转发</p></li>
+<li><p><strong>SD</strong>: 必须返回，期望转发</p></li>
+<li><p><strong>SC</strong>: RetToSrc 未设置时不能返回数据；设置时期望返回和转发</p></li>
+<li><p><strong>I</strong>: 不在缓存中</p></li>
+</ul>
+</section>
+<section id="b4-2-request-types">
+<h4><a class="toc-backref" href="#id42" role="doc-backlink"><span class="section-number">3.2.6.2. </span>B4.2 Request types</a><a class="headerlink" href="#b4-2-request-types" title="链接到此标题。"></a></h4>
+<p>协议请求分为以下类别：</p>
+<p><strong>Read 事务</strong>:
+- ReadNoSnp / ReadNoSnpSep: Non-snoopable 读取
+- ReadOnce / ReadOnceCleanInvalid / ReadOnceMakeInvalid: Snoopable 快照读取
+- ReadClean: 获取 Clean 副本（适用于不支持 Dirty 的缓存如 I-Cache）
+- ReadNotSharedDirty: 不接受 SD 状态的加载
+- ReadShared: 可接受 SD 状态的加载
+- ReadUnique: Store 前获取 Unique 副本
+- ReadPreferUnique: 优先但非必须获取 Unique 副本
+- MakeReadUnique: 获取 Unique 权限（数据响应可选）</p>
+<p><strong>Dataless 事务</strong>:
+- CleanUnique / MakeUnique: 获取/使 Unique 权限
+- Evict: 驱逐缓存行
+- CleanShared / CleanSharedPersist / CleanSharedPersistSep: 共享缓存维护
+- CleanInvalid / CleanInvalidPoPA: 无效化缓存维护
+- MakeInvalid: 使无效化
+- StashOnce* 系列: 独立 Stash 请求</p>
+<p><strong>Write 事务</strong>:
+- WriteNoSnpPtl/Full/Zero/Def: Non-snoopable 写入
+- WriteUniquePtl/Full/Zero/PtlStash/FullStash: Unique 写入
+- WriteBackPtl/Full: CopyBack 写回
+- WriteCleanFull: Clean 写入完整行
+- WriteEvictFull/OrEvict: 驱逐写入</p>
+<p><strong>Combined Write 事务</strong>:
+将写入与缓存维护操作组合（如 WriteNoSnpPtlCleanInv、WriteUniqueFullCleanSh 等）。</p>
+<p><strong>Atomic 事务</strong>:
+- AtomicStore: 原子存储
+- AtomicLoad: 原子加载
+- AtomicSwap: 原子交换
+- AtomicCompare: 原子比较</p>
+<p><strong>DVM 事务</strong>:
+- DVMOp: 分布式虚拟内存操作</p>
+<p><strong>Prefetch 事务</strong>:
+- PrefetchTgt: 预取到目标</p>
+</section>
+<section id="b4-3-snoop-request-types">
+<h4><a class="toc-backref" href="#id43" role="doc-backlink"><span class="section-number">3.2.6.3. </span>B4.3 Snoop request types</a><a class="headerlink" href="#b4-3-snoop-request-types" title="链接到此标题。"></a></h4>
+<p>CHI 定义了丰富的 Snoop 类型：</p>
+</section>
+<section id="b4-4-request-snoop-correspondence">
+<h4><a class="toc-backref" href="#id44" role="doc-backlink"><span class="section-number">3.2.6.4. </span>B4.4 Request/Snoop correspondence</a><a class="headerlink" href="#b4-4-request-snoop-correspondence" title="链接到此标题。"></a></h4>
+<p>描述请求事务与对应 Snoop 请求的关系：
+- 发送 Snoop 的数量
+- Snoop 类型的选择规则</p>
+</section>
+<section id="b4-5-response-types">
+<h4><a class="toc-backref" href="#id45" role="doc-backlink"><span class="section-number">3.2.6.5. </span>B4.5 Response types</a><a class="headerlink" href="#b4-5-response-types" title="链接到此标题。"></a></h4>
+<ul class="simple">
+<li><p><strong>Completion response</strong>: 完成响应（Read/Atomic/Dataless/Write 各有不同规则）</p></li>
+<li><p><strong>Snoop response</strong>: Snoop 响应（CompData, Comp, CompDBIDResp 等）</p></li>
+</ul>
+</section>
+<section id="b4-6-silent-cache-state-transitions">
+<h4><a class="toc-backref" href="#id46" role="doc-backlink"><span class="section-number">3.2.6.6. </span>B4.6 Silent cache state transitions</a><a class="headerlink" href="#b4-6-silent-cache-state-transitions" title="链接到此标题。"></a></h4>
+<p>静默缓存状态转换 -- 不涉及数据传输的状态变化。</p>
+</section>
+<section id="b4-7-cache-state-transitions-at-a-requester">
+<h4><a class="toc-backref" href="#id47" role="doc-backlink"><span class="section-number">3.2.6.7. </span>B4.7 Cache state transitions at a Requester</a><a class="headerlink" href="#b4-7-cache-state-transitions-at-a-requester" title="链接到此标题。"></a></h4>
+<p>定义 Requester 端的缓存状态转换表。</p>
+</section>
+<section id="b4-8-cache-state-transitions-at-a-snoopee">
+<h4><a class="toc-backref" href="#id48" role="doc-backlink"><span class="section-number">3.2.6.8. </span>B4.8 Cache state transitions at a Snoopee</a><a class="headerlink" href="#b4-8-cache-state-transitions-at-a-snoopee" title="链接到此标题。"></a></h4>
+<p>定义 Snoopee 端的缓存状态转换表。</p>
+</section>
+<section id="b4-9-returning-data-with-snoop-response">
+<h4><a class="toc-backref" href="#id49" role="doc-backlink"><span class="section-number">3.2.6.9. </span>B4.9 Returning Data with Snoop response</a><a class="headerlink" href="#b4-9-returning-data-with-snoop-response" title="链接到此标题。"></a></h4>
+<p>描述在 Snoop 响应中返回数据的规则，包括 <strong>RetToSrc</strong> 字段的作用。</p>
+</section>
+<section id="b4-10-do-not-transition-to-sd">
+<h4><a class="toc-backref" href="#id50" role="doc-backlink"><span class="section-number">3.2.6.10. </span>B4.10 Do not transition to SD</a><a class="headerlink" href="#b4-10-do-not-transition-to-sd" title="链接到此标题。"></a></h4>
+<p><strong>DoNotGoToSD</strong> 字段控制 Snoopee 是否可以转换到 SD 状态。</p>
+</section>
+<section id="b4-11-hazard-conditions">
+<h4><a class="toc-backref" href="#id51" role="doc-backlink"><span class="section-number">3.2.6.11. </span>B4.11 Hazard conditions</a><a class="headerlink" href="#b4-11-hazard-conditions" title="链接到此标题。"></a></h4>
+<p>描述可能导致危险的缓存状态条件。</p>
+</section>
+</section>
+<section id="chapter-b5-interconnect-protocol-flows">
+<h3><a class="toc-backref" href="#id52" role="doc-backlink"><span class="section-number">3.2.7. </span>Chapter B5 -- Interconnect Protocol Flows</a><a class="headerlink" href="#chapter-b5-interconnect-protocol-flows" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 11910-13343</em></p>
+<p>提供各类事务的**互连协议流程**示例：</p>
+<ul class="simple">
+<li><p><strong>B5.1 Read transaction flows</strong>: 各种 Read 事务的完整流程（含/不含 DMT/DCT、含 Snoop、Dataless Read 等）</p></li>
+<li><p><strong>B5.2 Dataless transaction flows</strong>: CleanUnique、Evict、CleanShared、MakeInvalid 等流程</p></li>
+<li><p><strong>B5.3 Write transaction flows</strong>: WriteNoSnp、WriteUnique、WriteBack、CopyBack 等流程</p></li>
+<li><p><strong>B5.4 Atomic transaction flows</strong>: AtomicStore、AtomicLoad、AtomicSwap、AtomicCompare 流程</p></li>
+<li><p><strong>B5.5 Stash transaction flows</strong>: Write with Stash hint、Independent Stash 流程</p></li>
+<li><p><strong>B5.6 Hazard handling examples</strong>: 危险处理示例</p></li>
+</ul>
+</section>
+<section id="chapter-b6-exclusive-accesses">
+<h3><a class="toc-backref" href="#id53" role="doc-backlink"><span class="section-number">3.2.8. </span>Chapter B6 -- Exclusive accesses</a><a class="headerlink" href="#chapter-b6-exclusive-accesses" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 13344-13702</em></p>
+<ul class="simple">
+<li><p><strong>B6.1 Overview</strong>: 独占访问概述，使用 LDXR/STXR 指令对</p></li>
+<li><p><strong>B6.2 Exclusive monitors</strong>: 独占监视器的地址标记、状态管理</p></li>
+<li><p><strong>B6.3 Exclusive transactions</strong>: 带有 <strong>Excl</strong> 属性的事务处理规则</p></li>
+</ul>
+</section>
+<section id="chapter-b7-cache-stashing">
+<h3><a class="toc-backref" href="#id54" role="doc-backlink"><span class="section-number">3.2.9. </span>Chapter B7 -- Cache Stashing</a><a class="headerlink" href="#chapter-b7-cache-stashing" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 13703-14011</em></p>
+<ul class="simple">
+<li><p><strong>B7.1 Overview</strong>: Stash 机制概述 -- 将数据移动到更接近预期使用点的位置</p></li>
+<li><p><strong>B7.2 Write with Stash hint</strong>: 带有 Stash 提示的写入（WriteUniquePtlStash, WriteUniqueFullStash）</p></li>
+<li><p><strong>B7.3 Independent Stash request</strong>: 独立 Stash 请求（StashOnceUnique, StashOnceShared 等）</p></li>
+<li><p><strong>B7.4 Stash target identifiers</strong>: StashNID、StashLPID 等</p></li>
+<li><p><strong>B7.5 Stash messages</strong>: StashDone、CompStashDone 等</p></li>
+</ul>
+</section>
+<section id="chapter-b8-dvm-operations">
+<h3><a class="toc-backref" href="#id55" role="doc-backlink"><span class="section-number">3.2.10. </span>Chapter B8 -- DVM Operations</a><a class="headerlink" href="#chapter-b8-dvm-operations" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 14012-14920</em></p>
+<ul class="simple">
+<li><p><strong>B8.1 Introduction</strong>: DVM（Distributed Virtual Memory）事务介绍</p></li>
+<li><p><strong>B8.2 DVM transaction flow</strong>: DVM 事务流（通过 MN 广播到所有 RN-D）</p></li>
+<li><p><strong>B8.3 DVMOp field value restrictions</strong>: DVMOp 字段值限制</p></li>
+<li><p><strong>B8.4 DVM messages</strong>: DVM 消息类型和格式</p></li>
+</ul>
+</section>
+<section id="chapter-b9-error-handling">
+<h3><a class="toc-backref" href="#id56" role="doc-backlink"><span class="section-number">3.2.11. </span>Chapter B9 -- Error Handling</a><a class="headerlink" href="#chapter-b9-error-handling" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 14921-15799</em></p>
+<ul class="simple">
+<li><p><strong>B9.1 Packet level</strong>: 包级错误处理，包括 <strong>RespErr</strong> 字段、错误响应码</p></li>
+<li><p><strong>B9.2 Sub-packet level</strong>: 子包级错误
+- B9.2.1 Poison: 数据毒化标记
+- B9.2.2 Data Check: 数据校验</p></li>
+<li><p><strong>B9.3 Use of interface parity</strong>: 接口奇偶校验的使用</p></li>
+<li><p><strong>B9.4 Hardware and software error categories</strong>: 硬件和软件错误分类</p></li>
+</ul>
+</section>
+<section id="chapter-b10-realm-management-extension">
+<h3><a class="toc-backref" href="#id57" role="doc-backlink"><span class="section-number">3.2.12. </span>Chapter B10 -- Realm Management Extension</a><a class="headerlink" href="#chapter-b10-realm-management-extension" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 15800-16374</em></p>
+<ul class="simple">
+<li><p><strong>B10.1 Introduction</strong>: Realm Management Extension 介绍</p></li>
+<li><p><strong>B10.2 Physical Address Space (PAS)</strong>: PAS 与 NS/NSE 字段的关系</p></li>
+<li><p><strong>B10.3 Cache maintenance</strong>: 跨 PAS 的缓存维护</p></li>
+<li><p><strong>B10.4 DVM</strong>: 跨 PAS 的 DVM</p></li>
+<li><p><strong>B10.5 MPAM</strong>: MPAM 的 RME 扩展</p></li>
+<li><p><strong>B10.6 Memory Encryption Contexts (MEC)</strong>: 内存加密上下文</p></li>
+<li><p><strong>B10.7 Device Assignment (DA) and Coherent Device Assignment (CDA)</strong>: 设备分配</p></li>
+</ul>
+</section>
+<section id="chapter-b11-system-control-debug-trace-and-monitoring">
+<h3><a class="toc-backref" href="#id58" role="doc-backlink"><span class="section-number">3.2.13. </span>Chapter B11 -- System Control, Debug, Trace, and Monitoring</a><a class="headerlink" href="#chapter-b11-system-control-debug-trace-and-monitoring" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 16375-17084</em></p>
+<ul class="simple">
+<li><p><strong>B11.1 QoS mechanism</strong>: 16 级 QoS 优先级、端到端 QoS 传播</p></li>
+<li><p><strong>B11.2 Data Source</strong>: 数据源标识（标记数据来源：内存/缓存/Peer 缓存）</p></li>
+<li><p><strong>B11.3 Data Target</strong>: 数据目标（前向放置和使用提示）</p></li>
+<li><p><strong>B11.4 MPAM</strong>: Memory System Resource Partitioning and Monitoring</p></li>
+<li><p><strong>B11.5 Page-based Hardware Attributes (PBHA)</strong>: 来自转换表的 4 位实现定义硬件控制</p></li>
+<li><p><strong>B11.6 Completer Busy</strong>: Completer 忙碌指示</p></li>
+<li><p><strong>B11.7 Trace Tag</strong>: 调试、跟踪和性能测量支持</p></li>
+</ul>
+</section>
+<section id="chapter-b12-memory-tagging">
+<h3><a class="toc-backref" href="#id59" role="doc-backlink"><span class="section-number">3.2.14. </span>Chapter B12 -- Memory Tagging</a><a class="headerlink" href="#chapter-b12-memory-tagging" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 17085-17727</em></p>
+<ul class="simple">
+<li><p><strong>B12.1 Introduction</strong>: Arm MTE (Memory Tagging Extension) 介绍</p></li>
+<li><p><strong>B12.2 Message extensions</strong>: 消息中的 Tag 相关字段扩展</p></li>
+<li><p><strong>B12.3 Tag coherency</strong>: Tag 一致性规则</p></li>
+<li><p><strong>B12.4 Read transaction rules</strong>: 读事务的 Tag 规则</p></li>
+<li><p><strong>B12.5 Write transactions</strong>: 写事务的 Tag 规则</p></li>
+<li><p><strong>B12.6-B12.11</strong>: Dataless/Atomic/Stash/Snoop/Home-to-Subordinate/Error 的 Tag 规则</p></li>
+<li><p><strong>B12.12 Requests and permitted tag operations</strong>: 请求与允许的 Tag 操作</p></li>
+<li><p><strong>B12.13 TagOp field use summary</strong>: TagOp 字段使用总结</p></li>
+</ul>
+</section>
+<section id="chapter-b13-link-layer">
+<h3><a class="toc-backref" href="#id60" role="doc-backlink"><span class="section-number">3.2.15. </span>Chapter B13 -- Link Layer</a><a class="headerlink" href="#chapter-b13-link-layer" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 17728-19831</em></p>
+<section id="b13-1-introduction">
+<h4><a class="toc-backref" href="#id61" role="doc-backlink"><span class="section-number">3.2.15.1. </span>B13.1 Introduction</a><a class="headerlink" href="#b13-1-introduction" title="链接到此标题。"></a></h4>
+<p>链路层提供节点与互连之间基于包的通信机制，定义包/Flit 格式和流控。</p>
+</section>
+<section id="b13-2-link">
+<h4><a class="toc-backref" href="#id62" role="doc-backlink"><span class="section-number">3.2.15.2. </span>B13.2 Link</a><a class="headerlink" href="#b13-2-link" title="链接到此标题。"></a></h4>
+<p>Flit 通信在 <strong>Transmitter (TX)</strong> 和 <strong>Receiver (RX)</strong> 对之间进行。双向通信需要一对 Link。</p>
+<ul class="simple">
+<li><p><strong>Outbound link</strong>: Transmitter 发送包的链路</p></li>
+<li><p><strong>Inbound link</strong>: Receiver 接收包的链路</p></li>
+</ul>
+</section>
+<section id="b13-3-flit">
+<h4><a class="toc-backref" href="#id63" role="doc-backlink"><span class="section-number">3.2.15.3. </span>B13.3 Flit</a><a class="headerlink" href="#b13-3-flit" title="链接到此标题。"></a></h4>
+<p>两种 Flit 类型：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>类型</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Protocol flit</p></td>
+<td><p>携带协议包作为有效载荷。每个协议包映射到恰好一个协议 Flit</p></td>
+</tr>
+<tr class="row-odd"><td><p>Link flit</p></td>
+<td><p>携带链路维护消息，如 L-Credit 返回。在链路 TX 产生，在链路 RX 终止</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b13-4-channel">
+<h4><a class="toc-backref" href="#id64" role="doc-backlink"><span class="section-number">3.2.15.4. </span>B13.4 Channel</a><a class="headerlink" href="#b13-4-channel" title="链接到此标题。"></a></h4>
+<p>链路层提供 4 种通道（在 Request Node 和 Subordinate Node 上的映射）：</p>
+<p><strong>通道依赖关系</strong>:</p>
+<p>Request Node:
+- 必须在入站 SNP 通道上取得进展，不依赖于出站 REQ 通道
+- 必须在入站 RSP 和 DAT 通道上取得进展，不依赖于任何其他通道</p>
+<p>Subordinate Node:
+- 必须在入站 REQ 通道上取得进展，不依赖于出站 DAT 通道
+- 必须在入站 DAT 通道上取得进展，不依赖于任何其他通道</p>
+</section>
+<section id="b13-5-port">
+<h4><a class="toc-backref" href="#id65" role="doc-backlink"><span class="section-number">3.2.15.5. </span>B13.5 Port</a><a class="headerlink" href="#b13-5-port" title="链接到此标题。"></a></h4>
+<p><strong>Port</strong> 定义为节点接口处所有链路的集合。一个 Port 可包含多条链路。</p>
+</section>
+<section id="b13-6-node-interface-definitions">
+<h4><a class="toc-backref" href="#id66" role="doc-backlink"><span class="section-number">3.2.15.6. </span>B13.6 Node interface definitions</a><a class="headerlink" href="#b13-6-node-interface-definitions" title="链接到此标题。"></a></h4>
+<p>各节点类型的接口定义要求（RN-F, RN-D, RN-I, HN-F, HN-I, MN, SN-F, SN-I）。</p>
+</section>
+<section id="b13-7-increasing-inter-port-bandwidth">
+<h4><a class="toc-backref" href="#id67" role="doc-backlink"><span class="section-number">3.2.15.7. </span>B13.7 Increasing inter-port bandwidth</a><a class="headerlink" href="#b13-7-increasing-inter-port-bandwidth" title="链接到此标题。"></a></h4>
+<p>通过增加链路数来提升端口间带宽的方法。</p>
+</section>
+<section id="b13-8-channel-interface-signals">
+<h4><a class="toc-backref" href="#id68" role="doc-backlink"><span class="section-number">3.2.15.8. </span>B13.8 Channel interface signals</a><a class="headerlink" href="#b13-8-channel-interface-signals" title="链接到此标题。"></a></h4>
+<p>各通道的物理接口信号定义。</p>
+</section>
+<section id="b13-9-flit-packet-definitions">
+<h4><a class="toc-backref" href="#id69" role="doc-backlink"><span class="section-number">3.2.15.9. </span>B13.9 Flit packet definitions</a><a class="headerlink" href="#b13-9-flit-packet-definitions" title="链接到此标题。"></a></h4>
+<p>各通道的 Flit 包格式定义。</p>
+</section>
+<section id="b13-10-protocol-flit-fields">
+<h4><a class="toc-backref" href="#id70" role="doc-backlink"><span class="section-number">3.2.15.10. </span>B13.10 Protocol flit fields</a><a class="headerlink" href="#b13-10-protocol-flit-fields" title="链接到此标题。"></a></h4>
+<p><a href="#id6"><span class="problematic" id="id7">**</span></a>协议 Flit 字段详细定义**（共 65 个子节，B13.10.1 到 B13.10.65），包括：</p>
+<ul class="simple">
+<li><p>QoS, TgtID, SrcID, TxnID, ReturnNID, HomeNID 等标识符字段</p></li>
+<li><p>Opcode（REQ/RSP/SNP/DAT 通道操作码）</p></li>
+<li><p>数据相关字段（Data, BE, CCID, DataID, NumDat, Replicate）</p></li>
+<li><p>控制字段（AllowRetry, PCrdType, Order, CAH, ExpCompAck, DoDWT）</p></li>
+<li><p>安全字段（NS, NSE, MECID, StreamID, SecSID1）</p></li>
+<li><p>扩展字段（MPAM, PBHA, TagOp, Tag, TU, TraceTag, RSVDC）</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-b14-link-handshake">
+<h3><a class="toc-backref" href="#id71" role="doc-backlink"><span class="section-number">3.2.16. </span>Chapter B14 -- Link Handshake</a><a class="headerlink" href="#chapter-b14-link-handshake" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 19832-20672</em></p>
+<ul class="simple">
+<li><p><strong>B14.1 Clock and initialization</strong>: 时钟和初始化序列</p></li>
+<li><p><strong>B14.2 Link layer Credit</strong>: L-Credit 机制，Transmitter 在发送 Flit 前必须有足够的 Credit</p></li>
+<li><p><strong>B14.3 Low power signaling</strong>: 低功耗信号（TXLINKACTIVEREQ / TXLINKACTIVEACK）</p></li>
+<li><p><strong>B14.4 Flit level clock gating</strong>: Flit 级时钟门控</p></li>
+<li><p><strong>B14.5 Interface activation and deactivation</strong>: 接口激活/去激活序列（含 Link flit 的 L-Credit 返回）</p></li>
+<li><p><strong>B14.6 Transmit and receive link interaction</strong>: TX 和 RX 链路交互</p></li>
+<li><p><strong>B14.7 Protocol layer activity indication</strong>: 协议层活动指示（TXSACTIVE / RXSACTIVE）</p></li>
+</ul>
+</section>
+<section id="chapter-b15-system-coherency-interface">
+<h3><a class="toc-backref" href="#id72" role="doc-backlink"><span class="section-number">3.2.17. </span>Chapter B15 -- System Coherency Interface</a><a class="headerlink" href="#chapter-b15-system-coherency-interface" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 20673-20803</em></p>
+<ul class="simple">
+<li><p><strong>B15.1 Overview</strong>: 系统一致性接口概述</p></li>
+<li><p><strong>B15.2 Handshake</strong>: 握手协议</p></li>
+</ul>
+</section>
+<section id="chapter-b16-properties-parameters-and-broadcast-signals">
+<h3><a class="toc-backref" href="#id73" role="doc-backlink"><span class="section-number">3.2.18. </span>Chapter B16 -- Properties, Parameters, and Broadcast Signals</a><a class="headerlink" href="#chapter-b16-properties-parameters-and-broadcast-signals" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 20804-21552</em></p>
+<ul class="simple">
+<li><p><strong>B16.1 Interface properties and parameters</strong>: 接口属性和参数（26 个子参数），包括：
+- 数据宽度（DataWidth）
+- 通道宽度
+- MaxTxnID、MaxDBID 等容量参数
+- 数据大小支持
+- 各事务类型的支持标志
+- MTE、RME、MPAM 等扩展支持</p></li>
+<li><p><strong>B16.2 Optional interface broadcast signals</strong>: 可选接口广播信号</p></li>
+<li><p><strong>B16.3 Atomic transaction support</strong>: 原子事务支持参数</p></li>
+</ul>
+<p><em>源文档行号: 21553-22833</em></p>
+</section>
+<section id="chapter-c1-message-field-mappings">
+<h3><a class="toc-backref" href="#id74" role="doc-backlink"><span class="section-number">3.2.19. </span>Chapter C1 -- Message Field Mappings</a><a class="headerlink" href="#chapter-c1-message-field-mappings" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 21557-22153</em></p>
+<p>各通道消息的**字段映射表**：</p>
+<ul class="simple">
+<li><p><strong>C1.1 Request message field mappings</strong>: REQ 通道操作码对应的字段映射</p></li>
+<li><p><strong>C1.2 Response message field mappings</strong>: RSP 通道操作码对应的字段映射</p></li>
+<li><p><strong>C1.3 Snoop Request message field mappings</strong>: SNP 通道操作码对应的字段映射</p></li>
+<li><p><strong>C1.4 Data message field mappings</strong>: DAT 通道操作码对应的字段映射</p></li>
+</ul>
+</section>
+<section id="chapter-c2-communicating-nodes">
+<h3><a class="toc-backref" href="#id75" role="doc-backlink"><span class="section-number">3.2.20. </span>Chapter C2 -- Communicating Nodes</a><a class="headerlink" href="#chapter-c2-communicating-nodes" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 22154-22265</em></p>
+<p>定义各消息类型的通信节点：</p>
+<ul class="simple">
+<li><p><strong>C2.1 Request communicating nodes</strong>: 哪些节点可以发起各种请求</p></li>
+<li><p><strong>C2.2 Snoop communicating nodes</strong>: Snoop 通信节点</p></li>
+<li><p><strong>C2.3 Response communicating nodes</strong>: 响应通信节点</p></li>
+<li><p><strong>C2.4 Data communicating nodes</strong>: 数据通信节点</p></li>
+</ul>
+</section>
+<section id="chapter-c3-revisions">
+<h3><a class="toc-backref" href="#id76" role="doc-backlink"><span class="section-number">3.2.21. </span>Chapter C3 -- Revisions</a><a class="headerlink" href="#chapter-c3-revisions" title="链接到此标题。"></a></h3>
+<p><em>源文档行号: 22266-22833</em></p>
+<p>各版本间的变更记录：</p>
+<p><em>源文档行号: 22834-23240</em></p>
+</section>
+<section id="chapter-d1-glossary">
+<h3><a class="toc-backref" href="#id77" role="doc-backlink"><span class="section-number">3.2.22. </span>Chapter D1 -- Glossary</a><a class="headerlink" href="#chapter-d1-glossary" title="链接到此标题。"></a></h3>
+<p>术语表，提供文档中所有专业术语的定义。</p>
+<p>CHI 架构采用**三层分离设计**：</p>
+<ol class="arabic simple">
+<li><p><strong>Protocol Layer</strong>: 定义事务类型、缓存一致性协议、状态机、事务流</p></li>
+<li><p><strong>Network Layer</strong>: 定义 Node ID、TgtID 路由、System Address Map</p></li>
+<li><p><strong>Link Layer</strong>: 定义 Flit 格式、通道、Credit 流控、低功耗</p></li>
+</ol>
+<p>核心协议节点围绕 <strong>Home Node (HN)</strong> 构建，HN 作为事务的协调者和 Point of Coherence (PoC)。</p>
+<p><strong>关键数据通路</strong>:</p>
+<p>Requester (RN) --&gt; Request --&gt; Home Node (HN) --&gt; Snoop + Subordinate access --&gt; Response + Data --&gt; Requester (RN)</p>
+<p><strong>性能优化机制</strong>:</p>
+<ul class="simple">
+<li><p>DMT/DCT/DWT 减少数据传输跳数</p></li>
+<li><p>Cache Stashing 提前放置数据</p></li>
+<li><p>PrefetchTgt 预热内存控制器</p></li>
+<li><p>Limited Data Elision 减少数据包数量</p></li>
+<li><p>Snoop Filter / Directory 减少 Snoop 范围</p></li>
+<li><p>16 级 QoS 端到端支持</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../mmu_arch.html" class="btn btn-neutral float-left" title="2. ARM AArch64 MMU (VMSA) 架构深度解析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="amba_chi_architecture_coherency.html" class="btn btn-neutral float-right" title="4. AMBA® CHI 一致性协议深度分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

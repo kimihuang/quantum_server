@@ -1,0 +1,1 @@
+{'CMD_ID': 'cmd_91583_8739_2', 'EXIT_CODE': '0', 'PATTERN_MATCHED': '1', 'EXEC_TIME': '3015ms'}

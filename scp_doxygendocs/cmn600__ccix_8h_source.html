@@ -1,0 +1,867 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: scp_firmware/module/cmn600/include/internal/cmn600_ccix.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cmn600__ccix_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">cmn600_ccix.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="cmn600__ccix_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * @file cmn600_ccix.h</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * @brief CMN-600 CCIX 配置内部接口</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> * @details 定义 CCIX (Cache Coherent Interconnect for Accelerators) 相关的</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> *          寄存器结构体、宏定义和内部函数声明。包括 CCIX Gateway 的三种代理</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> *          （CXRA/CXHA/CXLA）的寄存器映射、链路控制/状态定义和地址映射宏。</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> *          该头文件仅供模块内部使用，不属于公共接口。</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> * @note CCIX 是一种缓存一致性互连协议，用于加速器与处理器之间的高效数据共享。</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> * @copyright Copyright (c) 2019-2021, Arm Limited and Contributors. All rights reserved.</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> * @license SPDX-License-Identifier: BSD-3-Clause</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#ifndef INTERNAL_CMN600_CCIX_H</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#define INTERNAL_CMN600_CCIX_H</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;<a class="code" href="cmn600__ctx_8h.html">internal/cmn600_ctx.h</a>&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;fwk_module_idx.h&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment"></span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment"> * @brief CCIX 网关配置设置</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment"> * @details 根据远端节点配置信息，配置本地 CCIX Gateway 的 RAID/LDID 映射、</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment"> *          AgentID-to-LinkID 表、SAM 地址区域，并启动 CCIX 链路建立序列。</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment"> * @param[in]     ctx           CMN-600 模块上下文指针</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment"> * @param[in,out] remote_config 远端节点配置数据指针</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="comment"> * @return 0 成功（FWK_SUCCESS）；负值为错误码</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="comment"> * @pre ctx 必须已完成拓扑发现和节点配置</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keywordtype">int</span> <a class="code hl_function" href="cmn600__ccix_8h.html#a5fc9bffccce08056b1f2f15db1068112">ccix_setup</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="code hl_variable" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, <span class="keywordtype">void</span> *remote_config);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment"></span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment"> * @brief CCIX 协议信用交换</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="comment"> * @details 在指定链路上触发 CCIX 协议信用交换，</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="comment"> *          通过设置 CXRA/CXHA 的 LINK_CTRL UP 位实现。</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="comment"> * @param[in] ctx     CMN-600 模块上下文指针</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment"> * @param[in] link_id CCIX 链路标识符，有效值为 0-2</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="comment"> * @return 0 成功（FWK_SUCCESS）；负值为错误码</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="comment"> * @retval FWK_E_PARAM link_id 超出有效范围</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keywordtype">int</span> <a class="code hl_function" href="cmn600__ccix_8h.html#a41d93798e15e5b5111b9b310367f3873">ccix_exchange_protocol_credit</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="code hl_variable" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="comment"></span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="comment"> * @brief 进入 CCIX 系统一致性域</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="comment"> * @details 在指定链路上请求进入系统一致性域，设置 CXHA 的 DVMDOMAIN_REQ 位</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment"> *          并等待远端返回 DVMDOMAIN ACK 确认。</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment"> * @param[in] ctx     CMN-600 模块上下文指针</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="comment"> * @param[in] link_id CCIX 链路标识符，有效值为 0-2</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="comment"> * @return 0 成功（FWK_SUCCESS）；负值为错误码</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="comment"> * @retval FWK_E_PARAM link_id 超出有效范围</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="comment"> * @note 该操作需要在 CCIX 链路 UP 之后执行</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keywordtype">int</span> <a class="code hl_function" href="cmn600__ccix_8h.html#ae4b2950e2ed20ed7e27528aa7eeaa067">ccix_enter_system_coherency</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="code hl_variable" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="comment"></span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="comment"> * @brief 进入 DVM (Distributed Virtual Memory) 域</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="comment"> * @details 在指定链路上请求进入 DVM 域，设置 CXRA 的 DVMDOMAIN_REQ 位</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="comment"> *          并等待远端返回 DVMDOMAIN ACK 确认。</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="comment"> * @param[in] ctx     CMN-600 模块上下文指针</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="comment"> * @param[in] link_id CCIX 链路标识符，有效值为 0-2</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment"> * @return 0 成功（FWK_SUCCESS）；负值为错误码</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment"> * @retval FWK_E_PARAM link_id 超出有效范围</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="comment"> * @note 该操作需要在进入系统一致性域之后执行</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="keywordtype">int</span> <a class="code hl_function" href="cmn600__ccix_8h.html#a2835736501d1dbb5a752479480706032">ccix_enter_dvm_domain</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="code hl_variable" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="comment"></span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="comment"> * @brief 获取 CCIX 能力信息</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment"> * @details 从 CXRA/CXHA/CXLA 的硬件寄存器中读取 CCIX 能力参数，</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment"> *          包括请求信用数、侦听信用数、数据信用数、最大包大小和消息打包支持等，</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment"> *          并将结果填充到 ctx-&gt;ccix_host_info 中。</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment"> * @param[in,out] ctx CMN-600 模块上下文指针，ccix_host_info 字段将被更新</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="comment"> * @note 该函数通常在 CCIX 配置获取 (get_config) 时被调用</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="keywordtype">void</span> <a class="code hl_function" href="cmn600__ccix_8h.html#a966d301336f726211f14ae636ef9e9aa">ccix_capabilities_get</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="code hl_variable" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="comment"></span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="comment"> * @brief CCIX Gateway (CXG) 协议链路控制与状态寄存器</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="comment"> * @details 每个 CCIX 链路对应一组控制/状态寄存器对，</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment"> *          用于链路的使能、请求和状态查询。</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00106" data-start="{" data-end="};">
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="structcxg__link__regs.html">  106</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcxg__link__regs.html">cxg_link_regs</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">    /** @brief 协议链路控制寄存器，包含 EN/REQ/UP/DVMDOMAIN_REQ 等控制位 */</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="structcxg__link__regs.html#a6e76681d56137efdcb82f760a2b60364">  108</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcxg__link__regs.html#a6e76681d56137efdcb82f760a2b60364">CXG_PRTCL_LINK_CTRL</a>;</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment"></span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="comment">    /** @brief 协议链路状态寄存器，包含 ACK/DOWN/DVMDOMAIN_ACK 等状态位 */</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="structcxg__link__regs.html#a31f8fcb846efbef3d45d085ede1a5dda">  111</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcxg__link__regs.html#a31f8fcb846efbef3d45d085ede1a5dda">CXG_PRTCL_LINK_STATUS</a>;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>};</div>
+</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment"></span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="comment"> * @brief CCIX Gateway Home Agent (CXHA) 寄存器映射</span></div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="comment"> * @details CXHA 是 CCIX 网关中的 Home Agent，负责处理来自远端请求代理的</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="comment"> *          一致性请求。该结构体映射了 CXHA 的所有可编程寄存器，</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="comment"> *          包括节点信息、RAID/LDID 查找表、AgentID/LinkID 映射和链路控制。</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00121" data-start="{" data-end="};">
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html">  121</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cxg__ha__reg.html">cmn600_cxg_ha_reg</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="comment">    /** @brief 节点信息寄存器，包含节点类型、ID 和逻辑 ID */</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a262260c1cb5b8c9bdeabf7841f8ac40a">  123</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a262260c1cb5b8c9bdeabf7841f8ac40a">CXG_HA_NODE_INFO</a>;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="comment"></span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><span class="comment">    /** @brief Home Agent ID 寄存器，配置本地的 HA 标识符 */</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a3f24a770c57a72db6b7220d357575970">  126</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a3f24a770c57a72db6b7220d357575970">CXG_HA_ID</a>;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a9b8a8a3282afd020bfc43be476e9e79b">  128</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a9b8a8a3282afd020bfc43be476e9e79b">RESERVED0</a>[0x80-0x10];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span><span class="comment">    /** @brief 子节点信息寄存器，描述该节点下的子设备数量 */</span></div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a18bd341c2077d534897917a91624d69f">  130</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a18bd341c2077d534897917a91624d69f">CXG_HA_CHILD_INFO</a>;</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a74c230432b83714384b9a9d20c60a771">  132</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a74c230432b83714384b9a9d20c60a771">RESERVED1</a>[0x900-0x88];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="comment">    /** @brief 单元信息寄存器，包含 Snoop Tracker 深度和 WDB 深度等硬件参数 */</span></div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#ae50cec1c0104800fd05cba2c99662093">  134</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#ae50cec1c0104800fd05cba2c99662093">CXG_HA_UNIT_INFO</a>;</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a7b7f9478bf35bb9e576f7061f8b90563">  136</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a7b7f9478bf35bb9e576f7061f8b90563">RESERVED2</a>[0x980-0x908];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="comment">    /** @brief 安全寄存器组覆盖寄存器 */</span></div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#adbc6058c67da3cdee8f0e91c012011ee">  138</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#adbc6058c67da3cdee8f0e91c012011ee">CXG_HA_SEC_REG_GRP_OVERRIDE</a>;</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a273447273d62075ef6628f9104972e3c">  140</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a273447273d62075ef6628f9104972e3c">RESERVED3</a>[0xA08-0x988];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="comment">    /** @brief 辅助控制寄存器，包含 SMP 模式等配置位 */</span></div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#ad6c317785c8695842c73da018418b5fe">  142</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#ad6c317785c8695842c73da018418b5fe">CXG_HA_AUX_CTRL</a>;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#aa5f47f03001cb9ae3edbc09ed7d818eb">  144</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#aa5f47f03001cb9ae3edbc09ed7d818eb">RESERVED4</a>[0xC00-0xA10];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="comment">     * @brief RN-F RAID 到 LDID 映射寄存器数组</span></div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 RAID-to-LDID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="comment">     *          共 8 个寄存器可映射 64 个 RN-F 代理。</span></div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a151a49751c0cfb755dc5ca3f15bd7b00">  151</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a151a49751c0cfb755dc5ca3f15bd7b00">CXG_HA_RNF_RAID_TO_LDID_REG</a>[8];</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="comment"></span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span><span class="comment">     * @brief AgentID 到 LinkID 映射寄存器数组</span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 AgentID-to-LinkID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="comment">     *          共 8 个寄存器可映射 64 个代理。</span></div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a9d8b68776b846c629af938c470de436b">  159</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a9d8b68776b846c629af938c470de436b">CXG_HA_AGENTID_TO_LINKID_REG</a>[8];</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a79eb25d8782bddda86497724f87e4001">  161</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a79eb25d8782bddda86497724f87e4001">RESERVED5</a>[0xD00-0xC80];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="comment">    /** @brief AgentID 到 LinkID 映射有效位寄存器，每位对应一个映射项的有效性 */</span></div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a475af9c59e4799b668df3580e6111a86">  163</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a475af9c59e4799b668df3580e6111a86">CXG_HA_AGENTID_TO_LINKID_VAL</a>;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="comment"></span> </div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">    /** @brief RN-F RAID 到 LDID 映射有效位寄存器，每位对应一个 RAID 映射的有效性 */</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a77619421381eb08d2e0a6f53d5f0959b">  166</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a77619421381eb08d2e0a6f53d5f0959b">CXG_HA_RNF_RAID_TO_LDID_VAL</a>;</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a616c79d4f96f7f23bc7560c58a4d653e">  168</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a616c79d4f96f7f23bc7560c58a4d653e">RESERVED6</a>[0x1000-0xD10];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="comment">     * @brief 链路控制与状态寄存器数组，共 3 条 CCIX 链路</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="comment">     * @see struct cxg_link_regs</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a87b90d30999c2ee7d948978a644541ab">  174</a></span>           <span class="keyword">struct </span><a class="code hl_struct" href="structcxg__link__regs.html">cxg_link_regs</a> <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a87b90d30999c2ee7d948978a644541ab">LINK_REGS</a>[3];</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a7f95cf88e42c9a4ec4d0fbfff8964c02">  176</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a7f95cf88e42c9a4ec4d0fbfff8964c02">RESERVED7</a>[0x2000-0x1030];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="comment">    /** @brief PMU 事件选择寄存器 */</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ha__reg.html#a8fb248c783634227109d2e0a576bb530">  178</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ha__reg.html#a8fb248c783634227109d2e0a576bb530">CXG_HA_PMU_EVENT_SEL</a>;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>};</div>
+</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="comment"></span> </div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="comment"> * @brief CCIX Gateway Requesting Agent (CXRA) 寄存器映射</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment"> * @details CXRA 是 CCIX 网关中的请求代理，负责向远端 Home Agent 发起一致性请求。</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment"> *          该结构体映射了 CXRA 的所有可编程寄存器，包括节点信息、</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="comment"> *          LDID-to-RAID 查找表、SAM 地址区域配置和链路控制。</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00188" data-start="{" data-end="};">
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html">  188</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cxg__ra__reg.html">cmn600_cxg_ra_reg</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="comment">    /** @brief 节点信息寄存器，包含节点类型、ID 和逻辑 ID */</span></div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#acbcf305f49ff3dbd89d010b7d03724fd">  190</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#acbcf305f49ff3dbd89d010b7d03724fd">CXG_RA_NODE_INFO</a>;</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a609bb3f52c1e83ca15b9afbc058168ff">  192</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a609bb3f52c1e83ca15b9afbc058168ff">RESERVED0</a>[0x80-0x8];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="comment">    /** @brief 子节点信息寄存器 */</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a1cdb641c48755cefe5d9d4967929738c">  194</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a1cdb641c48755cefe5d9d4967929738c">CXG_RA_CHILD_INFO</a>;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#abcf7b151bc3af3993bf3539ade361859">  196</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#abcf7b151bc3af3993bf3539ade361859">RESERVED1</a>[0x900-0x88];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="comment">    /** @brief 单元信息寄存器，包含 Request Tracker 深度和 SMP 模式等硬件参数 */</span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a8c766c1cf4f5567523ab854b8b7af64d">  198</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a8c766c1cf4f5567523ab854b8b7af64d">CXG_RA_UNIT_INFO</a>;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a2416d655f63bb98e23d577a0cad379f5">  200</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a2416d655f63bb98e23d577a0cad379f5">RESERVED2</a>[0x980-0x908];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment">    /** @brief 安全寄存器组覆盖寄存器 */</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#aeb509284d7eded256a722a89a3bb63ab">  202</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#aeb509284d7eded256a722a89a3bb63ab">CXG_RA_SEC_REG_GRP_OVERRIDE</a>;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a4030ada154fd314260e62361964126db">  204</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a4030ada154fd314260e62361964126db">RESERVED3</a>[0xA00-0x988];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="comment">    /** @brief 配置控制寄存器 */</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a1fe58311435b98e57ba391c05a3fd34f">  206</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a1fe58311435b98e57ba391c05a3fd34f">CXG_RA_CFG_CTRL</a>;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="comment"></span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="comment">    /** @brief 辅助控制寄存器，包含 SMP 模式等配置位 */</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#ab3f0a03a73b742f28782f1fa979346e6">  209</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#ab3f0a03a73b742f28782f1fa979346e6">CXG_RA_AUX_CTRL</a>;</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a9a6f44899a07f912930904bde35f56ce">  211</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a9a6f44899a07f912930904bde35f56ce">RESERVED4</a>[0xDA8-0xA10];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="comment">     * @brief SAM 地址区域配置寄存器数组</span></div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="comment">     * @details 每个寄存器配置一个远端内存区域的地址映射，</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="comment">     *          包含基地址、区域大小编码、远端 HA ID 和有效位。</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="comment">     *          共 8 个寄存器可映射 8 个远端区域。</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#ad56c2491beebeb3f947ffba402df3cd5">  219</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#ad56c2491beebeb3f947ffba402df3cd5">CXG_RA_SAM_ADDR_REGION_REG</a>[8];</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#ab89ef0496fb58b3a3f85d7d5b89bfae9">  221</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#ab89ef0496fb58b3a3f85d7d5b89bfae9">RESERVED5</a>[0xE00-0xDE8];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="comment">    /** @brief SAM 内存区域上限寄存器数组，用于限定每个区域的地址范围 */</span></div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a28c6ce222892c528cfba7a09cf8afd6b">  223</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a28c6ce222892c528cfba7a09cf8afd6b">CXG_RA_SAM_MEM_REGION_LIMIT_REG</a>[8];</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#aeeba19569ece1441bf8dfe2e49cc7dfd">  225</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#aeeba19569ece1441bf8dfe2e49cc7dfd">RESERVED6</a>[0xE60-0xE40];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="comment">     * @brief AgentID 到 LinkID 映射寄存器数组</span></div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 AgentID-to-LinkID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span><span class="comment">     *          共 8 个寄存器可映射 64 个代理。</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#ac060544fa358a561a68d3bb7e21f1524">  232</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#ac060544fa358a561a68d3bb7e21f1524">CXG_RA_AGENTID_TO_LINKID_REG</a>[8];</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span><span class="comment"></span> </div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="comment">     * @brief RN-F LDID 到 RAID 映射寄存器数组</span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 LDID-to-RAID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="comment">     *          共 8 个寄存器可映射 64 个 RN-F 代理。</span></div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#ae80fbe2375c4956a49a78f77547d94ce">  240</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#ae80fbe2375c4956a49a78f77547d94ce">CXG_RA_RNF_LDID_TO_RAID_REG</a>[8];</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="comment"></span> </div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="comment">     * @brief RN-I LDID 到 RAID 映射寄存器数组</span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 LDID-to-RAID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="comment">     *          共 4 个寄存器可映射 32 个 RN-I 代理。</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a3715177c7d6ee2405edbe072d25d9601">  248</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a3715177c7d6ee2405edbe072d25d9601">CXG_RA_RNI_LDID_TO_RAID_REG</a>[4];</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment"></span> </div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="comment">     * @brief RN-D LDID 到 RAID 映射寄存器数组</span></div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 LDID-to-RAID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment">     *          共 4 个寄存器可映射 32 个 RN-D 代理。</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a03f4c6570c00f2aa794798e3754b760c">  256</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a03f4c6570c00f2aa794798e3754b760c">CXG_RA_RND_LDID_TO_RAID_REG</a>[4];</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="comment"></span> </div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="comment">    /** @brief AgentID 到 LinkID 映射有效位寄存器 */</span></div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a755ab25035f626425b21d4c011f5069c">  259</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a755ab25035f626425b21d4c011f5069c">CXG_RA_AGENTID_TO_LINKID_VAL</a>;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="comment"></span> </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="comment">    /** @brief RN-F LDID 到 RAID 映射有效位寄存器 */</span></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a4f78f487b7c12595eabe87ba3c9ebf38">  262</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a4f78f487b7c12595eabe87ba3c9ebf38">CXG_RA_RNF_LDID_TO_RAID_VAL</a>;</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="comment"></span> </div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="comment">    /** @brief RN-I LDID 到 RAID 映射有效位寄存器 */</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a4ba52fdc5165f57b17cd4b7bffd0defc">  265</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a4ba52fdc5165f57b17cd4b7bffd0defc">CXG_RA_RNI_LDID_TO_RAID_VAL</a>;</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="comment"></span> </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="comment">    /** @brief RN-D LDID 到 RAID 映射有效位寄存器 */</span></div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#af5da6c5cbd375e90f68b8f2071da0517">  268</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#af5da6c5cbd375e90f68b8f2071da0517">CXG_RA_RND_LDID_TO_RAID_VAL</a>;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a85a7da03c0447af41ce2e3c6970b79c7">  270</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a85a7da03c0447af41ce2e3c6970b79c7">RESERVED7</a>[0x1000-0xF40];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="comment">     * @brief 链路控制与状态寄存器数组，共 3 条 CCIX 链路</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span><span class="comment">     * @see struct cxg_link_regs</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#aaab925dda0babacc7e004a999692661c">  276</a></span>           <span class="keyword">struct </span><a class="code hl_struct" href="structcxg__link__regs.html">cxg_link_regs</a> <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#aaab925dda0babacc7e004a999692661c">LINK_REGS</a>[3];</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#ab89464f39af09b48e77df47922e5d39b">  278</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#ab89464f39af09b48e77df47922e5d39b">RESERVED8</a>[0x2000-0x1030];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="comment">    /** @brief PMU 事件选择寄存器 */</span></div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno"><a class="line" href="structcmn600__cxg__ra__reg.html#a8561c4c66a97f792437cbd54ddcc4a0b">  280</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxg__ra__reg.html#a8561c4c66a97f792437cbd54ddcc4a0b">CXG_RA_PMU_EVENT_SEL</a>;</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>};</div>
+</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="comment"></span> </div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="comment"> * @brief CCIX Gateway Link Agent (CXLA) 寄存器映射</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="comment"> * @details CXLA 是 CCIX 网关中的链路代理，负责 CCIX 链路的协议协商和配置，</span></div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span><span class="comment"> *          包括消息打包、最大包大小、PCIe TLP 头字段等。</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="comment"> *          每个 CXLA 对应一个物理 CCIX 链路。</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00290" data-start="{" data-end="};">
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html">  290</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cxla__reg.html">cmn600_cxla_reg</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="comment">    /** @brief 节点信息寄存器 */</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a7448658aa962c350e9c8547eb9c6678e">  292</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a7448658aa962c350e9c8547eb9c6678e">CXLA_NODE_INFO</a>;</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#aec202e3e579d7956d7260c13610b7797">  294</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxla__reg.html#aec202e3e579d7956d7260c13610b7797">RESERVED0</a>[0x80-0x8];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span><span class="comment">    /** @brief 子节点信息寄存器 */</span></div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#aaafffc1ae88e851faa3716e1ba7f58d1">  296</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#aaafffc1ae88e851faa3716e1ba7f58d1">CXLA_CHILD_INFO</a>;</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a938e740f50a007c89bd4b1c937f1bf36">  298</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxla__reg.html#a938e740f50a007c89bd4b1c937f1bf36">RESERVED1</a>[0x900-0x88];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="comment">    /** @brief 单元信息寄存器 */</span></div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#aabab6c2be1518462f141ed1942f53c85">  300</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#aabab6c2be1518462f141ed1942f53c85">CXLA_UNIT_INFO</a>;</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span> </div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a0bb42b073c62756885e2e57617e64a70">  302</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxla__reg.html#a0bb42b073c62756885e2e57617e64a70">RESERVED2</a>[0x980-0x908];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="comment">    /** @brief 安全寄存器组覆盖寄存器 */</span></div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#ad158162b1348b1063ef007b04d6ff52e">  304</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#ad158162b1348b1063ef007b04d6ff52e">CXLA_SEC_REG_GRP_OVERRIDE</a>;</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#aef2e6755083c95408b9c74a9649745ce">  306</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxla__reg.html#aef2e6755083c95408b9c74a9649745ce">RESERVED3</a>[0xA08-0x988];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="comment">    /** @brief 辅助控制寄存器，包含 SMP 模式等配置位 */</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#aa182a0a04d230ecd3aeeef6a2a9f3aea">  308</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#aa182a0a04d230ecd3aeeef6a2a9f3aea">CXLA_AUX_CTRL</a>;</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span> </div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#ad2c63fe58d9cdc91378ea53e6bdefc8c">  310</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxla__reg.html#ad2c63fe58d9cdc91378ea53e6bdefc8c">RESERVED4</a>[0xC00-0xA10];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="comment">    /** @brief CCIX 协议能力寄存器（只读），反映硬件支持的消息打包、最大包大小等能力 */</span></div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a18cef7471b93852ca2e44373f6d68500">  312</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a18cef7471b93852ca2e44373f6d68500">CXLA_CCIX_PROP_CAPABILITIES</a>;</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span><span class="comment"></span> </div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span><span class="comment">    /** @brief CCIX 协议已配置寄存器（可读写），用于使能/配置消息打包、最大包大小等 */</span></div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a3b423253fe8271d43db410499c520e28">  315</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a3b423253fe8271d43db410499c520e28">CXLA_CCIX_PROP_CONFIGURED</a>;</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span><span class="comment"></span> </div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span><span class="comment">    /** @brief CCIX CXS 发送属性能力寄存器（只读） */</span></div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a5b6059ff35194e58991b0ecfd7b47df1">  318</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a5b6059ff35194e58991b0ecfd7b47df1">CXLA_TX_CXS_ATTR_CAPABILITIES</a>;</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span><span class="comment"></span> </div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="comment">    /** @brief CCIX CXS 接收属性能力寄存器（只读） */</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#acb597012af30ee9ee6aa4ad0cf282db4">  321</a></span>    FWK_R  uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#acb597012af30ee9ee6aa4ad0cf282db4">CXLA_RX_CXS_ATTR_CAPABILITIES</a>;</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span> </div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#abc63fa3b1e9f8e41e06af3d263ae06a2">  323</a></span>           uint8_t      <a class="code hl_variable" href="structcmn600__cxla__reg.html#abc63fa3b1e9f8e41e06af3d263ae06a2">RESERVED5</a>[0xC30-0xC20];  <span class="comment">/**&lt; 保留 */</span><span class="comment"></span></div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="comment">     * @brief AgentID 到 LinkID 映射寄存器数组</span></div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="comment">     * @details 每个 64 位寄存器容纳 8 个 AgentID-to-LinkID 映射项（每项 8 位），</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="comment">     *          共 8 个寄存器可映射 64 个代理。</span></div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a8697d31c5914fdbb1981d42bc0b06e8e">  330</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a8697d31c5914fdbb1981d42bc0b06e8e">CXLA_AGENTID_TO_LINKID_REG</a>[8];</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span><span class="comment"></span> </div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span><span class="comment">    /** @brief AgentID 到 LinkID 映射有效位寄存器 */</span></div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#aa2ed381aae7731be171d8caecfa5e27d">  333</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#aa2ed381aae7731be171d8caecfa5e27d">CXLA_AGENTID_TO_LINKID_VAL</a>;</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span><span class="comment"></span> </div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="comment">    /** @brief LinkID 到 PCIe 总线号映射寄存器，每 16 位对应一条链路的 PCIe 总线号 */</span></div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a7df103a281ca8ff61311c5fb0d292f36">  336</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a7df103a281ca8ff61311c5fb0d292f36">CXLA_LINKID_TO_PCIE_BUS_NUM</a>;</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span><span class="comment"></span> </div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span><span class="comment">    /** @brief PCIe TLP 头字段配置寄存器，包含 Traffic Class 和 Vendor ID 等字段 */</span></div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno"><a class="line" href="structcmn600__cxla__reg.html#a12d2c729a87d6ccc0119ffe91cea1621">  339</a></span>    FWK_RW uint64_t     <a class="code hl_variable" href="structcmn600__cxla__reg.html#a12d2c729a87d6ccc0119ffe91cea1621">CXLA_PCIE_HDR_FIELDS</a>;</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>};</div>
+</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span> </div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span><span class="comment">/*</span></div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span><span class="comment"> * CCIX 定义</span></div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span><span class="comment"></span> </div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span><span class="comment"> * @brief CCIX 链路 UP 等待条件枚举</span></div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span><span class="comment"> * @details 定义 CCIX 链路建立过程中各阶段需要轮询的寄存器条件，</span></div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span><span class="comment"> *          用于 timer_api-&gt;wait() 的条件回调函数。</span></div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span><span class="comment"> *          链路建立序列按此枚举值的顺序依次执行。</span></div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00354" data-start="{" data-end="};">
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">  354</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">cxg_link_up_wait_cond</a> {</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956">  355</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956">CXG_LINK_CTRL_EN_BIT_SET</a>,              <span class="comment">/**&lt; 等待 CXRA/CXHA 链路控制 EN 位置位 */</span></div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e">  356</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e">CXG_LINK_CTRL_UP_BIT_CLR</a>,             <span class="comment">/**&lt; 等待 CXRA/CXHA 链路控制 UP 位清零 */</span></div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59">  357</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59">CXG_LINK_STATUS_DWN_BIT_SET</a>,          <span class="comment">/**&lt; 等待 CXRA/CXHA 链路状态 DOWN 位置位 */</span></div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931">  358</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931">CXG_LINK_STATUS_DWN_BIT_CLR</a>,          <span class="comment">/**&lt; 等待 CXRA/CXHA 链路状态 DOWN 位清零 */</span></div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c">  359</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c">CXG_LINK_STATUS_ACK_BIT_SET</a>,          <span class="comment">/**&lt; 等待 CXRA/CXHA 链路状态 ACK 位置位 */</span></div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25">  360</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25">CXG_LINK_STATUS_ACK_BIT_CLR</a>,          <span class="comment">/**&lt; 等待 CXRA/CXHA 链路状态 ACK 位清零 */</span></div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4">  361</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4">CXG_LINK_STATUS_HA_DVMDOMAIN_ACK_BIT_SET</a>, <span class="comment">/**&lt; 等待 CXHA 链路状态 DVMDOMAIN ACK 位置位 */</span></div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0">  362</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0">CXG_LINK_STATUS_RA_DVMDOMAIN_ACK_BIT_SET</a>, <span class="comment">/**&lt; 等待 CXRA 链路状态 DVMDOMAIN ACK 位置位 */</span></div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4">  363</a></span>    <a class="code hl_enumvalue" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4">CXG_LINK_UP_SEQ_COUNT</a>,                <span class="comment">/**&lt; 链路建立序列总步骤数 */</span></div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>};</div>
+</div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span><span class="comment"></span> </div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span><span class="comment"> * @brief CCIX 链路等待条件数据</span></div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span><span class="comment"> * @details 传递给定时器等待回调函数的参数结构体，</span></div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span><span class="comment"> *          包含上下文指针、链路 ID 和等待条件类型。</span></div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00372" data-start="{" data-end="};">
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno"><a class="line" href="structcxg__wait__condition__data.html">  372</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcxg__wait__condition__data.html">cxg_wait_condition_data</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span><span class="comment">    /** @brief CMN-600 模块上下文指针 */</span></div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno"><a class="line" href="structcxg__wait__condition__data.html#a976e9484d676349b115b2b184c77350a">  374</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="code hl_variable" href="structcxg__wait__condition__data.html#a976e9484d676349b115b2b184c77350a">ctx</a>;</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span><span class="comment"></span> </div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span><span class="comment">    /** @brief CCIX 链路标识符，有效值为 0-2 */</span></div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno"><a class="line" href="structcxg__wait__condition__data.html#a62e2cda1319aa57b0d712d03ff74431e">  377</a></span>    uint8_t <a class="code hl_variable" href="structcxg__wait__condition__data.html#a62e2cda1319aa57b0d712d03ff74431e">link_id</a>;</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span><span class="comment"></span> </div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span><span class="comment">    /** @brief 等待条件类型，参见 enum cxg_link_up_wait_cond */</span></div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno"><a class="line" href="structcxg__wait__condition__data.html#ae4730dd702799c4692cca022fad06a0c">  380</a></span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">cxg_link_up_wait_cond</a> <a class="code hl_variable" href="structcxg__wait__condition__data.html#ae4730dd702799c4692cca022fad06a0c">cond</a>;</div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>};</div>
+</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span> </div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span><span class="comment">/* ---- CCIX Gateway (CXG) Request Agent (RA) 定义 ---- */</span></div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span><span class="comment"></span> </div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span><span class="comment">/** @def CXG_RA_SAM_HA_TGT_ID_SHIFT_VAL</span></div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span><span class="comment"> * @brief CXRA SAM 地址寄存器中 Home Agent Target ID 的位移值 */</span></div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a7834cdb8d2137221a01ecbad1bc2d5bb">  387</a></span><span class="preprocessor">#define CXG_RA_SAM_HA_TGT_ID_SHIFT_VAL            52</span></div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span><span class="comment"></span> </div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span><span class="comment">/** @def CXG_RA_RNF_LDID_TO_RAID_REG_OFFSET</span></div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span><span class="comment"> * @brief CXRA RN-F LDID-to-RAID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a3c5a1493b5304878add3b1d162831987">  391</a></span><span class="preprocessor">#define CXG_RA_RNF_LDID_TO_RAID_REG_OFFSET        0xEA0</span></div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span><span class="comment"></span> </div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span><span class="comment">/** @def CXG_RA_RNI_LDID_TO_RAID_REG_OFFSET</span></div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span><span class="comment"> * @brief CXRA RN-I LDID-to-RAID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a6698ec97da6f082b228b5ed6c637bb6b">  395</a></span><span class="preprocessor">#define CXG_RA_RNI_LDID_TO_RAID_REG_OFFSET        0xEE0</span></div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span><span class="comment"></span> </div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span><span class="comment">/** @def CXG_RA_RND_LDID_TO_RAID_REG_OFFSET</span></div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span><span class="comment"> * @brief CXRA RN-D LDID-to-RAID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9cccd53dac9c29c3d9b43fd931d570d7">  399</a></span><span class="preprocessor">#define CXG_RA_RND_LDID_TO_RAID_REG_OFFSET        0xF00</span></div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span><span class="comment"></span> </div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span><span class="comment">/** @def CXG_RA_RNF_RAID_VALID_REG_OFFSET</span></div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span><span class="comment"> * @brief CXRA RN-F RAID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a33642460f4b17ec8a8d17e7db92e4529">  403</a></span><span class="preprocessor">#define CXG_RA_RNF_RAID_VALID_REG_OFFSET          0xF28</span></div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span><span class="comment"></span> </div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span><span class="comment">/** @def CXG_RA_RNI_RAID_VALID_REG_OFFSET</span></div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span><span class="comment"> * @brief CXRA RN-I RAID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a7a9d43d2838917fc8b0bf988c07a2f87">  407</a></span><span class="preprocessor">#define CXG_RA_RNI_RAID_VALID_REG_OFFSET          0xF30</span></div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span><span class="comment"></span> </div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span><span class="comment">/** @def CXG_RA_RND_RAID_VALID_REG_OFFSET</span></div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span><span class="comment"> * @brief CXRA RN-D RAID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#acdd5fd76982ad37f1d64f2fac2779b9d">  411</a></span><span class="preprocessor">#define CXG_RA_RND_RAID_VALID_REG_OFFSET          0xF38</span></div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span><span class="comment"></span> </div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span><span class="comment">/** @def CXG_RA_AGENTID_TO_LINKID_OFFSET</span></div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span><span class="comment"> * @brief CXRA AgentID-to-LinkID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#afbbf0ef43593bf81740f9b6217527710">  415</a></span><span class="preprocessor">#define CXG_RA_AGENTID_TO_LINKID_OFFSET           0xE60</span></div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span><span class="comment"></span> </div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span><span class="comment">/** @def CXG_RA_AGENTID_TO_LINKID_VAL_OFFSET</span></div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span><span class="comment"> * @brief CXRA AgentID-to-LinkID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a50f362c7a1bdefa0d74a461ae2483729">  419</a></span><span class="preprocessor">#define CXG_RA_AGENTID_TO_LINKID_VAL_OFFSET       0xF20</span></div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span><span class="comment"></span> </div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span><span class="comment">/** @def CXG_RA_REQUEST_TRACKER_DEPTH_MASK</span></div>
+<div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span><span class="comment"> * @brief CXRA 单元信息寄存器中 Request Tracker 深度的位掩码 */</span></div>
+<div class="line"><a id="l00423" name="l00423"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a51165996609cae8972d950220f1b0629">  423</a></span><span class="preprocessor">#define CXG_RA_REQUEST_TRACKER_DEPTH_MASK         UINT64_C(0x0000000001FF0000)</span></div>
+<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span><span class="comment"></span> </div>
+<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span><span class="comment">/** @def CXG_RA_REQUEST_TRACKER_DEPTH_VAL</span></div>
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span><span class="comment"> * @brief CXRA Request Tracker 深度字段在寄存器中的起始位位置 */</span></div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a809ed4afaed7671169de60dd7074fcd4">  427</a></span><span class="preprocessor">#define CXG_RA_REQUEST_TRACKER_DEPTH_VAL          16</span></div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span><span class="comment"></span> </div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span><span class="comment">/** @def CXG_RA_UNIT_INFO_SMP_MODE_RO_MASK</span></div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span><span class="comment"> * @brief CXRA 单元信息寄存器中 SMP 模式只读位的位掩码（r2p0 使用） */</span></div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ace76825c43e1c074202794b37f0e6b0b">  431</a></span><span class="preprocessor">#define CXG_RA_UNIT_INFO_SMP_MODE_RO_MASK         (UINT64_C(1) &lt;&lt; 61)</span></div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span><span class="comment"></span> </div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span><span class="comment">/** @def CXG_RA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL</span></div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span><span class="comment"> * @brief CXRA 辅助控制寄存器中 SMP 模式可写位的位移值（r3p0+ 使用） */</span></div>
+<div class="line"><a id="l00435" name="l00435"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a38166e2931facc571bed2a0d591728ea">  435</a></span><span class="preprocessor">#define CXG_RA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL     (16)</span></div>
+<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span> </div>
+<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span><span class="comment">/* ---- CCIX Gateway (CXG) Home Agent (HA) 定义 ---- */</span></div>
+<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span><span class="comment"></span> </div>
+<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span><span class="comment">/** @def CXG_HA_AGENTID_TO_LINKID_OFFSET</span></div>
+<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span><span class="comment"> * @brief CXHA AgentID-to-LinkID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a2204da39a7cab069a5ba660d22a9b213">  441</a></span><span class="preprocessor">#define CXG_HA_AGENTID_TO_LINKID_OFFSET           0xC40</span></div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span><span class="comment"></span> </div>
+<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span><span class="comment">/** @def CXG_HA_AGENTID_TO_LINKID_VAL_OFFSET</span></div>
+<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span><span class="comment"> * @brief CXHA AgentID-to-LinkID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00445" name="l00445"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a751cd927e90eab709ab2dc55fddfa1aa">  445</a></span><span class="preprocessor">#define CXG_HA_AGENTID_TO_LINKID_VAL_OFFSET       0xD00</span></div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span><span class="comment"></span> </div>
+<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span><span class="comment">/** @def CXG_HA_RAID_TO_LDID_OFFSET</span></div>
+<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span><span class="comment"> * @brief CXHA RAID-to-LDID 映射寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00449" name="l00449"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a1595d73e7a783b2c00313cb3be19e1ce">  449</a></span><span class="preprocessor">#define CXG_HA_RAID_TO_LDID_OFFSET                (0xC00)</span></div>
+<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span><span class="comment"></span> </div>
+<div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span><span class="comment">/** @def CXG_HA_RAID_TO_LDID_VALID_OFFSET</span></div>
+<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span><span class="comment"> * @brief CXHA RAID-to-LDID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a897283dcd1cc2d6b1d896c8cb2d3e9fb">  453</a></span><span class="preprocessor">#define CXG_HA_RAID_TO_LDID_VALID_OFFSET          (0xD08)</span></div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span><span class="comment"></span> </div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span><span class="comment">/** @def CXG_HA_RAID_TO_LDID_RNF_MASK</span></div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span><span class="comment"> * @brief CXHA RAID-to-LDID 映射中 RN-F 标志位的掩码（bit[7]） */</span></div>
+<div class="line"><a id="l00457" name="l00457"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ab4105efe569683886c27270094cb95c4">  457</a></span><span class="preprocessor">#define CXG_HA_RAID_TO_LDID_RNF_MASK              (0x80)</span></div>
+<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span><span class="comment"></span> </div>
+<div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span><span class="comment">/** @def CXG_HA_LDID_TO_RAID_OFFSET</span></div>
+<div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span><span class="comment"> * @brief CXHA LDID-to-RAID 映射寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00461" name="l00461"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ad4aa309ef3f023114be250e4f6ac4159">  461</a></span><span class="preprocessor">#define CXG_HA_LDID_TO_RAID_OFFSET                0xC00</span></div>
+<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span><span class="comment"></span> </div>
+<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span><span class="comment">/** @def CXG_HA_SNOOP_TRACKER_DEPTH_MASK</span></div>
+<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span><span class="comment"> * @brief CXHA 单元信息寄存器中 Snoop Tracker 深度的位掩码 */</span></div>
+<div class="line"><a id="l00465" name="l00465"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a2ac756537f0b58387632acd9093bdd52">  465</a></span><span class="preprocessor">#define CXG_HA_SNOOP_TRACKER_DEPTH_MASK           UINT64_C(0x00001FF000000000)</span></div>
+<div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span><span class="comment"></span> </div>
+<div class="line"><a id="l00467" name="l00467"></a><span class="lineno">  467</span><span class="comment">/** @def CXG_HA_SNOOP_TRACKER_DEPTH_VAL</span></div>
+<div class="line"><a id="l00468" name="l00468"></a><span class="lineno">  468</span><span class="comment"> * @brief CXHA Snoop Tracker 深度字段在寄存器中的起始位位置 */</span></div>
+<div class="line"><a id="l00469" name="l00469"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a8cfef22299a3db1dea202a57146481ae">  469</a></span><span class="preprocessor">#define CXG_HA_SNOOP_TRACKER_DEPTH_VAL            36</span></div>
+<div class="line"><a id="l00470" name="l00470"></a><span class="lineno">  470</span><span class="comment"></span> </div>
+<div class="line"><a id="l00471" name="l00471"></a><span class="lineno">  471</span><span class="comment">/** @def CXG_HA_WDB_DEPTH_MASK</span></div>
+<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span><span class="comment"> * @brief CXHA 单元信息寄存器中 WDB (Write Data Buffer) 深度的位掩码 */</span></div>
+<div class="line"><a id="l00473" name="l00473"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a02966b4d7bff2fc7e5ec5197ba346883">  473</a></span><span class="preprocessor">#define CXG_HA_WDB_DEPTH_MASK                     UINT64_C(0x0000000007FC0000)</span></div>
+<div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span><span class="comment"></span> </div>
+<div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span><span class="comment">/** @def CXG_HA_WDB_DEPTH_VAL</span></div>
+<div class="line"><a id="l00476" name="l00476"></a><span class="lineno">  476</span><span class="comment"> * @brief CXHA WDB 深度字段在寄存器中的起始位位置 */</span></div>
+<div class="line"><a id="l00477" name="l00477"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9fbe9fa263d2c73f6b9259964ccefb8e">  477</a></span><span class="preprocessor">#define CXG_HA_WDB_DEPTH_VAL                      18</span></div>
+<div class="line"><a id="l00478" name="l00478"></a><span class="lineno">  478</span><span class="comment"></span> </div>
+<div class="line"><a id="l00479" name="l00479"></a><span class="lineno">  479</span><span class="comment">/** @def CXG_HA_UNIT_INFO_SMP_MODE_RO_MASK</span></div>
+<div class="line"><a id="l00480" name="l00480"></a><span class="lineno">  480</span><span class="comment"> * @brief CXHA 单元信息寄存器中 SMP 模式只读位的位掩码（r2p0 使用） */</span></div>
+<div class="line"><a id="l00481" name="l00481"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ab19b6fea8f77a54e2e7094b0e8cce0da">  481</a></span><span class="preprocessor">#define CXG_HA_UNIT_INFO_SMP_MODE_RO_MASK         (UINT64_C(1) &lt;&lt; 63)</span></div>
+<div class="line"><a id="l00482" name="l00482"></a><span class="lineno">  482</span><span class="comment"></span> </div>
+<div class="line"><a id="l00483" name="l00483"></a><span class="lineno">  483</span><span class="comment">/** @def CXG_HA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL</span></div>
+<div class="line"><a id="l00484" name="l00484"></a><span class="lineno">  484</span><span class="comment"> * @brief CXHA 辅助控制寄存器中 SMP 模式可写位的位移值（r3p0+ 使用） */</span></div>
+<div class="line"><a id="l00485" name="l00485"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a38e78126678d10251dd0012de7abbb5b">  485</a></span><span class="preprocessor">#define CXG_HA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL     (16)</span></div>
+<div class="line"><a id="l00486" name="l00486"></a><span class="lineno">  486</span> </div>
+<div class="line"><a id="l00487" name="l00487"></a><span class="lineno">  487</span><span class="comment">/* ---- CCIX Gateway (CXG) Link Agent (LA) 定义 ---- */</span></div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span><span class="comment"></span> </div>
+<div class="line"><a id="l00489" name="l00489"></a><span class="lineno">  489</span><span class="comment">/** @def CXLA_AGENTID_TO_LINKID_OFFSET</span></div>
+<div class="line"><a id="l00490" name="l00490"></a><span class="lineno">  490</span><span class="comment"> * @brief CXLA AgentID-to-LinkID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00491" name="l00491"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a6dd54e24f0b1e58e02bda8833f321063">  491</a></span><span class="preprocessor">#define CXLA_AGENTID_TO_LINKID_OFFSET             0xC30</span></div>
+<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span><span class="comment"></span> </div>
+<div class="line"><a id="l00493" name="l00493"></a><span class="lineno">  493</span><span class="comment">/** @def CXLA_AGENTID_TO_LINKID_VAL_OFFSET</span></div>
+<div class="line"><a id="l00494" name="l00494"></a><span class="lineno">  494</span><span class="comment"> * @brief CXLA AgentID-to-LinkID 有效位寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00495" name="l00495"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ac4b0f7cefe75a4556d94c88023a447d9">  495</a></span><span class="preprocessor">#define CXLA_AGENTID_TO_LINKID_VAL_OFFSET         0xC70</span></div>
+<div class="line"><a id="l00496" name="l00496"></a><span class="lineno">  496</span><span class="comment"></span> </div>
+<div class="line"><a id="l00497" name="l00497"></a><span class="lineno">  497</span><span class="comment">/** @def CXLA_CCIX_PROP_MSG_PACK_SHIFT_MASK</span></div>
+<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span><span class="comment"> * @brief CXLA CCIX 协议能力寄存器中消息打包标志的位掩码 */</span></div>
+<div class="line"><a id="l00499" name="l00499"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a0b304afe4645855f5a1ab572eabfedf4">  499</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MSG_PACK_SHIFT_MASK        UINT64_C(0x0000000000000400)</span></div>
+<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span><span class="comment"></span> </div>
+<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span><span class="comment">/** @def CXLA_CCIX_PROP_MSG_PACK_SHIFT_VAL</span></div>
+<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span><span class="comment"> * @brief CXLA 消息打包标志位在寄存器中的位移值 */</span></div>
+<div class="line"><a id="l00503" name="l00503"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#af7f344b390a26968e7a5a5ecf2acd64c">  503</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MSG_PACK_SHIFT_VAL         10</span></div>
+<div class="line"><a id="l00504" name="l00504"></a><span class="lineno">  504</span><span class="comment"></span> </div>
+<div class="line"><a id="l00505" name="l00505"></a><span class="lineno">  505</span><span class="comment">/** @def CXLA_CCIX_PROP_MAX_PACK_SIZE_MASK</span></div>
+<div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span><span class="comment"> * @brief CXLA CCIX 协议能力寄存器中最大包大小的位掩码 */</span></div>
+<div class="line"><a id="l00507" name="l00507"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a38350603de8d03956ed1ae403c3bdcd3">  507</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_MASK         UINT64_C(0x0000000000000380)</span></div>
+<div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span><span class="comment"></span> </div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span><span class="comment">/** @def CXLA_CCIX_PROP_MAX_PACK_SIZE_SHIFT_VAL</span></div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span><span class="comment"> * @brief CXLA 最大包大小字段在寄存器中的位移值 */</span></div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a740f73de54f51bd40a70c3e7bf68241e">  511</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_SHIFT_VAL    7</span></div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span><span class="comment"></span> </div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span><span class="comment">/** @def CXLA_CCIX_PROP_MAX_PACK_SIZE_128</span></div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span><span class="comment"> * @brief CXLA 最大包大小编码：128 字节 */</span></div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a94b97bd29b81c00784c01f00806f9502">  515</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_128          0</span></div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span><span class="comment"></span> </div>
+<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span><span class="comment">/** @def CXLA_CCIX_PROP_MAX_PACK_SIZE_256</span></div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span><span class="comment"> * @brief CXLA 最大包大小编码：256 字节 */</span></div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a00f0fe8b9d11969d884ae4e33278252c">  519</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_256          1</span></div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span><span class="comment"></span> </div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span><span class="comment">/** @def CXLA_CCIX_PROP_MAX_PACK_SIZE_512</span></div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span><span class="comment"> * @brief CXLA 最大包大小编码：512 字节 */</span></div>
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#abd238141d5aed5edd3bb266a2f25cf8a">  523</a></span><span class="preprocessor">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_512          2</span></div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span><span class="comment"></span> </div>
+<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span><span class="comment">/** @def CXLA_PCIE_HDR_TRAFFIC_CLASS_MASK</span></div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span><span class="comment"> * @brief CXLA PCIe TLP 头字段中 Traffic Class 的位掩码 */</span></div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a36dfccd7bfbbd20f3b4885bdf4090845">  527</a></span><span class="preprocessor">#define CXLA_PCIE_HDR_TRAFFIC_CLASS_MASK          UINT64_C(0x0000000000007000)</span></div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span><span class="comment"></span> </div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span><span class="comment">/** @def CXLA_PCIE_HDR_VENDOR_ID_MASK</span></div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span><span class="comment"> * @brief CXLA PCIe TLP 头字段中 Vendor ID 的位掩码 */</span></div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a0f724ee6f3e5be28d3c49c501a7382fd">  531</a></span><span class="preprocessor">#define CXLA_PCIE_HDR_VENDOR_ID_MASK              UINT64_C(0x0000FFFF00000000)</span></div>
+<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span><span class="comment"></span> </div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span><span class="comment">/** @def CXLA_PCIE_HDR_TRAFFIC_CLASS_SHIFT_VAL</span></div>
+<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span><span class="comment"> * @brief CXLA PCIe TLP 头字段中 Traffic Class 的位移值 */</span></div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a4d324002acba73c51cf7dfa0d8a1f657">  535</a></span><span class="preprocessor">#define CXLA_PCIE_HDR_TRAFFIC_CLASS_SHIFT_VAL     12</span></div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span><span class="comment"></span> </div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span><span class="comment">/** @def CXLA_PCIE_HDR_VENDOR_ID_SHIFT_VAL</span></div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span><span class="comment"> * @brief CXLA PCIe TLP 头字段中 Vendor ID 的位移值 */</span></div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a18a4b4a638dca00ec934547b7ef6777a">  539</a></span><span class="preprocessor">#define CXLA_PCIE_HDR_VENDOR_ID_SHIFT_VAL         32</span></div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span><span class="comment"></span> </div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span><span class="comment">/** @def CXLA_AUX_CTRL_SMP_MODE_SHIFT_VAL</span></div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span><span class="comment"> * @brief CXLA 辅助控制寄存器中 SMP 模式配置位的位移值 */</span></div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a7ce4d38952cbcc6a8ad6417822899cd1">  543</a></span><span class="preprocessor">#define CXLA_AUX_CTRL_SMP_MODE_SHIFT_VAL          (47)</span></div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span> </div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span><span class="comment">/* ---- CCIX Gateway (CXG) 链路控制与状态定义 ---- */</span></div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span><span class="comment"></span> </div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span><span class="comment">/** @def CXG_LINK_CTRL_EN_MASK</span></div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span><span class="comment"> * @brief 链路控制寄存器 EN（使能）位的掩码 */</span></div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#aedeb7e151fa7fc8407c14622d12ee42d">  549</a></span><span class="preprocessor">#define CXG_LINK_CTRL_EN_MASK                     UINT64_C(0x0000000000000001)</span></div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="comment"></span> </div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><span class="comment">/** @def CXG_LINK_CTRL_REQ_MASK</span></div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span><span class="comment"> * @brief 链路控制寄存器 REQ（请求）位的掩码 */</span></div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a7191330ea556fd284d40b1297d59e32c">  553</a></span><span class="preprocessor">#define CXG_LINK_CTRL_REQ_MASK                    UINT64_C(0x0000000000000002)</span></div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="comment"></span> </div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="comment">/** @def CXG_LINK_CTRL_UP_MASK</span></div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span><span class="comment"> * @brief 链路控制寄存器 UP 位的掩码，用于协议信用交换 */</span></div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a755e834e7493e34d5aec50b4368543df">  557</a></span><span class="preprocessor">#define CXG_LINK_CTRL_UP_MASK                     UINT64_C(0x0000000000000004)</span></div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span><span class="comment"></span> </div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span><span class="comment">/** @def CXG_LINK_CTRL_DVMDOMAIN_REQ_MASK</span></div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span><span class="comment"> * @brief 链路控制寄存器 DVMDOMAIN_REQ（DVM 域请求）位的掩码 */</span></div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9707ff10aedd9f582f7a1aecfaaa2c05">  561</a></span><span class="preprocessor">#define CXG_LINK_CTRL_DVMDOMAIN_REQ_MASK          UINT64_C(0x0000000000000008)</span></div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span><span class="comment"></span> </div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span><span class="comment">/** @def CXG_LINK_STATUS_ACK_MASK</span></div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span><span class="comment"> * @brief 链路状态寄存器 ACK（确认）位的掩码 */</span></div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a45947648c5955ed3ab9e48deb2700183">  565</a></span><span class="preprocessor">#define CXG_LINK_STATUS_ACK_MASK                  UINT64_C(0x0000000000000001)</span></div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span><span class="comment"></span> </div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span><span class="comment">/** @def CXG_LINK_STATUS_DOWN_MASK</span></div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span><span class="comment"> * @brief 链路状态寄存器 DOWN 位的掩码 */</span></div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a1eaca7ff1ea9b39379b440faad0dc9b5">  569</a></span><span class="preprocessor">#define CXG_LINK_STATUS_DOWN_MASK                 UINT64_C(0x0000000000000002)</span></div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span><span class="comment"></span> </div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span><span class="comment">/** @def CXG_LINK_STATUS_DVMDOMAIN_ACK_MASK</span></div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span><span class="comment"> * @brief 链路状态寄存器 DVMDOMAIN_ACK 位的掩码 */</span></div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ae04982ec912f4d94183b48da1f686e3f">  573</a></span><span class="preprocessor">#define CXG_LINK_STATUS_DVMDOMAIN_ACK_MASK        UINT64_C(0x0000000000000004)</span></div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span><span class="comment"></span> </div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span><span class="comment">/** @def CXG_PRTCL_LINK_CTRL_TIMEOUT</span></div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span><span class="comment"> * @brief 链路控制操作的超时值（毫秒） */</span></div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a10382b9671cab8b3fa0723c67131afa6">  577</a></span><span class="preprocessor">#define CXG_PRTCL_LINK_CTRL_TIMEOUT               UINT32_C(100)</span></div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span><span class="comment"></span> </div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="comment">/** @def CXG_PRTCL_LINK_DVMDOMAIN_TIMEOUT</span></div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span><span class="comment"> * @brief DVM 域进入操作的超时值（毫秒） */</span></div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a64541e34f5ff9ef67e2358f5cc7f444d">  581</a></span><span class="preprocessor">#define CXG_PRTCL_LINK_DVMDOMAIN_TIMEOUT          UINT32_C(100)</span></div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span><span class="comment"></span> </div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span><span class="comment">/** @def RAID_RNF_BIT_SHIFT_VAL</span></div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="comment"> * @brief RAID 中 RN-F 标志位的位移值 */</span></div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a9ea01bbbc1c38390b2fef6ac1ebe93b7">  585</a></span><span class="preprocessor">#define RAID_RNF_BIT_SHIFT_VAL                    7</span></div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span><span class="comment"></span> </div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="comment">/** @def HNF_RN_PHYS_NODE_ID_SHIFT_VAL</span></div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="comment"> * @brief HN-F RN_PHYS_ID 寄存器中 Node ID 字段的位移值 */</span></div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a04297815f82b8ea2b676c7b071e853e8">  589</a></span><span class="preprocessor">#define HNF_RN_PHYS_NODE_ID_SHIFT_VAL             16</span></div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="comment"></span> </div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="comment">/** @def HNF_RN_PHYS_RN_ID_VALID_SHIFT_VAL</span></div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span><span class="comment"> * @brief HN-F RN_PHYS_ID 寄存器中有效位的位移值 */</span></div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a4daee379f4fb88913c8125541864f996">  593</a></span><span class="preprocessor">#define HNF_RN_PHYS_RN_ID_VALID_SHIFT_VAL         31</span></div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span><span class="comment"></span> </div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span><span class="comment">/** @def HNF_RN_PHYS_RN_LOCAL_REMOTE_SHIFT_VAL</span></div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span><span class="comment"> * @brief HN-F RN_PHYS_ID 寄存器中本地/远端标志位的位移值 */</span></div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a5dfcbffcc4e217facbc2f7daa495505f">  597</a></span><span class="preprocessor">#define HNF_RN_PHYS_RN_LOCAL_REMOTE_SHIFT_VAL     16</span></div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span><span class="comment"></span> </div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span><span class="comment">/** @def NUM_BITS_RESERVED_FOR_RAID</span></div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span><span class="comment"> * @brief RAID 字段占用的位数（8 位） */</span></div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a1003280e94697420b93dad124ea63a27">  601</a></span><span class="preprocessor">#define NUM_BITS_RESERVED_FOR_RAID                8</span></div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span><span class="comment"></span> </div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span><span class="comment">/** @def NUM_BITS_RESERVED_FOR_LINK_ID</span></div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span><span class="comment"> * @brief Link ID 字段占用的位数（8 位） */</span></div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a81d17d22bbf93959bf4c6f4d83833dda">  605</a></span><span class="preprocessor">#define NUM_BITS_RESERVED_FOR_LINK_ID             8</span></div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span><span class="comment"></span> </div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="comment">/** @def NUM_BITS_RESERVED_FOR_LDID</span></div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span><span class="comment"> * @brief LDID 字段占用的位数（8 位） */</span></div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#aa10c24282806e5b704f83dcef4ce626f">  609</a></span><span class="preprocessor">#define NUM_BITS_RESERVED_FOR_LDID                8</span></div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span><span class="comment"></span> </div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><span class="comment">/** @def NUM_BITS_RESERVED_FOR_PHYS_ID</span></div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="comment"> * @brief 物理标识符字段占用的位数（32 位） */</span></div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a75fa7ca475b1f14ef44327fbf02ff9ae">  613</a></span><span class="preprocessor">#define NUM_BITS_RESERVED_FOR_PHYS_ID             32</span></div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span><span class="comment"></span> </div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span><span class="comment">/** @def HNF_RN_PHYS_ID_OFFSET</span></div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span><span class="comment"> * @brief HN-F RN_PHYS_ID 寄存器的偏移地址 */</span></div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a0a47f7c1a6f62628ed2888c924092233">  617</a></span><span class="preprocessor">#define HNF_RN_PHYS_ID_OFFSET                     0xD28</span></div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span><span class="comment"></span> </div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span><span class="comment">/** @def LOCAL_CCIX_NODE</span></div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span><span class="comment"> * @brief 标识本地 CCIX 节点 */</span></div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ac58d45603f07006acfc2a54c2e83a979">  621</a></span><span class="preprocessor">#define LOCAL_CCIX_NODE                           0</span></div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span><span class="comment"></span> </div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span><span class="comment">/** @def REMOTE_CCIX_NODE</span></div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span><span class="comment"> * @brief 标识远端 CCIX 节点 */</span></div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#acb1c8140117c059c494d3268b4ae7424">  625</a></span><span class="preprocessor">#define REMOTE_CCIX_NODE                          1</span></div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span><span class="comment"></span> </div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span><span class="comment">/** @def SAM_ADDR_HOME_AGENT_ID_SHIFT</span></div>
+<div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span><span class="comment"> * @brief CXRA SAM 地址寄存器中 Home Agent ID 的位移值 */</span></div>
+<div class="line"><a id="l00629" name="l00629"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a70b3e208545559aa2a240a467bfb4446">  629</a></span><span class="preprocessor">#define SAM_ADDR_HOME_AGENT_ID_SHIFT              (52)</span></div>
+<div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span><span class="comment"></span> </div>
+<div class="line"><a id="l00631" name="l00631"></a><span class="lineno">  631</span><span class="comment">/** @def SAM_ADDR_REG_VALID_MASK</span></div>
+<div class="line"><a id="l00632" name="l00632"></a><span class="lineno">  632</span><span class="comment"> * @brief CXRA SAM 地址寄存器中有效位的掩码 */</span></div>
+<div class="line"><a id="l00633" name="l00633"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#ac40906e05b6e7d660fc7760df53f191e">  633</a></span><span class="preprocessor">#define SAM_ADDR_REG_VALID_MASK                   UINT64_C(0x8000000000000000)</span></div>
+<div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span><span class="comment"></span> </div>
+<div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span><span class="comment">/** @def PCIE_OPT_HDR_MASK</span></div>
+<div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span><span class="comment"> * @brief PCIe 优化 TLP 头使能位的掩码 */</span></div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a13ed84cc82eaf7db949e91f4babf7ba6">  637</a></span><span class="preprocessor">#define PCIE_OPT_HDR_MASK                         (0x1ULL &lt;&lt; 6)</span></div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span><span class="comment"></span> </div>
+<div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span><span class="comment">/** @def CTL_NUM_SNPCRDS_MASK</span></div>
+<div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span><span class="comment"> * @brief 控制寄存器中 SNP credit 数量的掩码 */</span></div>
+<div class="line"><a id="l00641" name="l00641"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#aa0bfde18089beb888fb058aa2147ade5">  641</a></span><span class="preprocessor">#define CTL_NUM_SNPCRDS_MASK                      (0xF &lt;&lt; 4)</span></div>
+<div class="line"><a id="l00642" name="l00642"></a><span class="lineno">  642</span><span class="comment"></span> </div>
+<div class="line"><a id="l00643" name="l00643"></a><span class="lineno">  643</span><span class="comment">/** @def CCIX_VENDER_ID</span></div>
+<div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span><span class="comment"> * @brief CCIX 标准定义的 Vendor ID */</span></div>
+<div class="line"><a id="l00645" name="l00645"></a><span class="lineno"><a class="line" href="cmn600__ccix_8h.html#a01376e7d9aaddb1bcaeeb892b6083a14">  645</a></span><span class="preprocessor">#define CCIX_VENDER_ID                            (0x1E2C)</span></div>
+<div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span> </div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span><span class="preprocessor">#endif </span><span class="comment">/* INTERNAL_CMN600_CCIX_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a2835736501d1dbb5a752479480706032"><div class="ttname"><a href="cmn600__ccix_8h.html#a2835736501d1dbb5a752479480706032">ccix_enter_dvm_domain</a></div><div class="ttdeci">int ccix_enter_dvm_domain(struct cmn600_ctx *ctx, uint8_t link_id)</div><div class="ttdoc">进入 DVM (Distributed Virtual Memory) 域</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8c_source.html#l00809">cmn600_ccix.c:809</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a41d93798e15e5b5111b9b310367f3873"><div class="ttname"><a href="cmn600__ccix_8h.html#a41d93798e15e5b5111b9b310367f3873">ccix_exchange_protocol_credit</a></div><div class="ttdeci">int ccix_exchange_protocol_credit(struct cmn600_ctx *ctx, uint8_t link_id)</div><div class="ttdoc">CCIX 协议信用交换</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8c_source.html#l00749">cmn600_ccix.c:749</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a5fc9bffccce08056b1f2f15db1068112"><div class="ttname"><a href="cmn600__ccix_8h.html#a5fc9bffccce08056b1f2f15db1068112">ccix_setup</a></div><div class="ttdeci">int ccix_setup(struct cmn600_ctx *ctx, void *remote_config)</div><div class="ttdoc">CCIX 网关配置设置</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8c_source.html#l00610">cmn600_ccix.c:610</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a966d301336f726211f14ae636ef9e9aa"><div class="ttname"><a href="cmn600__ccix_8h.html#a966d301336f726211f14ae636ef9e9aa">ccix_capabilities_get</a></div><div class="ttdeci">void ccix_capabilities_get(struct cmn600_ctx *ctx)</div><div class="ttdoc">获取 CCIX 能力信息</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8c_source.html#l00853">cmn600_ccix.c:853</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">cxg_link_up_wait_cond</a></div><div class="ttdeci">cxg_link_up_wait_cond</div><div class="ttdoc">CCIX 链路 UP 等待条件枚举</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00354">cmn600_ccix.h:354</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4">CXG_LINK_STATUS_HA_DVMDOMAIN_ACK_BIT_SET</a></div><div class="ttdeci">@ CXG_LINK_STATUS_HA_DVMDOMAIN_ACK_BIT_SET</div><div class="ttdoc">等待 CXHA 链路状态 DVMDOMAIN ACK 位置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00361">cmn600_ccix.h:361</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0">CXG_LINK_STATUS_RA_DVMDOMAIN_ACK_BIT_SET</a></div><div class="ttdeci">@ CXG_LINK_STATUS_RA_DVMDOMAIN_ACK_BIT_SET</div><div class="ttdoc">等待 CXRA 链路状态 DVMDOMAIN ACK 位置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00362">cmn600_ccix.h:362</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59">CXG_LINK_STATUS_DWN_BIT_SET</a></div><div class="ttdeci">@ CXG_LINK_STATUS_DWN_BIT_SET</div><div class="ttdoc">等待 CXRA/CXHA 链路状态 DOWN 位置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00357">cmn600_ccix.h:357</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c">CXG_LINK_STATUS_ACK_BIT_SET</a></div><div class="ttdeci">@ CXG_LINK_STATUS_ACK_BIT_SET</div><div class="ttdoc">等待 CXRA/CXHA 链路状态 ACK 位置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00359">cmn600_ccix.h:359</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4">CXG_LINK_UP_SEQ_COUNT</a></div><div class="ttdeci">@ CXG_LINK_UP_SEQ_COUNT</div><div class="ttdoc">链路建立序列总步骤数</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00363">cmn600_ccix.h:363</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931">CXG_LINK_STATUS_DWN_BIT_CLR</a></div><div class="ttdeci">@ CXG_LINK_STATUS_DWN_BIT_CLR</div><div class="ttdoc">等待 CXRA/CXHA 链路状态 DOWN 位清零</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00358">cmn600_ccix.h:358</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956">CXG_LINK_CTRL_EN_BIT_SET</a></div><div class="ttdeci">@ CXG_LINK_CTRL_EN_BIT_SET</div><div class="ttdoc">等待 CXRA/CXHA 链路控制 EN 位置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00355">cmn600_ccix.h:355</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e">CXG_LINK_CTRL_UP_BIT_CLR</a></div><div class="ttdeci">@ CXG_LINK_CTRL_UP_BIT_CLR</div><div class="ttdoc">等待 CXRA/CXHA 链路控制 UP 位清零</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00356">cmn600_ccix.h:356</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25"><div class="ttname"><a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25">CXG_LINK_STATUS_ACK_BIT_CLR</a></div><div class="ttdeci">@ CXG_LINK_STATUS_ACK_BIT_CLR</div><div class="ttdoc">等待 CXRA/CXHA 链路状态 ACK 位清零</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00360">cmn600_ccix.h:360</a></div></div>
+<div class="ttc" id="acmn600__ccix_8h_html_ae4b2950e2ed20ed7e27528aa7eeaa067"><div class="ttname"><a href="cmn600__ccix_8h.html#ae4b2950e2ed20ed7e27528aa7eeaa067">ccix_enter_system_coherency</a></div><div class="ttdeci">int ccix_enter_system_coherency(struct cmn600_ctx *ctx, uint8_t link_id)</div><div class="ttdoc">进入 CCIX 系统一致性域</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8c_source.html#l00772">cmn600_ccix.c:772</a></div></div>
+<div class="ttc" id="acmn600__ctx_8h_html"><div class="ttname"><a href="cmn600__ctx_8h.html">cmn600_ctx.h</a></div><div class="ttdoc">CMN-600 模块内部上下文结构定义</div></div>
+<div class="ttc" id="amod__cmn600_8c_html_a669380856325926ff84fe997801828d6"><div class="ttname"><a href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a></div><div class="ttdeci">struct cmn600_ctx * ctx</div><div class="ttdoc">CMN-600 模块运行时上下文指针</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8c_source.html#l00078">mod_cmn600.c:78</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html"><div class="ttname"><a href="structcmn600__ctx.html">cmn600_ctx</a></div><div class="ttdoc">CMN-600 驱动模块运行时上下文</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00064">cmn600_ctx.h:64</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html">cmn600_cxg_ha_reg</a></div><div class="ttdoc">CCIX Gateway Home Agent (CXHA) 寄存器映射</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00121">cmn600_ccix.h:121</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a151a49751c0cfb755dc5ca3f15bd7b00"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a151a49751c0cfb755dc5ca3f15bd7b00">cmn600_cxg_ha_reg::CXG_HA_RNF_RAID_TO_LDID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_RNF_RAID_TO_LDID_REG[8]</div><div class="ttdoc">RN-F RAID 到 LDID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00151">cmn600_ccix.h:151</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a18bd341c2077d534897917a91624d69f"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a18bd341c2077d534897917a91624d69f">cmn600_cxg_ha_reg::CXG_HA_CHILD_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXG_HA_CHILD_INFO</div><div class="ttdoc">子节点信息寄存器，描述该节点下的子设备数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00130">cmn600_ccix.h:130</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a262260c1cb5b8c9bdeabf7841f8ac40a"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a262260c1cb5b8c9bdeabf7841f8ac40a">cmn600_cxg_ha_reg::CXG_HA_NODE_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXG_HA_NODE_INFO</div><div class="ttdoc">节点信息寄存器，包含节点类型、ID 和逻辑 ID</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00123">cmn600_ccix.h:123</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a273447273d62075ef6628f9104972e3c"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a273447273d62075ef6628f9104972e3c">cmn600_cxg_ha_reg::RESERVED3</a></div><div class="ttdeci">uint8_t RESERVED3[0xA08-0x988]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00140">cmn600_ccix.h:140</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a3f24a770c57a72db6b7220d357575970"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a3f24a770c57a72db6b7220d357575970">cmn600_cxg_ha_reg::CXG_HA_ID</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_ID</div><div class="ttdoc">Home Agent ID 寄存器，配置本地的 HA 标识符</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00126">cmn600_ccix.h:126</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a475af9c59e4799b668df3580e6111a86"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a475af9c59e4799b668df3580e6111a86">cmn600_cxg_ha_reg::CXG_HA_AGENTID_TO_LINKID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_AGENTID_TO_LINKID_VAL</div><div class="ttdoc">AgentID 到 LinkID 映射有效位寄存器，每位对应一个映射项的有效性</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00163">cmn600_ccix.h:163</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a616c79d4f96f7f23bc7560c58a4d653e"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a616c79d4f96f7f23bc7560c58a4d653e">cmn600_cxg_ha_reg::RESERVED6</a></div><div class="ttdeci">uint8_t RESERVED6[0x1000-0xD10]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00168">cmn600_ccix.h:168</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a74c230432b83714384b9a9d20c60a771"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a74c230432b83714384b9a9d20c60a771">cmn600_cxg_ha_reg::RESERVED1</a></div><div class="ttdeci">uint8_t RESERVED1[0x900-0x88]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00132">cmn600_ccix.h:132</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a77619421381eb08d2e0a6f53d5f0959b"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a77619421381eb08d2e0a6f53d5f0959b">cmn600_cxg_ha_reg::CXG_HA_RNF_RAID_TO_LDID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_RNF_RAID_TO_LDID_VAL</div><div class="ttdoc">RN-F RAID 到 LDID 映射有效位寄存器，每位对应一个 RAID 映射的有效性</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00166">cmn600_ccix.h:166</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a79eb25d8782bddda86497724f87e4001"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a79eb25d8782bddda86497724f87e4001">cmn600_cxg_ha_reg::RESERVED5</a></div><div class="ttdeci">uint8_t RESERVED5[0xD00-0xC80]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00161">cmn600_ccix.h:161</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a7b7f9478bf35bb9e576f7061f8b90563"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a7b7f9478bf35bb9e576f7061f8b90563">cmn600_cxg_ha_reg::RESERVED2</a></div><div class="ttdeci">uint8_t RESERVED2[0x980-0x908]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00136">cmn600_ccix.h:136</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a7f95cf88e42c9a4ec4d0fbfff8964c02"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a7f95cf88e42c9a4ec4d0fbfff8964c02">cmn600_cxg_ha_reg::RESERVED7</a></div><div class="ttdeci">uint8_t RESERVED7[0x2000-0x1030]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00176">cmn600_ccix.h:176</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a87b90d30999c2ee7d948978a644541ab"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a87b90d30999c2ee7d948978a644541ab">cmn600_cxg_ha_reg::LINK_REGS</a></div><div class="ttdeci">struct cxg_link_regs LINK_REGS[3]</div><div class="ttdoc">链路控制与状态寄存器数组，共 3 条 CCIX 链路</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00174">cmn600_ccix.h:174</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a8fb248c783634227109d2e0a576bb530"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a8fb248c783634227109d2e0a576bb530">cmn600_cxg_ha_reg::CXG_HA_PMU_EVENT_SEL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_PMU_EVENT_SEL</div><div class="ttdoc">PMU 事件选择寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00178">cmn600_ccix.h:178</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a9b8a8a3282afd020bfc43be476e9e79b"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a9b8a8a3282afd020bfc43be476e9e79b">cmn600_cxg_ha_reg::RESERVED0</a></div><div class="ttdeci">uint8_t RESERVED0[0x80-0x10]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00128">cmn600_ccix.h:128</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_a9d8b68776b846c629af938c470de436b"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#a9d8b68776b846c629af938c470de436b">cmn600_cxg_ha_reg::CXG_HA_AGENTID_TO_LINKID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_AGENTID_TO_LINKID_REG[8]</div><div class="ttdoc">AgentID 到 LinkID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00159">cmn600_ccix.h:159</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_aa5f47f03001cb9ae3edbc09ed7d818eb"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#aa5f47f03001cb9ae3edbc09ed7d818eb">cmn600_cxg_ha_reg::RESERVED4</a></div><div class="ttdeci">uint8_t RESERVED4[0xC00-0xA10]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00144">cmn600_ccix.h:144</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_ad6c317785c8695842c73da018418b5fe"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#ad6c317785c8695842c73da018418b5fe">cmn600_cxg_ha_reg::CXG_HA_AUX_CTRL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_AUX_CTRL</div><div class="ttdoc">辅助控制寄存器，包含 SMP 模式等配置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00142">cmn600_ccix.h:142</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_adbc6058c67da3cdee8f0e91c012011ee"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#adbc6058c67da3cdee8f0e91c012011ee">cmn600_cxg_ha_reg::CXG_HA_SEC_REG_GRP_OVERRIDE</a></div><div class="ttdeci">FWK_RW uint64_t CXG_HA_SEC_REG_GRP_OVERRIDE</div><div class="ttdoc">安全寄存器组覆盖寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00138">cmn600_ccix.h:138</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html_ae50cec1c0104800fd05cba2c99662093"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html#ae50cec1c0104800fd05cba2c99662093">cmn600_cxg_ha_reg::CXG_HA_UNIT_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXG_HA_UNIT_INFO</div><div class="ttdoc">单元信息寄存器，包含 Snoop Tracker 深度和 WDB 深度等硬件参数</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00134">cmn600_ccix.h:134</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html">cmn600_cxg_ra_reg</a></div><div class="ttdoc">CCIX Gateway Requesting Agent (CXRA) 寄存器映射</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00188">cmn600_ccix.h:188</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a03f4c6570c00f2aa794798e3754b760c"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a03f4c6570c00f2aa794798e3754b760c">cmn600_cxg_ra_reg::CXG_RA_RND_LDID_TO_RAID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_RND_LDID_TO_RAID_REG[4]</div><div class="ttdoc">RN-D LDID 到 RAID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00256">cmn600_ccix.h:256</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a1cdb641c48755cefe5d9d4967929738c"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a1cdb641c48755cefe5d9d4967929738c">cmn600_cxg_ra_reg::CXG_RA_CHILD_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXG_RA_CHILD_INFO</div><div class="ttdoc">子节点信息寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00194">cmn600_ccix.h:194</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a1fe58311435b98e57ba391c05a3fd34f"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a1fe58311435b98e57ba391c05a3fd34f">cmn600_cxg_ra_reg::CXG_RA_CFG_CTRL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_CFG_CTRL</div><div class="ttdoc">配置控制寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00206">cmn600_ccix.h:206</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a2416d655f63bb98e23d577a0cad379f5"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a2416d655f63bb98e23d577a0cad379f5">cmn600_cxg_ra_reg::RESERVED2</a></div><div class="ttdeci">uint8_t RESERVED2[0x980-0x908]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00200">cmn600_ccix.h:200</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a28c6ce222892c528cfba7a09cf8afd6b"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a28c6ce222892c528cfba7a09cf8afd6b">cmn600_cxg_ra_reg::CXG_RA_SAM_MEM_REGION_LIMIT_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_SAM_MEM_REGION_LIMIT_REG[8]</div><div class="ttdoc">SAM 内存区域上限寄存器数组，用于限定每个区域的地址范围</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00223">cmn600_ccix.h:223</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a3715177c7d6ee2405edbe072d25d9601"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a3715177c7d6ee2405edbe072d25d9601">cmn600_cxg_ra_reg::CXG_RA_RNI_LDID_TO_RAID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_RNI_LDID_TO_RAID_REG[4]</div><div class="ttdoc">RN-I LDID 到 RAID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00248">cmn600_ccix.h:248</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a4030ada154fd314260e62361964126db"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a4030ada154fd314260e62361964126db">cmn600_cxg_ra_reg::RESERVED3</a></div><div class="ttdeci">uint8_t RESERVED3[0xA00-0x988]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00204">cmn600_ccix.h:204</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a4ba52fdc5165f57b17cd4b7bffd0defc"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a4ba52fdc5165f57b17cd4b7bffd0defc">cmn600_cxg_ra_reg::CXG_RA_RNI_LDID_TO_RAID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_RNI_LDID_TO_RAID_VAL</div><div class="ttdoc">RN-I LDID 到 RAID 映射有效位寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00265">cmn600_ccix.h:265</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a4f78f487b7c12595eabe87ba3c9ebf38"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a4f78f487b7c12595eabe87ba3c9ebf38">cmn600_cxg_ra_reg::CXG_RA_RNF_LDID_TO_RAID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_RNF_LDID_TO_RAID_VAL</div><div class="ttdoc">RN-F LDID 到 RAID 映射有效位寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00262">cmn600_ccix.h:262</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a609bb3f52c1e83ca15b9afbc058168ff"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a609bb3f52c1e83ca15b9afbc058168ff">cmn600_cxg_ra_reg::RESERVED0</a></div><div class="ttdeci">uint8_t RESERVED0[0x80-0x8]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00192">cmn600_ccix.h:192</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a755ab25035f626425b21d4c011f5069c"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a755ab25035f626425b21d4c011f5069c">cmn600_cxg_ra_reg::CXG_RA_AGENTID_TO_LINKID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_AGENTID_TO_LINKID_VAL</div><div class="ttdoc">AgentID 到 LinkID 映射有效位寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00259">cmn600_ccix.h:259</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a8561c4c66a97f792437cbd54ddcc4a0b"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a8561c4c66a97f792437cbd54ddcc4a0b">cmn600_cxg_ra_reg::CXG_RA_PMU_EVENT_SEL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_PMU_EVENT_SEL</div><div class="ttdoc">PMU 事件选择寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00280">cmn600_ccix.h:280</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a85a7da03c0447af41ce2e3c6970b79c7"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a85a7da03c0447af41ce2e3c6970b79c7">cmn600_cxg_ra_reg::RESERVED7</a></div><div class="ttdeci">uint8_t RESERVED7[0x1000-0xF40]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00270">cmn600_ccix.h:270</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a8c766c1cf4f5567523ab854b8b7af64d"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a8c766c1cf4f5567523ab854b8b7af64d">cmn600_cxg_ra_reg::CXG_RA_UNIT_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXG_RA_UNIT_INFO</div><div class="ttdoc">单元信息寄存器，包含 Request Tracker 深度和 SMP 模式等硬件参数</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00198">cmn600_ccix.h:198</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_a9a6f44899a07f912930904bde35f56ce"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#a9a6f44899a07f912930904bde35f56ce">cmn600_cxg_ra_reg::RESERVED4</a></div><div class="ttdeci">uint8_t RESERVED4[0xDA8-0xA10]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00211">cmn600_ccix.h:211</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_aaab925dda0babacc7e004a999692661c"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#aaab925dda0babacc7e004a999692661c">cmn600_cxg_ra_reg::LINK_REGS</a></div><div class="ttdeci">struct cxg_link_regs LINK_REGS[3]</div><div class="ttdoc">链路控制与状态寄存器数组，共 3 条 CCIX 链路</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00276">cmn600_ccix.h:276</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_ab3f0a03a73b742f28782f1fa979346e6"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#ab3f0a03a73b742f28782f1fa979346e6">cmn600_cxg_ra_reg::CXG_RA_AUX_CTRL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_AUX_CTRL</div><div class="ttdoc">辅助控制寄存器，包含 SMP 模式等配置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00209">cmn600_ccix.h:209</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_ab89464f39af09b48e77df47922e5d39b"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#ab89464f39af09b48e77df47922e5d39b">cmn600_cxg_ra_reg::RESERVED8</a></div><div class="ttdeci">uint8_t RESERVED8[0x2000-0x1030]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00278">cmn600_ccix.h:278</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_ab89ef0496fb58b3a3f85d7d5b89bfae9"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#ab89ef0496fb58b3a3f85d7d5b89bfae9">cmn600_cxg_ra_reg::RESERVED5</a></div><div class="ttdeci">uint8_t RESERVED5[0xE00-0xDE8]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00221">cmn600_ccix.h:221</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_abcf7b151bc3af3993bf3539ade361859"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#abcf7b151bc3af3993bf3539ade361859">cmn600_cxg_ra_reg::RESERVED1</a></div><div class="ttdeci">uint8_t RESERVED1[0x900-0x88]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00196">cmn600_ccix.h:196</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_ac060544fa358a561a68d3bb7e21f1524"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#ac060544fa358a561a68d3bb7e21f1524">cmn600_cxg_ra_reg::CXG_RA_AGENTID_TO_LINKID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_AGENTID_TO_LINKID_REG[8]</div><div class="ttdoc">AgentID 到 LinkID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00232">cmn600_ccix.h:232</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_acbcf305f49ff3dbd89d010b7d03724fd"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#acbcf305f49ff3dbd89d010b7d03724fd">cmn600_cxg_ra_reg::CXG_RA_NODE_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXG_RA_NODE_INFO</div><div class="ttdoc">节点信息寄存器，包含节点类型、ID 和逻辑 ID</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00190">cmn600_ccix.h:190</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_ad56c2491beebeb3f947ffba402df3cd5"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#ad56c2491beebeb3f947ffba402df3cd5">cmn600_cxg_ra_reg::CXG_RA_SAM_ADDR_REGION_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_SAM_ADDR_REGION_REG[8]</div><div class="ttdoc">SAM 地址区域配置寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00219">cmn600_ccix.h:219</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_ae80fbe2375c4956a49a78f77547d94ce"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#ae80fbe2375c4956a49a78f77547d94ce">cmn600_cxg_ra_reg::CXG_RA_RNF_LDID_TO_RAID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_RNF_LDID_TO_RAID_REG[8]</div><div class="ttdoc">RN-F LDID 到 RAID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00240">cmn600_ccix.h:240</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_aeb509284d7eded256a722a89a3bb63ab"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#aeb509284d7eded256a722a89a3bb63ab">cmn600_cxg_ra_reg::CXG_RA_SEC_REG_GRP_OVERRIDE</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_SEC_REG_GRP_OVERRIDE</div><div class="ttdoc">安全寄存器组覆盖寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00202">cmn600_ccix.h:202</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_aeeba19569ece1441bf8dfe2e49cc7dfd"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#aeeba19569ece1441bf8dfe2e49cc7dfd">cmn600_cxg_ra_reg::RESERVED6</a></div><div class="ttdeci">uint8_t RESERVED6[0xE60-0xE40]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00225">cmn600_ccix.h:225</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html_af5da6c5cbd375e90f68b8f2071da0517"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html#af5da6c5cbd375e90f68b8f2071da0517">cmn600_cxg_ra_reg::CXG_RA_RND_LDID_TO_RAID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_RA_RND_LDID_TO_RAID_VAL</div><div class="ttdoc">RN-D LDID 到 RAID 映射有效位寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00268">cmn600_ccix.h:268</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html"><div class="ttname"><a href="structcmn600__cxla__reg.html">cmn600_cxla_reg</a></div><div class="ttdoc">CCIX Gateway Link Agent (CXLA) 寄存器映射</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00290">cmn600_ccix.h:290</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a0bb42b073c62756885e2e57617e64a70"><div class="ttname"><a href="structcmn600__cxla__reg.html#a0bb42b073c62756885e2e57617e64a70">cmn600_cxla_reg::RESERVED2</a></div><div class="ttdeci">uint8_t RESERVED2[0x980-0x908]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00302">cmn600_ccix.h:302</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a12d2c729a87d6ccc0119ffe91cea1621"><div class="ttname"><a href="structcmn600__cxla__reg.html#a12d2c729a87d6ccc0119ffe91cea1621">cmn600_cxla_reg::CXLA_PCIE_HDR_FIELDS</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_PCIE_HDR_FIELDS</div><div class="ttdoc">PCIe TLP 头字段配置寄存器，包含 Traffic Class 和 Vendor ID 等字段</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00339">cmn600_ccix.h:339</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a18cef7471b93852ca2e44373f6d68500"><div class="ttname"><a href="structcmn600__cxla__reg.html#a18cef7471b93852ca2e44373f6d68500">cmn600_cxla_reg::CXLA_CCIX_PROP_CAPABILITIES</a></div><div class="ttdeci">FWK_R uint64_t CXLA_CCIX_PROP_CAPABILITIES</div><div class="ttdoc">CCIX 协议能力寄存器（只读），反映硬件支持的消息打包、最大包大小等能力</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00312">cmn600_ccix.h:312</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a3b423253fe8271d43db410499c520e28"><div class="ttname"><a href="structcmn600__cxla__reg.html#a3b423253fe8271d43db410499c520e28">cmn600_cxla_reg::CXLA_CCIX_PROP_CONFIGURED</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_CCIX_PROP_CONFIGURED</div><div class="ttdoc">CCIX 协议已配置寄存器（可读写），用于使能/配置消息打包、最大包大小等</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00315">cmn600_ccix.h:315</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a5b6059ff35194e58991b0ecfd7b47df1"><div class="ttname"><a href="structcmn600__cxla__reg.html#a5b6059ff35194e58991b0ecfd7b47df1">cmn600_cxla_reg::CXLA_TX_CXS_ATTR_CAPABILITIES</a></div><div class="ttdeci">FWK_R uint64_t CXLA_TX_CXS_ATTR_CAPABILITIES</div><div class="ttdoc">CCIX CXS 发送属性能力寄存器（只读）</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00318">cmn600_ccix.h:318</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a7448658aa962c350e9c8547eb9c6678e"><div class="ttname"><a href="structcmn600__cxla__reg.html#a7448658aa962c350e9c8547eb9c6678e">cmn600_cxla_reg::CXLA_NODE_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXLA_NODE_INFO</div><div class="ttdoc">节点信息寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00292">cmn600_ccix.h:292</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a7df103a281ca8ff61311c5fb0d292f36"><div class="ttname"><a href="structcmn600__cxla__reg.html#a7df103a281ca8ff61311c5fb0d292f36">cmn600_cxla_reg::CXLA_LINKID_TO_PCIE_BUS_NUM</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_LINKID_TO_PCIE_BUS_NUM</div><div class="ttdoc">LinkID 到 PCIe 总线号映射寄存器，每 16 位对应一条链路的 PCIe 总线号</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00336">cmn600_ccix.h:336</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a8697d31c5914fdbb1981d42bc0b06e8e"><div class="ttname"><a href="structcmn600__cxla__reg.html#a8697d31c5914fdbb1981d42bc0b06e8e">cmn600_cxla_reg::CXLA_AGENTID_TO_LINKID_REG</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_AGENTID_TO_LINKID_REG[8]</div><div class="ttdoc">AgentID 到 LinkID 映射寄存器数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00330">cmn600_ccix.h:330</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_a938e740f50a007c89bd4b1c937f1bf36"><div class="ttname"><a href="structcmn600__cxla__reg.html#a938e740f50a007c89bd4b1c937f1bf36">cmn600_cxla_reg::RESERVED1</a></div><div class="ttdeci">uint8_t RESERVED1[0x900-0x88]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00298">cmn600_ccix.h:298</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_aa182a0a04d230ecd3aeeef6a2a9f3aea"><div class="ttname"><a href="structcmn600__cxla__reg.html#aa182a0a04d230ecd3aeeef6a2a9f3aea">cmn600_cxla_reg::CXLA_AUX_CTRL</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_AUX_CTRL</div><div class="ttdoc">辅助控制寄存器，包含 SMP 模式等配置位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00308">cmn600_ccix.h:308</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_aa2ed381aae7731be171d8caecfa5e27d"><div class="ttname"><a href="structcmn600__cxla__reg.html#aa2ed381aae7731be171d8caecfa5e27d">cmn600_cxla_reg::CXLA_AGENTID_TO_LINKID_VAL</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_AGENTID_TO_LINKID_VAL</div><div class="ttdoc">AgentID 到 LinkID 映射有效位寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00333">cmn600_ccix.h:333</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_aaafffc1ae88e851faa3716e1ba7f58d1"><div class="ttname"><a href="structcmn600__cxla__reg.html#aaafffc1ae88e851faa3716e1ba7f58d1">cmn600_cxla_reg::CXLA_CHILD_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXLA_CHILD_INFO</div><div class="ttdoc">子节点信息寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00296">cmn600_ccix.h:296</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_aabab6c2be1518462f141ed1942f53c85"><div class="ttname"><a href="structcmn600__cxla__reg.html#aabab6c2be1518462f141ed1942f53c85">cmn600_cxla_reg::CXLA_UNIT_INFO</a></div><div class="ttdeci">FWK_R uint64_t CXLA_UNIT_INFO</div><div class="ttdoc">单元信息寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00300">cmn600_ccix.h:300</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_abc63fa3b1e9f8e41e06af3d263ae06a2"><div class="ttname"><a href="structcmn600__cxla__reg.html#abc63fa3b1e9f8e41e06af3d263ae06a2">cmn600_cxla_reg::RESERVED5</a></div><div class="ttdeci">uint8_t RESERVED5[0xC30-0xC20]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00323">cmn600_ccix.h:323</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_acb597012af30ee9ee6aa4ad0cf282db4"><div class="ttname"><a href="structcmn600__cxla__reg.html#acb597012af30ee9ee6aa4ad0cf282db4">cmn600_cxla_reg::CXLA_RX_CXS_ATTR_CAPABILITIES</a></div><div class="ttdeci">FWK_R uint64_t CXLA_RX_CXS_ATTR_CAPABILITIES</div><div class="ttdoc">CCIX CXS 接收属性能力寄存器（只读）</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00321">cmn600_ccix.h:321</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_ad158162b1348b1063ef007b04d6ff52e"><div class="ttname"><a href="structcmn600__cxla__reg.html#ad158162b1348b1063ef007b04d6ff52e">cmn600_cxla_reg::CXLA_SEC_REG_GRP_OVERRIDE</a></div><div class="ttdeci">FWK_RW uint64_t CXLA_SEC_REG_GRP_OVERRIDE</div><div class="ttdoc">安全寄存器组覆盖寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00304">cmn600_ccix.h:304</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_ad2c63fe58d9cdc91378ea53e6bdefc8c"><div class="ttname"><a href="structcmn600__cxla__reg.html#ad2c63fe58d9cdc91378ea53e6bdefc8c">cmn600_cxla_reg::RESERVED4</a></div><div class="ttdeci">uint8_t RESERVED4[0xC00-0xA10]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00310">cmn600_ccix.h:310</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_aec202e3e579d7956d7260c13610b7797"><div class="ttname"><a href="structcmn600__cxla__reg.html#aec202e3e579d7956d7260c13610b7797">cmn600_cxla_reg::RESERVED0</a></div><div class="ttdeci">uint8_t RESERVED0[0x80-0x8]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00294">cmn600_ccix.h:294</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html_aef2e6755083c95408b9c74a9649745ce"><div class="ttname"><a href="structcmn600__cxla__reg.html#aef2e6755083c95408b9c74a9649745ce">cmn600_cxla_reg::RESERVED3</a></div><div class="ttdeci">uint8_t RESERVED3[0xA08-0x988]</div><div class="ttdoc">保留</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00306">cmn600_ccix.h:306</a></div></div>
+<div class="ttc" id="astructcxg__link__regs_html"><div class="ttname"><a href="structcxg__link__regs.html">cxg_link_regs</a></div><div class="ttdoc">CCIX Gateway (CXG) 协议链路控制与状态寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00106">cmn600_ccix.h:106</a></div></div>
+<div class="ttc" id="astructcxg__link__regs_html_a31f8fcb846efbef3d45d085ede1a5dda"><div class="ttname"><a href="structcxg__link__regs.html#a31f8fcb846efbef3d45d085ede1a5dda">cxg_link_regs::CXG_PRTCL_LINK_STATUS</a></div><div class="ttdeci">FWK_R uint64_t CXG_PRTCL_LINK_STATUS</div><div class="ttdoc">协议链路状态寄存器，包含 ACK/DOWN/DVMDOMAIN_ACK 等状态位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00111">cmn600_ccix.h:111</a></div></div>
+<div class="ttc" id="astructcxg__link__regs_html_a6e76681d56137efdcb82f760a2b60364"><div class="ttname"><a href="structcxg__link__regs.html#a6e76681d56137efdcb82f760a2b60364">cxg_link_regs::CXG_PRTCL_LINK_CTRL</a></div><div class="ttdeci">FWK_RW uint64_t CXG_PRTCL_LINK_CTRL</div><div class="ttdoc">协议链路控制寄存器，包含 EN/REQ/UP/DVMDOMAIN_REQ 等控制位</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00108">cmn600_ccix.h:108</a></div></div>
+<div class="ttc" id="astructcxg__wait__condition__data_html"><div class="ttname"><a href="structcxg__wait__condition__data.html">cxg_wait_condition_data</a></div><div class="ttdoc">CCIX 链路等待条件数据</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00372">cmn600_ccix.h:372</a></div></div>
+<div class="ttc" id="astructcxg__wait__condition__data_html_a62e2cda1319aa57b0d712d03ff74431e"><div class="ttname"><a href="structcxg__wait__condition__data.html#a62e2cda1319aa57b0d712d03ff74431e">cxg_wait_condition_data::link_id</a></div><div class="ttdeci">uint8_t link_id</div><div class="ttdoc">CCIX 链路标识符，有效值为 0-2</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00377">cmn600_ccix.h:377</a></div></div>
+<div class="ttc" id="astructcxg__wait__condition__data_html_a976e9484d676349b115b2b184c77350a"><div class="ttname"><a href="structcxg__wait__condition__data.html#a976e9484d676349b115b2b184c77350a">cxg_wait_condition_data::ctx</a></div><div class="ttdeci">struct cmn600_ctx * ctx</div><div class="ttdoc">CMN-600 模块上下文指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00374">cmn600_ccix.h:374</a></div></div>
+<div class="ttc" id="astructcxg__wait__condition__data_html_ae4730dd702799c4692cca022fad06a0c"><div class="ttname"><a href="structcxg__wait__condition__data.html#ae4730dd702799c4692cca022fad06a0c">cxg_wait_condition_data::cond</a></div><div class="ttdeci">enum cxg_link_up_wait_cond cond</div><div class="ttdoc">等待条件类型，参见 enum cxg_link_up_wait_cond</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00380">cmn600_ccix.h:380</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_48f311512fb313e8ec1c32eaef206743.html">scp_firmware</a></li><li class="navelem"><a class="el" href="dir_fcc1255ba6bda919d85092c50000c4b5.html">module</a></li><li class="navelem"><a class="el" href="dir_a446bcb378e7d3b34199efec74fac8d3.html">cmn600</a></li><li class="navelem"><a class="el" href="dir_dfaf74a7e0a30d6f2b03404a92276f19.html">include</a></li><li class="navelem"><a class="el" href="dir_34586aada5f6b86c3b06b4faf9f82e08.html">internal</a></li><li class="navelem"><a class="el" href="cmn600__ccix_8h.html">cmn600_ccix.h</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

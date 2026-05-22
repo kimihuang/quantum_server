@@ -1,0 +1,581 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>15. PCI Express 地址翻译与中断机制分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="16. Compute Express Link (CXL) 规范分析" href="../cxl/CXL_Spec.html" />
+    <link rel="prev" title="14. PCI Express Base 5.0 规范文档结构概览" href="PCI_Express_Base_5_0.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">15. PCI Express 地址翻译与中断机制分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ats">15.1. 地址翻译服务（ATS）架构概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">15.2. 翻译请求协议</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tlp">15.2.1. 翻译请求 TLP 格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">15.2.2. 翻译完成 TLP 格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">15.2.3. 翻译范围大小编码</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id23">15.3. ATS 失效机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pri">15.4. 页面请求接口（PRI）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id28">15.4.1. PRI 架构概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prg">15.4.2. PRG 响应消息</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pasid-id">15.5. PASID（进程地址空间 ID）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pasid-tlp-prefix">15.5.1. PASID TLP Prefix 格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pasid">15.5.2. PASID 使用规则</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#msi-msi-x">15.6. MSI/MSI-X 中断机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id43">15.6.1. MSI/MSI-X 概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#msi">15.6.2. MSI 配置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#msi-x">15.6.3. MSI-X 配置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">15.6.4. 发送中断消息</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id53">15.6.5. 每向量屏蔽和功能屏蔽</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id54">15.7. ATS 配置寄存器</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id55">15.7.1. ATS 扩展能力结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id60">15.7.2. 页面请求扩展能力结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id65">15.7.3. PASID 扩展能力结构</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id70">15.8. 系统架构交互说明</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">15. </span>PCI Express 地址翻译与中断机制分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pcie/PCI_Express_Base_5_0_ATS.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pci-express">
+<h1><span class="section-number">15. </span>PCI Express 地址翻译与中断机制分析<a class="headerlink" href="#pci-express" title="链接到此标题。"></a></h1>
+<p>本文档基于 PCI Express Base 5.0 规范，重点分析 ATS、PRI、PASID、MSI/MSI-X 等机制。
+参考文档：docs/pdf/PCIE/PCI_Express_Base_5.0r1.0.md</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#ats" id="id77">地址翻译服务（ATS）架构概述</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id78">翻译请求协议</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tlp" id="id79">翻译请求 TLP 格式</a></p></li>
+<li><p><a class="reference internal" href="#id13" id="id80">翻译完成 TLP 格式</a></p></li>
+<li><p><a class="reference internal" href="#id20" id="id81">翻译范围大小编码</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id23" id="id82">ATS 失效机制</a></p></li>
+<li><p><a class="reference internal" href="#pri" id="id83">页面请求接口（PRI）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id28" id="id84">PRI 架构概述</a></p></li>
+<li><p><a class="reference internal" href="#prg" id="id85">PRG 响应消息</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#pasid-id" id="id86">PASID（进程地址空间 ID）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#pasid-tlp-prefix" id="id87">PASID TLP Prefix 格式</a></p></li>
+<li><p><a class="reference internal" href="#pasid" id="id88">PASID 使用规则</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#msi-msi-x" id="id89">MSI/MSI-X 中断机制</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id43" id="id90">MSI/MSI-X 概述</a></p></li>
+<li><p><a class="reference internal" href="#msi" id="id91">MSI 配置</a></p></li>
+<li><p><a class="reference internal" href="#msi-x" id="id92">MSI-X 配置</a></p></li>
+<li><p><a class="reference internal" href="#id52" id="id93">发送中断消息</a></p></li>
+<li><p><a class="reference internal" href="#id53" id="id94">每向量屏蔽和功能屏蔽</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id54" id="id95">ATS 配置寄存器</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id55" id="id96">ATS 扩展能力结构</a></p></li>
+<li><p><a class="reference internal" href="#id60" id="id97">页面请求扩展能力结构</a></p></li>
+<li><p><a class="reference internal" href="#id65" id="id98">PASID 扩展能力结构</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id70" id="id99">系统架构交互说明</a></p></li>
+</ul>
+</nav>
+<section id="ats">
+<h2><a class="toc-backref" href="#id77" role="doc-backlink"><span class="section-number">15.1. </span>地址翻译服务（ATS）架构概述</a><a class="headerlink" href="#ats" title="链接到此标题。"></a></h2>
+<p><em>引用：Chapter 10.1 ATS Architectural Overview</em></p>
+<p>大多数现代系统架构都提供 DMA（总线主控）I/O 功能的地址翻译机制。在许多实现中，CPU 和 I/O 功能看到的物理地址空间是等价的，但在其他实现中并非如此。编程到 I/O 功能中的地址是一个&quot;句柄&quot;，由 Root Complex（RC）处理。这种处理的结果通常是翻译为中央复用器内的物理内存地址。通常，处理包括访问权限检查，以确保 DMA 功能被允许访问引用的内存位置。</p>
+<p><a href="#id2"><span class="problematic" id="id3">**</span></a>DMA 地址翻译的目的**（Chapter 10.1）：</p>
+<ul class="simple">
+<li><p>限制&quot;损坏&quot;或错误编程的 DMA I/O 功能的破坏性</p></li>
+<li><p>提供分散/聚集（scatter/gather）支持</p></li>
+<li><p>能够重定向消息信号中断（如 MSI 或 MSI-X）到不同的地址范围，无需与底层 I/O 功能协调</p></li>
+<li><p>地址空间转换（32 位 I/O 功能到更大的系统地址空间）</p></li>
+<li><p>虚拟化支持</p></li>
+</ul>
+<p><a href="#id4"><span class="problematic" id="id5">**</span></a>ATS 的核心价值**（Chapter 10.1）：</p>
+<p>根据实现方式，DMA 访问时间可能因需要解析实际物理地址而显著延长。如果实现需要访问主驻留翻译表，访问时间可能比未翻译访问长得多。此外，如果每个事务需要多次内存访问（例如，用于表遍历），则与 DMA 相关的内存事务率（即开销）可能很高。</p>
+<p>为了减轻这些影响，设计通常在执行地址翻译的实体中包含地址翻译缓存。在 CPU 中，地址翻译缓存最常被称为翻译后备缓冲区（TLB）。对于 I/O TA，使用术语地址翻译缓存或 ATC 来区分它与 CPU 使用的翻译缓存。</p>
+<p>ATS 允许 I/O 设备参与翻译过程并为其自己的内存访问提供 ATC。在设备中拥有 ATC 的好处包括：</p>
+<ul class="simple">
+<li><p>能够通过分散地址翻译缓存责任来减轻 TA 资源压力（减少 TA 内的&quot;颠簸&quot;概率）</p></li>
+<li><p>使 ATC 设备对系统 ATC 大小的性能依赖性降低</p></li>
+<li><p>通过向中央复用器发送预翻译的请求来确保最佳访问延迟</p></li>
+</ul>
+</section>
+<section id="id6">
+<h2><a class="toc-backref" href="#id78" role="doc-backlink"><span class="section-number">15.2. </span>翻译请求协议</a><a class="headerlink" href="#id6" title="链接到此标题。"></a></h2>
+<section id="tlp">
+<h3><a class="toc-backref" href="#id79" role="doc-backlink"><span class="section-number">15.2.1. </span>翻译请求 TLP 格式</a><a class="headerlink" href="#tlp" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.2.2 Translation Requests</em></p>
+<p>翻译请求具有类似于内存读取的格式。AT 字段用于区分翻译请求与普通内存读取。</p>
+<p><a href="#id7"><span class="problematic" id="id8">**</span></a>翻译请求头格式**（Figure 10-8, Figure 10-9）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>64-bit Translation Request Header:
++--------+----------+----------+----------+
+| Fmt    | Type     | TC       | Attr     |
++--------+----------+----------+----------+
+| Length        | Requester ID    | Tag     |
++--------+----------+----------+----------+
+| Untranslated Address[63:32]                |
++--------+----------+----------+----------+
+| Untranslated Address[31:12] | Reserved|NW |
++--------+----------+----------+----------+
+</pre></div>
+</div>
+<p><a href="#id9"><span class="problematic" id="id10">**</span></a>关键字段说明**（Chapter 10.2.2）：</p>
+<ul class="simple">
+<li><p><strong>AT 字段</strong>：设置为 01b 表示翻译请求</p></li>
+<li><p><strong>Untranslated Address</strong>：待翻译的地址，bits[11:0] 隐含为零</p></li>
+<li><p><strong>NW（No Write）标志</strong>：当设置时，表示功能请求对此翻译的只读访问</p></li>
+<li><p><strong>Length 字段</strong>：指示请求中可能返回的翻译数量，每个翻译为 8 字节</p></li>
+</ul>
+<p><a href="#id11"><span class="problematic" id="id12">**</span></a>AT 字段编码**（Table 10-1）：</p>
+</section>
+<section id="id13">
+<h3><a class="toc-backref" href="#id80" role="doc-backlink"><span class="section-number">15.2.2. </span>翻译完成 TLP 格式</a><a class="headerlink" href="#id13" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.2.3 Translation Completion</em></p>
+<p>TA 为每个翻译请求发送翻译完成。如果 TA 无法执行请求的翻译，使用 Figure 10-10 所示的格式。</p>
+<p><a href="#id14"><span class="problematic" id="id15">**</span></a>翻译完成状态码**（Table 10-2）：</p>
+<p><a href="#id16"><span class="problematic" id="id17">**</span></a>成功翻译完成数据条目**（Figure 10-12）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Translation Completion Data Entry:
++--------+----------+----------+----------+
+| Translated Address [63:32]                |
++--------+----------+----------+----------+
+| Translated Address [31:12] | S| N|Res|U|W|R|
+|                            |  |  |   | | | |
++--------+----------+----------+----------+
+| Exe | Priv | Global | Reserved         |
++--------+----------+----------+----------+
+</pre></div>
+</div>
+<p><a href="#id18"><span class="problematic" id="id19">**</span></a>翻译完成数据字段**（Table 10-3）：</p>
+</section>
+<section id="id20">
+<h3><a class="toc-backref" href="#id81" role="doc-backlink"><span class="section-number">15.2.3. </span>翻译范围大小编码</a><a class="headerlink" href="#id20" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.2.3.2 Translation Range Size (S) Field</em></p>
+<p>如果 S 设置，则翻译适用于大于 4096 字节的范围。低位地址按顺序消耗以指示与翻译关联的范围大小。</p>
+<p><a href="#id21"><span class="problematic" id="id22">**</span></a>翻译大小示例**（Table 10-4）：</p>
+</section>
+</section>
+<section id="id23">
+<h2><a class="toc-backref" href="#id82" role="doc-backlink"><span class="section-number">15.3. </span>ATS 失效机制</a><a class="headerlink" href="#id23" title="链接到此标题。"></a></h2>
+<p><em>引用：Chapter 10.3 ATS Invalidation</em></p>
+<p>当翻译在 TA 中更改且该翻译可能包含在功能的 ATC 中时，TA（与其关联的软件一起）必须向 ATC 发送失效请求，以维护 ATPT 和 ATC 之间的正确同步。</p>
+<p><a href="#id24"><span class="problematic" id="id25">**</span></a>失效请求消息格式**（Figure 10-13）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Invalidate Request Message:
++--------+----------+----------+----------+
+| Fmt    | Type     | TC       | Attr     |
++--------+----------+----------+----------+
+| Message Code = 0000 0001b                |
++--------+----------+----------+----------+
+| Requester ID        | ITag               |
++--------+----------+----------+----------+
+| Device ID           | Reserved           |
++--------+----------+----------+----------+
+| Untranslated Address[63:32]               |
++--------+----------+----------+----------+
+| Untranslated Address[31:12] | Reserved   |
++--------+----------+----------+----------+
+</pre></div>
+</div>
+<p><a href="#id26"><span class="problematic" id="id27">**</span></a>失效协议步骤**（Chapter 10.1.1, Figure 10-4）：</p>
+<ol class="arabic simple">
+<li><p>系统软件更新 TA 使用的表中的条目。表更改后，TA 确定应在 ATC 中使翻译失效，并启动失效请求 TLP</p></li>
+<li><p>功能接收失效请求并使所有匹配的 ATC 条目失效</p></li>
+<li><p>当功能确定翻译地址的所有使用都已完成时，它发出一个或多个 ATS 失效完成</p></li>
+</ol>
+</section>
+<section id="pri">
+<h2><a class="toc-backref" href="#id83" role="doc-backlink"><span class="section-number">15.4. </span>页面请求接口（PRI）</a><a class="headerlink" href="#pri" title="链接到此标题。"></a></h2>
+<section id="id28">
+<h3><a class="toc-backref" href="#id84" role="doc-backlink"><span class="section-number">15.4.1. </span>PRI 架构概述</a><a class="headerlink" href="#id28" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.1.2 Page Request Interface Extension</em></p>
+<p>ATS 改进了基于 DMA 的数据移动行为。关联的页面请求接口（PRI）通过允许在没有要求所有要移入或移出系统内存的数据被固定的情况下启动 DMA 操作，提供额外的优势。</p>
+<p>与固定内存相关的开销可能不大，但从可分页池中移除大部分内存对系统性能的负面影响可能很显著。PRI 在功能上独立于 ATS 的其他方面。也就是说，支持 ATS 的设备不需要支持 PRI，但 PRI 依赖于 ATS 的能力。</p>
+<p><a href="#id29"><span class="problematic" id="id30">**</span></a>PRI 工作模型**（Chapter 10.4 Page Request Services）：</p>
+<ol class="arabic simple">
+<li><p>功能确定它需要访问一个没有 ATS 翻译可用的页面</p></li>
+<li><p>功能使关联的页面请求接口向其 RC 发送页面请求消息</p></li>
+<li><p>当 RC 确定其对请求的响应时，它向请求功能发回 PRG 响应消息</p></li>
+<li><p>然后功能可以使用 ATS 请求请求页面的翻译</p></li>
+</ol>
+<p><a href="#id31"><span class="problematic" id="id32">**</span></a>页面请求消息格式**（Figure 10-16）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Page Request Message:
++--------+----------+----------+----------+
+| Type (10000)      | TC  |T|R| Length(0)|
++--------+----------+----------+----------+
+| Message Code (0000 0100b)                |
++--------+----------+----------+----------+
+| Requestor ID       | Tag                |
++--------+----------+----------+----------+
+| Page Address [63:32]                      |
++--------+----------+----------+----------+
+| Page Address [31:12] | PRG Index |L|W|R |
++--------+----------+----------+----------+
+</pre></div>
+</div>
+<p><a href="#id33"><span class="problematic" id="id34">**</span></a>页面请求消息数据字段**（Table 10-5）：</p>
+</section>
+<section id="prg">
+<h3><a class="toc-backref" href="#id85" role="doc-backlink"><span class="section-number">15.4.2. </span>PRG 响应消息</a><a class="headerlink" href="#prg" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.4.2 Page Request Group Response Message</em></p>
+<p>系统硬件和/或软件通过 PRG 响应消息与功能的页面请求接口通信。PRG 响应消息用于指示 PRG 的完成或接口的灾难性故障。</p>
+<p><a href="#id35"><span class="problematic" id="id36">**</span></a>响应码编码**（Table 10-7）：</p>
+</section>
+</section>
+<section id="pasid-id">
+<h2><a class="toc-backref" href="#id86" role="doc-backlink"><span class="section-number">15.5. </span>PASID（进程地址空间 ID）</a><a class="headerlink" href="#pasid-id" title="链接到此标题。"></a></h2>
+<section id="pasid-tlp-prefix">
+<h3><a class="toc-backref" href="#id87" role="doc-backlink"><span class="section-number">15.5.1. </span>PASID TLP Prefix 格式</a><a class="headerlink" href="#pasid-tlp-prefix" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.20 PASID TLP Prefix</em></p>
+<p>PASID TLP Prefix 是一种端到端 TLP Prefix。当存在 PASID TLP Prefix 时，Prefix 中的 PASID 值与请求者 ID 一起标识与请求关联的进程地址空间 ID。每个功能都有独立的 PASID 值集合。</p>
+<p><a href="#id37"><span class="problematic" id="id38">**</span></a>PASID TLP Prefix 布局**（Figure 6-20）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PASID TLP Prefix (4 bytes):
++--------+----------+----------+----------+
+| 100    | 1        | 0001     |          |
+| (Prefix)|(End-End)|(PASID)   |          |
++--------+----------+----------+----------+
+|Priv    |Exe       | Reserved |PASID[19:0]|
+|Mode    |Requested |          |          |
++--------+----------+----------+----------+
+</pre></div>
+</div>
+<p><a href="#id39"><span class="problematic" id="id40">**</span></a>PASID TLP Prefix 字段**（Table 6-14）：</p>
+<p><a href="#id41"><span class="problematic" id="id42">**</span></a>PASID TLP Prefix 允许的 TLP 类型**（Chapter 6.20）：</p>
+<ul class="simple">
+<li><p>具有未翻译地址的内存请求（包括原子操作请求）</p></li>
+<li><p>地址翻译请求</p></li>
+<li><p>页面请求消息</p></li>
+<li><p>ATS 失效请求</p></li>
+<li><p>PRG 响应消息</p></li>
+</ul>
+</section>
+<section id="pasid">
+<h3><a class="toc-backref" href="#id88" role="doc-backlink"><span class="section-number">15.5.2. </span>PASID 使用规则</a><a class="headerlink" href="#pasid" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.20.1 Managing PASID TLP Prefix Usage</em></p>
+<p>PASID TLP Prefix 的使用必须明确启用。除非启用，否则组件不允许传输 PASID TLP Prefix。</p>
+<p><strong>端点功能规则</strong>：</p>
+<ul class="simple">
+<li><p>功能不允许发送和接收带有 PASID TLP Prefix 的 TLP，除非 PASID Enable 设置</p></li>
+<li><p>功能必须具有将 PASID 使用与特定功能上下文动态关联的机制</p></li>
+<li><p>功能必须具有请求优雅停止使用特定 PASID 的机制</p></li>
+</ul>
+<p><strong>停止使用 PASID 的规则</strong>：</p>
+<ol class="arabic simple">
+<li><p>停止为此 PASID 排队新的页面请求消息</p></li>
+<li><p>完成传输此 PASID 的任何多页页面请求消息</p></li>
+<li><p>内部将此 PASID 的所有未完成页面请求消息标记为过时</p></li>
+<li><p>使用设备特定机制指示 PASID 已停止</p></li>
+<li><p>发送停止标记消息</p></li>
+</ol>
+</section>
+</section>
+<section id="msi-msi-x">
+<h2><a class="toc-backref" href="#id89" role="doc-backlink"><span class="section-number">15.6. </span>MSI/MSI-X 中断机制</a><a class="headerlink" href="#msi-msi-x" title="链接到此标题。"></a></h2>
+<section id="id43">
+<h3><a class="toc-backref" href="#id90" role="doc-backlink"><span class="section-number">15.6.1. </span>MSI/MSI-X 概述</a><a class="headerlink" href="#id43" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.1.4 MSI and MSI-X Operation</em></p>
+<p>消息信号中断（MSI）是一个可选功能，使设备功能能够通过将系统指定的数据值写入系统指定的地址（使用 DWORD 内存写事务）来请求服务。系统软件在设备配置期间初始化消息地址和消息数据，为每个支持 MSI 的功能分配一个或多个向量。</p>
+<p>MSI-X 定义了基本 MSI 功能的单独可选扩展。与 MSI 相比，MSI-X 支持每个功能更多的最大向量数，软件控制别名的能力（当分配的向量少于请求时），以及每个向量使用独立地址和数据值的能力（由驻留在内存空间中的表指定）。</p>
+<p><a href="#id44"><span class="problematic" id="id45">**</span></a>MSI 与 MSI-X 对比**（Chapter 6.1.4）：</p>
+<p><a href="#id46"><span class="problematic" id="id47">**</span></a>关键要求**（Chapter 6.1.4）：</p>
+<ul class="simple">
+<li><p>所有能够生成中断的 PCI Express 设备功能必须支持 MSI 或 MSI-X 或两者</p></li>
+<li><p>功能允许同时实现 MSI 和 MSI-X，但系统软件禁止同时启用两者</p></li>
+<li><p>如果系统软件同时启用两者，行为未定义</p></li>
+</ul>
+</section>
+<section id="msi">
+<h3><a class="toc-backref" href="#id91" role="doc-backlink"><span class="section-number">15.6.2. </span>MSI 配置</a><a class="headerlink" href="#msi" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.1.4.1 MSI Configuration</em></p>
+<p>系统软件读取消息控制寄存器以确定功能的 MSI 能力。</p>
+<p><strong>MSI 配置步骤</strong>：</p>
+<ol class="arabic simple">
+<li><p>读取 Multiple Message Capable 字段确定请求的向量数</p></li>
+<li><p>写入 Multiple Message Enable 字段分配向量</p></li>
+<li><p>如果 Per-Vector Masking Capable 位设置，软件可屏蔽向量</p></li>
+<li><p>如果 64-bit Address Capable 位设置，初始化消息地址和消息上地址寄存器</p></li>
+<li><p>初始化消息数据寄存器</p></li>
+</ol>
+<p><a href="#id48"><span class="problematic" id="id49">**</span></a>MSI 能力结构**（Chapter 7.5.3）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>MSI Capability Structure:
++--------+----------+
+| Cap ID | Next Ptr |
++--------+----------+
+| Message Control       |
++--------+----------+
+| Message Address (Low) |
++--------+----------+
+| Message Upper Address | (64-bit only)
++--------+----------+
+| Message Data          |
++--------+----------+
+| Extended Message Data | (optional)
++--------+----------+
+| Mask Bits             | (PVM only)
++--------+----------+
+| Pending Bits          | (PVM only)
++--------+----------+
+</pre></div>
+</div>
+</section>
+<section id="msi-x">
+<h3><a class="toc-backref" href="#id92" role="doc-backlink"><span class="section-number">15.6.3. </span>MSI-X 配置</a><a class="headerlink" href="#msi-x" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.1.4.2 MSI-X Configuration</em></p>
+<p>MSI-X 支持最大 2048 个表条目。软件通过读取 Table Size 字段确定 MSI-X 表大小（编码为 N-1）。</p>
+<p><a href="#id50"><span class="problematic" id="id51">**</span></a>MSI-X 表条目格式**（Chapter 7.5.4）：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>MSI-X Table Entry (16 bytes):
++--------+----------+
+| Message Address (Low) |
++--------+----------+
+| Message Upper Address |
++--------+----------+
+| Message Data          |
++--------+----------+
+| Vector Control        |
++--------+----------+
+</pre></div>
+</div>
+<p><strong>MSI-X 配置步骤</strong>：</p>
+<ol class="arabic simple">
+<li><p>读取 Table Size 字段确定表大小</p></li>
+<li><p>通过 Table Offset/Table BIR 计算表基址</p></li>
+<li><p>为每个使用的表条目填写地址、数据和向量控制字段</p></li>
+<li><p>向量控制字段可包含可选的引导标记字段</p></li>
+</ol>
+</section>
+<section id="id52">
+<h3><a class="toc-backref" href="#id93" role="doc-backlink"><span class="section-number">15.6.4. </span>发送中断消息</a><a class="headerlink" href="#id52" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.1.4.4 Sending Messages</em></p>
+<p>一旦启用 MSI 或 MSI-X，并且一个或多个向量未屏蔽，功能被允许发送消息。要发送消息，功能对适当的消息地址执行 DWORD 内存写入，使用适当的消息数据。</p>
+<p><strong>MSI 消息发送规则</strong>：</p>
+<ul class="simple">
+<li><p>如果 Extended Message Data Enable 位清除，写入的 DWORD 由 MSI 消息数据寄存器中的值（低两个字节）和零（高两个字节）组成</p></li>
+<li><p>如果 Multiple Message Enable 字段非零，功能允许修改消息数据的低位以生成多个向量</p></li>
+</ul>
+<p><strong>MSI-X 消息发送规则</strong>：</p>
+<ul class="simple">
+<li><p>MSI-X 表包含每个分配向量的至少一个条目</p></li>
+<li><p>来自选定表条目的 32 位消息数据字段值在消息中使用，功能不对低位进行任何修改</p></li>
+</ul>
+</section>
+<section id="id53">
+<h3><a class="toc-backref" href="#id94" role="doc-backlink"><span class="section-number">15.6.5. </span>每向量屏蔽和功能屏蔽</a><a class="headerlink" href="#id53" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 6.1.4.5 Per-vector Masking and Function Masking</em></p>
+<p>每向量屏蔽（PVM）是 MSI 的可选功能，是 MSI-X 的标准功能。功能屏蔽是 MSI-X 的标准功能。</p>
+<p><strong>屏蔽行为规则</strong>：</p>
+<ul class="simple">
+<li><p>当向量被屏蔽时，功能禁止发送关联的消息</p></li>
+<li><p>功能必须在否则会发送消息时设置关联的 Pending 位</p></li>
+<li><p>当软件取消屏蔽 Pending 位设置的向量时，功能必须安排发送关联的消息</p></li>
+<li><p>发送消息后立即清除 Pending 位</p></li>
+</ul>
+<p><strong>MSI-X 缓存规则</strong>：</p>
+<p>功能允许缓存未屏蔽 MSI-X 表条目的地址和数据值。但是，任何时候软件通过清除其屏蔽位或功能屏蔽位取消屏蔽当前屏蔽的 MSI-X 表条目，功能必须更新它从该条目缓存的任何地址或数据值。</p>
+</section>
+</section>
+<section id="id54">
+<h2><a class="toc-backref" href="#id95" role="doc-backlink"><span class="section-number">15.7. </span>ATS 配置寄存器</a><a class="headerlink" href="#id54" title="链接到此标题。"></a></h2>
+<section id="id55">
+<h3><a class="toc-backref" href="#id96" role="doc-backlink"><span class="section-number">15.7.1. </span>ATS 扩展能力结构</a><a class="headerlink" href="#id55" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.5.1 ATS Extended Capability</em></p>
+<p>每个支持 ATS 的功能必须在其扩展配置空间中具有 ATS 扩展能力结构。</p>
+<p><a href="#id56"><span class="problematic" id="id57">**</span></a>ATS 能力寄存器**（Table 10-9）：</p>
+<p><a href="#id58"><span class="problematic" id="id59">**</span></a>ATS 控制寄存器**（Table 10-10）：</p>
+</section>
+<section id="id60">
+<h3><a class="toc-backref" href="#id97" role="doc-backlink"><span class="section-number">15.7.2. </span>页面请求扩展能力结构</a><a class="headerlink" href="#id60" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 10.5.2 Page Request Extended Capability Structure</em></p>
+<p>页面请求扩展能力结构用于配置页面请求接口机制。</p>
+<p><a href="#id61"><span class="problematic" id="id62">**</span></a>页面请求控制寄存器**（Table 10-12）：</p>
+<p><a href="#id63"><span class="problematic" id="id64">**</span></a>页面请求状态寄存器**（Table 10-13）：</p>
+</section>
+<section id="id65">
+<h3><a class="toc-backref" href="#id98" role="doc-backlink"><span class="section-number">15.7.3. </span>PASID 扩展能力结构</a><a class="headerlink" href="#id65" title="链接到此标题。"></a></h3>
+<p><em>引用：Chapter 7.8.8 PASID Extended Capability Structure</em></p>
+<p><a href="#id66"><span class="problematic" id="id67">**</span></a>PASID 能力寄存器**（Chapter 7.8.8.2）：</p>
+<p><a href="#id68"><span class="problematic" id="id69">**</span></a>PASID 控制寄存器**（Chapter 7.8.8.3）：</p>
+</section>
+</section>
+<section id="id70">
+<h2><a class="toc-backref" href="#id99" role="doc-backlink"><span class="section-number">15.8. </span>系统架构交互说明</a><a class="headerlink" href="#id70" title="链接到此标题。"></a></h2>
+<p>关于 PCIe 与 SMMU、CMN 的具体交互机制，PCI Express Base Specification 仅定义了协议层面的接口。以下内容基于规范中的相关描述：</p>
+<p><a href="#id71"><span class="problematic" id="id72">**</span></a>翻译代理（TA）与 ATC 的关系**（Chapter 10.1）：</p>
+<p>规范描述了 TA 和 ATPT（地址翻译和保护表）作为平台组件，与具有集成 ATC 的 PCIe 设备交互。TA 和 ATPT 是实现特定的，可以是给定系统设计中的独立或集成组件。</p>
+<p><a href="#id73"><span class="problematic" id="id74">**</span></a>Root Complex 的角色**（Chapter 10.1.1）：</p>
+<p>RC 接收来自功能的 ATS 翻译请求，并将其转发给 TA。TA 执行翻译后将结果通过 RC 返回给功能。RC 必须为每个 ATS 翻译请求生成至少一个 ATS 翻译完成。</p>
+<p><a href="#id75"><span class="problematic" id="id76">**</span></a>关于系统级实现的说明**（Chapter 10.1）：</p>
+<p>本规范将提供允许 PCIe 设备与 TA 结合使用的互操作性，但 TA 及其 ATPT 被视为实现特定的，不在本规范范围内。SMMU、CMN 等 ARM 架构组件的具体实现细节需参考 ARM 相关规范（如 SMMU 架构规范、CMN 互连规范）。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="PCI_Express_Base_5_0.html" class="btn btn-neutral float-left" title="14. PCI Express Base 5.0 规范文档结构概览" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../cxl/CXL_Spec.html" class="btn btn-neutral float-right" title="16. Compute Express Link (CXL) 规范分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

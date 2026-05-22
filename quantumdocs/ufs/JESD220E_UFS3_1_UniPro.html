@@ -1,0 +1,1070 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JESD220E UFS 3.1 UniPro 互连层深度分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">JESD220E UFS 3.1 UniPro 互连层深度分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ufs/JESD220E_UFS3_1_UniPro.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jesd220e-ufs-3-1-unipro">
+<h1>JESD220E UFS 3.1 UniPro 互连层深度分析<a class="headerlink" href="#jesd220e-ufs-3-1-unipro" title="链接到此标题。"></a></h1>
+<p>本文档基于 JEDEC Universal Flash Storage (UFS) Version 3.1 规范 (JESD220E, January 2020) 第 9 章，
+深入分析 UFS 互连层 (UIC) 中 MIPI UniPro 协议栈的架构、接口、寻址映射和关键配置参数。</p>
+<p>参考文档：<code class="docutils literal notranslate"><span class="pre">docs/pdf/UFS/JESD220E_UFS3_1.md</span></code></p>
+</section>
+<section id="unipro">
+<h1>UniPro 层概述<a class="headerlink" href="#unipro" title="链接到此标题。"></a></h1>
+<section id="unipro-ufs-section-9-1">
+<h2>UniPro 在 UFS 中的定位 [Section 9.1]_<a class="headerlink" href="#unipro-ufs-section-9-1" title="链接到此标题。"></a></h2>
+<p>UFS 使用 MIPI 统一协议 (UniPro) 作为其互连 (服务交付子系统)，为 UFS 传输协议 (UTP) 层提供基本传输能力。</p>
+<p><strong>核心功能</strong>:</p>
+<ul class="simple">
+<li><p><strong>数据平面</strong>: UTP 和 UniPro 通过 UniPro 传输层 CPort(T_CO_SAPs) 的服务原语进行通信</p></li>
+<li><p><strong>控制平面</strong>: 高层协议功能 (发现、枚举、链路配置) 与 UniPro 的交互通过设备管理实体 (DME) 服务原语完成</p></li>
+<li><p><strong>协议栈集成</strong>: 构建在 MIPI M-PHY 物理层之上</p></li>
+</ul>
+<p><strong>参考标准</strong>:</p>
+<ul class="simple">
+<li><p>MIPI UniPro Specification [MIPI-UniPro], Version 1.8</p></li>
+<li><p>MIPI Application Note for UniPro v1.8 [MIPI-AP]</p></li>
+</ul>
+</section>
+<section id="unipro-section-9-2-figure-9-1">
+<h2>UniPro 架构模型 [Section 9.2, Figure 9.1]_<a class="headerlink" href="#unipro-section-9-2-figure-9-1" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+----------------------------------+</span>
+<span class="o">|</span>    <span class="n">Application</span> <span class="n">Protocol</span> <span class="p">(</span><span class="n">UAP</span><span class="p">)</span>    <span class="o">|</span>  <span class="o">&lt;-</span> <span class="n">UFS</span> <span class="n">应用层</span>
+<span class="o">+----------------------------------+</span>
+               <span class="o">|</span>
+<span class="o">+==============|</span>  <span class="n">UniPro</span> <span class="n">Boundary</span> <span class="o">|======================+</span>
+<span class="o">|</span>              <span class="n">v</span>                  <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+--------------------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>   <span class="n">Transport</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L4</span><span class="p">)</span>   <span class="o">|</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>   <span class="p">(</span><span class="n">CPorts</span><span class="p">:</span> <span class="n">C0</span><span class="p">,</span><span class="n">C1</span><span class="p">,</span><span class="n">C2</span><span class="o">...</span><span class="p">)</span>  <span class="o">|</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------+-------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>                <span class="o">|</span> <span class="n">DME</span>            <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------</span><span class="n">v</span><span class="o">-------------+</span>   <span class="o">|</span>    <span class="n">UniPro</span> <span class="n">内部层级视图</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>   <span class="n">Network</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L3</span><span class="p">)</span>     <span class="o">|</span>   <span class="o">|</span>    <span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="n">vs</span> <span class="n">黑盒视图</span> <span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------+-------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>                <span class="o">|</span> <span class="n">DME</span>            <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------</span><span class="n">v</span><span class="o">-------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>   <span class="n">Data</span> <span class="n">Link</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L2</span><span class="p">)</span>   <span class="o">|</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------+-------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>                <span class="o">|</span> <span class="n">DME</span>            <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------</span><span class="n">v</span><span class="o">-------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span> <span class="n">PHY</span> <span class="n">Adapter</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L1</span><span class="mf">.5</span><span class="p">)</span> <span class="o">|</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+------------+-------------+</span>   <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>               <span class="o">|</span>                 <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+-----------</span><span class="n">v</span><span class="o">-----------+</span>      <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>  <span class="n">PHY</span> <span class="n">Tx</span>  <span class="o">|</span>   <span class="n">PHY</span> <span class="n">Rx</span>   <span class="o">|</span>      <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+-----------+-----------+</span>      <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">|</span>                                 <span class="o">|</span>                       <span class="o">|</span>
+<span class="o">+=================================+=======================+</span>
+               <span class="o">|</span>
+<span class="o">+==============|</span>  <span class="n">UniPro</span> <span class="n">Black</span> <span class="n">Box</span> <span class="n">View</span> <span class="o">|================+</span>
+<span class="o">|</span>              <span class="n">v</span>                  <span class="o">|</span>                      <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+--------------------------+</span>   <span class="o">|</span>                      <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>     <span class="n">UIO_SAP</span> <span class="p">(</span><span class="n">DME_SAP</span><span class="p">)</span>    <span class="o">|</span>   <span class="o">|</span>                      <span class="o">|</span>
+<span class="o">|</span>  <span class="o">|</span>     <span class="n">T_CO_SAP</span> <span class="p">(</span><span class="n">CPort</span><span class="p">)</span>     <span class="o">|</span>   <span class="o">|</span>                      <span class="o">|</span>
+<span class="o">|</span>  <span class="o">+--------------------------+</span>   <span class="o">|</span>                      <span class="o">|</span>
+<span class="o">|</span>                                 <span class="o">|</span>                      <span class="o">|</span>
+<span class="o">+================================================================</span>
+</pre></div>
+</div>
+<p><strong>关键概念</strong>:</p>
+<ul class="simple">
+<li><p>UFS 将 UniPro 视为**黑盒模型**,最大程度抽象内部实现细节</p></li>
+<li><p>仅指定接口类型、数量以及寻址映射关系</p></li>
+<li><p>选择 UniPro 规范中的可选功能和可配置属性</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h1>数据平面接口<a class="headerlink" href="#id2" title="链接到此标题。"></a></h1>
+<section id="t-co-sap-section-9-3">
+<h2>T_CO_SAP 服务原语 [Section 9.3]_<a class="headerlink" href="#t-co-sap-section-9-3" title="链接到此标题。"></a></h2>
+<p>UniPro 提供 CPort(连接端口) 作为概念接口，供 UniPro 之上的应用或协议层使用。
+CPort 可视为 UniPro 规范 8.8 节定义的 T_CO_SAP(传输层连接导向服务访问点) 的实例化。</p>
+<p><strong>核心数据传输服务原语</strong>:</p>
+<ol class="arabic">
+<li><p><strong>T_CO_DATA.req(MessageFragment, EOM)</strong></p>
+<ul class="simple">
+<li><p><strong>发起方</strong>: UniPro 服务用户 (UTP 层)</p></li>
+<li><p><strong>功能</strong>: 发送消息片段</p></li>
+<li><p><strong>参数</strong>:
+- MessageFragment: 消息片段数据
+- EOM (End Of Message): 消息结束标志</p></li>
+</ul>
+<p><strong>使用约束</strong> [NOTE]:</p>
+<ul class="simple">
+<li><p>UFS 层请求 UIC 层传输数据时，必须确保最后一个片段设置 EOM 标志</p></li>
+<li><p>建议每个原子协议数据单元 (如每个 UPIU) 调用一次此原语，且 EOM 始终设为'true'</p></li>
+</ul>
+</li>
+<li><p><strong>T_CO_DATA.cnf_L(L4CPortResultCode)</strong></p>
+<ul class="simple">
+<li><p><strong>发起方</strong>: UniPro</p></li>
+<li><p><strong>功能</strong>: 报告消息片段传输请求的结果</p></li>
+<li><p><strong>参数</strong>: L4CPortResultCode (L4 CPort 结果码)</p></li>
+</ul>
+</li>
+<li><p><strong>T_CO_DATA.ind(MessageFragment, EOM, SOM, MsgStatus)</strong></p>
+<ul class="simple">
+<li><p><strong>发起方</strong>: UniPro</p></li>
+<li><p><strong>功能</strong>: 向服务用户递送接收到的消息片段</p></li>
+<li><p><strong>参数</strong>:
+- MessageFragment: 消息片段数据
+- EOM: 告知这是最后一个消息片段
+- SOM (Start Of Message): 告知这是第一个消息片段
+- MsgStatus: 消息状态</p></li>
+</ul>
+</li>
+<li><p><strong>T_CO_DATA.rsp_L()</strong></p>
+<ul class="simple">
+<li><p><strong>发起方</strong>: UniPro 服务用户</p></li>
+<li><p><strong>功能</strong>: 报告准备好接收下一个消息片段</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="section-9-3-1">
+<h2>流控制 [Section 9.3.1]_<a class="headerlink" href="#section-9-3-1" title="链接到此标题。"></a></h2>
+<p><strong>UFS 策略</strong>: 不使用 UniPro 的端到端流控制功能</p>
+<p><strong>原因</strong>:</p>
+<ul class="simple">
+<li><p>UFS 传输层已通过严格的客户端 - 服务器通信模型避免溢出</p></li>
+<li><p>使用标签命令队列机制</p></li>
+<li><p>设备端数据传输节流</p></li>
+</ul>
+<p><strong>实现要求</strong>:</p>
+<ul class="simple">
+<li><p>UFS 不需要实现 T_CO_FLOWCONTROL 服务原语</p></li>
+</ul>
+</section>
+<section id="section-9-3-2">
+<h2>对象尺寸定义 [Section 9.3.2]_<a class="headerlink" href="#section-9-3-2" title="链接到此标题。"></a></h2>
+<p><strong>UniPro Message(消息)</strong>:</p>
+<ul class="simple">
+<li><p>可以是任意大小</p></li>
+<li><p>内容不被 UniPro 解释</p></li>
+<li><p>可作为多个消息片段传递</p></li>
+</ul>
+<p><strong>Message Fragment(消息片段)</strong>:</p>
+<ul class="simple">
+<li><p>可传递给 CPort 或由 CPort 接收的消息部分</p></li>
+<li><p>接收的片段与发送的片段通常不完全相同</p></li>
+<li><p>可能携带或不携带 End-of-Message(EoM) 标志</p></li>
+</ul>
+<p><strong>最大尺寸约束</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Message Fragment ≤ T_MTU bytes
+
+T_MTU: 传输层最大传输单元
+
+目的：避免在低层进一步分片
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h1>控制平面接口<a class="headerlink" href="#id3" title="链接到此标题。"></a></h1>
+<section id="dme-sap-section-9-4">
+<h2>DME SAP 服务架构 [Section 9.4]_<a class="headerlink" href="#dme-sap-section-9-4" title="链接到此标题。"></a></h2>
+<p>UniPro 通过设备管理实体 (DME) 提供服务访问点 (DME SAP),UFS 可借此控制 UniPro 的属性和行为。</p>
+</section>
+<section id="dme">
+<h2>DME 配置原语<a class="headerlink" href="#dme" title="链接到此标题。"></a></h2>
+<p><strong>DME_GET / DME_SET</strong> [Section 9.4]:</p>
+<ul class="simple">
+<li><p><strong>功能</strong>: 提供对本地 UniPort 所有 UniPro 和 M-PHY 属性的读写访问</p></li>
+<li><p><strong>使用场景</strong>: 读取/设置本地链路参数</p></li>
+</ul>
+<p><strong>DME_PEER_GET (可选) / DME_PEER_SET (可选)</strong> [Section 9.4]:</p>
+<ul class="simple">
+<li><p><strong>功能</strong>: 提供对远端 UniPort 所有 UniPro 和 M-PHY 属性的读写访问</p></li>
+<li><p><strong>使用场景</strong>: 读取/设置对端链路参数</p></li>
+</ul>
+<p><strong>排序约束</strong> [NOTE]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>某些情况下，属性设置的顺序对 UniPro 的正确操作至关重要。
+
+因此，高层 UFS 应保持 UFS 应用调用 DME 配置原语的顺序。
+如果由 UFS 内部生成，DME 配置原语应按 UniPro 规范定义的正确顺序发出。
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2>DME 控制原语<a class="headerlink" href="#id4" title="链接到此标题。"></a></h2>
+<p><strong>电源管理原语</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>DME_POWERON (可选) / DME_POWEROFF (可选)</strong></p>
+<ul class="simple">
+<li><p>允许上电或下电所有 UniPro 层 (L1.5 到 L4)</p></li>
+</ul>
+</li>
+<li><p><strong>DME_ENABLE</strong></p>
+<ul class="simple">
+<li><p>允许使能整个本地 UniPro 协议栈 (UniPro L1.5-L4)</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>复位原语</strong>:</p>
+<ol class="arabic" start="3">
+<li><p><strong>DME_RESET</strong></p>
+<ul>
+<li><p>允许复位整个本地 UniPro 协议栈 (UniPro L1.5-L4)</p></li>
+<li><p><strong>使用约束</strong> [Section 9.6.5]:
+- UFS 设备仅在以下情况使用 DME_RESET:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>上电时</p></li>
+<li><p>硬件复位后</p></li>
+<li><p>收到 DME_LINKLOST.ind 后</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>DME_ENDPOINTRESET</strong></p>
+<ul class="simple">
+<li><p>允许向链路端点发送端点复位请求命令</p></li>
+<li><p><strong>使用约束</strong> [Section 9.6.5]: UFS 设备不得使用 DME_ENDPOINTRESET.req</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>链路管理原语</strong>:</p>
+<ol class="arabic" start="5">
+<li><p><strong>DME_LINKSTARTUP</strong></p>
+<ul class="simple">
+<li><p>允许本地启动链路并通知远端链路启动调用</p></li>
+</ul>
+</li>
+<li><p><strong>DME_HIBERNATE_ENTER / DME_HIBERNATE_EXIT</strong></p>
+<ul class="simple">
+<li><p>允许将整个链路置于 HIBERNATE 电源模式并唤醒链路</p></li>
+<li><p><strong>影响范围</strong>: 本地和对端 UniPort(UniPro L1.5-L4 和 M-PHY)</p></li>
+</ul>
+<p><strong>重要约束</strong> [NOTE]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>退出 Hibernate 后，所有 UniPro 传输层属性将复位到默认值，包括:
+- L4 T_PeerDeviceID
+- L4 T_PeerCPortID
+- L4 T_ConnectionState
+
+通信恢复前，必须在两端正确恢复所有必需属性。
+</pre></div>
+</div>
+</li>
+<li><p><strong>DME_POWERMODE</strong></p>
+<ul class="simple">
+<li><p>允许更改 M-PHY 链路一个或两个方向的电源模式</p></li>
+<li><p><strong>使用约束</strong> [Section 9.6.5]: UFS 设备不得使用 DME_POWERMODE.req</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>测试和错误处理原语</strong>:</p>
+<ol class="arabic simple" start="8">
+<li><p><strong>DME_TEST_MODE (可选)</strong></p>
+<ul class="simple">
+<li><p>允许将链路上的对端 UniPro 设备设置为特定测试模式</p></li>
+<li><p><strong>使用约束</strong> [Section 9.6.5]: UFS 设备不得使用 DME_TEST_MODE.req</p></li>
+</ul>
+</li>
+<li><p><strong>DME_LINKLOST</strong></p>
+<ul class="simple">
+<li><p>UniPro 协议栈向高层指示链路已丢失</p></li>
+</ul>
+</li>
+<li><p><strong>DME_ERROR</strong></p>
+<ul class="simple">
+<li><p>UniPro 协议栈向高层指示在某个 UniPro 层遇到错误条件</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="ufs-section-9-6-5">
+<h2>UFS 设备原语使用限制 [Section 9.6.5]_<a class="headerlink" href="#ufs-section-9-6-5" title="链接到此标题。"></a></h2>
+<p><strong>UFS 设备不得使用的原语</strong>:</p>
+<ul class="simple">
+<li><p>DME_PEER_GET.req, DME_PEER_SET.req</p></li>
+<li><p>DME_POWERON.req, DME_POWEROFF.req</p></li>
+<li><p>DME_ENDPOINTRESET.req</p></li>
+<li><p>DME_HIBERNATE_ENTER.req, DME_HIBERNATE_EXIT.req</p></li>
+<li><p>DME_POWERMODE.req, DME_TEST_MODE.req</p></li>
+</ul>
+<p><strong>UFS 设备特殊约束</strong>:</p>
+<ul class="simple">
+<li><p>不得使用 DME_SET 原语修改本地 PA_PWRMode 属性</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h1>寻址映射<a class="headerlink" href="#id5" title="链接到此标题。"></a></h1>
+<section id="unipro-section-9-5">
+<h2>UniPro 寻址层次 [Section 9.5]_<a class="headerlink" href="#unipro-section-9-5" title="链接到此标题。"></a></h2>
+<p>UniPro 有两级寻址来控制远程 UniPro 实体间的信息交换:</p>
+<p><strong>网络层 (L3) 寻址</strong>:</p>
+<ul class="simple">
+<li><p><strong>标识符</strong>: Device ID</p></li>
+<li><p><strong>级别</strong>: 最低级别的可寻址性</p></li>
+<li><p><strong>用途</strong>: 面向未来 UniPro 设备网络</p></li>
+<li><p><strong>特性</strong>:
+- 连接建立时用于选择远端的物理实体
+- 连接生命周期内视为静态</p></li>
+</ul>
+<p><strong>传输层 (L4) 寻址</strong>:</p>
+<ul class="simple">
+<li><p><strong>标识符</strong>: CPort ID</p></li>
+<li><p><strong>级别</strong>: 最高级别的端到端可寻址性</p></li>
+<li><p><strong>用途</strong>: 选择目标 UniPro 设备内的逻辑实体</p></li>
+<li><p><strong>特性</strong>:
+- 连接建立时用于选择远端设备内的逻辑实体
+- 连接生命周期内视为静态</p></li>
+</ul>
+</section>
+<section id="scsi-nexus-section-9-5">
+<h2>SCSI Nexus 模型 [Section 9.5]_<a class="headerlink" href="#scsi-nexus-section-9-5" title="链接到此标题。"></a></h2>
+<p>UFS 采用 SCSI 架构模型 [SAM] 基于 Nexus 定义的寻址表示法。</p>
+<p><strong>I_T_L_Q Nexus 组成</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">I_T_L_Q</span> <span class="n">Nexus</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">I</span><span class="p">:</span> <span class="n">Initiator</span> <span class="n">Port</span> <span class="n">Identifier</span> <span class="p">(</span><span class="n">发起方端口标识符</span><span class="p">)</span>
+    <span class="n">T</span><span class="p">:</span> <span class="n">Target</span> <span class="n">Port</span> <span class="n">Identifier</span> <span class="p">(</span><span class="n">目标方端口标识符</span><span class="p">)</span>
+    <span class="n">L</span><span class="p">:</span> <span class="n">Logical</span> <span class="n">Unit</span> <span class="n">Number</span> <span class="p">(</span><span class="n">逻辑单元号</span><span class="p">)</span>
+    <span class="n">Q</span><span class="p">:</span> <span class="n">Command</span> <span class="n">Identifier</span> <span class="p">(</span><span class="n">命令标识符</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>语义</strong>:</p>
+<ul class="simple">
+<li><p>I_T_L_Q Nexus 唯一标识特定命令槽 (Q)</p></li>
+<li><p>位于特定逻辑单元 (L) 内</p></li>
+<li><p>连接到特定设备目标端口 (T)</p></li>
+<li><p>通过特定主机发起方端口 (I) 访问</p></li>
+</ul>
+<p><strong>UFS Interconnect 层地址范围</strong>:</p>
+<ul class="simple">
+<li><p>Device ID 和 CPort ID 仅与 Nexus 的 I_T 部分相关</p></li>
+<li><p>L(逻辑单元) 和 Q(命令) 由上层处理</p></li>
+</ul>
+</section>
+<section id="section-9-5">
+<h2>映射规则 [Section 9.5]_<a class="headerlink" href="#section-9-5" title="链接到此标题。"></a></h2>
+<p><strong>16 位端口标识符结构</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UFS</span> <span class="n">Initiator</span> <span class="n">Port</span> <span class="n">Identifier</span> <span class="p">(</span><span class="n">I</span><span class="p">)</span> <span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">0</span><span class="p">]:</span>
+<span class="o">+-------------------+-------------------+</span>
+<span class="o">|</span>   <span class="n">Device</span> <span class="n">ID</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>  <span class="o">|</span>   <span class="n">CPort</span> <span class="n">ID</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>   <span class="o">|</span>
+<span class="o">|</span>   <span class="p">(</span><span class="mi">7</span> <span class="n">bits</span><span class="p">)</span>        <span class="o">|</span>   <span class="p">(</span><span class="mi">5</span> <span class="n">bits</span><span class="p">)</span>        <span class="o">|</span>
+<span class="o">+-------------------+-------------------+</span>
+<span class="o">|</span>     <span class="mi">000</span> <span class="mi">0000</span><span class="n">b</span>     <span class="o">|</span>     <span class="mi">0</span> <span class="mi">0000</span><span class="n">b</span>       <span class="o">|</span>
+<span class="o">|</span>   <span class="p">(</span><span class="n">Host</span> <span class="n">Device</span><span class="p">)</span>   <span class="o">|</span>   <span class="p">(</span><span class="n">CPort</span> <span class="mi">0</span><span class="p">)</span>       <span class="o">|</span>
+<span class="o">+-------------------+-------------------+</span>
+                                     <span class="o">|</span>
+                                     <span class="n">v</span>
+                                <span class="n">IID</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+                               <span class="p">(</span><span class="mi">4</span> <span class="n">bits</span><span class="p">)</span>
+
+<span class="n">UFS</span> <span class="n">Target</span> <span class="n">Port</span> <span class="n">Identifier</span> <span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">0</span><span class="p">]:</span>
+<span class="o">+-------------------+-------------------+</span>
+<span class="o">|</span>   <span class="n">Device</span> <span class="n">ID</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>  <span class="o">|</span>   <span class="n">CPort</span> <span class="n">ID</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>   <span class="o">|</span>
+<span class="o">|</span>   <span class="p">(</span><span class="mi">7</span> <span class="n">bits</span><span class="p">)</span>        <span class="o">|</span>   <span class="p">(</span><span class="mi">5</span> <span class="n">bits</span><span class="p">)</span>        <span class="o">|</span>
+<span class="o">+-------------------+-------------------+</span>
+<span class="o">|</span>     <span class="mi">000</span> <span class="mi">0001</span><span class="n">b</span>     <span class="o">|</span>     <span class="mi">0</span> <span class="mi">0000</span><span class="n">b</span>       <span class="o">|</span>
+<span class="o">|</span>  <span class="p">(</span><span class="n">Device</span> <span class="n">Device</span><span class="p">)</span>  <span class="o">|</span>   <span class="p">(</span><span class="n">CPort</span> <span class="mi">0</span><span class="p">)</span>       <span class="o">|</span>
+<span class="o">+-------------------+-------------------+</span>
+                                     <span class="o">|</span>
+                                     <span class="n">v</span>
+                                   <span class="mi">0000</span><span class="n">b</span>
+                                  <span class="p">(</span><span class="n">固定</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>复位值定义</strong> [Table 9.1]:</p>
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">UFS 端口标识符复位值</span><a class="headerlink" href="#id16" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>Host 复位值</p></th>
+<th class="head"><p>Device 复位值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Device ID</p></td>
+<td><p>000 0000b (0)</p></td>
+<td><p>000 0001b (1)</p></td>
+<td><p>网络层设备标识</p></td>
+</tr>
+<tr class="row-odd"><td><p>CPort ID</p></td>
+<td><p>0 0000b (0)</p></td>
+<td><p>0 0000b (0)</p></td>
+<td><p>传输层 CPort 标识</p></td>
+</tr>
+<tr class="row-even"><td><p>IID</p></td>
+<td><p>可变 (0-15)</p></td>
+<td><p>0000b (固定)</p></td>
+<td><p>发起方 ID(4 位)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>I_T Nexus 唯一性</strong>:</p>
+<p>单个 UniPro 连接 (UFS Host UTP 层 ↔ UFS Device UTP 层) 可通过上述 UFS I_T Nexus 唯一标识。</p>
+<p><strong>动态修改能力</strong> [NOTE]:</p>
+<p>UFS I_T Nexus 元素可在复位后由主机使用 DME 服务原语修改:</p>
+<ul class="simple">
+<li><p><strong>&quot;I&quot;元素</strong>: 主机使用 DME_SET 原语修改</p></li>
+<li><p><strong>&quot;T&quot;元素</strong>: 主机使用 DME_PEER_SET 原语修改</p></li>
+</ul>
+<p><strong>CPort 属性管理</strong>:</p>
+<ul class="simple">
+<li><p><strong>Host 侧 CPort</strong>: 主机使用 DME_GET 和 DME_SET 原语检查和修改 (包括 T_ConnectionState 等)</p></li>
+<li><p><strong>Device 侧 CPort</strong>: 主机使用 DME_PEER_GET 和 DME_PEER_SET 原语检查和修改</p></li>
+</ul>
+</section>
+</section>
+<section id="id6">
+<h1>物理层配置<a class="headerlink" href="#id6" title="链接到此标题。"></a></h1>
+<section id="phy-adapter-section-9-6-1">
+<h2>PHY Adapter 要求 [Section 9.6.1]_<a class="headerlink" href="#phy-adapter-section-9-6-1" title="链接到此标题。"></a></h2>
+<p><strong>M-PHY 相关属性</strong>:</p>
+<p>参见 Section 8.7 &quot;UFS PHY Attributes&quot;:</p>
+<ul class="simple">
+<li><p>UFS PHY M-TX Capability Attributes (Table 8.1)</p></li>
+<li><p>UFS PHY M-RX Capability Attributes (Table 8.2)</p></li>
+</ul>
+<p><strong>Skip Symbol 插入功能</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>UFS 系统中，Host 和 Device 使用相同的参考时钟。
+
+因此，skip symbol 插入功能未使用，其实现为可选。
+</pre></div>
+</div>
+</section>
+<section id="lane-section-9-6-1">
+<h2>物理 Lane 连接要求 [Section 9.6.1]_<a class="headerlink" href="#lane-section-9-6-1" title="链接到此标题。"></a></h2>
+<p>UFS 设备应支持以下物理 Lane 连接配置:</p>
+<p><strong>单 Lane 配置</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UFS</span> <span class="n">Host</span>                    <span class="n">UFS</span> <span class="n">Device</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+<span class="o">|</span>  <span class="n">Tx</span> <span class="mi">0</span>  <span class="o">|</span> <span class="o">----------------&gt;|</span>  <span class="n">Rx</span> <span class="mi">0</span>  <span class="o">|</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+<span class="o">|</span>  <span class="n">Rx</span> <span class="mi">0</span>  <span class="o">|</span> <span class="o">&lt;----------------|</span>  <span class="n">Tx</span> <span class="mi">0</span>  <span class="o">|</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+</pre></div>
+</div>
+<p><strong>双 Lane 配置</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UFS</span> <span class="n">Host</span>                    <span class="n">UFS</span> <span class="n">Device</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+<span class="o">|</span>  <span class="n">Tx</span> <span class="mi">0</span>  <span class="o">|</span> <span class="o">----------------&gt;|</span>  <span class="n">Rx</span> <span class="mi">0</span>  <span class="o">|</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+<span class="o">|</span>  <span class="n">Tx</span> <span class="mi">1</span>  <span class="o">|</span> <span class="o">----------------&gt;|</span>  <span class="n">Rx</span> <span class="mi">1</span>  <span class="o">|</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+<span class="o">|</span>  <span class="n">Rx</span> <span class="mi">0</span>  <span class="o">|</span> <span class="o">&lt;----------------|</span>  <span class="n">Tx</span> <span class="mi">0</span>  <span class="o">|</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+<span class="o">|</span>  <span class="n">Rx</span> <span class="mi">1</span>  <span class="o">|</span> <span class="o">&lt;----------------|</span>  <span class="n">Tx</span> <span class="mi">1</span>  <span class="o">|</span>
+<span class="o">+--------+</span>                  <span class="o">+--------+</span>
+</pre></div>
+</div>
+</section>
+<section id="lane-figure-9-2">
+<h2>物理 Lane 连接图 [Figure 9.2]_<a class="headerlink" href="#lane-figure-9-2" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>2-lane UFS Host              2-lane UFS Device
++------------------+         +------------------+
+|  Tx  | PL#0      |         |      PL#0 | Rx   |
+|      +----------+|         |+----------+      |
+|      | PL#1      |         || PL#1     |      |
++------+----------++         ++----------+------+
+       |                     |
+       |  Lane 0 &amp; Lane 1    |
+       |&lt;===================&gt;|
+       |                     |
++------+----------++         ++----------+------+
+|      | PL#0      |         || PL#0     |      |
+|      +----------+|         |+----------+      |
+|  Rx  | PL#1      |         || PL#1     | Tx   |
++------------------+         +------------------+
+
+注：PL = Physical Lane
+
+连接规则:
+- Tx physical lane N 连接到 Rx physical lane N
+- 支持 Lane 聚合提高带宽
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h1>各层选项和参数<a class="headerlink" href="#id7" title="链接到此标题。"></a></h1>
+<section id="data-link-layer-l2-section-9-6-2">
+<h2>Data Link Layer (L2) 要求 [Section 9.6.2]_<a class="headerlink" href="#data-link-layer-l2-section-9-6-2" title="链接到此标题。"></a></h2>
+<p><strong>强制要求</strong>:</p>
+<ul class="simple">
+<li><p>✅ 实现 Data Link Layer Traffic Class &quot;Best Effort&quot; (TC 0)</p></li>
+<li><p>✅ 提供至少 DL_MTU 字节的 Data Link Layer RX 和 TX 缓冲</p></li>
+<li><p>✅ 支持最大尺寸 L2 帧的发送和接收 (DL_MTU)</p></li>
+</ul>
+<p><strong>非强制要求</strong>:</p>
+<ul class="simple">
+<li><p>❌ Data Link Layer Traffic Class 1 (TC1: 'Low Latency') - 不需要</p></li>
+<li><p>❌ TX 抢占能力 - 不需要</p></li>
+</ul>
+</section>
+<section id="network-layer-l3-section-9-6-3">
+<h2>Network Layer (L3) 要求 [Section 9.6.3]_<a class="headerlink" href="#network-layer-l3-section-9-6-3" title="链接到此标题。"></a></h2>
+<p><strong>强制要求</strong>:</p>
+<ul class="simple">
+<li><p>✅ 支持最大尺寸 L3 数据包的发送和接收 (N_MTU)</p></li>
+</ul>
+</section>
+<section id="transport-layer-l4-section-9-6-4">
+<h2>Transport Layer (L4) 要求 [Section 9.6.4]_<a class="headerlink" href="#transport-layer-l4-section-9-6-4" title="链接到此标题。"></a></h2>
+<p><strong>CPort 配置</strong>:</p>
+<ul class="simple">
+<li><p>✅ UFS Host 和 UFS Device 应至少实现 1 个 CPort</p></li>
+</ul>
+<p><strong>说明</strong> [NOTE]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>本规范仅要求和使用链路两端的单个 CPort。
+</pre></div>
+</div>
+<p><strong>CPort 仲裁</strong>:</p>
+<ul class="simple">
+<li><p>❌ UFS 不强制任何 CPort 仲裁方案 (如果实现多个 CPort，使用 UniPro 默认)</p></li>
+</ul>
+<p><strong>功能支持</strong>:</p>
+<ul class="simple">
+<li><p>✅ 应支持 UniPro Test Feature</p></li>
+<li><p>❌ 不需要 UniPro 端到端流控制机制</p></li>
+<li><p>❌ 不使用'Controlled Segment Dropping'(CSD) - 应禁用</p></li>
+<li><p>❌ 不使用&quot;CPort Safety Valve&quot;(CSV) - 应禁用</p></li>
+</ul>
+<p><strong>MTU 支持</strong>:</p>
+<ul class="simple">
+<li><p>✅ 应支持最大尺寸 L4 段的发送和接收 (T_MTU)</p></li>
+</ul>
+</section>
+<section id="dme-section-9-6-5">
+<h2>设备管理实体 (DME) 要求 [Section 9.6.5]_<a class="headerlink" href="#dme-section-9-6-5" title="链接到此标题。"></a></h2>
+<p><strong>DME 服务原语功能</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DME</span> <span class="n">服务原语提供以下手段</span><span class="p">:</span>
+
+<span class="mf">1.</span> <span class="n">检索或设置属性</span>
+<span class="mf">2.</span> <span class="n">控制整个</span> <span class="n">UniPro</span> <span class="n">协议栈的复位和运行模式</span>
+</pre></div>
+</div>
+<p><strong>UFS Host 和 UFS Device 应实现的 DME 原语</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>原语</p></td>
+<td><p>功能</p></td>
+</tr>
+<tr class="row-even"><td><p>DME_GET, DME_SET</p></td>
+<td><p>获取/设置属性</p></td>
+</tr>
+<tr class="row-odd"><td><p>DME_ENABLE</p></td>
+<td><p>使能协议栈</p></td>
+</tr>
+<tr class="row-even"><td><p>DME_RESET, DME_ENDPOINTRESET</p></td>
+<td><p>复位操作</p></td>
+</tr>
+<tr class="row-odd"><td><p>DME_LINKSTARTUP, DME_LINKLOST</p></td>
+<td><p>链路启动/丢失指示</p></td>
+</tr>
+<tr class="row-even"><td><p>DME_HIBERNATE_ENTER, DME_HIBERNATE_EXIT</p></td>
+<td><p>休眠进入/退出</p></td>
+</tr>
+<tr class="row-odd"><td><p>DME_POWERMODE</p></td>
+<td><p>电源模式切换</p></td>
+</tr>
+<tr class="row-even"><td><p>DME_ERROR</p></td>
+<td><p>错误指示</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>UFS Host 特殊要求</strong>:</p>
+<ul class="simple">
+<li><p>✅ 应实现 DME_PEER_GET 原语和 DME_PEER_SET 原语 (在 UniPro 中为可选)</p></li>
+</ul>
+<p><strong>UFS Device 使用限制</strong>:</p>
+<p>详见&quot;控制平面接口&quot;章节。</p>
+</section>
+</section>
+<section id="id8">
+<h1>UniPro 属性<a class="headerlink" href="#id8" title="链接到此标题。"></a></h1>
+<section id="section-9-6-6">
+<h2>属性复位值策略 [Section 9.6.6]_<a class="headerlink" href="#section-9-6-6" title="链接到此标题。"></a></h2>
+<p><strong>优化启动过程</strong>:</p>
+<p>为优化 UFS 启动过程，UFS UIC 实现应使用 MIPI UniPro 规范定义的所有 UniPro 属性的默认复位值。</p>
+<p><strong>例外情况</strong>:</p>
+<p>网络层属性和 CPort 0 的特定属性复位值应反映上述章节定义的设置，即包含 Table 9.2 所示的值。</p>
+</section>
+<section id="unipro-table-9-2">
+<h2>关键 UniPro 属性复位值 [Table 9.2]_<a class="headerlink" href="#unipro-table-9-2" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id17">
+<caption><span class="caption-text">UniPro 属性复位值</span><a class="headerlink" href="#id17" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>UniPro 属性名称</p></th>
+<th class="head"><p>UFS Host 复位值</p></th>
+<th class="head"><p>UFS Device 复位值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>N_DeviceID</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>网络层设备 ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_DeviceID_valid</p></td>
+<td><p>TRUE</p></td>
+<td><p>TRUE</p></td>
+<td><p>设备 ID 有效标志</p></td>
+</tr>
+<tr class="row-even"><td><p>T_PeerDeviceID</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>对端设备 ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>T_PeerCPortID</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>对端 CPort ID</p></td>
+</tr>
+<tr class="row-even"><td><p>T_CPortFlags</p></td>
+<td><p>6</p></td>
+<td><p>6</p></td>
+<td><p>CPort 标志</p></td>
+</tr>
+<tr class="row-odd"><td><p>T_ConnectionState</p></td>
+<td><p>1 (CONNECTED)</p></td>
+<td><p>1 (CONNECTED)</p></td>
+<td><p>连接状态</p></td>
+</tr>
+<tr class="row-even"><td><p>T_TrafficClass</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>流量类别</p></td>
+</tr>
+<tr class="row-odd"><td><p>PA_MaxDataLanes</p></td>
+<td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>最大数据 Lane 数</p></td>
+</tr>
+<tr class="row-even"><td><p>PA_AvailTxDataLanes</p></td>
+<td><p>1, 2</p></td>
+<td><p>1, 2</p></td>
+<td><p>可用 TX 数据 Lane</p></td>
+</tr>
+<tr class="row-odd"><td><p>PA_AvailRxDataLanes</p></td>
+<td><p>1, 2</p></td>
+<td><p>1, 2</p></td>
+<td><p>可用 RX 数据 Lane</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>T_CPortFlags = 6 的含义</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Bit 编码：0110b
+
+- E2E_FC (End-to-End Flow Control): OFF (bit 2 = 1)
+- CSD (Controlled Segment Dropping): OFF (bit 1 = 1)
+- CSV (CPort Safety Valve): OFF (bit 0 = 0)
+
+注：实际编码需参照 UniPro 规范详细定义
+</pre></div>
+</div>
+<p><strong>Lane 配置说明</strong> [NOTE]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UFS</span> <span class="n">设备将支持以下两种配置之一</span><span class="p">:</span>
+
+<span class="mf">1.</span> <span class="n">一个</span> <span class="n">TX</span> <span class="n">Lane</span> <span class="o">+</span> <span class="n">一个</span> <span class="n">RX</span> <span class="n">Lane</span> <span class="p">(</span><span class="n">单</span> <span class="n">Lane</span> <span class="n">设备</span><span class="p">)</span>
+<span class="mf">2.</span> <span class="n">两个</span> <span class="n">TX</span> <span class="n">Lanes</span> <span class="o">+</span> <span class="n">两个</span> <span class="n">RX</span> <span class="n">Lanes</span> <span class="p">(</span><span class="n">双</span> <span class="n">Lane</span> <span class="n">设备</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h1>关键设计决策总结<a class="headerlink" href="#id9" title="链接到此标题。"></a></h1>
+<section id="id10">
+<h2>流控制策略<a class="headerlink" href="#id10" title="链接到此标题。"></a></h2>
+<p><strong>决策</strong>: 禁用 UniPro 端到端流控制</p>
+<p><strong>理由</strong>:</p>
+<ul class="simple">
+<li><p>UFS 已有严格的客户端 - 服务器模型</p></li>
+<li><p>标签命令队列提供天然流控</p></li>
+<li><p>设备端可主动节流数据传输</p></li>
+</ul>
+<p><strong>实现影响</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">无需实现</span> <span class="n">T_CO_FLOWCONTROL</span> <span class="n">原语</span>
+<span class="o">-</span> <span class="n">T_CPortFlags</span> <span class="n">中</span> <span class="n">E2E_FC</span> <span class="n">位应设为</span> <span class="n">OFF</span>
+<span class="o">-</span> <span class="n">简化协议栈实现</span>
+</pre></div>
+</div>
+</section>
+<section id="cport">
+<h2>CPort 配置策略<a class="headerlink" href="#cport" title="链接到此标题。"></a></h2>
+<p><strong>决策</strong>: 单 CPort 配置</p>
+<p><strong>理由</strong>:</p>
+<ul class="simple">
+<li><p>UFS 点对点拓扑结构简单</p></li>
+<li><p>单一连接足以满足带宽需求</p></li>
+<li><p>简化链路管理和枚举</p></li>
+</ul>
+<p><strong>实现影响</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">最少实现</span> <span class="mi">1</span> <span class="n">个</span> <span class="n">CPort</span><span class="p">(</span><span class="n">CPort</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">无需复杂</span> <span class="n">CPort</span> <span class="n">仲裁逻辑</span>
+<span class="o">-</span> <span class="n">CPort</span> <span class="n">ID</span> <span class="n">复位值固定为</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h2>电源管理策略<a class="headerlink" href="#id11" title="链接到此标题。"></a></h2>
+<p><strong>决策</strong>: 集中式电源管理</p>
+<p><strong>理由</strong>:</p>
+<ul class="simple">
+<li><p>Host 主导链路状态转换</p></li>
+<li><p>Device 被动响应电源模式请求</p></li>
+</ul>
+<p><strong>实现影响</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">Device</span> <span class="n">不得使用</span> <span class="n">DME_POWERMODE</span><span class="o">.</span><span class="n">req</span>
+<span class="o">-</span> <span class="n">Device</span> <span class="n">不得使用</span> <span class="n">DME_HIBERNATE_ENTER</span><span class="o">/</span><span class="n">EXIT</span><span class="o">.</span><span class="n">req</span>
+<span class="o">-</span> <span class="n">Host</span> <span class="n">统一管理所有电源状态转换</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h2>复位策略<a class="headerlink" href="#id12" title="链接到此标题。"></a></h2>
+<p><strong>决策</strong>: 分级复位机制</p>
+<p><strong>复位类型</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>DME_RESET</strong>: 复位整个 UniPro 协议栈</p></li>
+<li><p><strong>DME_ENDPOINTRESET</strong>: 端点复位 (仅 Host 可使用)</p></li>
+</ol>
+<p><strong>使用约束</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UFS</span> <span class="n">Device</span> <span class="n">仅在以下情况使用</span> <span class="n">DME_RESET</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">上电时</span>
+<span class="o">-</span> <span class="n">硬件复位后</span>
+<span class="o">-</span> <span class="n">收到</span> <span class="n">DME_LINKLOST</span><span class="o">.</span><span class="n">ind</span> <span class="n">后</span>
+</pre></div>
+</div>
+</section>
+<section id="hibernate">
+<h2>Hibernate 管理<a class="headerlink" href="#hibernate" title="链接到此标题。"></a></h2>
+<p><strong>关键约束</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>退出 Hibernate 后，所有 UniPro 传输层属性复位到默认值!
+
+必须恢复的属性包括:
+- T_PeerDeviceID
+- T_PeerCPortID
+- T_ConnectionState
+- 其他 CPort 配置属性
+</pre></div>
+</div>
+<p><strong>恢复流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">Exit</span> <span class="n">Hibernate</span>
+<span class="mf">2.</span> <span class="n">Host</span> <span class="n">使用</span> <span class="n">DME_GET</span><span class="o">/</span><span class="n">DME_SET</span> <span class="n">恢复本地属性</span>
+<span class="mf">3.</span> <span class="n">Host</span> <span class="n">使用</span> <span class="n">DME_PEER_GET</span><span class="o">/</span><span class="n">DME_PEER_SET</span> <span class="n">恢复对端属性</span>
+<span class="mf">4.</span> <span class="n">确认两端属性正确配置</span>
+<span class="mf">5.</span> <span class="n">恢复通信</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id13">
+<h1>框图索引<a class="headerlink" href="#id13" title="链接到此标题。"></a></h1>
+<section id="figure-9-1-unipro-internal-layering-view-and-black-box-view">
+<h2>Figure 9.1 — UniPro internal layering view and Black Box view<a class="headerlink" href="#figure-9-1-unipro-internal-layering-view-and-black-box-view" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="n">Internal</span> <span class="n">Layering</span> <span class="n">View</span><span class="p">:</span>
+
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">Application</span> <span class="n">Protocol</span>    <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+        <span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>    <span class="o">|</span>
+      <span class="n">C</span> <span class="mi">0</span>  <span class="n">C</span> <span class="mi">1</span>  <span class="n">C</span> <span class="mi">2</span>  <span class="n">C</span> <span class="mi">3</span>   <span class="o">&lt;-</span> <span class="n">CPorts</span>
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">Transport</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L4</span><span class="p">)</span>    <span class="o">|</span>
+<span class="o">|</span>         <span class="o">+</span> <span class="n">LM</span>              <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">Network</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L3</span><span class="p">)</span>      <span class="o">|</span>
+<span class="o">|</span>         <span class="o">+</span> <span class="n">LM</span> <span class="o">+</span> <span class="n">DME</span>        <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">Data</span> <span class="n">Link</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">L2</span><span class="p">)</span>    <span class="o">|</span>
+<span class="o">|</span>         <span class="o">+</span> <span class="n">LM</span>              <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">PHY</span> <span class="n">Adapter</span> <span class="p">(</span><span class="n">L1</span><span class="mf">.5</span><span class="p">)</span>      <span class="o">|</span>
+<span class="o">|</span>         <span class="o">+</span> <span class="n">LM</span>              <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">PHY</span> <span class="n">Tx</span>  <span class="o">|</span>  <span class="n">PHY</span> <span class="n">Rx</span>       <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+
+<span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="n">Black</span> <span class="n">Box</span> <span class="n">View</span><span class="p">:</span>
+
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>   <span class="n">Application</span> <span class="n">Protocol</span>    <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+        <span class="o">|</span>    <span class="o">|</span>
+   <span class="n">UIO_SAP</span>  <span class="n">T_CO_SAP</span>
+<span class="o">+---------------------------+</span>
+<span class="o">|</span>       <span class="n">UniPro</span> <span class="n">Stack</span>        <span class="o">|</span>
+<span class="o">|</span>    <span class="p">(</span><span class="n">L1</span><span class="mf">.5</span> <span class="o">-</span> <span class="n">L4</span> <span class="o">+</span> <span class="n">DME</span><span class="p">)</span>      <span class="o">|</span>
+<span class="o">+---------------------------+</span>
+</pre></div>
+</div>
+</section>
+<section id="figure-9-2-physical-lane-connections">
+<h2>Figure 9.2 — Physical lane connections<a class="headerlink" href="#figure-9-2-physical-lane-connections" title="链接到此标题。"></a></h2>
+<p>详见&quot;物理 Lane 连接要求&quot;章节中的 ASCII 图示。</p>
+</section>
+</section>
+<section id="id14">
+<h1>表格索引<a class="headerlink" href="#id14" title="链接到此标题。"></a></h1>
+<table class="docutils align-default" id="id18">
+<caption><span class="caption-text">本文档引用的关键表格</span><a class="headerlink" href="#id18" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>表格编号</p></th>
+<th class="head"><p>内容描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Table 9.1</p></td>
+<td><p>UFS Initiator and Target Port Identifiers (UFS 发起方和目标方端口标识符)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 9.2</p></td>
+<td><p>UniPro Attribute (UniPro 属性复位值)</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 8.1</p></td>
+<td><p>UFS PHY M-TX Capability Attributes (UFS PHY M-TX 能力属性)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 8.2</p></td>
+<td><p>UFS PHY M-RX Capability Attributes (UFS PHY M-RX 能力属性)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id15">
+<h1>关键术语<a class="headerlink" href="#id15" title="链接到此标题。"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>术语</p></td>
+<td><p>定义</p></td>
+</tr>
+<tr class="row-even"><td><p>CPort</p></td>
+<td><p>Connection Port，UniPro 传输层的连接导向服务访问点</p></td>
+</tr>
+<tr class="row-odd"><td><p>DME</p></td>
+<td><p>Device Management Entity，设备管理实体</p></td>
+</tr>
+<tr class="row-even"><td><p>DME_SAP</p></td>
+<td><p>DME Service Access Point，DME 服务访问点</p></td>
+</tr>
+<tr class="row-odd"><td><p>EOM</p></td>
+<td><p>End Of Message，消息结束标志</p></td>
+</tr>
+<tr class="row-even"><td><p>I_T_L_Q Nexus</p></td>
+<td><p>SCSI 架构中的连接定义，包含 Initiator、Target、LU、Command</p></td>
+</tr>
+<tr class="row-odd"><td><p>L2/L3/L4</p></td>
+<td><p>Data Link/Network/Transport Layer，数据链路/网络/传输层</p></td>
+</tr>
+<tr class="row-even"><td><p>LM</p></td>
+<td><p>Layer Management，层管理</p></td>
+</tr>
+<tr class="row-odd"><td><p>MTU</p></td>
+<td><p>Maximum Transmission Unit，最大传输单元</p></td>
+</tr>
+<tr class="row-even"><td><p>SAM</p></td>
+<td><p>SCSI Architecture Model，SCSI 架构模型</p></td>
+</tr>
+<tr class="row-odd"><td><p>SOM</p></td>
+<td><p>Start Of Message，消息开始标志</p></td>
+</tr>
+<tr class="row-even"><td><p>T_CO_SAP</p></td>
+<td><p>Transport Connection-Oriented Service Access Point，传输层连接导向服务访问点</p></td>
+</tr>
+<tr class="row-odd"><td><p>UIC</p></td>
+<td><p>UFS InterConnect，UFS 互连层</p></td>
+</tr>
+<tr class="row-even"><td><p>UniPro</p></td>
+<td><p>Unified Protocol，统一协议 (MIPI 联盟定义)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

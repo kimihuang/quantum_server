@@ -1,0 +1,25 @@
+var structcmn600__rnsam__reg =
+[
+    [ "CHILD_INFO", "structcmn600__rnsam__reg.html#abb9c680a23e3f65eac04e084e636e538", null ],
+    [ "NODE_INFO", "structcmn600__rnsam__reg.html#a13ca247e2c0019730d99590c6b7c9bac", null ],
+    [ "NON_HASH_MEM_REGION", "structcmn600__rnsam__reg.html#ac2d0f4ec4379eb4909fa4b2596ca9f9e", null ],
+    [ "NON_HASH_TGT_NODEID", "structcmn600__rnsam__reg.html#aab63cdb06cc7aab4f860949c295f89e8", null ],
+    [ "NON_HASH_TGT_NODEID_GRP2", "structcmn600__rnsam__reg.html#a131e762ba397b126fac25dfc7b766aa1", null ],
+    [ "RESERVED0", "structcmn600__rnsam__reg.html#aa2f02e5396d773ee7f7a47374fdf78f3", null ],
+    [ "RESERVED1", "structcmn600__rnsam__reg.html#abff1ddc88f49d8048c812a85d7578f9d", null ],
+    [ "RESERVED2", "structcmn600__rnsam__reg.html#a6b3715829e764677d5d04c4b8a3be368", null ],
+    [ "RESERVED3", "structcmn600__rnsam__reg.html#acdbfd6b27aa17bc2ab05c77bff500cf6", null ],
+    [ "RESERVED4", "structcmn600__rnsam__reg.html#aac23899b7d2f5e8d4d15f1385cc57670", null ],
+    [ "RESERVED5", "structcmn600__rnsam__reg.html#a1158b37dd84b6071a749a9b129cec501", null ],
+    [ "RESERVED6", "structcmn600__rnsam__reg.html#a52de3bf3e149db6163ecc32657f051ab", null ],
+    [ "SECURE_REGISTER_GROUPS_OVERRIDE", "structcmn600__rnsam__reg.html#ab2b09951db6212251b9e515e4daaf2dd", null ],
+    [ "STATUS", "structcmn600__rnsam__reg.html#adf15e7ddecdf2f21a65a8f52ff10647d", null ],
+    [ "SYS_CACHE_GRP_CAL_MODE", "structcmn600__rnsam__reg.html#a515a3fd442ee7f83278683fd60c6184a", null ],
+    [ "SYS_CACHE_GRP_HN_COUNT", "structcmn600__rnsam__reg.html#a57586d66fa4a5de1da1c39e82e5973ce", null ],
+    [ "SYS_CACHE_GRP_HN_NODEID", "structcmn600__rnsam__reg.html#a9675d63219d76e9ade76442d0697c507", null ],
+    [ "SYS_CACHE_GRP_NOHASH_NODEID", "structcmn600__rnsam__reg.html#a8706f3d01bd87257fff5bded90f7e435", null ],
+    [ "SYS_CACHE_GRP_REGION", "structcmn600__rnsam__reg.html#a30bce27099ce32c7db7ec52198e830fb", null ],
+    [ "SYS_CACHE_GRP_SN_NODEID", "structcmn600__rnsam__reg.html#a9e6b8d222ddd5ade28682d27acbba0b0", null ],
+    [ "SYS_CACHE_GRP_SN_SAM_CFG", "structcmn600__rnsam__reg.html#a6fb2f6519544accd461c6d12d95a41a8", null ],
+    [ "UNIT_INFO", "structcmn600__rnsam__reg.html#a7bf6e40606d91ed7aac5ca157208256e", null ]
+];

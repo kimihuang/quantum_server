@@ -1,0 +1,3 @@
+demo_importer          16384  -2
+demo_exporter          16384  -2
+demo_heap              16384  -2

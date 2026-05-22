@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7. CoreLink MMU-600AE TCU 与 TBU 架构分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/translations.js?v=540d3cec"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="8. TCU 和 TBU 一致性维护机制深入分析" href="corelink_mmu600ae_coherency.html" />
+    <link rel="prev" title="6. SMMU 学习笔记" href="../smmu_arch.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mmu-600ae">7.1. MMU-600AE 概述</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">7.1.1. 1 产品定位</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">7.1.2. 2 三大核心组件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">7.1.3. 3 可配置选项</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tbu-translation-buffer-unit">7.2. TBU（Translation Buffer Unit）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">7.2.1. 1 功能定位</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">7.2.2. 2 内部架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mtlb-direct-indexing-partitioning">7.2.3. 3 MTLB Direct Indexing 与 Partitioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#axi-user-bits">7.2.4. 4 AXI USER Bits 扩展</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tbu">7.2.5. 5 TBU 接口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">7.2.6. 6 TBU 寄存器</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tcu-translation-control-unit">7.3. TCU（Translation Control Unit）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id26">7.3.1. 1 功能定位</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">7.3.2. 2 内部架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#walk-cache">7.3.3. 3 Walk Cache 详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-cache">7.3.4. 4 Configuration Cache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dvm">7.3.5. 5 DVM 消息处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu">7.3.6. 6 TCU 事务处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu-prefetch">7.3.7. 7 TCU Prefetch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id38">7.3.8. 8 TCU 接口</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">7.3.9. 9 TCU 寄存器</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tcu-tbu">7.4. TCU 与 TBU 的交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dti-interconnect">7.4.1. 1 DTI Interconnect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dti">7.4.2. 2 DTI 协议</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streamid">7.4.3. 3 StreamID 约束</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id60">7.4.4. 4 翻译请求完整流程</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#qos-ras">7.5. QoS 与 RAS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quality-of-service">7.5.1. 1 Quality of Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ras-reliability-availability-serviceability">7.5.2. 2 RAS（Reliability, Availability, Serviceability）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id63">7.6. 关键约束和限制</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">7. </span>CoreLink MMU-600AE TCU 与 TBU 架构分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/arm/mmu600ae/corelink_mmu600ae_trm.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="corelink-mmu-600ae-tcu-tbu">
+<h1><span class="section-number">7. </span>CoreLink MMU-600AE TCU 与 TBU 架构分析<a class="headerlink" href="#corelink-mmu-600ae-tcu-tbu" title="链接到此标题。"></a></h1>
+<p>本文档基于 ARM CoreLink MMU-600AE Technical Reference Manual（ARM DEN 0060D）
+分析 MMU-600AE 的两大核心组件 TCU（Translation Control Unit）和
+TBU（Translation Buffer Unit）的架构、功能、交互机制和关键约束。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#mmu-600ae" id="id64">MMU-600AE 概述</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id2" id="id65">1 产品定位</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id66">2 三大核心组件</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id67">3 可配置选项</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tbu-translation-buffer-unit" id="id68">TBU（Translation Buffer Unit）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id5" id="id69">1 功能定位</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id70">2 内部架构</a></p></li>
+<li><p><a class="reference internal" href="#mtlb-direct-indexing-partitioning" id="id71">3 MTLB Direct Indexing 与 Partitioning</a></p></li>
+<li><p><a class="reference internal" href="#axi-user-bits" id="id72">4 AXI USER Bits 扩展</a></p></li>
+<li><p><a class="reference internal" href="#tbu" id="id73">5 TBU 接口</a></p></li>
+<li><p><a class="reference internal" href="#id9" id="id74">6 TBU 寄存器</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tcu-translation-control-unit" id="id75">TCU（Translation Control Unit）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id26" id="id76">1 功能定位</a></p></li>
+<li><p><a class="reference internal" href="#id27" id="id77">2 内部架构</a></p></li>
+<li><p><a class="reference internal" href="#walk-cache" id="id78">3 Walk Cache 详解</a></p></li>
+<li><p><a class="reference internal" href="#configuration-cache" id="id79">4 Configuration Cache</a></p></li>
+<li><p><a class="reference internal" href="#dvm" id="id80">5 DVM 消息处理</a></p></li>
+<li><p><a class="reference internal" href="#tcu" id="id81">6 TCU 事务处理</a></p></li>
+<li><p><a class="reference internal" href="#tcu-prefetch" id="id82">7 TCU Prefetch</a></p></li>
+<li><p><a class="reference internal" href="#id38" id="id83">8 TCU 接口</a></p></li>
+<li><p><a class="reference internal" href="#id39" id="id84">9 TCU 寄存器</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tcu-tbu" id="id85">TCU 与 TBU 的交互</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dti-interconnect" id="id86">1 DTI Interconnect</a></p></li>
+<li><p><a class="reference internal" href="#dti" id="id87">2 DTI 协议</a></p></li>
+<li><p><a class="reference internal" href="#streamid" id="id88">3 StreamID 约束</a></p></li>
+<li><p><a class="reference internal" href="#id60" id="id89">4 翻译请求完整流程</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#qos-ras" id="id90">QoS 与 RAS</a></p>
+<ul>
+<li><p><a class="reference internal" href="#quality-of-service" id="id91">1 Quality of Service</a></p></li>
+<li><p><a class="reference internal" href="#ras-reliability-availability-serviceability" id="id92">2 RAS（Reliability, Availability, Serviceability）</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id63" id="id93">关键约束和限制</a></p></li>
+</ul>
+</nav>
+<section id="mmu-600ae">
+<h2><a class="toc-backref" href="#id64" role="doc-backlink"><span class="section-number">7.1. </span>MMU-600AE 概述</a><a class="headerlink" href="#mmu-600ae" title="链接到此标题。"></a></h2>
+<section id="id2">
+<h3><a class="toc-backref" href="#id65" role="doc-backlink"><span class="section-number">7.1.1. </span>1 产品定位</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 是 ARM SMMUv3 架构的硬件实现，&quot;AE&quot; 后缀表示这是功能安全（Functional Safety）
+版本。它是 MMU-600 的 FuSa 增强版，在保留原有逻辑和功能不变的基础上，增加了错误检测和
+纠正的安全机制。MMU-600AE 以可综合 RTL 形式交付，经过实现（Implementation）、集成
+（Integration）和编程（Programming）三个阶段后可用于 SoC 产品。（来源：Section 1.6）</p>
+<p>MMU-600AE 遵循的规范：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>规范</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SMMUv3 / SMMUv3.1</p></td>
+<td><p>ARM 系统内存管理单元架构规范</p></td>
+</tr>
+<tr class="row-odd"><td><p>AMBA DTI Protocol</p></td>
+<td><p>定义 TCU 与 TBU/PCIe ATS RC 之间的通信标准</p></td>
+</tr>
+<tr class="row-even"><td><p>AMBA AXI4-Stream</p></td>
+<td><p>DTI 接口的传输层协议</p></td>
+</tr>
+<tr class="row-odd"><td><p>AMBA AXI5 / ACE5-Lite</p></td>
+<td><p>TBU TBS/TBM 接口协议，支持 AXI5 扩展</p></td>
+</tr>
+<tr class="row-even"><td><p>AMBA APB4</p></td>
+<td><p>TCU 编程接口协议</p></td>
+</tr>
+<tr class="row-odd"><td><p>DVMv8.1</p></td>
+<td><p>分布式虚拟内存消息协议，支持 16-bit VMID</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h3><a class="toc-backref" href="#id66" role="doc-backlink"><span class="section-number">7.1.2. </span>2 三大核心组件</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 包含三个核心功能块（来源：Section 2）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>组件</p></th>
+<th class="head"><p>数量</p></th>
+<th class="head"><p>职责</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>TBU</strong></p></td>
+<td><p>≥1（每个 requester）</p></td>
+<td><p>本地 TLB 缓存，拦截事务并提供地址翻译</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TCU</strong></p></td>
+<td><p>1（单实例）</p></td>
+<td><p>全局翻译控制：页表遍历、配置缓存、队列管理、SMMU 编程模型</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DTI Interconnect</strong></p></td>
+<td><p>1（可配置）</p></td>
+<td><p>连接多个 TBU 到 TCU，基于 AXI4-Stream 的交换网络</p></td>
+</tr>
+</tbody>
+</table>
+<p>系统拓扑关系（Figure 2-1）:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Requester ──→ TBU ──→ DTI Interconnect ──→ TCU ──→ Memory System
+PCIe RC (ATS) ──────────→ DTI Interconnect ──→ TCU
+</pre></div>
+</div>
+<p>每个 TBU 部署在对应的 requester 附近（local placement），通过 DTI Interconnect
+连接到中央 TCU。TCU 通过 QTW/DVM 接口访问内存系统执行页表遍历。</p>
+</section>
+<section id="id4">
+<h3><a class="toc-backref" href="#id67" role="doc-backlink"><span class="section-number">7.1.3. </span>3 可配置选项</a><a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>组件</p></th>
+<th class="head"><p>可配置项</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TCU</p></td>
+<td><p>各级 Walk Cache 大小、QTW/DVM 接口数据宽度、同时翻译数（<code class="docutils literal notranslate"><span class="pre">TCUCFG_XLATE_SLOTS</span></code>）、
+PTW Slots（<code class="docutils literal notranslate"><span class="pre">TCUCFG_PTW_SLOTS</span></code>）、TBU 数量（<code class="docutils literal notranslate"><span class="pre">TCUCFG_NUM_TBU</span></code>，最大 62）</p></td>
+</tr>
+<tr class="row-odd"><td><p>TBU</p></td>
+<td><p>Write Data Buffer 深度、各缓存大小、同时翻译数、TBM 接口 outstanding 事务数、
+TBS/TBM 数据/ID/User/StreamID/SubstreamID 宽度、
+MTLB 深度（<code class="docutils literal notranslate"><span class="pre">TBUCFG_MTLB_DEPTH</span></code>）和分区数（<code class="docutils literal notranslate"><span class="pre">TBUCFG_MTLB_PARTS</span></code>）、
+Direct Indexing（<code class="docutils literal notranslate"><span class="pre">TBUCFG_DIRECT_IDX</span></code>）、
+AXI USER 宽度（<code class="docutils literal notranslate"><span class="pre">TBUCFG_AxUSER_WIDTH</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p>DTI Interconnect</p></td>
+<td><p>Switch、Sizer、Register Slice 组件的连接和配置</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="tbu-translation-buffer-unit">
+<h2><a class="toc-backref" href="#id68" role="doc-backlink"><span class="section-number">7.2. </span>TBU（Translation Buffer Unit）</a><a class="headerlink" href="#tbu-translation-buffer-unit" title="链接到此标题。"></a></h2>
+<section id="id5">
+<h3><a class="toc-backref" href="#id69" role="doc-backlink"><span class="section-number">7.2.1. </span>1 功能定位</a><a class="headerlink" href="#id5" title="链接到此标题。"></a></h3>
+<p>TBU 是部署在每个 requester 附近的本地翻译缓存单元。它拦截来自 requester 的未翻译事务，
+在本地 TLB 中查找翻译。命中则直接翻译输出，未命中则通过 DTI 向 TCU 请求翻译，并将
+获取的翻译缓存到本地 TLB 中。（来源：Section 2.1）</p>
+<p>核心工作流:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>TBS 接口收到事务
+    → Micro TLB 查找
+        → 命中：翻译后通过 TBM 接口输出
+        → 未命中：MTLB 查找
+            → 命中：翻译后通过 TBM 接口输出
+            → 未命中：通过 DTI 向 TCU 请求翻译
+                → TCU 返回翻译结果
+                    → 缓存到 TLB
+                    → 翻译事务通过 TBM 输出
+                    → 如果翻译失败：终止事务
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3><a class="toc-backref" href="#id70" role="doc-backlink"><span class="section-number">7.2.2. </span>2 内部架构</a><a class="headerlink" href="#id6" title="链接到此标题。"></a></h3>
+<p>TBU 由以下功能模块组成（来源：Section 2.1, Figure 2-2）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>模块</p></th>
+<th class="head"><p>功能描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Completer/Requester 接口</strong></p></td>
+<td><p>管理 TBS（输入）和 TBM（输出）接口</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Micro TLB</strong></p></td>
+<td><p>全相联 TLB，提供配置缓存和 TLB 功能。替换策略通过 tie-off 选择：
+round-robin 或 Pseudo Least Recently Used（PLRU）</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Main TLB（MTLB）</strong></p></td>
+<td><p>可选的 4-way set-associative 缓存，随机替换策略。
+缓存 Stage 1、Stage 2、以及 Stage 1+Stage 2 合并翻译。
+查找流水线化，支持每周期一次查找吞吐</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Translation Manager</strong></p></td>
+<td><p>管理进行中的翻译请求。执行 hazard check 减少重复 TCU 请求。
+支持 Hit-Under-Miss（HUM）。不同 AXI ID 的事务可以乱序推进</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Write Data Buffer</strong></p></td>
+<td><p>可选，允许不同 AXI ID 的写事务乱序通过 TBU，
+并重新排序数据以匹配下游事务顺序</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Transaction Tracker</strong></p></td>
+<td><p>管理未完成的读写事务，允许 invalidation 和 synchronization
+在不阻塞 AXI 接口的情况下执行</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DTI 接口</strong></p></td>
+<td><p>Requester DTI，使用 AXI4-Stream 与 TCU 通信</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PMU</strong></p></td>
+<td><p>计数 TBU 性能相关事件</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Clock/Power Control</strong></p></td>
+<td><p>Q-Channel 提供的时钟和功耗控制</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mtlb-direct-indexing-partitioning">
+<h3><a class="toc-backref" href="#id71" role="doc-backlink"><span class="section-number">7.2.3. </span>3 MTLB Direct Indexing 与 Partitioning</a><a class="headerlink" href="#mtlb-direct-indexing-partitioning" title="链接到此标题。"></a></h3>
+<p>TBU Direct Indexing 允许外部（如 requester 或软件）直接控制 MTLB 条目的索引位置，
+用于满足实时翻译的可预测性需求。（来源：Section 2.1.1）</p>
+<p>启用条件：<code class="docutils literal notranslate"><span class="pre">TBUCFG_DIRECT_IDX</span> <span class="pre">=</span> <span class="pre">1</span></code></p>
+<p>当启用 Direct Indexing 或 MTLB Partitioning 时，TBS 接口的 AxUSER 信号宽度扩展，
+增加以下字段（Table 2-1）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>宽度</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mtlbidx</span></code></p></td>
+<td><p><a href="#id7"><span class="problematic" id="id8">``</span></a>log2(TBUCFG_MTLB_DEPTH) - 2``（Direct Indexing 启用时）</p></td>
+<td><p>MTLB 索引</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mtlbway</span></code></p></td>
+<td><p>2（Direct Indexing 启用时）</p></td>
+<td><p>MTLB way 选择</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mtlbpart</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log2(TBUCFG_MTLB_PARTS)</span></code></p></td>
+<td><p>MTLB 分区</p></td>
+</tr>
+<tr class="row-odd"><td><p>常规 AxUSER</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TBUCFG_AxUSER_WIDTH</span></code></p></td>
+<td><p>原始 AxUSER 信号</p></td>
+</tr>
+</tbody>
+</table>
+<p>关键行为：</p>
+<ul class="simple">
+<li><p><strong>Direct Indexing 启用时</strong>：MTLB 查找和更新使用 <code class="docutils literal notranslate"><span class="pre">mtlbidx</span></code> 字段；
+更新使用 <code class="docutils literal notranslate"><span class="pre">mtlbway</span></code> 指定的 way；查找同时搜索所有 way</p></li>
+<li><p><strong>MTLB Partitioning</strong>：MTLB 大小乘以 <code class="docutils literal notranslate"><span class="pre">TBUCFG_MTLB_PARTS</span></code>；
+<code class="docutils literal notranslate"><span class="pre">mtlbpart</span></code> 字段定义最高位的索引位</p></li>
+<li><p><strong>Arm 建议</strong>：在启用 Direct Indexing 的 TBU 上禁用 DVM invalidation，
+通过设置 <code class="docutils literal notranslate"><span class="pre">TCU_NODE_CTRLn.DIS_DVM</span> <span class="pre">=</span> <span class="pre">1</span></code> 实现</p></li>
+</ul>
+</section>
+<section id="axi-user-bits">
+<h3><a class="toc-backref" href="#id72" role="doc-backlink"><span class="section-number">7.2.4. </span>4 AXI USER Bits 扩展</a><a class="headerlink" href="#axi-user-bits" title="链接到此标题。"></a></h3>
+<p>TBM 接口的 <code class="docutils literal notranslate"><span class="pre">aruser_m</span></code> 和 <code class="docutils literal notranslate"><span class="pre">awuser_m</span></code> 信号比 <code class="docutils literal notranslate"><span class="pre">TBUCFG_AxUSER_WIDTH</span></code> 定义的多 13 位，
+这些扩展位携带翻译属性信息。（来源：Section 2.1.2, Table 2-2）</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>位位置（相对宽度 w）</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[w+12]</span></code></p></td>
+<td><p>Outer Cacheable 属性</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[w+11:w+8]</span></code></p></td>
+<td><p>STE 定义的属性（来自 STE bits[119:116]，
+通过 <code class="docutils literal notranslate"><span class="pre">DTI_TBU_TRANS_RESP.CTXTATTR</span></code> 传递）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[w+7:w+4]</span></code></p></td>
+<td><p>Stage 2 IMPLEMENTATION DEFINED 硬件属性（<code class="docutils literal notranslate"><span class="pre">S2HWATTR[3:0]</span></code>）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[w+3:w]</span></code></p></td>
+<td><p>Stage 1 IMPLEMENTATION DEFINED 硬件属性（<code class="docutils literal notranslate"><span class="pre">S1HWATTR[3:0]</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+<p>S1HWATTR 和 S2HWATTR 的计算规则：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">S1HWATTR[n]</span></code> 等于 Stage 1 最终级描述符的 bit[n+59]，条件是 SMMUv3 允许
+该 bit 有 IMPLEMENTATION DEFINED 硬件用途，且 Stage 2 不允许同一 bit 有此用途</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">S2HWATTR[n]</span></code> 等于 Stage 2 最终级描述符的 bit[n+59]，条件是 SMMUv3 允许
+该 bit 有 IMPLEMENTATION DEFINED 硬件用途</p></li>
+<li><p>Arm 建议系统始终使用 <code class="docutils literal notranslate"><span class="pre">S1HWATTR[n]</span> <span class="pre">|</span> <span class="pre">S2HWATTR[n]</span></code> 的值，即优先取 Stage 2 的值</p></li>
+</ul>
+</section>
+<section id="tbu">
+<h3><a class="toc-backref" href="#id73" role="doc-backlink"><span class="section-number">7.2.5. </span>5 TBU 接口</a><a class="headerlink" href="#tbu" title="链接到此标题。"></a></h3>
+<p>每个 TBU 包含以下接口（来源：Section 2.4.2, Figure 2-5）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>接口</p></th>
+<th class="head"><p>方向</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>TBS</strong></p></td>
+<td><p>Completer</p></td>
+<td><p>ACE5-Lite 接收端，接收未翻译事务。64-bit 地址。
+支持 AXI5 扩展（Wakeup、Untranslated、Cache_Stash、DeAllocation）和 ACE Exclusive</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TBM</strong></p></td>
+<td><p>Requester</p></td>
+<td><p>ACE5-Lite 发送端，输出已翻译事务</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DTI</strong></p></td>
+<td><p>双向</p></td>
+<td><p>Requester DTI，使用 DTI-TBU 协议与 TCU 通信。
+包含 AXI4-Stream requester + completer 实现双向通信</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>LPI_PD</strong></p></td>
+<td><p>Completer</p></td>
+<td><p>Q-Channel 接口，管理 TBU 低功耗关断</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>LPI_CG</strong></p></td>
+<td><p>Completer</p></td>
+<td><p>Q-Channel 接口，管理 TBU 时钟门控</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Interrupt</strong></p></td>
+<td><p>输出</p></td>
+<td><p>全局中断、per-context 中断、性能中断</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Tie-off</strong></p></td>
+<td><p>输入</p></td>
+<td><p>复位时初始化操作参数</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id9">
+<h3><a class="toc-backref" href="#id74" role="doc-backlink"><span class="section-number">7.2.6. </span>6 TBU 寄存器</a><a class="headerlink" href="#id9" title="链接到此标题。"></a></h3>
+<p>TBU 的微架构寄存器和 RAS 寄存器（来源：Section 3.7-3.9）：</p>
+<p>TBU 的 PROG 接口地址宽度取决于 TCU 配置：
+<code class="docutils literal notranslate"><span class="pre">TCUCFG_NUM_TBU</span> <span class="pre">=</span> <span class="pre">14</span></code> 时为 21 位，<code class="docutils literal notranslate"><span class="pre">TCUCFG_NUM_TBU</span> <span class="pre">=</span> <span class="pre">62</span></code> 时为 23 位。</p>
+</section>
+</section>
+<section id="tcu-translation-control-unit">
+<h2><a class="toc-backref" href="#id75" role="doc-backlink"><span class="section-number">7.3. </span>TCU（Translation Control Unit）</a><a class="headerlink" href="#tcu-translation-control-unit" title="链接到此标题。"></a></h2>
+<section id="id26">
+<h3><a class="toc-backref" href="#id76" role="doc-backlink"><span class="section-number">7.3.1. </span>1 功能定位</a><a class="headerlink" href="#id26" title="链接到此标题。"></a></h3>
+<p>TCU 是 MMU-600AE 的全局翻译控制中心，系统中只有单实例。它负责管理所有翻译操作的核心逻辑。
+软件通过以下方式控制 TCU（来源：Section 2.2）：</p>
+<ul class="simple">
+<li><p>向内存中的 Command Queue 写入命令</p></li>
+<li><p>从内存中的 Event Queue 接收事件</p></li>
+<li><p>通过 PROG 接口（APB4）访问配置寄存器</p></li>
+</ul>
+<p>TCU 的五项核心职责：</p>
+<ol class="arabic simple">
+<li><p><strong>管理内存队列</strong> — Command Queue 和 Event Queue</p></li>
+<li><p><strong>执行翻译表遍历（Translation Table Walk）</strong> — 获取翻译信息</p></li>
+<li><p><strong>执行配置表遍历（Configuration Table Walk）</strong> — 获取 STE/CD 配置信息</p></li>
+<li><p><strong>实现备份缓存结构</strong> — Walk Cache 和 Configuration Cache</p></li>
+<li><p><strong>实现 SMMU 编程模型</strong> — SMMUv3 架构定义的寄存器</p></li>
+</ol>
+</section>
+<section id="id27">
+<h3><a class="toc-backref" href="#id77" role="doc-backlink"><span class="section-number">7.3.2. </span>2 内部架构</a><a class="headerlink" href="#id27" title="链接到此标题。"></a></h3>
+<p>TCU 由以下功能模块组成（来源：Section 2.2, Figure 2-3）：</p>
+</section>
+<section id="walk-cache">
+<h3><a class="toc-backref" href="#id78" role="doc-backlink"><span class="section-number">7.3.3. </span>3 Walk Cache 详解</a><a class="headerlink" href="#walk-cache" title="链接到此标题。"></a></h3>
+<p>Walk Cache 是 TCU 的核心缓存，用于减少需要实际执行的页表遍历次数。
+TCU 包含 8 个独立的 Walk Cache，分别对应 Stage 1 和 Stage 2 的 4 个页表级别。（来源：Section 2.2）</p>
+<p>Walk Cache 的关键特性：</p>
+<ul class="simple">
+<li><p><strong>组织方式</strong>：每个缓存 4-way set-associative，round-robin 替换</p></li>
+<li><p><strong>启用控制</strong>：通过 <code class="docutils literal notranslate"><span class="pre">TCU_CTRL</span></code> 寄存器的 <code class="docutils literal notranslate"><span class="pre">WCS1L0_DIS</span></code> 到 <code class="docutils literal notranslate"><span class="pre">WCS2L3_DIS</span></code> 位
+按级独立启用/禁用</p></li>
+<li><p><strong>错误报告</strong>：缓存行错误通过 <code class="docutils literal notranslate"><span class="pre">TCU_ERRSTATUS</span></code> 寄存器标识</p></li>
+<li><p><strong>性能优势</strong>：当其他 TCU 缓存未命中时，Walk Cache 命中只需一次内存访问
+即可获取所需描述符并完成翻译</p></li>
+</ul>
+</section>
+<section id="configuration-cache">
+<h3><a class="toc-backref" href="#id79" role="doc-backlink"><span class="section-number">7.3.4. </span>4 Configuration Cache</a><a class="headerlink" href="#configuration-cache" title="链接到此标题。"></a></h3>
+<p>Configuration Cache 存储 Context Descriptor（CD）和 Stream Table Entry（STE）的完整内容，
+用于加速翻译上下文的配置查找。（来源：Section 2.2）</p>
+<p>关键特性：</p>
+<ul class="simple">
+<li><p><strong>组织方式</strong>：4-way set-associative 缓存</p></li>
+<li><p><strong>存储内容</strong>：每个条目存储一个翻译上下文的 CD 和 STE 内容</p></li>
+<li><p><strong>不缓存中间配置表</strong>：只缓存最终级的 CD 和 STE，不缓存中间级别的配置表条目</p></li>
+</ul>
+</section>
+<section id="dvm">
+<h3><a class="toc-backref" href="#id80" role="doc-backlink"><span class="section-number">7.3.5. </span>5 DVM 消息处理</a><a class="headerlink" href="#dvm" title="链接到此标题。"></a></h3>
+<p>TCU 的 QTW/DVM 接口支持 DVMv8.1 分布式虚拟内存消息。（来源：Section 2.2.1）</p>
+</section>
+<section id="tcu">
+<h3><a class="toc-backref" href="#id81" role="doc-backlink"><span class="section-number">7.3.6. </span>6 TCU 事务处理</a><a class="headerlink" href="#tcu" title="链接到此标题。"></a></h3>
+<p>TCU 通过 QTW/DVM 接口执行的事务类型和约束（来源：Section 2.2.2）：</p>
+<p><a href="#id32"><span class="problematic" id="id33">**</span></a>读事务**（Table 2-3）：</p>
+<p>最大并发读事务数：<a href="#id34"><span class="problematic" id="id35">``</span></a>TCUCFG_PTW_SLOTS + 2``（Command Queue 读取和 DVM Complete 独立于翻译 slot）。</p>
+<p><a href="#id36"><span class="problematic" id="id37">**</span></a>写事务**（Table 2-4）：</p>
+<p>写事务同一时刻只能有一个 outstanding。所有读写事务按事务大小对齐。</p>
+</section>
+<section id="tcu-prefetch">
+<h3><a class="toc-backref" href="#id82" role="doc-backlink"><span class="section-number">7.3.7. </span>7 TCU Prefetch</a><a class="headerlink" href="#tcu-prefetch" title="链接到此标题。"></a></h3>
+<p>TCU 支持按翻译上下文（per-context）的翻译预取功能，用于优化线性访问模式的实时 requester
+的翻译性能。（来源：Section 2.2.3）</p>
+<p><strong>使能方式</strong>：通过 STE 的 IMPLEMENTATION DEFINED bits[121:120]（<code class="docutils literal notranslate"><span class="pre">STE.PF</span></code> 字段）：</p>
+<p>预取的工作流程：</p>
+<ol class="arabic simple">
+<li><p>TBU 的 Micro TLB 和 MTLB 都未命中，发送翻译请求给 TCU</p></li>
+<li><p>TCU 完成原始翻译请求后，检查 <code class="docutils literal notranslate"><span class="pre">STE.PF</span></code> 字段</p></li>
+<li><p>如果预取使能，TCU 在同一翻译 slot 中发起预取请求（Speculative）</p></li>
+<li><p>预取只分配到 TCU Walk Cache，<strong>不返回翻译响应给 TBU</strong></p></li>
+</ol>
+<p>预取的限制条件：</p>
+<ul class="simple">
+<li><p>预取使用与原始请求相同的翻译 slot，必须等原始请求完成后才能发起</p></li>
+<li><p>如果 TCU 在预取完成前收到对同一地址的非推测请求，可以在其他 slot 中优先处理</p></li>
+<li><p>预取只在两次翻译请求之间的间隔大于预取所需周期数时才有性能优势</p></li>
+<li><p>以下情况**不触发预取**：</p>
+<ul>
+<li><p>推测性翻译请求（<code class="docutils literal notranslate"><span class="pre">PERM[1:0]</span> <span class="pre">=</span> <span class="pre">2'b11</span></code>）</p></li>
+<li><p>提供数据响应的原子事务（<code class="docutils literal notranslate"><span class="pre">PERM[1:0]</span> <span class="pre">=</span> <span class="pre">2'b10</span></code>）</p></li>
+<li><p>原始请求返回故障响应、全局 bypass 响应或流 bypass 响应</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id38">
+<h3><a class="toc-backref" href="#id83" role="doc-backlink"><span class="section-number">7.3.8. </span>8 TCU 接口</a><a class="headerlink" href="#id38" title="链接到此标题。"></a></h3>
+<p>TCU 包含以下接口（来源：Section 2.4.1, Figure 2-4）：</p>
+</section>
+<section id="id39">
+<h3><a class="toc-backref" href="#id84" role="doc-backlink"><span class="section-number">7.3.9. </span>9 TCU 寄存器</a><a class="headerlink" href="#id39" title="链接到此标题。"></a></h3>
+<p>TCU 的微架构寄存器（来源：Section 3.4-3.6）：</p>
+</section>
+</section>
+<section id="tcu-tbu">
+<h2><a class="toc-backref" href="#id85" role="doc-backlink"><span class="section-number">7.4. </span>TCU 与 TBU 的交互</a><a class="headerlink" href="#tcu-tbu" title="链接到此标题。"></a></h2>
+<section id="dti-interconnect">
+<h3><a class="toc-backref" href="#id86" role="doc-backlink"><span class="section-number">7.4.1. </span>1 DTI Interconnect</a><a class="headerlink" href="#dti-interconnect" title="链接到此标题。"></a></h3>
+<p>DTI Interconnect 连接多个 TBU 到 TCU，使用 AXI4-Stream 传输协议承载 AMBA DTI 协议。
+它包含三个可组合的内部组件（来源：Section 2.3）：</p>
+<p>DTI Interconnect 不包含跨时钟/功耗域组件。如需连接不同时钟域，
+需使用 ADB-400 AMBA Domain Bridge 的 Bidirectional AXI4-Stream（BAS）配置。</p>
+</section>
+<section id="dti">
+<h3><a class="toc-backref" href="#id87" role="doc-backlink"><span class="section-number">7.4.2. </span>2 DTI 协议</a><a class="headerlink" href="#dti" title="链接到此标题。"></a></h3>
+<p>AMBA DTI 协议定义了 TCU 与外部组件的通信标准，包含两个子协议（来源：Section 2.5）：</p>
+<p>DTI 消息组：</p>
+<ul class="simple">
+<li><p>Page request</p></li>
+<li><p>Register access</p></li>
+<li><p>Translation request</p></li>
+<li><p>Connection and disconnection</p></li>
+<li><p>Invalidation and synchronization</p></li>
+</ul>
+<p><strong>Token 系统</strong>：</p>
+<p><strong>连接/断开握手</strong>：</p>
+<ul class="simple">
+<li><p>TBU 通过 <code class="docutils literal notranslate"><span class="pre">DTI_TBU_CONDIS_REQ</span></code> 消息发起连接或断开握手</p></li>
+<li><p>如果 TBU 提供的 TID 值超过 <code class="docutils literal notranslate"><span class="pre">TCUCFG_NUM_TBU</span></code> 定义的最大值，
+TCU 返回 Connect Deny 消息</p></li>
+</ul>
+</section>
+<section id="streamid">
+<h3><a class="toc-backref" href="#id88" role="doc-backlink"><span class="section-number">7.4.3. </span>3 StreamID 约束</a><a class="headerlink" href="#streamid" title="链接到此标题。"></a></h3>
+<p>StreamID ≥ 224 的处理（来源：Section 2.5）：</p>
+<ul class="simple">
+<li><p>发送给 TCU 的翻译请求中 StreamID ≥ 224：产生故障和 <code class="docutils literal notranslate"><span class="pre">C_BAD_STREAMID</span></code> 事件</p></li>
+<li><p>TBU 收到的无效化请求中 StreamID ≥ 224：任何 StreamID 比较都会失败，
+不会无效化 TLB 条目，但不考虑 StreamID 的其他效果正常发生</p></li>
+<li><p>TBU 不会生成 StreamID ≥ 224 的翻译请求</p></li>
+<li><p>TCU 不会生成 StreamID ≥ 224 的无效化请求</p></li>
+</ul>
+</section>
+<section id="id60">
+<h3><a class="toc-backref" href="#id89" role="doc-backlink"><span class="section-number">7.4.4. </span>4 翻译请求完整流程</a><a class="headerlink" href="#id60" title="链接到此标题。"></a></h3>
+<p>从 requester 发起事务到完成翻译的完整流程：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>① Requester 发起事务 → TBS 接口
+② TBU Micro TLB 查找
+   ├─ 命中 → ⑧ 翻译输出
+   └─ 未命中 → ③ TBU MTLB 查找
+      ├─ 命中 → ⑧ 翻译输出
+      └─ 未命中 → ④ TBU 通过 DTI 向 TCU 发送翻译请求
+         ⑤ TCU Configuration Cache 查找（STE/CD）
+            ├─ 命中 → ⑥ TCU Walk Cache 查找
+            └─ 未命中 → TCU 通过 QTW 执行配置表遍历 → 更新 Configuration Cache
+         ⑥ TCU Walk Cache 查找（S1L0→L1→L2→L3, S2L0→L1→L2→L3）
+            ├─ 命中 → ⑦ TCU 返回翻译结果给 TBU
+            └─ 未命中 → TCU 通过 QTW 执行翻译表遍历 → 更新 Walk Cache → ⑦
+         ⑦ TBU 将翻译缓存到 TLB
+⑧ TBU 使用翻译结果翻译事务 → TBM 接口输出
+   （如果翻译失败：TBU 终止事务）
+</pre></div>
+</div>
+</section>
+</section>
+<section id="qos-ras">
+<h2><a class="toc-backref" href="#id90" role="doc-backlink"><span class="section-number">7.5. </span>QoS 与 RAS</a><a class="headerlink" href="#qos-ras" title="链接到此标题。"></a></h2>
+<section id="quality-of-service">
+<h3><a class="toc-backref" href="#id91" role="doc-backlink"><span class="section-number">7.5.1. </span>1 Quality of Service</a><a class="headerlink" href="#quality-of-service" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 的 QoS 机制基于 TCU 侧的 per-TBU 优先级控制（来源：Section 2.8）：</p>
+<ul class="simple">
+<li><p>每个连接的 TBU 通过 <strong>``TCU_NODE_CTRLn.PRI_LEVEL[1:0]``</strong> 设置优先级，
+支持 4 个级别（0-3）</p></li>
+<li><p>TCU 使用优先级进行以下仲裁：</p>
+<ul>
+<li><p>Translation Request Buffer 中的请求仲裁</p></li>
+<li><p>Walk Cache / Translation Table Walk 访问仲裁</p></li>
+<li><p>QTW/DVM 接口上的 AxQOS 值设置（通过 <code class="docutils literal notranslate"><span class="pre">TCU_QOS.QOS_PTW0-3</span></code> 映射）</p></li>
+</ul>
+</li>
+<li><p>TBU 本身**不实现**事务间的优先级区分</p></li>
+<li><p>Arm 建议：对有不同 QoS 需求的 requester 使用独立的 TBU</p></li>
+</ul>
+</section>
+<section id="ras-reliability-availability-serviceability">
+<h3><a class="toc-backref" href="#id92" role="doc-backlink"><span class="section-number">7.5.2. </span>2 RAS（Reliability, Availability, Serviceability）</a><a class="headerlink" href="#ras-reliability-availability-serviceability" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 的功能安全特性（来源：Section 2.7, Section 4.8）：</p>
+</section>
+</section>
+<section id="id63">
+<h2><a class="toc-backref" href="#id93" role="doc-backlink"><span class="section-number">7.6. </span>关键约束和限制</a><a class="headerlink" href="#id63" title="链接到此标题。"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../smmu_arch.html" class="btn btn-neutral float-left" title="6. SMMU 学习笔记" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="corelink_mmu600ae_coherency.html" class="btn btn-neutral float-right" title="8. TCU 和 TBU 一致性维护机制深入分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

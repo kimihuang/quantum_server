@@ -1,0 +1,547 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>9. MMU-600AE RAS 与 PMU 深入分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/translations.js?v=540d3cec"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="10. ARM SMMUv3 驱动深度分析" href="../../smmu_code_analysis.html" />
+    <link rel="prev" title="8. TCU 和 TBU 一致性维护机制深入分析" href="corelink_mmu600ae_coherency.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">9. MMU-600AE RAS 与 PMU 深入分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ras">9.1. RAS 架构总览</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">9.1.1. 1 两层 RAS 体系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fmu-fault-management-unit">9.1.2. 2 FMU（Fault Management Unit）简介</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">9.1.3. 3 中断类型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">9.2. 安全机制分类</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tcu">9.2.1. 1 TCU 安全机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tbu">9.2.2. 2 TBU 安全机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ram">9.2.3. 3 RAM 保护机制详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lock-step">9.2.4. 4 Lock-Step 逻辑保护</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">9.2.5. 5 外部接口保护</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pmu">9.3. PMU 事件体系</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">9.3.1. 1 PMU 硬件配置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">9.3.2. 2 事件过滤</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#smmuv3">9.3.3. 3 SMMUv3 架构级事件</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id20">9.4. TCU 实现定义事件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#walk-cache-0x80-0x8f">9.4.1. 1 Walk Cache 事件（0x80-0x8F）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu-0x90-0xa0">9.4.2. 2 TCU 缓存和缓冲事件（0x90-0xA0）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu-ras-0xc0-0xc8">9.4.3. 3 TCU RAS 事件（0xC0-0xC8）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id23">9.5. TBU 实现定义事件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tlb">9.5.1. 1 TLB 和翻译事件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">9.5.2. 2 缓冲和阻塞事件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stash">9.5.3. 3 协议降级和 Stash 事件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tbu-ras">9.5.4. 4 TBU RAS 事件</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id25">9.6. 如何使用 PMU 事件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id26">9.6.1. 1 性能调优场景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">9.6.2. 2 RAS 故障诊断场景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">9.6.3. 3 PMU 快照机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pmu-fmu-ras">9.6.4. 4 PMU 事件与 FMU RAS 的互补关系</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id33">9.7. 错误注入</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#legacy-ras">9.7.1. 1 Legacy RAS 错误注入</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fmu">9.7.2. 2 FMU 安全机制错误注入</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ping">9.7.3. 3 PING 错误注入</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id40">9.8. 关键差异对比</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fmu-vs-legacy">9.8.1. 1 FMU 注入 vs Legacy 注入</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vs">9.8.2. 2 可纠正 vs 不可纠正错误</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">9. </span>MMU-600AE RAS 与 PMU 深入分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/arm/mmu600ae/corelink_mmu600ae_ras_pmu.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mmu-600ae-ras-pmu">
+<h1><span class="section-number">9. </span>MMU-600AE RAS 与 PMU 深入分析<a class="headerlink" href="#mmu-600ae-ras-pmu" title="链接到此标题。"></a></h1>
+<p>本文档深入分析 MMU-600AE 的 RAS（可靠性、可用性、服务性）架构和
+PMU（性能监控单元）事件机制，包括安全机制分类、错误检测与纠正流程、
+FMU 交互以及如何利用 PMU 事件进行性能调优和故障诊断。</p>
+<p>参考文档：ARM CoreLink MMU-600AE TRM（ARM DEN 0060D）</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#ras" id="id41">RAS 架构总览</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id2" id="id42">1 两层 RAS 体系</a></p></li>
+<li><p><a class="reference internal" href="#fmu-fault-management-unit" id="id43">2 FMU（Fault Management Unit）简介</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id44">3 中断类型</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id8" id="id45">安全机制分类</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tcu" id="id46">1 TCU 安全机制</a></p></li>
+<li><p><a class="reference internal" href="#tbu" id="id47">2 TBU 安全机制</a></p></li>
+<li><p><a class="reference internal" href="#ram" id="id48">3 RAM 保护机制详解</a></p></li>
+<li><p><a class="reference internal" href="#lock-step" id="id49">4 Lock-Step 逻辑保护</a></p></li>
+<li><p><a class="reference internal" href="#id13" id="id50">5 外部接口保护</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#pmu" id="id51">PMU 事件体系</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id14" id="id52">1 PMU 硬件配置</a></p></li>
+<li><p><a class="reference internal" href="#id15" id="id53">2 事件过滤</a></p></li>
+<li><p><a class="reference internal" href="#smmuv3" id="id54">3 SMMUv3 架构级事件</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id20" id="id55">TCU 实现定义事件</a></p>
+<ul>
+<li><p><a class="reference internal" href="#walk-cache-0x80-0x8f" id="id56">1 Walk Cache 事件（0x80-0x8F）</a></p></li>
+<li><p><a class="reference internal" href="#tcu-0x90-0xa0" id="id57">2 TCU 缓存和缓冲事件（0x90-0xA0）</a></p></li>
+<li><p><a class="reference internal" href="#tcu-ras-0xc0-0xc8" id="id58">3 TCU RAS 事件（0xC0-0xC8）</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id23" id="id59">TBU 实现定义事件</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tlb" id="id60">1 TLB 和翻译事件</a></p></li>
+<li><p><a class="reference internal" href="#id24" id="id61">2 缓冲和阻塞事件</a></p></li>
+<li><p><a class="reference internal" href="#stash" id="id62">3 协议降级和 Stash 事件</a></p></li>
+<li><p><a class="reference internal" href="#tbu-ras" id="id63">4 TBU RAS 事件</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id25" id="id64">如何使用 PMU 事件</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id26" id="id65">1 性能调优场景</a></p></li>
+<li><p><a class="reference internal" href="#id27" id="id66">2 RAS 故障诊断场景</a></p></li>
+<li><p><a class="reference internal" href="#id28" id="id67">3 PMU 快照机制</a></p></li>
+<li><p><a class="reference internal" href="#pmu-fmu-ras" id="id68">4 PMU 事件与 FMU RAS 的互补关系</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id33" id="id69">错误注入</a></p>
+<ul>
+<li><p><a class="reference internal" href="#legacy-ras" id="id70">1 Legacy RAS 错误注入</a></p></li>
+<li><p><a class="reference internal" href="#fmu" id="id71">2 FMU 安全机制错误注入</a></p></li>
+<li><p><a class="reference internal" href="#ping" id="id72">3 PING 错误注入</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id40" id="id73">关键差异对比</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fmu-vs-legacy" id="id74">1 FMU 注入 vs Legacy 注入</a></p></li>
+<li><p><a class="reference internal" href="#vs" id="id75">2 可纠正 vs 不可纠正错误</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="ras">
+<h2><a class="toc-backref" href="#id41" role="doc-backlink"><span class="section-number">9.1. </span>RAS 架构总览</a><a class="headerlink" href="#ras" title="链接到此标题。"></a></h2>
+<section id="id2">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink"><span class="section-number">9.1.1. </span>1 两层 RAS 体系</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 的 &quot;AE&quot; 后缀表示功能安全（Functional Safety）版本，
+在保留 MMU-600 原有逻辑不变的基础上增加了检测和纠正机制。
+RAS 体系分为两层（来源：Section 4）：</p>
+</section>
+<section id="fmu-fault-management-unit">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink"><span class="section-number">9.1.2. </span>2 FMU（Fault Management Unit）简介</a><a class="headerlink" href="#fmu-fault-management-unit" title="链接到此标题。"></a></h3>
+<p>FMU 位于 TCU 内部，是 MMU-600AE 功能安全的核心管理单元（来源：Section 4.4）：</p>
+<ul class="simple">
+<li><p>接收所有安全机制的错误信号</p></li>
+<li><p>将错误路由到 Safety Island（专用 APB 端口）</p></li>
+<li><p>为每个 MMU 模块维护错误记录（FMU_ERR&lt;n&gt;STATUS）</p></li>
+<li><p>允许软件启用/禁用安全机制（FMU_SMEN）</p></li>
+<li><p>支持错误注入测试（FMU_SMINJERR）</p></li>
+<li><p>在功能复位后**保留**错误记录（仅 <code class="docutils literal notranslate"><span class="pre">fmu_aresetn</span></code> 可清除）</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3><a class="toc-backref" href="#id44" role="doc-backlink"><span class="section-number">9.1.3. </span>3 中断类型</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 提供两种安全相关中断（来源：Section 4.4.3）：</p>
+<p>复位后 FHI 和 ERI 默认禁用（<code class="docutils literal notranslate"><span class="pre">fmu_aresetn</span></code> 控制），软件必须在启动时使能。</p>
+</section>
+</section>
+<section id="id8">
+<h2><a class="toc-backref" href="#id45" role="doc-backlink"><span class="section-number">9.2. </span>安全机制分类</a><a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<section id="tcu">
+<h3><a class="toc-backref" href="#id46" role="doc-backlink"><span class="section-number">9.2.1. </span>1 TCU 安全机制</a><a class="headerlink" href="#tcu" title="链接到此标题。"></a></h3>
+<p>（来源：Table 4-7, Section 4.4）</p>
+</section>
+<section id="tbu">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink"><span class="section-number">9.2.2. </span>2 TBU 安全机制</a><a class="headerlink" href="#tbu" title="链接到此标题。"></a></h3>
+</section>
+<section id="ram">
+<h3><a class="toc-backref" href="#id48" role="doc-backlink"><span class="section-number">9.2.3. </span>3 RAM 保护机制详解</a><a class="headerlink" href="#ram" title="链接到此标题。"></a></h3>
+<p><a href="#id9"><span class="problematic" id="id10">**</span></a>可纠正 RAM**（缓存类型，故障时失效并重新获取）：</p>
+<p>CRC 保护能力（来源：Section 4.6）：</p>
+<ul class="simple">
+<li><p>检测所有单比特错误（SBE）</p></li>
+<li><p>数据宽度 &lt;=128 bit 时检测所有双比特错误（DBE）</p></li>
+<li><p>数据宽度 &gt;128 bit 时 99.6% DBE 检测率</p></li>
+<li><p>99.6% 多比特错误（MBE）检测率</p></li>
+<li><p>99.6% 地址错误检测率</p></li>
+<li><p>地址与数据组合生成 CRC，防止共模失效（CMF）</p></li>
+</ul>
+<p><a href="#id11"><span class="problematic" id="id12">**</span></a>不可纠正 RAM**（buffer 类型，故障时数据被使用，行为不可预测）：</p>
+<ul class="simple">
+<li><p>TCU Translation Request Buffer</p></li>
+<li><p>TBU Write Data Buffer</p></li>
+</ul>
+</section>
+<section id="lock-step">
+<h3><a class="toc-backref" href="#id49" role="doc-backlink"><span class="section-number">9.2.4. </span>4 Lock-Step 逻辑保护</a><a class="headerlink" href="#lock-step" title="链接到此标题。"></a></h3>
+<p>逻辑通过冗余锁步检查保护，标准时序延迟为 <strong>2 个时钟周期</strong>。
+RAM 共享，比较器在模块顶层。（来源：Section 4.5）</p>
+<ul class="simple">
+<li><p>比较器基于 XOR 树</p></li>
+<li><p>使用 qualification（仅在 valid 信号断言时检查）节省功耗</p></li>
+<li><p>可选比较器复制（<code class="docutils literal notranslate"><span class="pre">FUSA_COMP_DUP=1</span></code>）用于潜在故障诊断覆盖</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3><a class="toc-backref" href="#id50" role="doc-backlink"><span class="section-number">9.2.5. </span>5 外部接口保护</a><a class="headerlink" href="#id13" title="链接到此标题。"></a></h3>
+<p>所有外部接口通过 AMBA Parity Extensions 进行点对点保护（来源：Section 4.7）：</p>
+<ul class="simple">
+<li><p>ACE-Lite、AXI4-Stream、APB 接口均有 parity 保护</p></li>
+<li><p>DTI Switch 不支持 parity，仅支持全复制保护</p></li>
+<li><p>ADB 和 Register Slice 也不支持 AXI4-Stream parity</p></li>
+<li><p>中断输出带反转 chk parity 位，兼容 GIC-600AE</p></li>
+<li><p>Tie-off 输入通过反转复制保护：<code class="docutils literal notranslate"><span class="pre">port_chk[x:0]</span> <span class="pre">=</span> <span class="pre">~port[x:0]</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="pmu">
+<h2><a class="toc-backref" href="#id51" role="doc-backlink"><span class="section-number">9.3. </span>PMU 事件体系</a><a class="headerlink" href="#pmu" title="链接到此标题。"></a></h2>
+<section id="id14">
+<h3><a class="toc-backref" href="#id52" role="doc-backlink"><span class="section-number">9.3.1. </span>1 PMU 硬件配置</a><a class="headerlink" href="#id14" title="链接到此标题。"></a></h3>
+<p>每个 PMCG（Performance Monitor Counter Group）包含（来源：Section 2.6.4）：</p>
+</section>
+<section id="id15">
+<h3><a class="toc-backref" href="#id53" role="doc-backlink"><span class="section-number">9.3.2. </span>2 事件过滤</a><a class="headerlink" href="#id15" title="链接到此标题。"></a></h3>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">SMMU_PMCG_SMR0</span></code> 寄存器按 StreamID 过滤事件，可过滤以下事务类型：</p>
+<ul class="simple">
+<li><p>推测性事务和翻译</p></li>
+<li><p>导致终止事务或翻译故障的事务和翻译</p></li>
+</ul>
+</section>
+<section id="smmuv3">
+<h3><a class="toc-backref" href="#id54" role="doc-backlink"><span class="section-number">9.3.3. </span>3 SMMUv3 架构级事件</a><a class="headerlink" href="#smmuv3" title="链接到此标题。"></a></h3>
+<p><a href="#id16"><span class="problematic" id="id17">**</span></a>TCU 架构事件**（来源：Table 2-9）：</p>
+<p><a href="#id18"><span class="problematic" id="id19">**</span></a>TBU 架构事件**（来源：Table 2-10）：</p>
+</section>
+</section>
+<section id="id20">
+<h2><a class="toc-backref" href="#id55" role="doc-backlink"><span class="section-number">9.4. </span>TCU 实现定义事件</a><a class="headerlink" href="#id20" title="链接到此标题。"></a></h2>
+<section id="walk-cache-0x80-0x8f">
+<h3><a class="toc-backref" href="#id56" role="doc-backlink"><span class="section-number">9.4.1. </span>1 Walk Cache 事件（0x80-0x8F）</a><a class="headerlink" href="#walk-cache-0x80-0x8f" title="链接到此标题。"></a></h3>
+<p>（来源：Table 2-11）</p>
+</section>
+<section id="tcu-0x90-0xa0">
+<h3><a class="toc-backref" href="#id57" role="doc-backlink"><span class="section-number">9.4.2. </span>2 TCU 缓存和缓冲事件（0x90-0xA0）</a><a class="headerlink" href="#tcu-0x90-0xa0" title="链接到此标题。"></a></h3>
+</section>
+<section id="tcu-ras-0xc0-0xc8">
+<h3><a class="toc-backref" href="#id58" role="doc-backlink"><span class="section-number">9.4.3. </span>3 TCU RAS 事件（0xC0-0xC8）</a><a class="headerlink" href="#tcu-ras-0xc0-0xc8" title="链接到此标题。"></a></h3>
+<p>仅 <a href="#id21"><span class="problematic" id="id22">``</span></a>SMMU_PMCG_SCR.SO = 1``（Secure only）时可见，<strong>不受 StreamID 过滤</strong>：</p>
+</section>
+</section>
+<section id="id23">
+<h2><a class="toc-backref" href="#id59" role="doc-backlink"><span class="section-number">9.5. </span>TBU 实现定义事件</a><a class="headerlink" href="#id23" title="链接到此标题。"></a></h2>
+<p>（来源：Table 2-12）</p>
+<section id="tlb">
+<h3><a class="toc-backref" href="#id60" role="doc-backlink"><span class="section-number">9.5.1. </span>1 TLB 和翻译事件</a><a class="headerlink" href="#tlb" title="链接到此标题。"></a></h3>
+</section>
+<section id="id24">
+<h3><a class="toc-backref" href="#id61" role="doc-backlink"><span class="section-number">9.5.2. </span>2 缓冲和阻塞事件</a><a class="headerlink" href="#id24" title="链接到此标题。"></a></h3>
+</section>
+<section id="stash">
+<h3><a class="toc-backref" href="#id62" role="doc-backlink"><span class="section-number">9.5.3. </span>3 协议降级和 Stash 事件</a><a class="headerlink" href="#stash" title="链接到此标题。"></a></h3>
+</section>
+<section id="tbu-ras">
+<h3><a class="toc-backref" href="#id63" role="doc-backlink"><span class="section-number">9.5.4. </span>4 TBU RAS 事件</a><a class="headerlink" href="#tbu-ras" title="链接到此标题。"></a></h3>
+<p>仅 Secure only，不受 StreamID 过滤：</p>
+</section>
+</section>
+<section id="id25">
+<h2><a class="toc-backref" href="#id64" role="doc-backlink"><span class="section-number">9.6. </span>如何使用 PMU 事件</a><a class="headerlink" href="#id25" title="链接到此标题。"></a></h2>
+<section id="id26">
+<h3><a class="toc-backref" href="#id65" role="doc-backlink"><span class="section-number">9.6.1. </span>1 性能调优场景</a><a class="headerlink" href="#id26" title="链接到此标题。"></a></h3>
+<p><strong>场景一：翻译延迟分析</strong></p>
+<p>配置 TBU PMCG，按 StreamID 过滤特定设备的事件：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PMCG0</span> <span class="p">(</span><span class="n">设备</span> <span class="n">A</span><span class="p">):</span>
+  <span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x84</span> <span class="p">(</span><span class="n">Micro</span> <span class="n">TLB</span> <span class="n">miss</span><span class="p">)</span>  <span class="o">--</span> <span class="n">微</span> <span class="n">TLB</span> <span class="n">未命中率</span>
+  <span class="n">Counter</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x81</span> <span class="p">(</span><span class="n">Main</span> <span class="n">TLB</span> <span class="n">miss</span><span class="p">)</span>   <span class="o">--</span> <span class="n">主</span> <span class="n">TLB</span> <span class="n">未命中率</span>
+
+<span class="n">PMCG1</span> <span class="p">(</span><span class="n">设备</span> <span class="n">B</span><span class="p">):</span>
+  <span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x01</span> <span class="p">(</span><span class="n">Transaction</span><span class="p">)</span>       <span class="o">--</span> <span class="n">总事务数</span>
+  <span class="n">Counter</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x02</span> <span class="p">(</span><span class="n">TLB</span> <span class="n">miss</span><span class="p">)</span>          <span class="o">--</span> <span class="n">未命中次数</span>
+</pre></div>
+</div>
+<p>如果 Micro TLB miss / Transaction 比率过高（&gt;5%），
+说明工作集超过 Micro TLB 容量，需要更均匀的地址分布或更大 TLB。</p>
+<p><strong>场景二：Walk Cache 命中率分析</strong></p>
+<p>配置 TCU PMCG：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x01</span> <span class="p">(</span><span class="n">Transaction</span><span class="p">)</span>        <span class="o">--</span> <span class="n">总翻译请求</span>
+<span class="n">Counter</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x04</span> <span class="p">(</span><span class="n">Walk</span> <span class="n">access</span><span class="p">)</span>         <span class="o">--</span> <span class="n">页表遍历访问</span>
+<span class="n">Counter</span> <span class="mi">2</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x90</span> <span class="p">(</span><span class="n">WC</span> <span class="n">read</span><span class="p">)</span>             <span class="o">--</span> <span class="n">Walk</span> <span class="n">Cache</span> <span class="n">RAM</span> <span class="n">读取</span>
+</pre></div>
+</div>
+<p>Walk access / Transaction 越低，Walk Cache 命中率越高。
+WC read 远大于 Walk access 说明单次查找需要多次 RAM 访问。</p>
+<p><strong>场景三：翻译 slot 瓶颈</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x91</span> <span class="p">(</span><span class="n">Buffered</span> <span class="n">translation</span><span class="p">)</span>  <span class="o">--</span> <span class="n">翻译请求被缓冲</span>
+</pre></div>
+</div>
+<p>Buffered translation 持续增长说明 <code class="docutils literal notranslate"><span class="pre">TCUCFG_XLATE_SLOTS</span></code> 配置不足，
+TBU 必须等待翻译 slot 释放导致延迟增加。</p>
+<p><strong>场景四：Write Data Buffer 阻塞</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TBU</span> <span class="n">PMCG</span><span class="p">:</span>
+  <span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x87</span> <span class="p">(</span><span class="n">Write</span> <span class="n">data</span> <span class="n">buffer</span> <span class="n">full</span><span class="p">)</span> <span class="o">--</span> <span class="n">WDB</span> <span class="n">满的周期数</span>
+  <span class="n">Counter</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x8A</span> <span class="p">(</span><span class="n">WDB</span> <span class="n">bypass</span><span class="p">)</span>             <span class="o">--</span> <span class="n">绕过</span> <span class="n">WDB</span> <span class="n">的事务</span>
+</pre></div>
+</div>
+<p>WDB full 频繁触发说明多个 AXI ID 的写事务并发量超过缓冲区容量。</p>
+</section>
+<section id="id27">
+<h3><a class="toc-backref" href="#id66" role="doc-backlink"><span class="section-number">9.6.2. </span>2 RAS 故障诊断场景</a><a class="headerlink" href="#id27" title="链接到此标题。"></a></h3>
+<p><strong>场景一：Walk Cache 数据损坏趋势</strong></p>
+<p>配置 TCU PMCG，按 StreamID 过滤：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x80</span> <span class="p">(</span><span class="n">S1L0WC</span> <span class="n">lookup</span><span class="p">)</span>  <span class="o">--</span> <span class="n">S1L0</span> <span class="n">查找</span>
+<span class="n">Counter</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0xC0</span> <span class="p">(</span><span class="n">S1L0WC</span> <span class="n">error</span><span class="p">)</span>  <span class="o">--</span> <span class="n">S1L0</span> <span class="n">错误</span>
+</pre></div>
+</div>
+<p>S1L0WC error / S1L0WC lookup 比率上升可能指示硬件退化趋势。</p>
+<p><strong>场景二：TBU Main TLB 完整性</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TBU</span> <span class="n">PMCG</span><span class="p">:</span>
+  <span class="n">Counter</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0x80</span> <span class="p">(</span><span class="n">Main</span> <span class="n">TLB</span> <span class="n">lookup</span><span class="p">)</span>
+  <span class="n">Counter</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="n">Event</span> <span class="mh">0xC0</span> <span class="p">(</span><span class="n">Main</span> <span class="n">TLB</span> <span class="n">error</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>定期采集快照，观察 Main TLB error 增量。
+突然出现错误可能是单粒子翻转（SEU）或电源噪声。</p>
+</section>
+<section id="id28">
+<h3><a class="toc-backref" href="#id67" role="doc-backlink"><span class="section-number">9.6.3. </span>3 PMU 快照机制</a><a class="headerlink" href="#id28" title="链接到此标题。"></a></h3>
+<p>PMU 快照接口在 TCU 和每个 TBU 上都有（来源：Section 2.6.5）：</p>
+<ul class="simple">
+<li><p>4-phase 异步握手：<a href="#id29"><span class="problematic" id="id30">``</span></a>pmusnapshot_req``（输入）、<a href="#id31"><span class="problematic" id="id32">``</span></a>pmusnapshot_ack``（输出）</p></li>
+<li><p>快照在 <code class="docutils literal notranslate"><span class="pre">pmusnapshot_req</span></code> 上升沿触发</p></li>
+<li><p>等效于写入 <code class="docutils literal notranslate"><span class="pre">SMMU_PMCG_CAPR.CAPTURE</span> <span class="pre">=</span> <span class="pre">1</span></code></p></li>
+<li><p>将所有计数器值同时复制到 <code class="docutils literal notranslate"><span class="pre">SMMU_PMCG_SVRn</span></code> 寄存器</p></li>
+<li><p>可连接到 SoC 调试基础设施</p></li>
+</ul>
+<p>使用流程:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>① SoC 调试模块拉高 pmusnapshot_req
+② MMU 捕获所有计数器值到 SVRn
+③ MMU 拉高 pmusnapshot_ack
+④ SoC 调试模块读取 SVRn
+⑤ SoC 调试模块拉低 pmusnapshot_req
+⑥ MMU 拉低 pmusnapshot_ack
+</pre></div>
+</div>
+</section>
+<section id="pmu-fmu-ras">
+<h3><a class="toc-backref" href="#id68" role="doc-backlink"><span class="section-number">9.6.4. </span>4 PMU 事件与 FMU RAS 的互补关系</a><a class="headerlink" href="#pmu-fmu-ras" title="链接到此标题。"></a></h3>
+</section>
+</section>
+<section id="id33">
+<h2><a class="toc-backref" href="#id69" role="doc-backlink"><span class="section-number">9.7. </span>错误注入</a><a class="headerlink" href="#id33" title="链接到此标题。"></a></h2>
+<section id="legacy-ras">
+<h3><a class="toc-backref" href="#id70" role="doc-backlink"><span class="section-number">9.7.1. </span>1 Legacy RAS 错误注入</a><a class="headerlink" href="#legacy-ras" title="链接到此标题。"></a></h3>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">TCU_ERRGEN</span></code> / <code class="docutils literal notranslate"><span class="pre">TBU_ERRGEN</span></code> 注入 tag/data parity 错误。
+<strong>仅报告在 Legacy RAS 寄存器中，不报告在 FMU 中</strong>。</p>
+<p><a href="#id34"><span class="problematic" id="id35">**</span></a>TCU_ERRGEN**（0x08EC0）：</p>
+<p><a href="#id36"><span class="problematic" id="id37">**</span></a>TBU_ERRGEN**（0x08EC0）：</p>
+<p>注意：tag parity 错误会屏蔽 data parity 错误，不要同时设置两者。</p>
+</section>
+<section id="fmu">
+<h3><a class="toc-backref" href="#id71" role="doc-backlink"><span class="section-number">9.7.2. </span>2 FMU 安全机制错误注入</a><a class="headerlink" href="#fmu" title="链接到此标题。"></a></h3>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">FMU_SMINJERR</span></code> 向任意安全机制注入错误。写入前必须轮询
+<code class="docutils literal notranslate"><span class="pre">FMU_STATUS.idle</span> <span class="pre">==</span> <span class="pre">1</span></code>。</p>
+<p><a href="#id38"><span class="problematic" id="id39">**</span></a>关键行为差异**（来源：Section 4.4.6）：</p>
+<ul class="simple">
+<li><p>注入到可纠正 RAM 的错误**仅影响 FMU 通路**，不触发 Legacy RAS 寄存器，
+<strong>不导致缓存失效和重新获取</strong></p></li>
+<li><p>通过 ERRGEN 注入的错误**仅影响 Legacy RAS 通路**，不产生 FMU 错误记录</p></li>
+<li><p>注入到不可纠正 RAM 的错误不会被纠正，SMMU 继续运行（无实际 RAM 损坏）</p></li>
+</ul>
+</section>
+<section id="ping">
+<h3><a class="toc-backref" href="#id72" role="doc-backlink"><span class="section-number">9.7.3. </span>3 PING 错误注入</a><a class="headerlink" href="#ping" title="链接到此标题。"></a></h3>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">FMU_PINGNOW</span></code> 寄存器注入 PING 链路错误（来源：Section 4.4.7）：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tcu_inject_error</span> <span class="pre">=</span> <span class="pre">1</span></code>：注入 TCU-&gt;TBU 方向的 PING 错误</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbu_inject_error</span> <span class="pre">=</span> <span class="pre">1</span></code>：注入 TBU-&gt;TCU 方向的 PING_ACK 错误</p></li>
+</ul>
+</section>
+</section>
+<section id="id40">
+<h2><a class="toc-backref" href="#id73" role="doc-backlink"><span class="section-number">9.8. </span>关键差异对比</a><a class="headerlink" href="#id40" title="链接到此标题。"></a></h2>
+<section id="fmu-vs-legacy">
+<h3><a class="toc-backref" href="#id74" role="doc-backlink"><span class="section-number">9.8.1. </span>1 FMU 注入 vs Legacy 注入</a><a class="headerlink" href="#fmu-vs-legacy" title="链接到此标题。"></a></h3>
+</section>
+<section id="vs">
+<h3><a class="toc-backref" href="#id75" role="doc-backlink"><span class="section-number">9.8.2. </span>2 可纠正 vs 不可纠正错误</a><a class="headerlink" href="#vs" title="链接到此标题。"></a></h3>
+<p><strong>关键</strong>：无论 <code class="docutils literal notranslate"><span class="pre">CE_EN</span></code> 设置如何，可纠正 RAM 的错误**始终被纠正**
+（失效并重新获取）。<code class="docutils literal notranslate"><span class="pre">CE_EN</span></code> 只控制 FMU 如何**分类报告**错误，
+不影响实际纠正行为。</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="corelink_mmu600ae_coherency.html" class="btn btn-neutral float-left" title="8. TCU 和 TBU 一致性维护机制深入分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../../smmu_code_analysis.html" class="btn btn-neutral float-right" title="10. ARM SMMUv3 驱动深度分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

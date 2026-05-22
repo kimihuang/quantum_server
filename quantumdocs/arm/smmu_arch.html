@@ -1,0 +1,1448 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6. SMMU 学习笔记 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="7. CoreLink MMU-600AE TCU 与 TBU 架构分析" href="mmu600ae/corelink_mmu600ae_trm.html" />
+    <link rel="prev" title="5. AMBA CHI 一致性协议深度分析" href="chi/amba_chi_architecture_coherency_codebuddy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. SMMU 学习笔记</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#smmu-stage-1-stage-2">6.1. SMMU Stage 1 和 Stage 2 转换有什么区别</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stage-1-va-ipa">6.1.1. Stage 1: VA -&gt; IPA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stage-2-ipa-pa">6.1.2. Stage 2: IPA -&gt; PA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nested">6.1.3. 嵌套模式（Nested）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">6.1.4. 对比总结</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#smmu-ste-cd">6.2. SMMU STE 和 CD 的数据结构是怎样的</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ste-stream-table-entry-64">6.3. STE (Stream Table Entry) — 64 字节</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cd-context-descriptor-64">6.4. CD (Context Descriptor) — 64 字节</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id53">6.5. 配置查找与翻译流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id58">6.6. SMMU 在虚拟化里的用法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stage-2-only-passthrough">6.7. 用法一：Stage 2 Only — 设备直通（Passthrough）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nested-stage-1-stage-2-hypervisor-smmu">6.8. 用法二：Nested（Stage 1 + Stage 2）— Hypervisor 仿真 SMMU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stage-1-only-os">6.9. 用法三：Stage 1 Only — 裸金属 OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hypervisor-stage-1">6.10. 用法四：Hypervisor 自用 Stage 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#full-bypass">6.11. 用法五：Full Bypass — 不翻译</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id71">6.12. 总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smmu-tlb-tlb">6.13. SMMU 的 TLB 和 TLB 维护机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tlb">6.14. TLB 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id74">6.15. TLB 标签体系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id75">6.16. TLB 维护机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ats-tlb">6.17. ATS 与 TLB 的关系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id76">6.18. 总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smmu-event-queue">6.19. SMMU 的故障处理和 Event Queue 机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fault-models">6.20. 故障模型（Fault Models）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#event-queue">6.21. Event Queue 机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smmu-ats-pri">6.22. SMMU 的 ATS 和 PRI 机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ats-address-translation-service">6.23. ATS（Address Translation Service）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pri-page-request-interface">6.24. PRI（Page Request Interface）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ats-pri">6.25. ATS + PRI 使用模型总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">6. </span>SMMU 学习笔记</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/arm/smmu_arch.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="smmu">
+<h1><a class="toc-backref" href="#id83" role="doc-backlink"><span class="section-number">6. </span>SMMU 学习笔记</a><a class="headerlink" href="#smmu" title="链接到此标题。"></a></h1>
+<p>本文档记录 SMMU (System Memory Management Unit) 相关问题的学习笔记，
+参考文档：IHI0070G.a - System Memory Management Unit Architecture Specification。</p>
+<nav class="contents" id="id1">
+<p class="topic-title">目录</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#smmu" id="id83">SMMU 学习笔记</a></p>
+<ul>
+<li><p><a class="reference internal" href="#smmu-stage-1-stage-2" id="id84">SMMU Stage 1 和 Stage 2 转换有什么区别</a></p>
+<ul>
+<li><p><a class="reference internal" href="#stage-1-va-ipa" id="id85">Stage 1: VA -&gt; IPA</a></p></li>
+<li><p><a class="reference internal" href="#stage-2-ipa-pa" id="id86">Stage 2: IPA -&gt; PA</a></p></li>
+<li><p><a class="reference internal" href="#nested" id="id87">嵌套模式（Nested）</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id88">对比总结</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#smmu-ste-cd" id="id89">SMMU STE 和 CD 的数据结构是怎样的</a></p></li>
+<li><p><a class="reference internal" href="#ste-stream-table-entry-64" id="id90">STE (Stream Table Entry) — 64 字节</a></p></li>
+<li><p><a class="reference internal" href="#cd-context-descriptor-64" id="id91">CD (Context Descriptor) — 64 字节</a></p></li>
+<li><p><a class="reference internal" href="#id53" id="id92">配置查找与翻译流程</a></p></li>
+<li><p><a class="reference internal" href="#id58" id="id93">SMMU 在虚拟化里的用法</a></p></li>
+<li><p><a class="reference internal" href="#stage-2-only-passthrough" id="id94">用法一：Stage 2 Only — 设备直通（Passthrough）</a></p></li>
+<li><p><a class="reference internal" href="#nested-stage-1-stage-2-hypervisor-smmu" id="id95">用法二：Nested（Stage 1 + Stage 2）— Hypervisor 仿真 SMMU</a></p></li>
+<li><p><a class="reference internal" href="#stage-1-only-os" id="id96">用法三：Stage 1 Only — 裸金属 OS</a></p></li>
+<li><p><a class="reference internal" href="#hypervisor-stage-1" id="id97">用法四：Hypervisor 自用 Stage 1</a></p></li>
+<li><p><a class="reference internal" href="#full-bypass" id="id98">用法五：Full Bypass — 不翻译</a></p></li>
+<li><p><a class="reference internal" href="#id71" id="id99">总结</a></p></li>
+<li><p><a class="reference internal" href="#smmu-tlb-tlb" id="id100">SMMU 的 TLB 和 TLB 维护机制</a></p></li>
+<li><p><a class="reference internal" href="#tlb" id="id101">TLB 概述</a></p></li>
+<li><p><a class="reference internal" href="#id74" id="id102">TLB 标签体系</a></p></li>
+<li><p><a class="reference internal" href="#id75" id="id103">TLB 维护机制</a></p></li>
+<li><p><a class="reference internal" href="#ats-tlb" id="id104">ATS 与 TLB 的关系</a></p></li>
+<li><p><a class="reference internal" href="#id76" id="id105">总结</a></p></li>
+<li><p><a class="reference internal" href="#smmu-event-queue" id="id106">SMMU 的故障处理和 Event Queue 机制</a></p></li>
+<li><p><a class="reference internal" href="#fault-models" id="id107">故障模型（Fault Models）</a></p></li>
+<li><p><a class="reference internal" href="#event-queue" id="id108">Event Queue 机制</a></p></li>
+<li><p><a class="reference internal" href="#smmu-ats-pri" id="id109">SMMU 的 ATS 和 PRI 机制</a></p></li>
+<li><p><a class="reference internal" href="#ats-address-translation-service" id="id110">ATS（Address Translation Service）</a></p></li>
+<li><p><a class="reference internal" href="#pri-page-request-interface" id="id111">PRI（Page Request Interface）</a></p></li>
+<li><p><a class="reference internal" href="#ats-pri" id="id112">ATS + PRI 使用模型总结</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="smmu-stage-1-stage-2">
+<h2><a class="toc-backref" href="#id84" role="doc-backlink"><span class="section-number">6.1. </span>SMMU Stage 1 和 Stage 2 转换有什么区别</a><a class="headerlink" href="#smmu-stage-1-stage-2" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>：SMMU stage 1 和 stage 2 转换有什么区别？</p>
+<p><strong>解答</strong>：</p>
+<p>Stage 1 和 Stage 2 是 SMMU 的两阶段地址转换，类似于 ARMv8-A 虚拟化扩展中 PE 的两阶段转换。每个阶段可以独立启用。</p>
+<section id="stage-1-va-ipa">
+<h3><a class="toc-backref" href="#id85" role="doc-backlink"><span class="section-number">6.1.1. </span>Stage 1: VA -&gt; IPA</a><a class="headerlink" href="#stage-1-va-ipa" title="链接到此标题。"></a></h3>
+<p><strong>用途</strong>：由软件实体（如 Guest OS）使用，为设备 DMA 提供隔离或地址翻译。</p>
+<ul class="simple">
+<li><p><strong>数据结构</strong>：Context Descriptor (CD) 中存储 stage 1 翻译表基址、ASID</p></li>
+<li><p><strong>配置入口</strong>：STE 的 <code class="docutils literal notranslate"><span class="pre">S1ContextPtr</span></code> 字段指向 CD</p></li>
+<li><p><strong>典型场景</strong>：OS 内部的 DMA 隔离、不同进程/驱动的设备地址空间隔离</p></li>
+<li><p><strong>SubstreamID</strong>：由 StreamID 关联的多个 CD 组成，SubstreamID 用于选择具体的 stage 1 上下文（区分同一设备的不同应用）</p></li>
+<li><p><strong>管理者</strong>：由 <strong>Guest OS</strong> 管理 CD 和 stage 1 翻译表</p></li>
+</ul>
+</section>
+<section id="stage-2-ipa-pa">
+<h3><a class="toc-backref" href="#id86" role="doc-backlink"><span class="section-number">6.1.2. </span>Stage 2: IPA -&gt; PA</a><a class="headerlink" href="#stage-2-ipa-pa" title="链接到此标题。"></a></h3>
+<p><strong>用途</strong>：在支持虚拟化扩展的系统中，将设备 DMA 虚拟化到 Guest VM 的地址空间。</p>
+<ul class="simple">
+<li><p><strong>数据结构</strong>：Stream Table Entry (STE) 中直接存储 stage 2 翻译表基址、VMID</p></li>
+<li><p><strong>配置入口</strong>：STE 内嵌 stage 2 配置，无需额外数据结构</p></li>
+<li><p><strong>典型场景</strong>：Hypervisor 将设备分配给 VM，控制 VM 看到的物理地址空间</p></li>
+<li><p><strong>多设备共享</strong>：多个设备（多个 STE）可以共享同一套 stage 2 翻译表，因为它们属于同一个 VM</p></li>
+<li><p><strong>管理者</strong>：由 <strong>Hypervisor</strong> 管理 STE 和 stage 2 翻译表</p></li>
+</ul>
+</section>
+<section id="nested">
+<h3><a class="toc-backref" href="#id87" role="doc-backlink"><span class="section-number">6.1.3. </span>嵌套模式（Nested）</a><a class="headerlink" href="#nested" title="链接到此标题。"></a></h3>
+<p>当两个阶段都启用时，地址转换流程为:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">VA</span> <span class="o">--</span><span class="p">[</span><span class="n">Stage</span> <span class="mi">1</span><span class="p">]</span><span class="o">--&gt;</span> <span class="n">IPA</span> <span class="o">--</span><span class="p">[</span><span class="n">Stage</span> <span class="mi">2</span><span class="p">]</span><span class="o">--&gt;</span> <span class="n">PA</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>CD 从 <a href="#id2"><span class="problematic" id="id3">**</span></a>IPA 空间**获取（需要经过 stage 2 翻译）</p></li>
+<li><p>Stage 1 翻译表的页表遍历可能也需要经过 stage 2 翻译</p></li>
+<li><p>每个 StreamID 只能对应一个 stage 2 上下文，但可以对应多个 stage 1 上下文（通过 SubstreamID）</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3><a class="toc-backref" href="#id88" role="doc-backlink"><span class="section-number">6.1.4. </span>对比总结</a><a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p>参考：IHI0070G Chapter 2 Introduction 和 Chapter 3 Operation。</p>
+</section>
+</section>
+<section id="smmu-ste-cd">
+<h2><a class="toc-backref" href="#id89" role="doc-backlink"><span class="section-number">6.2. </span>SMMU STE 和 CD 的数据结构是怎样的</a><a class="headerlink" href="#smmu-ste-cd" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>：SMMU STE (Stream Table Entry) 和 CD (Context Descriptor) 的数据结构是怎样的？</p>
+<p><strong>解答</strong>：</p>
+<p>STE 和 CD 是 SMMUv3 中两个核心的内存配置结构，均为 <strong>64 字节（512 位）</strong>，小端字节序。</p>
+</section>
+<section id="ste-stream-table-entry-64">
+<h2><a class="toc-backref" href="#id90" role="doc-backlink"><span class="section-number">6.3. </span>STE (Stream Table Entry) — 64 字节</a><a class="headerlink" href="#ste-stream-table-entry-64" title="链接到此标题。"></a></h2>
+<p><strong>用途</strong>：每个 stream（设备）的配置结构，由 StreamID 索引，描述设备的翻译配置。</p>
+<p>关键字段：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 12.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>位置</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">V</span></code></p></td>
+<td><p>[0]</p></td>
+<td><p>有效位。0=无效（终止事务，记录 C_BAD_STE），1=有效</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Config[3:1]</span></code></p></td>
+<td><p>[3:1]</p></td>
+<td><p>流配置。<a href="#id5"><span class="problematic" id="id6">``</span></a>0b100``=全部旁路，<a href="#id7"><span class="problematic" id="id8">``</span></a>0b101``=仅 Stage 1，<a href="#id9"><span class="problematic" id="id10">``</span></a>0b110``=仅 Stage 2，<a href="#id11"><span class="problematic" id="id12">``</span></a>0b111``=嵌套（Stage 1 + Stage 2）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S1Fmt[5:4]</span></code></p></td>
+<td><p>[5:4]</p></td>
+<td><p>Stage 1 格式。<a href="#id13"><span class="problematic" id="id14">``</span></a>0b00``=线性 CD 表，<a href="#id15"><span class="problematic" id="id16">``</span></a>0b01``=2 级表（4KB L2），<a href="#id17"><span class="problematic" id="id18">``</span></a>0b10``=2 级表（64KB L2）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S1ContextPtr[55:6]</span></code></p></td>
+<td><p>[55:6]</p></td>
+<td><p>Stage 1 CD 指针。嵌套模式下为 IPA（经 Stage 2 翻译），否则为 PA</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S1CDMax[63:59]</span></code></p></td>
+<td><p>[63:59]</p></td>
+<td><p>CD 数量的 log2 值。0=单个 CD（无 substream），N=2^N 个 CD</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S1DSS[65:64]</span></code></p></td>
+<td><p>[65:64]</p></td>
+<td><p>默认 substream 行为。<a href="#id19"><span class="problematic" id="id20">``</span></a>0b00``=终止，<a href="#id21"><span class="problematic" id="id22">``</span></a>0b01``=旁路 Stage 1，<a href="#id23"><span class="problematic" id="id24">``</span></a>0b10``=使用 substream 0 的 CD</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S2VMID[143:128]</span></code></p></td>
+<td><p>[143:128]</p></td>
+<td><p>Stage 2 VMID（16 位）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S2TTB[247:224]</span></code></p></td>
+<td><p>[247:224]</p></td>
+<td><p>Stage 2 翻译表基址（IPA 或 PA）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S2AA64</span></code></p></td>
+<td><p>[169]</p></td>
+<td><p>Stage 2 地址格式。0=VMSAv8-32 LPAE，1=VMSAv8-64</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S2R</span></code></p></td>
+<td><p>[163]</p></td>
+<td><p>Stage 2 输出 RA 状态覆盖</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S2S</span></code></p></td>
+<td><p>[166]</p></td>
+<td><p>Stage 2 Stall 配置</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S2HA</span></code> / <code class="docutils literal notranslate"><span class="pre">S2HD</span></code></p></td>
+<td><p>[167] / [168]</p></td>
+<td><p>Stage 2 Access Flag / Dirty state 硬件更新</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EATS[93:92]</span></code></p></td>
+<td><p>[93:92]</p></td>
+<td><p>ATS 使能。<a href="#id25"><span class="problematic" id="id26">``</span></a>0b00``=禁用，<a href="#id27"><span class="problematic" id="id28">``</span></a>0b01``=Full ATS，<a href="#id29"><span class="problematic" id="id30">``</span></a>0b10``=Split-stage ATS</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRW[95:94]</span></code></p></td>
+<td><p>[95:94]</p></td>
+<td><p>StreamWorld 控制。决定 stage 1 翻译的 Exception Level（EL1/EL2/EL3）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VMSPtr[351:332]</span></code></p></td>
+<td><p>[351:332]</p></td>
+<td><p>Virtual Machine Structure (VMS) 指针</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Stage 2 相关字段</strong>：以 <code class="docutils literal notranslate"><span class="pre">S2</span></code> 前缀标识，当 <code class="docutils literal notranslate"><span class="pre">STE.Config</span></code> 指示 Stage 2 旁路时被忽略。
+<strong>Stage 1 相关字段</strong>：以 <code class="docutils literal notranslate"><span class="pre">S1</span></code> 前缀标识，当 <code class="docutils literal notranslate"><span class="pre">STE.Config</span></code> 指示 Stage 1 旁路时被忽略。
+<strong>通用字段</strong>：无前缀，与具体翻译阶段无关（如 <code class="docutils literal notranslate"><span class="pre">V</span></code>、<code class="docutils literal notranslate"><span class="pre">Config</span></code>、<code class="docutils literal notranslate"><span class="pre">STRW</span></code>）。</p>
+</section>
+<section id="cd-context-descriptor-64">
+<h2><a class="toc-backref" href="#id91" role="doc-backlink"><span class="section-number">6.4. </span>CD (Context Descriptor) — 64 字节</a><a class="headerlink" href="#cd-context-descriptor-64" title="链接到此标题。"></a></h2>
+<p><strong>用途</strong>：Stage 1 翻译的配置结构，包含翻译表基址、ASID 和翻译体制信息。由 STE 的 <code class="docutils literal notranslate"><span class="pre">S1ContextPtr</span></code> 指向。</p>
+<p>关键字段：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 12.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>位置</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">V</span></code></p></td>
+<td><p>[31]</p></td>
+<td><p>有效位。0=无效（记录 C_BAD_STE），1=有效</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ASID[63:48]</span></code></p></td>
+<td><p>[63:48]</p></td>
+<td><p>Address Space ID（16 位），标识 TLB 条目的地址空间</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AA64</span></code></p></td>
+<td><p>[35]</p></td>
+<td><p>地址格式。0=VMSAv8-32 LPAE，1=VMSAv8-64</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">T0SZ[5:0]</span></code></p></td>
+<td><p>[5:0]</p></td>
+<td><p>TTB0 的 VA 区域大小（等效于 <code class="docutils literal notranslate"><span class="pre">TCR_ELx.T0SZ</span></code>）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TG0[7:6]</span></code></p></td>
+<td><p>[7:6]</p></td>
+<td><p>TTB0 翻译粒度。<a href="#id31"><span class="problematic" id="id32">``</span></a>0b00``=4KB，<a href="#id33"><span class="problematic" id="id34">``</span></a>0b01``=64KB，<a href="#id35"><span class="problematic" id="id36">``</span></a>0b10``=16KB</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">IR0[9:8]</span></code></p></td>
+<td><p>[9:8]</p></td>
+<td><p>TTB0 内部区域缓存属性</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OR0[11:10]</span></code></p></td>
+<td><p>[11:10]</p></td>
+<td><p>TTB0 外部区域缓存属性</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SH0[13:12]</span></code></p></td>
+<td><p>[13:12]</p></td>
+<td><p>TTB0 共享性。<a href="#id37"><span class="problematic" id="id38">``</span></a>0b00``=非共享，<a href="#id39"><span class="problematic" id="id40">``</span></a>0b10``=外部共享，<a href="#id41"><span class="problematic" id="id42">``</span></a>0b11``=内部共享</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EPD0</span></code></p></td>
+<td><p>[14]</p></td>
+<td><p>TTB0 翻译表遍历禁用。0=启用，1=禁用（TLB miss 产生 Translation fault）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TTB0[119:96]</span></code></p></td>
+<td><p>[119:96]</p></td>
+<td><p>Stage 1 低地址范围翻译表基址（VA -&gt; IPA）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EPD1</span></code></p></td>
+<td><p>[30]</p></td>
+<td><p>TTB1 翻译表遍历禁用（高地址范围）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">T1SZ[21:16]</span></code></p></td>
+<td><p>[21:16]</p></td>
+<td><p>TTB1 的 VA 区域大小</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TG1[23:22]</span></code></p></td>
+<td><p>[23:22]</p></td>
+<td><p>TTB1 翻译粒度。编码与 TG0 不同：<a href="#id43"><span class="problematic" id="id44">``</span></a>0b01``=16KB，<a href="#id45"><span class="problematic" id="id46">``</span></a>0b10``=4KB，<a href="#id47"><span class="problematic" id="id48">``</span></a>0b11``=64KB</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TTB1[183:160]</span></code></p></td>
+<td><p>[183:160]</p></td>
+<td><p>Stage 1 高地址范围翻译表基址</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">IPS[34:32]</span></code></p></td>
+<td><p>[34:32]</p></td>
+<td><p>IPA 大小。<a href="#id49"><span class="problematic" id="id50">``</span></a>0b000``=32 位 ~ <a href="#id51"><span class="problematic" id="id52">``</span></a>0b101``=48 位</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MAIR0[223:192]</span></code></p></td>
+<td><p>[223:192]</p></td>
+<td><p>内存属性间接寄存器 0（Stage 1 页属性索引）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MAIR1[255:224]</span></code></p></td>
+<td><p>[255:224]</p></td>
+<td><p>内存属性间接寄存器 1</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PARTID[375:368]</span></code></p></td>
+<td><p>[375:368]</p></td>
+<td><p>MPAM PARTID（SMMUv3.2+）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PMG[383:376]</span></code></p></td>
+<td><p>[383:376]</p></td>
+<td><p>MPAM PMG（SMMUv3.2+）</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>CD 中 ``TTB0`` 和 ``TTB1`` 的关系</strong>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TTB0</span></code> 覆盖低 VA 范围（如 0x0000_0000_0000_0000 ~ 0x0000_FFFF_FFFF_FFFF）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TTB1</span></code> 覆盖高 VA 范围（如 0xFFFF_0000_0000_0000 ~ 0xFFFF_FFFF_FFFF_FFFF）</p></li>
+<li><p>各自有独立的 <code class="docutils literal notranslate"><span class="pre">EPD</span></code> 控制是否启用</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EPD0</span></code>/<code class="docutils literal notranslate"><span class="pre">EPD1</span></code> 仅在 StreamWorld 为 EL1 时有效，EL2/EL3 时被忽略</p></li>
+</ul>
+</section>
+<section id="id53">
+<h2><a class="toc-backref" href="#id92" role="doc-backlink"><span class="section-number">6.5. </span>配置查找与翻译流程</a><a class="headerlink" href="#id53" title="链接到此标题。"></a></h2>
+<p>一个事务的完整处理流程：</p>
+<ol class="arabic simple">
+<li><p><a href="#id54"><span class="problematic" id="id55">**</span></a>配置查找**（Configuration lookup）
+- StreamID 索引 Stream Table，获取 STE
+- 若 Stage 1 启用，通过 <code class="docutils literal notranslate"><span class="pre">STE.S1ContextPtr</span></code> 获取 CD（嵌套模式下 CD 从 IPA 空间获取，经 Stage 2 翻译）</p></li>
+<li><p><a href="#id56"><span class="problematic" id="id57">**</span></a>翻译查找**（Translation lookup）
+- 若 Stage 1 启用：CD 中的 <code class="docutils literal notranslate"><span class="pre">TTB0</span></code>/<code class="docutils literal notranslate"><span class="pre">TTB1</span></code> 提供 Stage 1 翻译表基址，执行 VA -&gt; IPA
+- 若 Stage 2 启用：STE 中的 <code class="docutils literal notranslate"><span class="pre">S2TTB</span></code> 提供 Stage 2 翻译表基址，执行 IPA -&gt; PA
+- 两阶段级联：VA --[Stage 1]--&gt; IPA --[Stage 2]--&gt; PA</p></li>
+</ol>
+<p>参考：IHI0070G Chapter 3 Operation 和 Chapter 5 Data structure formats（5.2 STE 和 5.4 CD）。</p>
+</section>
+<section id="id58">
+<h2><a class="toc-backref" href="#id93" role="doc-backlink"><span class="section-number">6.6. </span>SMMU 在虚拟化里的用法</a><a class="headerlink" href="#id58" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>：SMMU 在虚拟化里都有哪几种用法？</p>
+<p><strong>解答</strong>：</p>
+<p>SMMU 在虚拟化场景中主要有以下几种用法，由 <code class="docutils literal notranslate"><span class="pre">STE.Config</span></code> 字段控制：</p>
+</section>
+<section id="stage-2-only-passthrough">
+<h2><a class="toc-backref" href="#id94" role="doc-backlink"><span class="section-number">6.7. </span>用法一：Stage 2 Only — 设备直通（Passthrough）</a><a class="headerlink" href="#stage-2-only-passthrough" title="链接到此标题。"></a></h2>
+<p><strong>配置</strong>：<a href="#id59"><span class="problematic" id="id60">``</span></a>STE.Config = 0b110``（Stage 2 Translate，Stage 1 Bypass）</p>
+<p>设备可以直接分配给 Guest VM 使用，无需 Guest 与 SMMU 交互。</p>
+<ul class="simple">
+<li><p>Hypervisor 为设备配置 STE，设置 Stage 2 翻译表基址和 VMID</p></li>
+<li><p>Stage 1 处于旁路状态，设备发出的地址直接作为 IPA 输入 Stage 2</p></li>
+<li><p>Guest OS 看到的设备就像直接连接在系统总线上，设备可以直接用 IPA（Guest 认为是 PA）做 DMA</p></li>
+<li><p>Guest 不需要知道 SMMU 的存在，也不需要 SMMU 驱动</p></li>
+</ul>
+<p><strong>适用场景</strong>：</p>
+<ul class="simple">
+<li><p>简单的设备直通，如将网卡、磁盘控制器直接分配给 VM</p></li>
+<li><p>Guest 期望使用 40 位 DMA 地址（VMSAv8-32 LPAE），Stage 2 旁路 IAS 可以大于 PA，支持此场景</p></li>
+<li><p>不需要进程级 DMA 隔离的设备</p></li>
+</ul>
+<p><strong>关键点</strong>：</p>
+<ul class="simple">
+<li><p>多个设备可以共享同一套 Stage 2 翻译表（属于同一 VM）</p></li>
+<li><p>SubstreamID/PASID 不能使用（Stage 1 旁路时发送 SubstreamID 会导致事务终止）</p></li>
+<li><p>Hypervisor 完全控制 Stream Table 和 Stage 2 翻译表</p></li>
+</ul>
+</section>
+<section id="nested-stage-1-stage-2-hypervisor-smmu">
+<h2><a class="toc-backref" href="#id95" role="doc-backlink"><span class="section-number">6.8. </span>用法二：Nested（Stage 1 + Stage 2）— Hypervisor 仿真 SMMU</a><a class="headerlink" href="#nested-stage-1-stage-2-hypervisor-smmu" title="链接到此标题。"></a></h2>
+<p><strong>配置</strong>：<a href="#id61"><span class="problematic" id="id62">``</span></a>STE.Config = 0b111``（Stage 1 Translate + Stage 2 Translate）</p>
+<p>Guest OS 需要使用 Stage 1 翻译（如进程级 DMA 隔离），但 SMMU 不提供直接供 VM 使用的编程接口。Hypervisor 通过仿真虚拟 SMMU 的方式为 Guest 提供完整的 SMMU 编程体验。</p>
+<p><strong>工作原理</strong>：</p>
+<ul class="simple">
+<li><p>Guest OS 认为自己控制一个真实的 SMMU（Stage 1 Only），拥有自己的 Command Queue、Event Queue 和 PRI Queue</p></li>
+<li><p>实际上 Hypervisor 充当中间层，将 Guest 的虚拟 SMMU 操作转换为物理 SMMU 操作</p></li>
+<li><p>Hypervisor 维护物理 Stream Table 和 Stage 2 翻译表</p></li>
+<li><p>Guest 管理的 CD 和 Stage 1 翻译表以 IPA 编址，由 Stage 2 翻译到 PA</p></li>
+</ul>
+<p><strong>Hypervisor 的职责</strong>：</p>
+<ul class="simple">
+<li><p><strong>STE 转换</strong>：将 Guest 的虚拟 STE 转换为物理 SMMU STE，控制权限和功能</p></li>
+<li><p><strong>StreamID 映射</strong>：物理 StreamID 可能对 Guest 不可见，Guest 使用虚拟 StreamID，Hypervisor 维护映射关系</p></li>
+<li><p><strong>命令代理</strong>：读取并解释 Guest Command Queue 中的命令，转换为物理 SMMU 命令或更新内部影子数据结构</p></li>
+<li><p><strong>事件转发</strong>：从 Host Event Queue 和 PRI Queue 中消费条目，将 Host StreamID 映射为 Guest StreamID，投递到 Guest 的 Event/PRI 队列</p></li>
+</ul>
+<p><strong>适用场景</strong>：</p>
+<ul class="simple">
+<li><p>需要进程级 DMA 隔离的设备直通（如 GPU SR-IOV，多个进程共享同一 PCIe Function）</p></li>
+<li><p>使用 PASID/SubstreamID 区分同一设备的不同 DMA 上下文</p></li>
+<li><p>Guest 需要使用 ATS 和 PRI 进行页式 DMA</p></li>
+</ul>
+<p><strong>故障处理模型</strong>：</p>
+<p><strong>关键点</strong>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">STE.S1STALLD</span></code> 可以禁止 Guest 使用 Stall 模式，防止 stalled 事务影响其他 VM</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STE.EATS</span></code> 控制 ATS 行为：<a href="#id63"><span class="problematic" id="id64">``</span></a>0b01``=Full ATS，<a href="#id65"><span class="problematic" id="id66">``</span></a>0b10``=Split-stage ATS（ATS 返回 IPA，后续 Translated 事务再经 Stage 2 翻译）</p></li>
+<li><p>Split-stage ATS 允许使用 ATS/PRI 的同时保持 Stage 2 隔离</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CD.ASET</span></code> 标记 TLB 条目是否参与广播 TLB 失效，Guest 使用的非共享上下文不应匹配全局翻译</p></li>
+</ul>
+</section>
+<section id="stage-1-only-os">
+<h2><a class="toc-backref" href="#id96" role="doc-backlink"><span class="section-number">6.9. </span>用法三：Stage 1 Only — 裸金属 OS</a><a class="headerlink" href="#stage-1-only-os" title="链接到此标题。"></a></h2>
+<p><strong>配置</strong>：<a href="#id67"><span class="problematic" id="id68">``</span></a>STE.Config = 0b101``（Stage 1 Translate，Stage 2 Bypass）</p>
+<p>非虚拟化场景，裸金属 OS 同时管理 Stream Table、CD 和 Stage 1 翻译表。</p>
+<ul class="simple">
+<li><p>S1ContextPtr 和翻译表基址为 PA（不经 Stage 2 翻译）</p></li>
+<li><p>没有 Hypervisor 参与，OS 直接使用 SMMU</p></li>
+</ul>
+<p><strong>适用场景</strong>：</p>
+<ul class="simple">
+<li><p>不使用虚拟化的嵌入式系统</p></li>
+<li><p>OS 直接管理所有设备的 DMA 地址翻译和隔离</p></li>
+</ul>
+</section>
+<section id="hypervisor-stage-1">
+<h2><a class="toc-backref" href="#id97" role="doc-backlink"><span class="section-number">6.10. </span>用法四：Hypervisor 自用 Stage 1</a><a class="headerlink" href="#hypervisor-stage-1" title="链接到此标题。"></a></h2>
+<p>Hypervisor 自身也需要使用设备 DMA，此时 Hypervisor 使用独立的 Stage 1 翻译上下文。</p>
+<ul class="simple">
+<li><p>通过 <code class="docutils literal notranslate"><span class="pre">STE.STRW</span></code> 字段选择 StreamWorld 为 NS-EL2 或 NS-EL2-E2H</p></li>
+<li><p>Hypervisor 有自己的 CD 和 Stage 1 翻译表，与 Guest 隔离</p></li>
+<li><p>这些 CD 以 PA 编址，不受 Stage 2 控制</p></li>
+</ul>
+<p><strong>适用场景</strong>：</p>
+<ul class="simple">
+<li><p>Hypervisor 直接使用硬件设备进行 DMA 操作</p></li>
+<li><p>管理网络、存储等基础设施设备</p></li>
+</ul>
+</section>
+<section id="full-bypass">
+<h2><a class="toc-backref" href="#id98" role="doc-backlink"><span class="section-number">6.11. </span>用法五：Full Bypass — 不翻译</a><a class="headerlink" href="#full-bypass" title="链接到此标题。"></a></h2>
+<p><strong>配置</strong>：<a href="#id69"><span class="problematic" id="id70">``</span></a>STE.Config = 0b100``（Stage 1 Bypass + Stage 2 Bypass）</p>
+<p>设备的 DMA 事务直接通过 SMMU，不做任何地址翻译。</p>
+<ul class="simple">
+<li><p>适用于不需要 DMA 隔离的场景</p></li>
+<li><p>可以通过 STE 的全局属性字段（如 MTCFG、SHCFG 等）覆盖内存类型和共享性属性</p></li>
+</ul>
+</section>
+<section id="id71">
+<h2><a class="toc-backref" href="#id99" role="doc-backlink"><span class="section-number">6.12. </span>总结</a><a class="headerlink" href="#id71" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 52.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>用法</p></th>
+<th class="head"><p>Config</p></th>
+<th class="head"><p>管理者</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Full Bypass</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0b100</span></code></p></td>
+<td><p>裸金属 OS</p></td>
+<td><p>无翻译，事务直接通过</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stage 1 Only</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0b101</span></code></p></td>
+<td><p>裸金属 OS</p></td>
+<td><p>VA -&gt; IPA（实际为 PA），进程级 DMA 隔离</p></td>
+</tr>
+<tr class="row-even"><td><p>Stage 2 Only</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0b110</span></code></p></td>
+<td><p>Hypervisor</p></td>
+<td><p>IPA -&gt; PA，设备直通，Guest 无需感知 SMMU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Nested (1+2)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0b111</span></code></p></td>
+<td><p>Hypervisor + Guest</p></td>
+<td><p>完整虚拟化，Guest 使用虚拟 SMMU，Hypervisor 仿真</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考：IHI0070G Chapter 3 Operation（3.6 节、3.8 节、3.9 节）。</p>
+</section>
+<section id="smmu-tlb-tlb">
+<h2><a class="toc-backref" href="#id100" role="doc-backlink"><span class="section-number">6.13. </span>SMMU 的 TLB 和 TLB 维护机制</a><a class="headerlink" href="#smmu-tlb-tlb" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>：解释 SMMU 的 TLB 和 TLB 维护机制。</p>
+<p><strong>解答</strong>：</p>
+<p>SMMU 使用 TLB（Translation Lookaside Buffer）缓存翻译结果，避免每次 DMA 事务都执行翻译表遍历（TTW）。TLB 条目通过标签（Tag）区分不同的地址空间和翻译体制。</p>
+</section>
+<section id="tlb">
+<h2><a class="toc-backref" href="#id101" role="doc-backlink"><span class="section-number">6.14. </span>TLB 概述</a><a class="headerlink" href="#tlb" title="链接到此标题。"></a></h2>
+<p>SMMU 中的 TLB 概念与 PE（处理器）的 TLB 类似，缓存的翻译条目按 <code class="docutils literal notranslate"><span class="pre">StreamWorld</span> <span class="pre">/</span> <span class="pre">VMID</span> <span class="pre">/</span> <span class="pre">ASID</span> <span class="pre">/</span> <span class="pre">地址</span></code> 索引。</p>
+<p><strong>SMMU 实现中的 TLB 分布</strong>：</p>
+<ul class="simple">
+<li><p><strong>集中式 TLB</strong>：位于 SMMU 中央翻译表遍历器内部，可能包含 macro-TLB</p></li>
+<li><p><strong>分布式 TLB</strong>：位于远程设备端口，TLB miss 时向中央单元请求翻译并本地缓存</p></li>
+<li><p><strong>设备内嵌 TLB</strong>：高性能设备（如 GPU、PCIe RC）内部集成 TLB，通过 SMMU 编程接口获取翻译</p></li>
+</ul>
+<dl class="simple">
+<dt><a href="#id72"><span class="problematic" id="id73">``</span></a>StreamWorld + VMID + ASID + VA  --&gt;  TLB 查找  --&gt;  命中: 直接返回 PA</dt><dd><p>未命中: 翻译表遍历 (TTW) --&gt; 填充 TLB</p>
+</dd>
+</dl>
+</section>
+<section id="id74">
+<h2><a class="toc-backref" href="#id102" role="doc-backlink"><span class="section-number">6.15. </span>TLB 标签体系</a><a class="headerlink" href="#id74" title="链接到此标题。"></a></h2>
+<p>每个缓存的翻译条目标记有以下标签：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>StreamWorld</p></th>
+<th class="head"><p>ASID</p></th>
+<th class="head"><p>VMID</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NS-EL1</p></td>
+<td><p>是（nG==1）</p></td>
+<td><p>是（S2P=1）</p></td>
+<td><p>Guest OS 的标准翻译体制</p></td>
+</tr>
+<tr class="row-odd"><td><p>NS-EL2 / S-EL2 / Realm-EL2</p></td>
+<td><p>否</p></td>
+<td><p>否</p></td>
+<td><p>Hypervisor 翻译体制，无 ASID</p></td>
+</tr>
+<tr class="row-even"><td><p>NS-EL2-E2H / S-EL2-E2H / Realm-EL2-E2H</p></td>
+<td><p>是（nG==1）</p></td>
+<td><p>否</p></td>
+<td><p>E2H 模式下支持 ASID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Secure</p></td>
+<td><p>是（nG==1）</p></td>
+<td><p>是（SEL2=1）</p></td>
+<td><p>安全态 EL1 翻译</p></td>
+</tr>
+<tr class="row-even"><td><p>EL3</p></td>
+<td><p>否</p></td>
+<td><p>否</p></td>
+<td><p>安全监控态，无 ASID</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键规则</strong>：</p>
+<ul class="simple">
+<li><p>不同 StreamWorld 的 TLB 条目完全隔离，不会互相匹配</p></li>
+<li><p>同一 VMID 下不同 ASID 的地址空间互相隔离</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CD.ASET</span></code> 标志区分共享（ASET=0）和非共享（ASET=1）地址空间，影响广播 TLB 失效行为</p></li>
+<li><p>Global 翻译（TTD.nG==0）可以匹配任意 ASID，但仍受 StreamWorld 和 ASET 约束</p></li>
+</ul>
+</section>
+<section id="id75">
+<h2><a class="toc-backref" href="#id103" role="doc-backlink"><span class="section-number">6.16. </span>TLB 维护机制</a><a class="headerlink" href="#id75" title="链接到此标题。"></a></h2>
+<p>SMMU 的 TLB 维护通过以下两种方式进行：</p>
+<p>通过 Command Queue 发送 TLB 失效命令，仅影响 SMMU 自身的 TLB，不产生广播。在 CMD_TLBI_* 命令序列后必须跟 <code class="docutils literal notranslate"><span class="pre">CMD_SYNC</span></code> 确保失效完成。</p>
+<p><strong>Stage 1 TLB 失效命令</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>命令</p></th>
+<th class="head"><p>参数</p></th>
+<th class="head"><p>等效 PE 操作</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_NH_ALL(VMID)</span></code></p></td>
+<td><p>VMID</p></td>
+<td><p>VMALLE1IS：失效指定 VMID 下所有 NS-EL1 条目（含 Global）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_NH_ASID(VMID,</span> <span class="pre">ASID)</span></code></p></td>
+<td><p>VMID, ASID</p></td>
+<td><p>ASIDE1IS：失效指定 VMID+ASID 的非 Global 条目</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_NH_VAA(VMID,</span> <span class="pre">Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VMID, VA, TG, TTL, NUM, SCALE</p></td>
+<td><p>VAAE1IS：按地址失效，支持范围失效和层级提示</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_NH_VA(VMID,</span> <span class="pre">Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VMID, VA, TG, TTL, NUM, SCALE</p></td>
+<td><p>VAE1IS：按地址+ASID 失效</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_NSNH_ALL</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>ALLE1IS：失效所有 NS 条目（不区分 VMID）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_EL2_ALL</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>ALLE2IS：失效所有 EL2 条目</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_EL2_ASID(ASID)</span></code></p></td>
+<td><p>ASID</p></td>
+<td><p>E2ALL: 失效指定 ASID 的 EL2 条目</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_EL2_VA(Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VA, TG, TTL, NUM, SCALE</p></td>
+<td><p>E2VA: 按 EL2 地址失效</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_EL2_VAA(Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VA, TG, TTL, NUM, SCALE</p></td>
+<td><p>E2VAA: 按地址失效（忽略 ASID）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_EL3_ALL</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>ALLE3IS：失效所有 EL3 条目</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_EL3_VA(Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VA, TG, TTL, NUM, SCALE</p></td>
+<td><p>VAE3IS：按 EL3 地址失效</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Stage 2 TLB 失效命令</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>命令</p></th>
+<th class="head"><p>参数</p></th>
+<th class="head"><p>等效 PE 操作</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_S2_ALL(VMID)</span></code></p></td>
+<td><p>VMID</p></td>
+<td><p>ALLE1IS：失效指定 VMID 下所有 Stage 2 条目</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_S2_IPA(VMID,</span> <span class="pre">Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VMID, IPA, TG, TTL, NUM, SCALE</p></td>
+<td><p>IPAS2E1IS：按 IPA 地址失效 Stage 2 条目</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_S2_IPA_ALL(VMID,</span> <span class="pre">Addr,</span> <span class="pre">...)</span></code></p></td>
+<td><p>VMID, IPA, TG, TTL, NUM, SCALE</p></td>
+<td><p>RIPAS2E1IS：按 IPA 地址失效（Range + TTL hint）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMD_TLBI_NSNH_ALL</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>ALLE1IS：失效所有 NS Stage 1 和 Stage 2 条目</p></td>
+</tr>
+</tbody>
+</table>
+<p>当 <code class="docutils literal notranslate"><span class="pre">SMMU_IDR0.BTM</span> <span class="pre">==</span> <span class="pre">1</span></code> 时，SMMU 可以接收 PE 发出的广播 TLB 失效消息（通过 DVM 协议）。</p>
+<ul class="simple">
+<li><p>PE 执行 <code class="docutils literal notranslate"><span class="pre">TLBI</span></code> 指令后，通过互连广播到同一 Inner/Outer Shareable 域内的 SMMU</p></li>
+<li><p>广播消息包含地址、ASID、VMID 和翻译体制</p></li>
+<li><p>SMMU 根据这些参数匹配并失效对应的 TLB 条目</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SMMU_CR2.PTM</span> <span class="pre">==</span> <span class="pre">1</span></code> 可禁用指定 Security State 的广播 TLB 失效</p></li>
+</ul>
+<p><strong>CD.ASET 对广播失效的影响</strong>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ASET</span> <span class="pre">==</span> <span class="pre">0</span></code>：ASID 与 PE 进程共享，TLB 条目**必须**被所有匹配的广播失效操作影响</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ASET</span> <span class="pre">==</span> <span class="pre">1</span></code>：ASID 非共享（设备专用地址空间），TLB 条目**不要求**被 <code class="docutils literal notranslate"><span class="pre">VA{L}ExIS</span></code> 和 <code class="docutils literal notranslate"><span class="pre">ASIDExIS</span></code> 失效，但仍被 <code class="docutils literal notranslate"><span class="pre">ALLEXIS</span></code> 影响</p></li>
+</ul>
+<p>SMMUv3.2+ 强制支持（<code class="docutils literal notranslate"><span class="pre">SMMU_IDR3.RIL</span> <span class="pre">==</span> <span class="pre">1</span></code>），SMMUv3.0/3.1 可选。</p>
+<p><strong>范围失效</strong>：一次命令失效连续的地址范围:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Range</span> <span class="o">=</span> <span class="p">((</span><span class="n">NUM</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">^</span><span class="n">SCALE</span><span class="p">)</span> <span class="o">*</span> <span class="n">Translation_Granule_Size</span>
+</pre></div>
+</div>
+<p><strong>层级提示（TTL）</strong>：提示 TLB 条目所在的翻译表层级，缩小失效范围，减少不必要的失效:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TTL</span> <span class="o">==</span> <span class="mb">0b00</span><span class="p">:</span> <span class="n">任意层级</span>
+<span class="n">TTL</span> <span class="o">==</span> <span class="mb">0b01</span><span class="p">:</span> <span class="n">Level</span> <span class="mi">1</span> <span class="n">叶条目</span>
+<span class="n">TTL</span> <span class="o">==</span> <span class="mb">0b10</span><span class="p">:</span> <span class="n">Level</span> <span class="mi">2</span> <span class="n">叶条目</span>
+<span class="n">TTL</span> <span class="o">==</span> <span class="mb">0b11</span><span class="p">:</span> <span class="n">Level</span> <span class="mi">3</span> <span class="n">叶条目</span>
+</pre></div>
+</div>
+<p><strong>TG（Translation Granule）</strong> 指定失效的粒度大小：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0b00</span></code>：任意粒度（无范围失效，无 TTL）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0b01</span></code>：4KB</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0b10</span></code>：16KB</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0b11</span></code>：64KB</p></li>
+</ul>
+</section>
+<section id="ats-tlb">
+<h2><a class="toc-backref" href="#id104" role="doc-backlink"><span class="section-number">6.17. </span>ATS 与 TLB 的关系</a><a class="headerlink" href="#ats-tlb" title="链接到此标题。"></a></h2>
+<p>当使用 PCIe ATS 时：</p>
+<ul class="simple">
+<li><p>ATS Translation Request 可能直接使用 SMMU TLB 中的条目返回，也可能触发新的翻译表遍历并插入 TLB</p></li>
+<li><p>翻译配置变更时，必须**先执行 SMMU TLB 失效，再执行 ATC 失效**（CMD_ATC_INV）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_SYNC</span></code> 确保 SMMU TLB 失效完成后再发起 ATC 失效</p></li>
+</ul>
+</section>
+<section id="id76">
+<h2><a class="toc-backref" href="#id105" role="doc-backlink"><span class="section-number">6.18. </span>总结</a><a class="headerlink" href="#id76" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>维护方式</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CMD_TLBI_* 命令</p></td>
+<td><p>通过 Command Queue 发送，仅影响 SMMU TLB，需 CMD_SYNC 确保完成</p></td>
+</tr>
+<tr class="row-odd"><td><p>PE 广播失效</p></td>
+<td><p>PE TLBI 指令通过 DVM 协议广播，SMMU 根据 VMID/ASID/StreamWorld 匹配</p></td>
+</tr>
+<tr class="row-even"><td><p>CMD_ATC_INV</p></td>
+<td><p>失效端点 ATC（设备侧 TLB），需先完成 SMMU TLB 失效</p></td>
+</tr>
+<tr class="row-odd"><td><p>CMD_CFGI_*</p></td>
+<td><p>失效 STE 和 CD 配置缓存（与 TLB 失效是独立的操作）</p></td>
+</tr>
+<tr class="row-even"><td><p>VMID Wildcards</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SMMU_CR0.VMW</span> <span class="pre">==</span> <span class="pre">1</span></code> 时，VMID=0xFFFF 的命令可匹配所有 VMID</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考：IHI0070G Chapter 3 Operation（3.17 节）和 Chapter 4 Commands（4.4 节）。</p>
+</section>
+<section id="smmu-event-queue">
+<h2><a class="toc-backref" href="#id106" role="doc-backlink"><span class="section-number">6.19. </span>SMMU 的故障处理和 Event Queue 机制</a><a class="headerlink" href="#smmu-event-queue" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>：解释 SMMU 的故障处理和 Event Queue 机制。</p>
+<p><strong>解答</strong>：</p>
+</section>
+<section id="fault-models">
+<h2><a class="toc-backref" href="#id107" role="doc-backlink"><span class="section-number">6.20. </span>故障模型（Fault Models）</a><a class="headerlink" href="#fault-models" title="链接到此标题。"></a></h2>
+<p>当 DMA 事务经过 SMMU 时，可能在配置查找或翻译过程中遇到错误。SMMU 提供两种故障处理模型，按翻译阶段独立配置。</p>
+<p>事务遇到故障后立即终止，向设备返回 abort 响应。如果配置了记录标志（<code class="docutils literal notranslate"><span class="pre">CD.R</span></code> / <code class="docutils literal notranslate"><span class="pre">STE.S2R</span></code>），则向 Event Queue 写入一条事件记录。</p>
+<ul class="simple">
+<li><p><strong>Stage 1 终止</strong>：由 <code class="docutils literal notranslate"><span class="pre">CD.A</span></code> 和 <code class="docutils literal notranslate"><span class="pre">CD.S</span></code> 控制
+- <code class="docutils literal notranslate"><span class="pre">CD.S</span> <span class="pre">==</span> <span class="pre">0,</span> <span class="pre">CD.A</span> <span class="pre">==</span> <span class="pre">1</span></code>：返回 abort
+- <code class="docutils literal notranslate"><span class="pre">CD.S</span> <span class="pre">==</span> <span class="pre">0,</span> <span class="pre">CD.A</span> <span class="pre">==</span> <span class="pre">0</span></code>：RAZ/WI 行为（读返回 0，写被忽略）</p></li>
+<li><p><strong>Stage 2 终止</strong>：由 <code class="docutils literal notranslate"><span class="pre">STE.S2S</span> <span class="pre">==</span> <span class="pre">0</span></code> 控制，始终返回 abort</p></li>
+<li><p><strong>Event Queue 满时</strong>：事件记录丢失（不保证投递）</p></li>
+<li><p>PCIe 流必须使用 Terminate 模型（不能 stall），通过 <code class="docutils literal notranslate"><span class="pre">STE.S1STALLD</span> <span class="pre">==</span> <span class="pre">1</span></code> 强制</p></li>
+</ul>
+<p>事务遇到故障后被缓冲（stall），不向设备返回任何响应。SMMU <a href="#id77"><span class="problematic" id="id78">**</span></a>始终**向 Event Queue 写入事件记录，软件处理后通过 <code class="docutils literal notranslate"><span class="pre">CMD_RESUME</span></code> 重试或终止。</p>
+<ul class="simple">
+<li><p><strong>Stage 1 Stall</strong>：<code class="docutils literal notranslate"><span class="pre">CD.S</span> <span class="pre">==</span> <span class="pre">1</span></code> 且 <code class="docutils literal notranslate"><span class="pre">STE.S1STALLD</span> <span class="pre">==</span> <span class="pre">0</span></code></p></li>
+<li><p><strong>Stage 2 Stall</strong>：<code class="docutils literal notranslate"><span class="pre">STE.S2S</span> <span class="pre">==</span> <span class="pre">1</span></code></p></li>
+<li><p><strong>Stall Tag (STAG)</strong>：SMMU 为每个 stalled 事务分配唯一 STAG，软件通过 <code class="docutils literal notranslate"><span class="pre">CMD_RESUME(StreamID,</span> <span class="pre">STAG)</span></code> 定位事务</p></li>
+<li><p><strong>Event Queue 满时</strong>：stall 事件**不丢弃**，队列可写后自动重试并生成新事件</p></li>
+<li><p><strong>重复抑制</strong>：同一 stream 的相同页面、相同类型的后续 stall 事务可能被抑制（不生成新事件）</p></li>
+<li><p><strong>早期重试</strong>：SMMU 可以在收到 <code class="docutils literal notranslate"><span class="pre">CMD_RESUME</span></code> 之前投机性重试 stalled 事务</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STE.S1STALLD</span> <span class="pre">==</span> <span class="pre">1</span></code> 可禁止 Guest VM 使用 Stall 模型，防止 stalled 事务影响其他 VM</p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 34.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Stage 1 配置</p></th>
+<th class="head"><p>Stage 2 配置</p></th>
+<th class="head"><p>故障阶段</p></th>
+<th class="head"><p>事务结果</p></th>
+<th class="head"><p>Hypervisor 处理</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Terminate</p></td>
+<td><p>Terminate</p></td>
+<td><p>Stage 1</p></td>
+<td><p>终止（VA）</p></td>
+<td><p>作为 S1 事件传递给 Guest</p></td>
+</tr>
+<tr class="row-odd"><td><p>Terminate</p></td>
+<td><p>Terminate</p></td>
+<td><p>Stage 2</p></td>
+<td><p>终止（VA, IPA）</p></td>
+<td><p>可能记录 IPA 用于调试</p></td>
+</tr>
+<tr class="row-even"><td><p>Terminate</p></td>
+<td><p>Stall</p></td>
+<td><p>Stage 1</p></td>
+<td><p>终止（VA）</p></td>
+<td><p>作为 S1 事件传递给 Guest</p></td>
+</tr>
+<tr class="row-odd"><td><p>Terminate</p></td>
+<td><p>Stall</p></td>
+<td><p>Stage 2</p></td>
+<td><p>Stall（VA, IPA）</p></td>
+<td><p>CMD_RESUME(Terminate) 或修复翻译后 CMD_RESUME(Retry)</p></td>
+</tr>
+<tr class="row-even"><td><p>Stall</p></td>
+<td><p>Terminate</p></td>
+<td><p>Stage 1</p></td>
+<td><p>Stall（VA）</p></td>
+<td><p>Guest 发送 CMD_RESUME(Retry/Terminate)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stall</p></td>
+<td><p>Terminate</p></td>
+<td><p>Stage 2</p></td>
+<td><p>终止（VA, IPA）</p></td>
+<td><p>可能记录 IPA 用于调试</p></td>
+</tr>
+<tr class="row-even"><td><p>Stall</p></td>
+<td><p>Stall</p></td>
+<td><p>Stage 1</p></td>
+<td><p>Stall（VA）</p></td>
+<td><p>Guest 发送 CMD_RESUME(Retry/Terminate)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Stall</p></td>
+<td><p>Stall</p></td>
+<td><p>Stage 2</p></td>
+<td><p>Stall（VA, IPA）</p></td>
+<td><p>Hypervisor 修复 S2 翻译后 CMD_RESUME(Retry)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>：CD/STE 获取失败（<code class="docutils literal notranslate"><span class="pre">C_BAD_STE</span></code>、<code class="docutils literal notranslate"><span class="pre">C_BAD_CD</span></code>）和翻译表遍历外部中止（<code class="docutils literal notranslate"><span class="pre">F_WALK_EABT</span></code>）始终终止事务，不受 Stall 模型控制。</p>
+<p>由 <code class="docutils literal notranslate"><span class="pre">SMMU_IDR0.STALL_MODEL</span></code> 指示：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0b00</span></code>：同时支持 Stall 和 Terminate（推荐）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0b01</span></code>：仅支持 Terminate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0b10</span></code>：仅支持 Stall</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SMMU_S_CR0.NSSTALLD</span></code> 可以禁止 Non-secure 使用 Stall</p></li>
+</ul>
+</section>
+<section id="event-queue">
+<h2><a class="toc-backref" href="#id108" role="doc-backlink"><span class="section-number">6.21. </span>Event Queue 机制</a><a class="headerlink" href="#event-queue" title="链接到此标题。"></a></h2>
+<p>Event Queue 是一个内存中的环形缓冲区，SMMU 作为生产者写入事件记录，软件作为消费者读取。每个 Security State 有独立的 Event Queue。</p>
+<ul class="simple">
+<li><p>每条事件记录 <strong>32 字节</strong>，小端字节序</p></li>
+<li><p>通过 <code class="docutils literal notranslate"><span class="pre">SMMU_(*_)CR0.EVENTQEN</span></code> 启用</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SMMU_EVENTQ_PROD</span></code> / <code class="docutils literal notranslate"><span class="pre">SMMU_EVENTQ_CONS</span></code> 寄存器维护生产/消费指针</p></li>
+<li><p>软件通过轮询 CONS/PROD 或 MSI 中断感知新事件</p></li>
+</ul>
+<p>Event Queue 必须同时满足以下条件才可写入：</p>
+<ul class="simple">
+<li><p>队列已启用（<code class="docutils literal notranslate"><span class="pre">EVENTQEN</span> <span class="pre">==</span> <span class="pre">1</span></code>）</p></li>
+<li><p>队列未满</p></li>
+<li><p>无未确认的 <code class="docutils literal notranslate"><span class="pre">GERROR.EVENTQ_ABT_ERR</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>类别</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>配置错误（C_*）</p></td>
+<td><p>寄存器、STE 或 CD 内容不正确。配置存储在内存中，只有在事务触发使用时才报告错误</p></td>
+</tr>
+<tr class="row-odd"><td><p>翻译故障（F_*）</p></td>
+<td><p>翻译过程中产生的故障。每笔事务最多产生一个翻译故障事件</p></td>
+</tr>
+<tr class="row-even"><td><p>其他（E_*）</p></td>
+<td><p>异步事件，如 <code class="docutils literal notranslate"><span class="pre">E_PAGE_REQUEST</span></code> 页面请求提示</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>StreamID</p></td>
+<td><p>发起事务的设备 StreamID</p></td>
+</tr>
+<tr class="row-odd"><td><p>SubstreamID + SSV</p></td>
+<td><p>SubstreamID 有效标志及值（仅 SSV==1 时有效）</p></td>
+</tr>
+<tr class="row-even"><td><p>RnW</p></td>
+<td><p>0=写，1=读</p></td>
+</tr>
+<tr class="row-odd"><td><p>PnU</p></td>
+<td><p>特权/非特权（经过 STE 覆盖后的值）</p></td>
+</tr>
+<tr class="row-even"><td><p>InD</p></td>
+<td><p>指令/数据（经过 STE 覆盖后的值）</p></td>
+</tr>
+<tr class="row-odd"><td><p>InputAddr[63:0]</p></td>
+<td><p>输入地址（VA/IPA，取决于事件类型）</p></td>
+</tr>
+<tr class="row-even"><td><p>S2</p></td>
+<td><p>故障阶段：0=Stage 1，1=Stage 2</p></td>
+</tr>
+<tr class="row-odd"><td><p>CLASS</p></td>
+<td><p>操作类别：0b00=CD 获取，0b01=翻译表获取，0b10=输入地址</p></td>
+</tr>
+<tr class="row-even"><td><p>Stall</p></td>
+<td><p>是否为 stalled 事务（Stall==1 的事件永不合并）</p></td>
+</tr>
+<tr class="row-odd"><td><p>STAG</p></td>
+<td><p>Stall Tag，用于 CMD_RESUME 定位 stalled 事务</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 25.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>编号</p></th>
+<th class="head"><p>名称</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0x01</p></td>
+<td><p>F_UUT</p></td>
+<td><p>不支持的上游事务（IMPLEMENTATION DEFINED）</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x02</p></td>
+<td><p>C_BAD_STREAMID</p></td>
+<td><p>StreamID 超出 Stream Table 范围</p></td>
+</tr>
+<tr class="row-even"><td><p>0x03</p></td>
+<td><p>F_STE_FETCH</p></td>
+<td><p>STE 获取外部中止</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x04</p></td>
+<td><p>C_BAD_STE</p></td>
+<td><p>STE 无效（V==0 或配置非法）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x05</p></td>
+<td><p>F_BAD_ATS_TREQ</p></td>
+<td><p>ATS Translation Request 失败</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x06</p></td>
+<td><p>F_STREAM_DISABLED</p></td>
+<td><p>流被禁用（如 SubstreamID 缺失时 S1DSS==0b00）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x07</p></td>
+<td><p>F_TRANSL_FORBIDDEN</p></td>
+<td><p>Translated 流被禁止（ATSCHK 但 EATS 未使能）</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x08</p></td>
+<td><p>C_BAD_SUBSTREAMID</p></td>
+<td><p>SubstreamID 无效（超出 S1CDMax 范围或 SSV=1 但 S1CDMax=0）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x09</p></td>
+<td><p>F_CD_FETCH</p></td>
+<td><p>CD 获取外部中止</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x0A</p></td>
+<td><p>C_BAD_CD</p></td>
+<td><p>CD 无效（V==0 或配置非法）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x0B</p></td>
+<td><p>F_WALK_EABT</p></td>
+<td><p>翻译表遍历外部中止</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x0C</p></td>
+<td><p>F_TRANSLATION</p></td>
+<td><p>翻译故障（页表项无效）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x0D</p></td>
+<td><p>F_ADDR_SIZE</p></td>
+<td><p>地址大小故障（地址超出 VA/IPA 范围）</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x0E</p></td>
+<td><p>F_ACCESS</p></td>
+<td><p>访问标志故障（AF==0）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x0F</p></td>
+<td><p>F_PERMISSION</p></td>
+<td><p>权限故障（读写/执行权限不足）</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x10</p></td>
+<td><p>F_TLB_CONFLICT</p></td>
+<td><p>TLB 冲突</p></td>
+</tr>
+<tr class="row-even"><td><p>0x11</p></td>
+<td><p>F_CFG_CONFLICT</p></td>
+<td><p>配置缓存冲突</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x12</p></td>
+<td><p>E_PAGE_REQUEST</p></td>
+<td><p>页面请求提示（可选，仅用于提前通知）</p></td>
+</tr>
+<tr class="row-even"><td><p>0x13</p></td>
+<td><p>F_VMS_FETCH</p></td>
+<td><p>VMS 获取外部中止</p></td>
+</tr>
+<tr class="row-odd"><td><p>0x14-0x1F</p></td>
+<td><p>IMPDEF_EVENTn</p></td>
+<td><p>IMPLEMENTATION DEFINED 事件</p></td>
+</tr>
+</tbody>
+</table>
+<p>多个相同类型的事件可以合并为一条记录写入 Event Queue，减少队列压力。</p>
+<ul class="simple">
+<li><p>由 <code class="docutils literal notranslate"><span class="pre">STE.MEV</span></code> 控制：<code class="docutils literal notranslate"><span class="pre">MEV</span> <span class="pre">==</span> <span class="pre">0</span></code> 禁止合并（保证一对一映射），<code class="docutils literal notranslate"><span class="pre">MEV</span> <span class="pre">==</span> <span class="pre">1</span></code> 允许合并</p></li>
+<li><p><strong>Stall == 1 的事件永不合并</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">F_UUT</span></code> 和 <code class="docutils literal notranslate"><span class="pre">C_BAD_STE</span></code> 始终可以被合并（在 STE 定位之前）</p></li>
+<li><p>合并条件：所有已定义字段相同、Stall==0、短时间内连续发生</p></li>
+</ul>
+<ul class="simple">
+<li><p><strong>非 Stall 事件</strong>：队列满时**静默丢弃**，同时触发溢出条件</p></li>
+<li><p><strong>Stall 事件</strong>：队列满时**不丢弃**，队列可写后自动重试事务并写入新事件</p></li>
+<li><p>Arm 建议软件及时消费 Event Queue 以避免溢出</p></li>
+</ul>
+<p>写入 Event Queue 时发生外部中止会触发 <code class="docutils literal notranslate"><span class="pre">GERROR.EVENTQ_ABT_ERR</span></code>，可能导致事件丢失（包括 Stall 事件）。</p>
+<ul class="simple">
+<li><p><strong>同步中止</strong>：PROD 指针不递增，已写入的条目有效</p></li>
+<li><p><strong>异步中止</strong>：PROD 指针可能递增，所有条目视为无效，软件应清空队列</p></li>
+</ul>
+<ul class="simple">
+<li><p>Hypervisor 管理 Host Event Queue，消费条目后将 Host StreamID 映射为 Guest StreamID，投递到 Guest 的虚拟 Event Queue</p></li>
+<li><p>Hypervisor 可能将 Stage 2 故障转换为 Stage 1 外部中止传递给 Guest（如 CD 获取阶段的 Stage 2 故障报告为 <code class="docutils literal notranslate"><span class="pre">F_WALK_EABT</span></code>）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STE.MEV</span> <span class="pre">==</span> <span class="pre">0</span></code> 的效果在虚拟化中可能被 Hypervisor 覆盖</p></li>
+</ul>
+<p>参考：IHI0070G Chapter 3 Operation（3.12 节）和 Chapter 7 Faults, errors and Event queue（7.2、7.3 节）。</p>
+</section>
+<section id="smmu-ats-pri">
+<h2><a class="toc-backref" href="#id109" role="doc-backlink"><span class="section-number">6.22. </span>SMMU 的 ATS 和 PRI 机制</a><a class="headerlink" href="#smmu-ats-pri" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>：解释 SMMU 的 ATS 和 PRI 机制。</p>
+<p><strong>解答</strong>：</p>
+<p>ATS（Address Translation Service）和 PRI（Page Request Interface）是 PCIe 协议提供的两个扩展功能，SMMU 实现对这两个接口的支持以提高 DMA 性能并支持动态分页。ATS 依赖 PRI，但 PRI 不依赖 ATS。</p>
+</section>
+<section id="ats-address-translation-service">
+<h2><a class="toc-backref" href="#id110" role="doc-backlink"><span class="section-number">6.23. </span>ATS（Address Translation Service）</a><a class="headerlink" href="#ats-address-translation-service" title="链接到此标题。"></a></h2>
+<p>ATS 允许 PCIe 端点（Endpoint）在发起实际 DMA 事务之前，主动向 SMMU 请求地址翻译，并将翻译结果缓存在端点本地的 ATC（Address Translation Cache，等效于设备侧 TLB）中。后续 DMA 事务可以直接标记为 Translated，携带物理地址，绕过 SMMU 的翻译。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Endpoint                          SMMU                           Memory
+   |                               |                               |
+   |-- ATS Translation Request ---&gt;|                               |
+   |   (VA, R/W权限, PASID)        |                               |
+   |                               |-- TLB 查找 --&gt; miss?          |
+   |                               |-- 翻译表遍历 (TTW) ----------&gt;|
+   |                               |&lt;-- 翻译结果 (PA, 权限) -------|
+   |                               |-- 插入 SMMU TLB              |
+   |&lt;-- ATS Translation Completion-|                               |
+   |   (PA, 实际授予的权限)         |                               |
+   |                               |                               |
+   |-- Translated DMA (PA) --------|------- (ATSCHK=0) -----------&gt;|
+   |   (标记为 Translated,          |                               |
+   |    绕过 SMMU 翻译)             |                               |
+</pre></div>
+</div>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">STE.EATS[93:92]</span></code> 字段控制：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 85.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>EATS 值</p></th>
+<th class="head"><p>行为</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">0b00</span></code></p></td>
+<td><p>ATS 禁用。Translation Request 返回 UR，记录 <code class="docutils literal notranslate"><span class="pre">F_BAD_ATS_TREQ</span></code>。若 <code class="docutils literal notranslate"><span class="pre">ATSCHK==1</span></code>，Translated 事务也被终止</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">0b01</span></code></p></td>
+<td><p>Full ATS。Translation Request 服务所有已启用的翻译阶段，返回 PA。后续 Translated 事务绕过 SMMU</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">0b10</span></code></p></td>
+<td><p>Split-stage ATS。Translation Request 仅执行 Stage 1，返回 IPA 给端点。后续 Translated 事务携带 IPA 经过 SMMU 执行 Stage 2 翻译。要求 <code class="docutils literal notranslate"><span class="pre">Config==0b111</span></code>、<code class="docutils literal notranslate"><span class="pre">S2S==0</span></code>、<code class="docutils literal notranslate"><span class="pre">NS1ATS==0</span></code>、<code class="docutils literal notranslate"><span class="pre">ATSCHK==1</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">0b11</span></code></p></td>
+<td><p>Full ATS with DPT checks。同 <code class="docutils literal notranslate"><span class="pre">0b01</span></code> 但额外启用每粒度 DPT 检查（<code class="docutils literal notranslate"><span class="pre">SMMU_IDR3.DPT==1</span></code>，StreamWorld 非 EL1 时 ILLEGAL）</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">SMMU_(*_)CR0.ATSCHK</span></code> 控制 SMMU 是否对 Translated 事务进行额外检查：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ATSCHK</span> <span class="pre">==</span> <span class="pre">0</span></code>：Translated 事务直接绕过 SMMU，不进行任何检查（性能最优，安全性较低）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ATSCHK</span> <span class="pre">==</span> <span class="pre">1</span></code>：Translated 事务仍经过 SMMU，根据 <code class="docutils literal notranslate"><span class="pre">STE.EATS</span></code> 检查配置，可执行 Split-stage Stage 2 或 DPT 检查</p></li>
+</ul>
+<ul class="simple">
+<li><p>Translation Request 携带读/写权限请求，SMMU 检查翻译表中的实际权限</p></li>
+<li><p>响应可能返回实际授予的权限（可能是请求权限的子集，例如请求读写但只授予读）</p></li>
+<li><p>仅执行权限（execute-only, 无读无写）在 ATS 中无法表示，通过 ATS 不可访问</p></li>
+</ul>
+<ul class="simple">
+<li><p>如果 ATS Translation Request 对应的翻译有效且 HTTU 使能，SMMU <a href="#id79"><span class="problematic" id="id80">**</span></a>必须**在收到 ATS 请求时就更新翻译表中的 Access Flag 和 Dirty State</p></li>
+<li><p>由于 Translated 事务绕过 SMMU，ATS 请求是 SMMU 更新标志的唯一机会</p></li>
+</ul>
+<p>当翻译配置变更时，必须按以下顺序执行维护操作：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>1. 修改翻译表描述符（barrier 使其对 Shareability 域可见）
+2. CMD_TLBI_*    （SMMU TLB 失效）
+3. CMD_SYNC      （确保 TLB 失效完成）
+4. CMD_ATC_INV   （失效端点 ATC）
+5. CMD_SYNC      （确保 ATC 失效完成）
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">CMD_ATC_INV</span></code> 参数：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>参数</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>StreamID</p></td>
+<td><p>目标设备</p></td>
+</tr>
+<tr class="row-odd"><td><p>SubstreamID + SSV</p></td>
+<td><p>PASID 及有效标志</p></td>
+</tr>
+<tr class="row-even"><td><p>Global (G)</p></td>
+<td><p>全局失效标志（仅 SSV==1 时有效）</p></td>
+</tr>
+<tr class="row-odd"><td><p>Address[63:12]</p></td>
+<td><p>失效起始地址</p></td>
+</tr>
+<tr class="row-even"><td><p>Size[5:0]</p></td>
+<td><p>失效范围：span = 4096 * 2^Size 字节。Size=52 表示全部失效</p></td>
+</tr>
+</tbody>
+</table>
+<p>Split-stage ATS（<code class="docutils literal notranslate"><span class="pre">EATS</span> <span class="pre">==</span> <span class="pre">0b10</span></code>）允许在使用 ATS 和 PRI 的同时保持 Stage 2 隔离：</p>
+<ul class="simple">
+<li><p>ATS Translation Request 仅执行 Stage 1 翻译，返回 <a href="#id81"><span class="problematic" id="id82">**</span></a>IPA**（而非 PA）</p></li>
+<li><p>端点缓存 IPA，后续 Translated 事务携带 IPA 到达 SMMU</p></li>
+<li><p>SMMU 对 Translated 事务执行 Stage 2 翻译（IPA -&gt; PA），保持 Hypervisor 的 Stage 2 控制权</p></li>
+<li><p>端点的 ATC 缓存的是 IPA，因此 ATC 失效仅需在 Stage 1 变更时进行</p></li>
+</ul>
+<p>适用场景：Hypervisor 需要在虚拟化环境中同时使用 ATS/PRI 和 Stage 2 翻译隔离。</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>操作</p></th>
+<th class="head"><p>步骤</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>启用 ATS</p></td>
+<td><p>设置 EATS != 0 -&gt; 失效 STE 缓存 + CMD_SYNC -&gt; 端点启用 ATS</p></td>
+</tr>
+<tr class="row-odd"><td><p>禁用 ATS</p></td>
+<td><p>端点禁用 ATS + 失效 ATC + CMD_SYNC -&gt; 设置 EATS == 0 -&gt; 失效 STE 缓存</p></td>
+</tr>
+<tr class="row-even"><td><p>切换 EATS 0b01 &lt;-&gt; 0b10</p></td>
+<td><p>必须先禁用 ATS（通过 EATS==0b00），再切换到目标值</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>ATS 和 PRI 不支持 Secure 流（Secure STE 的 EATS 为 RES0）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_ATC_INV</span></code> 和 <code class="docutils literal notranslate"><span class="pre">CMD_PRI_RESP</span></code> 默认不能针对 Secure StreamID</p></li>
+<li><p>Secure Command Queue 上的 ATS/PRI 支持可选（<code class="docutils literal notranslate"><span class="pre">SMMU_S_IDR3.SAMS</span></code>）</p></li>
+</ul>
+</section>
+<section id="pri-page-request-interface">
+<h2><a class="toc-backref" href="#id111" role="doc-backlink"><span class="section-number">6.24. </span>PRI（Page Request Interface）</a><a class="headerlink" href="#pri-page-request-interface" title="链接到此标题。"></a></h2>
+<p>PRI 允许 PCIe 端点在 ATS Translation Request 发现页面不存在（not-present）时，主动向软件请求将页面调入内存。这使得设备和 OS/Hypervisor 可以使用未固定的、动态分页的内存进行 DMA。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Endpoint</span>                          <span class="n">SMMU</span>                         <span class="n">Software</span>
+   <span class="o">|</span>                               <span class="o">|</span>                               <span class="o">|</span>
+   <span class="o">|--</span> <span class="n">ATS</span> <span class="n">Translation</span> <span class="n">Request</span> <span class="o">---&gt;|</span>                               <span class="o">|</span>
+   <span class="o">|</span>                               <span class="o">|--</span> <span class="n">翻译结果</span><span class="p">:</span> <span class="ow">not</span><span class="o">-</span><span class="n">present</span> <span class="o">------|</span>
+   <span class="o">|&lt;--</span> <span class="n">ATS</span> <span class="n">Completion</span> <span class="p">(</span><span class="n">R</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">W</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-|</span>                               <span class="o">|</span>
+   <span class="o">|</span>   <span class="p">(</span><span class="n">无权限</span><span class="p">,</span> <span class="n">表示页不存在</span><span class="p">)</span>      <span class="o">|</span>                               <span class="o">|</span>
+   <span class="o">|</span>                               <span class="o">|</span>                               <span class="o">|</span>
+   <span class="o">|--</span> <span class="n">PRI</span> <span class="n">Page</span> <span class="n">Request</span> <span class="p">(</span><span class="n">PPR</span><span class="p">)</span> <span class="o">----&gt;|--</span> <span class="n">写入</span> <span class="n">PRI</span> <span class="n">Queue</span> <span class="o">------------&gt;|</span>
+   <span class="o">|</span>   <span class="p">(</span><span class="n">请求页面调入</span><span class="p">)</span>              <span class="o">|</span>                               <span class="o">|</span>
+   <span class="o">|</span>                               <span class="o">|</span>                     <span class="n">软件处理</span><span class="p">:</span>
+   <span class="o">|</span>                               <span class="o">|</span>                     <span class="o">-</span> <span class="n">分配物理页</span>
+   <span class="o">|</span>                               <span class="o">|</span>                     <span class="o">-</span> <span class="n">更新翻译表</span>
+   <span class="o">|</span>                               <span class="o">|</span>                     <span class="o">-</span> <span class="n">CMD_TLBI_</span><span class="o">*</span>
+   <span class="o">|</span>                               <span class="o">|</span>                     <span class="o">-</span> <span class="n">CMD_ATC_INV</span>
+   <span class="o">|</span>                               <span class="o">|</span>                     <span class="o">-</span> <span class="n">CMD_PRI_RESP</span><span class="p">(</span><span class="n">Success</span><span class="p">)</span>
+   <span class="o">|</span>                               <span class="o">|&lt;--</span> <span class="n">CMD_PRI_RESP</span> <span class="o">-----------|</span>
+   <span class="o">|&lt;--</span> <span class="n">PRG</span> <span class="n">Response</span> <span class="p">(</span><span class="n">Success</span><span class="p">)</span> <span class="o">----|</span>                               <span class="o">|</span>
+   <span class="o">|</span>                               <span class="o">|</span>                               <span class="o">|</span>
+   <span class="o">|--</span> <span class="n">重试</span> <span class="n">ATS</span> <span class="n">Translation</span> <span class="o">------&gt;|</span>                               <span class="o">|</span>
+   <span class="o">|&lt;--</span> <span class="n">ATS</span> <span class="n">Completion</span> <span class="p">(</span><span class="n">PA</span><span class="p">,</span> <span class="n">R</span><span class="o">/</span><span class="n">W</span><span class="p">)</span> <span class="o">--|</span>                               <span class="o">|</span>
+   <span class="o">|</span>                               <span class="o">|</span>                               <span class="o">|</span>
+   <span class="o">|--</span> <span class="n">Translated</span> <span class="n">DMA</span> <span class="p">(</span><span class="n">PA</span><span class="p">)</span> <span class="o">--------|</span>                               <span class="o">|</span>
+</pre></div>
+</div>
+<p>PRI Queue 是内存中的环形缓冲区，接收来自端点的 Page Request：</p>
+<ul class="simple">
+<li><p>由 <code class="docutils literal notranslate"><span class="pre">SMMU_(*_)CR0.PRIQEN</span></code> 启用</p></li>
+<li><p>大小由 <code class="docutils literal notranslate"><span class="pre">SMMU_IDR1.PRIQS</span></code> 指示（每个 SMMU 的最大 PRI Queue 条目数）</p></li>
+<li><p>端点通过 PCIe 配置空间的 PRI 机制获得 Page Request Credit（信用值），限制未完成请求的数量</p></li>
+</ul>
+<p>软件处理完页面调入后，通过 <code class="docutils literal notranslate"><span class="pre">CMD_PRI_RESP</span></code> 命令响应端点：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Resp 值</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">0b00</span></code> ResponseFailure</p></td>
+<td><p>永久非分页错误（如设备 ATS/PRI 被禁用）</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">0b01</span></code> InvalidRequest</p></td>
+<td><p>请求组中一个或多个页面调入失败</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">0b10</span></code> Success</p></td>
+<td><p>页面请求组成功调入</p></td>
+</tr>
+</tbody>
+</table>
+<p>当 PRI Queue 满时：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SMMU_PRIQ_PROD.OVFLG</span></code> 标志置位</p></li>
+<li><p>新的 PRI 消息被丢弃</p></li>
+<li><p>对具有 <code class="docutils literal notranslate"><span class="pre">Last==1</span></code> 的 Page Request 自动生成 PRG Response（Success），使端点可以稍后重试</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Last==0</span></code> 的 PPR 被静默忽略</p></li>
+<li><p>软件应尽快消费 PRI Queue 并通过 <code class="docutils literal notranslate"><span class="pre">SMMU_PRIQ_CONS.OVACKFLG</span></code> 确认溢出</p></li>
+</ul>
+<ul class="simple">
+<li><p>Hypervisor 管理 Host PRI Queue</p></li>
+<li><p>Guest 设置自己的 PRI Queue，Hypervisor 将 Host PRI Queue 中的 PPR 代理转发到 Guest PRI Queue</p></li>
+<li><p>PRI Queue 信用值分配：Host 总共 L 条，为 Guest 分配 N 条（N &lt;= L），Guest 为其设备分配最多 N 条信用</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STE.PPAR</span></code> 控制 PASID 前缀在 PRI 响应中是否保留</p></li>
+</ul>
+</section>
+<section id="ats-pri">
+<h2><a class="toc-backref" href="#id112" role="doc-backlink"><span class="section-number">6.25. </span>ATS + PRI 使用模型总结</a><a class="headerlink" href="#ats-pri" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>场景</p></th>
+<th class="head"><p>ATS</p></th>
+<th class="head"><p>PRI</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>固定 DMA（无动态分页）</p></td>
+<td><p>可选（提升性能）</p></td>
+<td><p>不需要</p></td>
+</tr>
+<tr class="row-odd"><td><p>动态分页 DMA（非 PCIe）</p></td>
+<td><p>不需要</p></td>
+<td><p>不需要（使用 Stall 模式代替）</p></td>
+</tr>
+<tr class="row-even"><td><p>动态分页 DMA（PCIe）</p></td>
+<td><p>必须</p></td>
+<td><p>必须（PCIe 不支持 Stall）</p></td>
+</tr>
+<tr class="row-odd"><td><p>虚拟化 + ATS + Stage 2 隔离</p></td>
+<td><p>Split-stage ATS (<code class="docutils literal notranslate"><span class="pre">EATS==0b10</span></code>)</p></td>
+<td><p>必须</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键约束</strong>：</p>
+<ul class="simple">
+<li><p>PCIe 设备**不能**使用 Stall 模式（事务可能无限挂起），必须使用 ATS + PRI 实现动态分页</p></li>
+<li><p>非 PCIe 设备可以使用 SMMU 内部 Stall 模式替代 ATS + PRI</p></li>
+<li><p>PRI 要求 HTTU 支持以确保正确性（软件更新的 Access Flag/Dirty State 与硬件更新保持一致）</p></li>
+</ul>
+<p>参考：IHI0070G Chapter 3 Operation（3.9 节）、Chapter 4 Commands（4.5 节）和 Chapter 8 PRI queue（8.1 节）。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="chi/amba_chi_architecture_coherency_codebuddy.html" class="btn btn-neutral float-left" title="5. AMBA CHI 一致性协议深度分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="mmu600ae/corelink_mmu600ae_trm.html" class="btn btn-neutral float-right" title="7. CoreLink MMU-600AE TCU 与 TBU 架构分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

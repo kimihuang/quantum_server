@@ -1,0 +1,2172 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>16. Compute Express Link (CXL) 规范分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="17. LPDDR5 SDRAM 规范知识点梳理" href="../lpddr5.html" />
+    <link rel="prev" title="15. PCI Express 地址翻译与中断机制分析" href="../pcie/PCI_Express_Base_5_0_ATS.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">16. Compute Express Link (CXL) 规范分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cxl">16.1. CXL 概述</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">16.1.1. CXL 设备类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#type-1">16.1.1.1. Type 1 设备：带缓存的设备</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#type-2">16.1.1.2. Type 2 设备：带内存的加速器</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#type-3">16.1.1.3. Type 3 设备：内存扩展器</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mld">16.1.2. 多逻辑设备（MLD）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cxl-fabric-gfam">16.1.3. CXL Fabric 与 GFAM</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">16.2. CXL 事务层</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cxl-io">16.2.1. CXL.io 协议</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cxl-cache">16.2.2. CXL.cache 协议</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">16.2.2.1. 通道概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#d2h-request">16.2.2.2. 设备到主机请求（D2H Request）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#h2d-response">16.2.2.3. 主机到设备响应（H2D Response）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">16.2.2.4. 监听机制</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">16.2.2.5. 缓存状态规则</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cxl-mem">16.2.3. CXL.mem 协议</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">16.2.3.1. 通道概述</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#m2s">16.2.3.2. M2S 请求</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bisnp">16.2.3.3. 后端无效化监听（BISnp）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#qos">16.2.3.4. QoS 遥测</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">16.2.4. 事务排序</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">16.2.5. Type 3 设备事务流</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">16.3. CXL 链路层</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">16.3.1. CXL.io 链路层</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cxl-cache-mem-68b-flit">16.3.2. CXL.cache/mem 68B Flit 模式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#flit">16.3.2.1. Flit 结构</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#slot">16.3.2.2. Slot 格式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">16.3.2.3. 链路层重试</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#b-flit">16.3.3. 256B Flit 模式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id17">16.3.3.1. Flit 结构</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id18">16.3.3.2. 信用返回</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id19">16.3.3.3. 延迟优化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cxl-arb-mux">16.4. CXL ARB/MUX</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vlsm">16.4.1. 虚拟链路状态机（vLSM）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#almp">16.4.2. ALMP 消息</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">16.4.3. 仲裁机制</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id21">16.5. CXL 物理层</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id22">16.5.1. 帧格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">16.5.2. 链路训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retimer">16.5.3. Retimer 支持</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id24">16.6. CXL 交换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#switch">16.6.1. Switch 架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">16.6.2. 绑定与解绑</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fabric-manager-api">16.6.3. Fabric Manager API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fabric">16.6.4. Fabric 地址空间</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id26">16.7. 控制与状态寄存器</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dvsec">16.7.1. DVSEC 结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hdm">16.7.2. HDM 解码器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ide">16.7.3. IDE 能力结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cci">16.7.4. 组件命令接口（CCI）</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id33">16.7.4.1. 事件记录</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id34">16.8. 复位与初始化</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id35">16.8.1. CXL 设备复位类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">16.8.2. 系统复位流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cxl-reset">16.8.3. CXL Reset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gpf">16.8.4. 全局持久刷新（GPF）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">16.8.5. 热插拔</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id38">16.9. 电源管理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pm">16.9.1. PM 状态</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">16.9.2. PM 消息</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id40">16.10. 安全性</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id41">16.10.1. IDE 架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">16.10.2. IDE 密钥管理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id43">16.11. 可靠性与可用性</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id44">16.11.1. 错误处理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id45">16.12. 性能监控</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id46">16.12.1. QoS 遥测</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cpmu">16.12.2. 性能监控单元（CPMU）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id47">16.13. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">16. </span>Compute Express Link (CXL) 规范分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cxl/CXL_Spec.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="compute-express-link-cxl">
+<h1><span class="section-number">16. </span>Compute Express Link (CXL) 规范分析<a class="headerlink" href="#compute-express-link-cxl" title="链接到此标题。"></a></h1>
+<p>本文档基于 CXL 3.0 规范（Revision 3.0, Version 0.7）进行深入分析，
+全面梳理 CXL 协议的架构、事务层、链路层、交换机制及管理规范。
+参考文档：docs/pdf/CXL/CXL_Spec_3.0_v0.7.pdf.md</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#cxl" id="id48">CXL 概述</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id2" id="id49">CXL 设备类型</a></p>
+<ul>
+<li><p><a class="reference internal" href="#type-1" id="id50">Type 1 设备：带缓存的设备</a></p></li>
+<li><p><a class="reference internal" href="#type-2" id="id51">Type 2 设备：带内存的加速器</a></p></li>
+<li><p><a class="reference internal" href="#type-3" id="id52">Type 3 设备：内存扩展器</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mld" id="id53">多逻辑设备（MLD）</a></p></li>
+<li><p><a class="reference internal" href="#cxl-fabric-gfam" id="id54">CXL Fabric 与 GFAM</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id3" id="id55">CXL 事务层</a></p>
+<ul>
+<li><p><a class="reference internal" href="#cxl-io" id="id56">CXL.io 协议</a></p></li>
+<li><p><a class="reference internal" href="#cxl-cache" id="id57">CXL.cache 协议</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id4" id="id58">通道概述</a></p></li>
+<li><p><a class="reference internal" href="#d2h-request" id="id59">设备到主机请求（D2H Request）</a></p></li>
+<li><p><a class="reference internal" href="#h2d-response" id="id60">主机到设备响应（H2D Response）</a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id61">监听机制</a></p></li>
+<li><p><a class="reference internal" href="#id6" id="id62">缓存状态规则</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cxl-mem" id="id63">CXL.mem 协议</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id7" id="id64">通道概述</a></p></li>
+<li><p><a class="reference internal" href="#m2s" id="id65">M2S 请求</a></p></li>
+<li><p><a class="reference internal" href="#bisnp" id="id66">后端无效化监听（BISnp）</a></p></li>
+<li><p><a class="reference internal" href="#qos" id="id67">QoS 遥测</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id8" id="id68">事务排序</a></p></li>
+<li><p><a class="reference internal" href="#id13" id="id69">Type 3 设备事务流</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id14" id="id70">CXL 链路层</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id15" id="id71">CXL.io 链路层</a></p></li>
+<li><p><a class="reference internal" href="#cxl-cache-mem-68b-flit" id="id72">CXL.cache/mem 68B Flit 模式</a></p>
+<ul>
+<li><p><a class="reference internal" href="#flit" id="id73">Flit 结构</a></p></li>
+<li><p><a class="reference internal" href="#slot" id="id74">Slot 格式</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id75">链路层重试</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#b-flit" id="id76">256B Flit 模式</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id17" id="id77">Flit 结构</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id78">信用返回</a></p></li>
+<li><p><a class="reference internal" href="#id19" id="id79">延迟优化</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cxl-arb-mux" id="id80">CXL ARB/MUX</a></p>
+<ul>
+<li><p><a class="reference internal" href="#vlsm" id="id81">虚拟链路状态机（vLSM）</a></p></li>
+<li><p><a class="reference internal" href="#almp" id="id82">ALMP 消息</a></p></li>
+<li><p><a class="reference internal" href="#id20" id="id83">仲裁机制</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id21" id="id84">CXL 物理层</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id22" id="id85">帧格式</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id86">链路训练</a></p></li>
+<li><p><a class="reference internal" href="#retimer" id="id87">Retimer 支持</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id24" id="id88">CXL 交换</a></p>
+<ul>
+<li><p><a class="reference internal" href="#switch" id="id89">Switch 架构</a></p></li>
+<li><p><a class="reference internal" href="#id25" id="id90">绑定与解绑</a></p></li>
+<li><p><a class="reference internal" href="#fabric-manager-api" id="id91">Fabric Manager API</a></p></li>
+<li><p><a class="reference internal" href="#fabric" id="id92">Fabric 地址空间</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id26" id="id93">控制与状态寄存器</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dvsec" id="id94">DVSEC 结构</a></p></li>
+<li><p><a class="reference internal" href="#hdm" id="id95">HDM 解码器</a></p></li>
+<li><p><a class="reference internal" href="#ide" id="id96">IDE 能力结构</a></p></li>
+<li><p><a class="reference internal" href="#cci" id="id97">组件命令接口（CCI）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id33" id="id98">事件记录</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id34" id="id99">复位与初始化</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id35" id="id100">CXL 设备复位类型</a></p></li>
+<li><p><a class="reference internal" href="#id36" id="id101">系统复位流程</a></p></li>
+<li><p><a class="reference internal" href="#cxl-reset" id="id102">CXL Reset</a></p></li>
+<li><p><a class="reference internal" href="#gpf" id="id103">全局持久刷新（GPF）</a></p></li>
+<li><p><a class="reference internal" href="#id37" id="id104">热插拔</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id38" id="id105">电源管理</a></p>
+<ul>
+<li><p><a class="reference internal" href="#pm" id="id106">PM 状态</a></p></li>
+<li><p><a class="reference internal" href="#id39" id="id107">PM 消息</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id40" id="id108">安全性</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id41" id="id109">IDE 架构</a></p></li>
+<li><p><a class="reference internal" href="#id42" id="id110">IDE 密钥管理</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id43" id="id111">可靠性与可用性</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id44" id="id112">错误处理</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id45" id="id113">性能监控</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id46" id="id114">QoS 遥测</a></p></li>
+<li><p><a class="reference internal" href="#cpmu" id="id115">性能监控单元（CPMU）</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id47" id="id116">总结</a></p></li>
+</ul>
+</nav>
+<section id="cxl">
+<h2><a class="toc-backref" href="#id48" role="doc-backlink"><span class="section-number">16.1. </span>CXL 概述</a><a class="headerlink" href="#cxl" title="链接到此标题。"></a></h2>
+<p>CXL（Compute Express Link）是一种高性能 I/O 总线架构，用于互联外围设备。
+这些设备可以是传统的非一致性 I/O 设备、内存设备，或具有额外能力的加速器。
+CXL 构建在 PCIe 物理层之上，提供三种协议：</p>
+<ul class="simple">
+<li><p><strong>CXL.io</strong>：基于 PCIe 的非一致性 I/O 协议，用于设备发现、枚举、配置和管理</p></li>
+<li><p><strong>CXL.cache</strong>：一致性缓存协议，允许设备缓存主机内存</p></li>
+<li><p><strong>CXL.mem</strong>：内存协议，允许主机访问设备附加内存</p></li>
+</ul>
+<p>CXL 的核心优势在于支持 <strong>主机管理设备内存（HDM）</strong>，使设备附加内存能够以一致性方式映射到系统地址空间，
+从而避免传统 PCIe 设备中大量数据拷贝的开销。</p>
+<p>参考来源：第 1 章及第 2 章</p>
+<section id="id2">
+<h3><a class="toc-backref" href="#id49" role="doc-backlink"><span class="section-number">16.1.1. </span>CXL 设备类型</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h3>
+<p>CXL 规范定义了三种设备类型，每种类型支持不同的协议组合和应用场景。</p>
+<section id="type-1">
+<h4><a class="toc-backref" href="#id50" role="doc-backlink"><span class="section-number">16.1.1.1. </span>Type 1 设备：带缓存的设备</a><a class="headerlink" href="#type-1" title="链接到此标题。"></a></h4>
+<p>Type 1 设备具有完全一致的缓存，但不附加设备内存。这类设备需要缓存一致性来执行复杂的原子操作，
+而标准 PCIe 原子操作集无法满足这些需求。</p>
+<p><strong>核心特征</strong>：</p>
+<ul class="simple">
+<li><p>支持 CXL.io 和 CXL.cache 协议</p></li>
+<li><p>设备缓存由主机监听过滤器跟踪</p></li>
+<li><p>缓存大小受主机监听过滤能力限制</p></li>
+<li><p>典型应用：需要特殊原子操作的网络加速器</p></li>
+</ul>
+<p><strong>缓存一致性机制</strong>：Type 1 设备通过 CXL.cache 协议与主机一致性桥交互，
+主机负责维护缓存一致性。当设备需要访问主机内存时，通过 D2H（Device to Host）请求获取数据，
+主机通过 H2D（Host to Device）响应返回数据和缓存状态（MESI 状态）。</p>
+<p>参考来源：第 2.1 节</p>
+</section>
+<section id="type-2">
+<h4><a class="toc-backref" href="#id51" role="doc-backlink"><span class="section-number">16.1.1.2. </span>Type 2 设备：带内存的加速器</a><a class="headerlink" href="#type-2" title="链接到此标题。"></a></h4>
+<p>Type 2 设备同时具有缓存和设备附加内存（如 DDR、HBM）。这类设备在高性能计算场景中，
+需要设备与设备附加内存之间的大带宽访问。</p>
+<p><strong>核心特征</strong>：</p>
+<ul class="simple">
+<li><p>支持 CXL.io、CXL.cache 和 CXL.mem 三种协议</p></li>
+<li><p>设备附加内存可映射到系统一致性地址空间（HDM）</p></li>
+<li><p>支持偏置模式（Bias Mode）管理一致性</p></li>
+</ul>
+<p><strong>偏置一致性模型</strong>：</p>
+<p>偏置模型定义了设备附加内存的两种状态：</p>
+<ol class="arabic simple">
+<li><p><strong>主机偏置（Host Bias）</strong>：主机可直接高吞吐访问设备内存，设备访问需要通过主机</p></li>
+<li><p><strong>设备偏置（Device Bias）</strong>：设备可直接访问本地内存，主机访问需要设备配合</p></li>
+</ol>
+<p>偏置模型的核心优势：</p>
+<ul class="simple">
+<li><p>维护设备附加内存的一致性</p></li>
+<li><p>允许设备以高带宽访问本地内存，避免一致性开销</p></li>
+<li><p>主机可以一致性方式访问设备内存</p></li>
+</ul>
+<p><strong>偏置模式管理方式</strong>：</p>
+<ul class="simple">
+<li><p>软件辅助管理：软件根据工作负载阶段主动切换偏置模式</p></li>
+<li><p>硬件自主管理：硬件根据访问模式自动预测和调整偏置状态</p></li>
+</ul>
+<p>参考来源：第 2.2 节</p>
+</section>
+<section id="type-3">
+<h4><a class="toc-backref" href="#id52" role="doc-backlink"><span class="section-number">16.1.1.3. </span>Type 3 设备：内存扩展器</a><a class="headerlink" href="#type-3" title="链接到此标题。"></a></h4>
+<p>Type 3 设备是内存扩展器，仅支持 CXL.io 和 CXL.mem 协议。此类设备不具有设备缓存，
+主机将其视为分离式内存控制器。</p>
+<p><strong>核心特征</strong>：</p>
+<ul class="simple">
+<li><p>无设备缓存，无需 CXL.cache 协议</p></li>
+<li><p>主机通过 CXL.mem 读写设备内存</p></li>
+<li><p>架构独立于内存技术（易失性/持久性）</p></li>
+<li><p>支持多种内存组织方式</p></li>
+</ul>
+<p><strong>应用场景</strong>：</p>
+<ul class="simple">
+<li><p>内存容量扩展</p></li>
+<li><p>内存池化（通过 MLD 机制）</p></li>
+<li><p>共享 Fabric 附加内存（FAM）</p></li>
+</ul>
+<p>参考来源：第 2.3 节</p>
+</section>
+</section>
+<section id="mld">
+<h3><a class="toc-backref" href="#id53" role="doc-backlink"><span class="section-number">16.1.2. </span>多逻辑设备（MLD）</a><a class="headerlink" href="#mld" title="链接到此标题。"></a></h3>
+<p>CXL 2.0 引入 MLD 机制，允许 Type 3 设备将资源划分为最多 16 个隔离的逻辑设备。
+每个逻辑设备由 LD-ID 标识，对虚拟层次结构（VH）可见的每个 LD 作为独立的 Type 3 设备运行。</p>
+<p><strong>MLD 组成</strong>：</p>
+<ul class="simple">
+<li><p>一个 LD 保留给 Fabric Manager（FM），用于配置资源分配</p></li>
+<li><p>最多 16 个 LD 可用于主机绑定</p></li>
+<li><p>所有 LD 共享协议的事务层和链路层</p></li>
+</ul>
+<p><strong>LD-ID 传输机制</strong>：</p>
+<ul class="simple">
+<li><p>CXL.mem：支持 LD-ID 低 4 位，可支持最多 16 个 LD-ID</p></li>
+<li><p>CXL.io：使用 Vendor Defined Local TLP Prefix 传输 16 位 LD-ID</p></li>
+<li><p>LD-ID FFFFh 保留给 FM 使用</p></li>
+</ul>
+<p><strong>池化内存与共享 FAM</strong>：</p>
+<ul class="simple">
+<li><p>CXL 2.0 池化内存：每个 LD 的 HDM 区域私有，不跨主机共享</p></li>
+<li><p>CXL 3.0 共享 FAM：允许同一 HDM 区域分配给多个 LD，实现跨主机共享</p></li>
+</ul>
+<p><strong>共享 FAM 一致性模型</strong>：</p>
+<ul class="simple">
+<li><p>多主机硬件一致性：设备跟踪 MESI 状态，支持任意原子操作</p></li>
+<li><p>软件管理一致性：不跟踪 MESI 状态，原子操作不支持</p></li>
+</ul>
+<p>参考来源：第 2.4 节</p>
+</section>
+<section id="cxl-fabric-gfam">
+<h3><a class="toc-backref" href="#id54" role="doc-backlink"><span class="section-number">16.1.3. </span>CXL Fabric 与 GFAM</a><a class="headerlink" href="#cxl-fabric-gfam" title="链接到此标题。"></a></h3>
+<p><strong>域（Domain）</strong> 定义为单个主机物理地址（HPA）空间内的一组主机端口和设备。
+CXL Switch 连接一个或多个主机端口与域内设备。</p>
+<p><strong>CXL Fabric</strong> 是互联的 CXL Switch 集合，支持跨域通信：</p>
+<ul class="simple">
+<li><p>使用 Fabric 地址空间进行跨域访问</p></li>
+<li><p>大多数跨域通信为非一致性</p></li>
+<li><p>12 位目标端口 ID（DPID）和源端口 ID（SPID）支持大型 Fabric</p></li>
+</ul>
+<p><strong>全局 Fabric 附加内存（GFAM）</strong>：</p>
+<p>GFAM 是一种 SLD Type 3 设备，支持 CXL.io 和 CXL.mem 协议：</p>
+<ul class="simple">
+<li><p>I/O 空间由单一主机或 Fabric Manager 拥有</p></li>
+<li><p>设备配置后，Fabric 上其他主机/设备可直接访问</p></li>
+<li><p>仅使用低位地址访问内存，高位地址被忽略</p></li>
+<li><p>支持 PBR 消息格式（包含完整 12 位 SPID/DPID）</p></li>
+</ul>
+<p>参考来源：第 2.6 节、第 2.7 节</p>
+</section>
+</section>
+<section id="id3">
+<h2><a class="toc-backref" href="#id55" role="doc-backlink"><span class="section-number">16.2. </span>CXL 事务层</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<p>CXL 事务层定义了 CXL.io、CXL.cache 和 CXL.mem 三种协议的事务格式和处理规则。</p>
+<section id="cxl-io">
+<h3><a class="toc-backref" href="#id56" role="doc-backlink"><span class="section-number">16.2.1. </span>CXL.io 协议</a><a class="headerlink" href="#cxl-io" title="链接到此标题。"></a></h3>
+<p>CXL.io 提供非一致性的加载/存储接口，事务类型、包格式、流控、虚拟通道管理和排序规则遵循 PCIe 规范。</p>
+<p><strong>与标准 PCIe 的差异</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>端点模式</strong>：CXL 1.1 模式下，设备作为 RCiEP 暴露给软件</p></li>
+<li><p><strong>INTx 禁止</strong>：参与 CXL 协议的端点函数不得生成 INTx 消息</p></li>
+<li><p><strong>电源管理 VDM</strong>：使用 Vendor Defined Message 格式传输 PM 消息</p></li>
+</ol>
+<p><strong>CXL 电源管理消息</strong>：</p>
+<p>CXL PM 消息使用 PCIe Vendor Defined Type 0 消息，4-DWORD 数据载荷：</p>
+<ul class="simple">
+<li><p>Vendor ID：1E98h</p></li>
+<li><p>VDM Code：68h（CXL PM Message）</p></li>
+<li><p>消息类型：PMREQ、PMRSP、PMGO 等</p></li>
+</ul>
+<p><strong>信用和 PM 初始化</strong>：</p>
+<p>设备上电后，主机通过 AGENT_INFO 消息交换信用和能力向量。设备报告其支持的功能：
+- Bit 0：ResetPrep 支持
+- Bit 1：GPF 支持
+- Bit 2：PMREQ 支持</p>
+<p>参考来源：第 3.1 节</p>
+</section>
+<section id="cxl-cache">
+<h3><a class="toc-backref" href="#id57" role="doc-backlink"><span class="section-number">16.2.2. </span>CXL.cache 协议</a><a class="headerlink" href="#cxl-cache" title="链接到此标题。"></a></h3>
+<p>CXL.cache 是设备缓存与主机一致性引擎之间的一致性协议。</p>
+<section id="id4">
+<h4><a class="toc-backref" href="#id58" role="doc-backlink"><span class="section-number">16.2.2.1. </span>通道概述</a><a class="headerlink" href="#id4" title="链接到此标题。"></a></h4>
+<p>CXL.cache 定义了 5 个通道，实现双向请求/响应通信：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>通道</p></th>
+<th class="head"><p>方向</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>D2H Request</p></td>
+<td><p>设备 → 主机</p></td>
+<td><p>设备发起的读/写/驱逐请求</p></td>
+</tr>
+<tr class="row-odd"><td><p>D2H Response</p></td>
+<td><p>设备 → 主机</p></td>
+<td><p>设备对主机监听的响应</p></td>
+</tr>
+<tr class="row-even"><td><p>D2H Data</p></td>
+<td><p>设备 → 主机</p></td>
+<td><p>设备发送的数据（驱逐数据、监听响应数据）</p></td>
+</tr>
+<tr class="row-odd"><td><p>H2D Request</p></td>
+<td><p>主机 → 设备</p></td>
+<td><p>主机发起的监听请求</p></td>
+</tr>
+<tr class="row-even"><td><p>H2D Response</p></td>
+<td><p>主机 → 设备</p></td>
+<td><p>主机对设备请求的响应（GO、WritePull 等）</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>通道排序</strong>：各通道独立工作以保证前向推进，通道内无排序规则（除非特别说明）。</p>
+<p><strong>信用机制</strong>：</p>
+<p>设备为 H2D 通道提供信用，主机为 D2H 通道提供信用。信用返回通过链路层 Flit 头部编码。</p>
+<p>参考来源：第 3.2.1 节、第 3.2.2 节</p>
+</section>
+<section id="d2h-request">
+<h4><a class="toc-backref" href="#id59" role="doc-backlink"><span class="section-number">16.2.2.2. </span>设备到主机请求（D2H Request）</a><a class="headerlink" href="#d2h-request" title="链接到此标题。"></a></h4>
+<p>D2H 请求由设备发起，用于访问主机内存或管理设备缓存状态。</p>
+<p><strong>读请求类型</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcode</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RdCurr</p></td>
+<td><p>读取当前数据，不改变缓存状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>RdOwn</p></td>
+<td><p>请求独占所有权，用于写入</p></td>
+</tr>
+<tr class="row-even"><td><p>RdShared</p></td>
+<td><p>请求共享状态，用于读取</p></td>
+</tr>
+<tr class="row-odd"><td><p>RdAny</p></td>
+<td><p>请求任意状态，优化延迟</p></td>
+</tr>
+<tr class="row-even"><td><p>RdOwnNoData</p></td>
+<td><p>偏置翻转请求，请求所有权但不需数据</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>写请求类型</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcode</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ItoMWr</p></td>
+<td><p>使行无效并写入，获取独占状态后写入</p></td>
+</tr>
+<tr class="row-odd"><td><p>WrCur</p></td>
+<td><p>写入当前行，设备已拥有数据</p></td>
+</tr>
+<tr class="row-even"><td><p>WrInv</p></td>
+<td><p>写入并使其他副本无效</p></td>
+</tr>
+<tr class="row-odd"><td><p>WOWrInv/WOWrInvF</p></td>
+<td><p>无所有权写入，写入后不保留所有权</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>驱逐请求类型</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcode</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CleanEvict</p></td>
+<td><p>干净行驱逐，通知主机设备不再缓存该行</p></td>
+</tr>
+<tr class="row-odd"><td><p>DirtyEvict</p></td>
+<td><p>脏行驱逐，将修改数据写回主机</p></td>
+</tr>
+<tr class="row-even"><td><p>CleanEvictNoData</p></td>
+<td><p>干净行驱逐，不传输数据</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>其他请求</strong>：</p>
+<ul class="simple">
+<li><p>CLFlush：缓存行刷新</p></li>
+<li><p>CacheFlushed：设备所有缓存已刷新的指示</p></li>
+</ul>
+<p>参考来源：第 3.2.4.2 节</p>
+</section>
+<section id="h2d-response">
+<h4><a class="toc-backref" href="#id60" role="doc-backlink"><span class="section-number">16.2.2.3. </span>主机到设备响应（H2D Response）</a><a class="headerlink" href="#h2d-response" title="链接到此标题。"></a></h4>
+<p>H2D 响应由主机发送，指示设备请求的处理结果。</p>
+<p><strong>响应类型</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应类</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GO</p></td>
+<td><p>全局观察（Global Observation），指示请求已在系统中完成，携带 MESI 状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>WritePull</p></td>
+<td><p>请求设备发送写入数据</p></td>
+</tr>
+<tr class="row-even"><td><p>GO_WritePull</p></td>
+<td><p>组合响应，同时完成 GO 和 WritePull</p></td>
+</tr>
+<tr class="row-odd"><td><p>ExtCmp</p></td>
+<td><p>扩展完成，指示 FastGO 后数据已在内存可见</p></td>
+</tr>
+<tr class="row-even"><td><p>Fast_GO_WritePull</p></td>
+<td><p>快速 GO，仅保证本地观察，后续发送 ExtCmp</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>GO 响应携带的 MESI 状态</strong>：</p>
+<ul class="simple">
+<li><p><strong>GO-M</strong>：授予修改状态，设备拥有唯一脏副本</p></li>
+<li><p><strong>GO-E</strong>：授予独占状态，设备可写入</p></li>
+<li><p><strong>GO-S</strong>：授予共享状态，设备只读</p></li>
+<li><p><strong>GO-I/GO-Err</strong>：无效或错误，设备不得缓存数据</p></li>
+</ul>
+<p><strong>全局观察（GO）语义</strong>：</p>
+<p>GO 消息传达：</p>
+<ul class="simple">
+<li><p>读请求：请求一致性完成</p></li>
+<li><p>写请求：请求一致且持久完成</p></li>
+<li><p>MESI 状态编码指示请求者缓存应放置的状态</p></li>
+</ul>
+<p>参考来源：第 3.2.4.5 节</p>
+</section>
+<section id="id5">
+<h4><a class="toc-backref" href="#id61" role="doc-backlink"><span class="section-number">16.2.2.4. </span>监听机制</a><a class="headerlink" href="#id5" title="链接到此标题。"></a></h4>
+<p>主机通过监听请求（Snoop Request）维护缓存一致性。监听请求通过 H2D Request 通道发送。</p>
+<p><strong>监听类型</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcode</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SnpData</p></td>
+<td><p>监听数据，用于读请求，设备需无效或降级到共享</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpInv</p></td>
+<td><p>监听无效，用于写请求，设备需无效化缓存行</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpCur</p></td>
+<td><p>监听当前，获取当前数据，不改变缓存状态</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>设备监听响应</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RspIHitI</p></td>
+<td><p>未命中缓存，行已从设备清除</p></td>
+</tr>
+<tr class="row-odd"><td><p>RspVHitV</p></td>
+<td><p>命中缓存，状态未变</p></td>
+</tr>
+<tr class="row-even"><td><p>RspIHitSE</p></td>
+<td><p>命中干净状态，现已无效</p></td>
+</tr>
+<tr class="row-odd"><td><p>RspSHitSE</p></td>
+<td><p>命中干净状态，降级到共享</p></td>
+</tr>
+<tr class="row-even"><td><p>RspSFwdM</p></td>
+<td><p>命中修改状态，降级到共享，返回数据</p></td>
+</tr>
+<tr class="row-odd"><td><p>RspIFwdM</p></td>
+<td><p>命中修改状态（HITM），现已无效，返回数据</p></td>
+</tr>
+<tr class="row-even"><td><p>RspVFwdV</p></td>
+<td><p>返回当前数据，状态不变</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 3.2.4.3 节、第 3.2.4.4 节</p>
+</section>
+<section id="id6">
+<h4><a class="toc-backref" href="#id62" role="doc-backlink"><span class="section-number">16.2.2.5. </span>缓存状态规则</a><a class="headerlink" href="#id6" title="链接到此标题。"></a></h4>
+<p>设备在发起 CXL.cache 请求时，需遵守&quot;埋藏缓存状态&quot;（Buried Cache State）规则：</p>
+<p><strong>请求约束</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>请求</p></th>
+<th class="head"><p>Modified</p></th>
+<th class="head"><p>Exclusive</p></th>
+<th class="head"><p>Shared</p></th>
+<th class="head"><p>Invalid</p></th>
+<th class="head"><p>备注</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RdCurr/RdOwn/RdShared/RdAny</p></td>
+<td><p>禁止</p></td>
+<td><p>禁止</p></td>
+<td><p>禁止</p></td>
+<td><p>允许</p></td>
+<td><p>缓存行不在设备中</p></td>
+</tr>
+<tr class="row-odd"><td><p>RdOwnNoData</p></td>
+<td><p>禁止</p></td>
+<td><p>禁止</p></td>
+<td><p>允许</p></td>
+<td><p>允许</p></td>
+<td><p>可从共享升级</p></td>
+</tr>
+<tr class="row-even"><td><p>ItoMWr/WrCur/CLFlush</p></td>
+<td><p>禁止</p></td>
+<td><p>禁止</p></td>
+<td><p>禁止</p></td>
+<td><p>允许</p></td>
+<td><p>需先获取所有权</p></td>
+</tr>
+<tr class="row-odd"><td><p>CleanEvict</p></td>
+<td><p>禁止</p></td>
+<td><p>允许</p></td>
+<td><p>禁止</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>干净行驱逐</p></td>
+</tr>
+<tr class="row-even"><td><p>DirtyEvict</p></td>
+<td><p>允许</p></td>
+<td><p>禁止</p></td>
+<td><p>禁止</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>脏行驱逐</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 3.2.5.14 节</p>
+</section>
+</section>
+<section id="cxl-mem">
+<h3><a class="toc-backref" href="#id63" role="doc-backlink"><span class="section-number">16.2.3. </span>CXL.mem 协议</a><a class="headerlink" href="#cxl-mem" title="链接到此标题。"></a></h3>
+<p>CXL.mem 是 CPU 与内存之间的事务接口，支持多种内存附加方式和内存类型。</p>
+<section id="id7">
+<h4><a class="toc-backref" href="#id64" role="doc-backlink"><span class="section-number">16.2.3.1. </span>通道概述</a><a class="headerlink" href="#id7" title="链接到此标题。"></a></h4>
+<p>CXL.mem 定义了 6 个通道：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>通道</p></th>
+<th class="head"><p>方向</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>M2S Request (Req)</p></td>
+<td><p>主机 → 设备</p></td>
+<td><p>内存请求（不带数据）</p></td>
+</tr>
+<tr class="row-odd"><td><p>M2S Request with Data (RwD)</p></td>
+<td><p>主机 → 设备</p></td>
+<td><p>带数据的内存请求（写）</p></td>
+</tr>
+<tr class="row-even"><td><p>M2S Back-Invalidation Response (BIRsp)</p></td>
+<td><p>主机 → 设备</p></td>
+<td><p>后端无效化响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2M Back-Invalidation Snoop (BISnp)</p></td>
+<td><p>设备 → 主机</p></td>
+<td><p>后端无效化监听</p></td>
+</tr>
+<tr class="row-even"><td><p>S2M No Data Response (NDR)</p></td>
+<td><p>设备 → 主机</p></td>
+<td><p>无数据响应（完成）</p></td>
+</tr>
+<tr class="row-odd"><td><p>S2M Data Response (DRS)</p></td>
+<td><p>设备 → 主机</p></td>
+<td><p>带数据响应</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>BISnp/BIRsp 通道</strong>：CXL 3.0 引入，支持 Type 2 设备的多设备扩展和直接点对点访问 HDM。</p>
+<p>参考来源：第 3.3.1 节、第 3.3.2 节</p>
+</section>
+<section id="m2s">
+<h4><a class="toc-backref" href="#id65" role="doc-backlink"><span class="section-number">16.2.3.2. </span>M2S 请求</a><a class="headerlink" href="#m2s" title="链接到此标题。"></a></h4>
+<p><strong>内存操作码</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcode</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MemRd</p></td>
+<td><p>内存读</p></td>
+</tr>
+<tr class="row-odd"><td><p>MemRdData</p></td>
+<td><p>内存读数据（预取）</p></td>
+</tr>
+<tr class="row-even"><td><p>MemRdFar</p></td>
+<td><p>远端内存读</p></td>
+</tr>
+<tr class="row-odd"><td><p>MemInv</p></td>
+<td><p>内存无效化</p></td>
+</tr>
+<tr class="row-even"><td><p>MemRdInv</p></td>
+<td><p>内存读并无效化</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>元数据字段</strong>：</p>
+<p>CXL.mem 支持可选的元数据，用于实现粗粒度监听过滤器：</p>
+<ul class="simple">
+<li><p>MetaField：指定元数据字段</p></li>
+<li><p>MetaValue：元数据值</p></li>
+<li><p>状态值：Invalid、Shared、Exclusive、Modified</p></li>
+</ul>
+<p><strong>监听类型</strong>：</p>
+<ul class="simple">
+<li><p>SnpNone：无监听</p></li>
+<li><p>SnpData：监听数据</p></li>
+<li><p>SnpInv：监听无效</p></li>
+</ul>
+<p>参考来源：第 3.3.5 节</p>
+</section>
+<section id="bisnp">
+<h4><a class="toc-backref" href="#id66" role="doc-backlink"><span class="section-number">16.2.3.3. </span>后端无效化监听（BISnp）</a><a class="headerlink" href="#bisnp" title="链接到此标题。"></a></h4>
+<p>BISnp 允许设备（Type 2 或 Type 3）主动使主机缓存中的行无效，用于：</p>
+<ol class="arabic simple">
+<li><p><strong>设备偏置转换</strong>：从主机偏置切换到设备偏置</p></li>
+<li><p><strong>设备附加内存的点对点访问</strong>：其他设备通过 CXL.io 直接访问 HDM</p></li>
+<li><p><strong>多设备扩展</strong>：支持单个主机桥下最多 16 个设备</p></li>
+</ol>
+<p><strong>BISnp 操作码</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcode</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SnpInv</p></td>
+<td><p>使指定缓存行无效</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpData</p></td>
+<td><p>监听数据并可能降级状态</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>块后端无效化</strong>：</p>
+<p>支持一次无效化连续的多个缓存行，通过 Address[7:6] 编码块使能：</p>
+<ul class="simple">
+<li><p>00b：单行无效化</p></li>
+<li><p>01b：2 行块</p></li>
+<li><p>10b：4 行块</p></li>
+<li><p>11b：8 行块</p></li>
+</ul>
+<p>参考来源：第 3.3.8 节</p>
+</section>
+<section id="qos">
+<h4><a class="toc-backref" href="#id67" role="doc-backlink"><span class="section-number">16.2.3.4. </span>QoS 遥测</a><a class="headerlink" href="#qos" title="链接到此标题。"></a></h4>
+<p>CXL.mem 支持 QoS 遥测功能，允许主机根据设备负载调整请求速率。</p>
+<p><strong>设备负载指示（DevLoad）</strong>：</p>
+<p>设备在 DRS/NDR 响应中报告 DevLoad 字段（0-255），指示当前负载水平。</p>
+<p><strong>主机行为</strong>：</p>
+<ul class="simple">
+<li><p>DevLoad = 0：无限制</p></li>
+<li><p>DevLoad 递增：主机应减少请求速率</p></li>
+<li><p>主机根据 DevLoad 调整请求节流</p></li>
+</ul>
+<p>参考来源：第 3.3.4 节</p>
+</section>
+</section>
+<section id="id8">
+<h3><a class="toc-backref" href="#id68" role="doc-backlink"><span class="section-number">16.2.4. </span>事务排序</a><a class="headerlink" href="#id8" title="链接到此标题。"></a></h3>
+<p>CXL 定义了严格的事务排序规则以确保一致性和前向推进。</p>
+<p><a href="#id9"><span class="problematic" id="id10">**</span></a>上游排序规则**（设备 → 主机）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>通道</p></th>
+<th class="head"><p>对自身排序</p></th>
+<th class="head"><p>对其他通道排序</p></th>
+<th class="head"><p>备注</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>D2H Request</p></td>
+<td><p>无保证</p></td>
+<td><p>需设备维护</p></td>
+<td><p>设备负责必要排序</p></td>
+</tr>
+<tr class="row-odd"><td><p>D2H Response</p></td>
+<td><p>无依赖</p></td>
+<td><p>无依赖</p></td>
+<td><p>可独立发送</p></td>
+</tr>
+<tr class="row-even"><td><p>D2H Data</p></td>
+<td><p>必须连续</p></td>
+<td><p>无依赖</p></td>
+<td><p>同一行数据必须连续</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id11"><span class="problematic" id="id12">**</span></a>下游排序规则**（主机 → 设备）：</p>
+<p>主机可自由重排请求，设备需处理乱序到达。特定约束：</p>
+<ul class="simple">
+<li><p>监听必须在 GO 之后发送</p></li>
+<li><p>监听和 WritePull 不能同时针对同一地址</p></li>
+</ul>
+<p>参考来源：第 3.4 节、第 3.5 节</p>
+</section>
+<section id="id13">
+<h3><a class="toc-backref" href="#id69" role="doc-backlink"><span class="section-number">16.2.5. </span>Type 3 设备事务流</a><a class="headerlink" href="#id13" title="链接到此标题。"></a></h3>
+<p>Type 3 设备作为内存扩展器，事务流简化为读/写两类：</p>
+<p><strong>读事务</strong>：</p>
+<ol class="arabic simple">
+<li><p>主机发送 M2S Request (MemRd)</p></li>
+<li><p>设备返回 S2M DRS (MemData)</p></li>
+</ol>
+<p>与 Type 2 不同，Type 3 不返回 S2M NDR 响应。</p>
+<p><strong>写事务</strong>：</p>
+<ol class="arabic simple">
+<li><p>主机发送 M2S RwD (MemWr)</p></li>
+<li><p>设备返回 S2M NDR (Cmp)</p></li>
+</ol>
+<p>参考来源：第 3.7 节</p>
+</section>
+</section>
+<section id="id14">
+<h2><a class="toc-backref" href="#id70" role="doc-backlink"><span class="section-number">16.3. </span>CXL 链路层</a><a class="headerlink" href="#id14" title="链接到此标题。"></a></h2>
+<p>CXL 链路层负责在物理层之上提供可靠的数据传输机制。CXL.io 和 CXL.cache/mem 使用不同的链路层实现。</p>
+<section id="id15">
+<h3><a class="toc-backref" href="#id71" role="doc-backlink"><span class="section-number">16.3.1. </span>CXL.io 链路层</a><a class="headerlink" href="#id15" title="链接到此标题。"></a></h3>
+<p>CXL.io 使用 PCIe 数据链路层作为链路层，负责 TLP 的可靠交换。</p>
+<p><strong>关键差异</strong>：</p>
+<ul class="simple">
+<li><p>仅适用 x16 链路发送器和接收器帧规则，无论协商链路宽度</p></li>
+<li><p>对于降级链路宽度，使用 x16/(降级链路宽度) 流传输</p></li>
+<li><p>在 256B Flit 模式下，PCIe 定义的 PM 和链路管理 DLLP 不适用</p></li>
+</ul>
+<p><strong>帧规则保证</strong>：</p>
+<p>如果发送的 TLP 恰好在 Flit 边界结束，必须有后续 CXL.io Flit。</p>
+<p>参考来源：第 4.1 节</p>
+</section>
+<section id="cxl-cache-mem-68b-flit">
+<h3><a class="toc-backref" href="#id72" role="doc-backlink"><span class="section-number">16.3.2. </span>CXL.cache/mem 68B Flit 模式</a><a class="headerlink" href="#cxl-cache-mem-68b-flit" title="链接到此标题。"></a></h3>
+<p>68B Flit 模式支持最高 32 GT/s 的物理层速率。</p>
+<section id="flit">
+<h4><a class="toc-backref" href="#id73" role="doc-backlink"><span class="section-number">16.3.2.1. </span>Flit 结构</a><a class="headerlink" href="#flit" title="链接到此标题。"></a></h4>
+<p>CXL.cachemem Flit 大小固定为 528 位（66 字节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>位置</p></th>
+<th class="head"><p>字节 0-1</p></th>
+<th class="head"><p>字节 2-15</p></th>
+<th class="head"><p>字节 16-63</p></th>
+<th class="head"><p>字节 64-65</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>协议 Flit</p></td>
+<td><p>Flit 头部</p></td>
+<td><p>Header Slot</p></td>
+<td><p>3 个 Generic Slot</p></td>
+<td><p>CRC</p></td>
+</tr>
+<tr class="row-odd"><td><p>数据 Flit</p></td>
+<td><p>Flit 头部</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>4 个数据块</p></td>
+<td><p>CRC</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Flit 头部字段</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Type[1:0]</p></td>
+<td><p>Flit 类型：00b=协议，01b=控制，10b=反向协议</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ak</p></td>
+<td><p>确认位，确认 8 个成功 Flit</p></td>
+</tr>
+<tr class="row-even"><td><p>BE</p></td>
+<td><p>字节使能指示</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sz</p></td>
+<td><p>大小指示（全/半缓存行）</p></td>
+</tr>
+<tr class="row-even"><td><p>CRV</p></td>
+<td><p>信用返回反向标志</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReqCrd/DataCrd/RspCrd</p></td>
+<td><p>请求/数据/响应信用返回</p></td>
+</tr>
+<tr class="row-even"><td><p>Slot 0-3</p></td>
+<td><p>Slot 格式类型编码</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 4.2.2 节</p>
+</section>
+<section id="slot">
+<h4><a class="toc-backref" href="#id74" role="doc-backlink"><span class="section-number">16.3.2.2. </span>Slot 格式</a><a class="headerlink" href="#slot" title="链接到此标题。"></a></h4>
+<p>Slot 携带协议消息或数据。H2D/M2S 和 D2H/S2M 方向使用不同的 Slot 格式。</p>
+<p><strong>H2D/M2S Slot 格式</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 14.3%" />
+<col style="width: 57.1%" />
+<col style="width: 28.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>格式</p></th>
+<th class="head"><p>内容</p></th>
+<th class="head"><p>长度</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>H0</p></td>
+<td><p>CXL.cache Req + Rsp</p></td>
+<td><p>96 位</p></td>
+</tr>
+<tr class="row-odd"><td><p>H1</p></td>
+<td><p>CXL.cache Data Header + 2 Rsp</p></td>
+<td><p>88 位</p></td>
+</tr>
+<tr class="row-even"><td><p>H2</p></td>
+<td><p>CXL.cache Req + Data Header</p></td>
+<td><p>88 位</p></td>
+</tr>
+<tr class="row-odd"><td><p>H3</p></td>
+<td><p>4 CXL.cache Data Header</p></td>
+<td><p>96 位</p></td>
+</tr>
+<tr class="row-even"><td><p>H4</p></td>
+<td><p>CXL.mem RwD Header</p></td>
+<td><p>87 位</p></td>
+</tr>
+<tr class="row-odd"><td><p>H5</p></td>
+<td><p>CXL.mem Req Only</p></td>
+<td><p>87 位</p></td>
+</tr>
+<tr class="row-even"><td><p>H6</p></td>
+<td><p>MAC Slot（用于完整性）</p></td>
+<td><p>96 位</p></td>
+</tr>
+<tr class="row-odd"><td><p>H7</p></td>
+<td><p>2 CXL.mem BIRsp</p></td>
+<td><p>72 位</p></td>
+</tr>
+<tr class="row-even"><td><p>G0</p></td>
+<td><p>数据块</p></td>
+<td><p>128 位</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>信用返回编码</strong>：</p>
+<p>信用返回使用指数编码，支持返回 0、1、2、4、8、16、32、64 个信用。</p>
+<p>参考来源：第 4.2.3 节、第 4.2.5 节</p>
+</section>
+<section id="id16">
+<h4><a class="toc-backref" href="#id75" role="doc-backlink"><span class="section-number">16.3.2.3. </span>链路层重试</a><a class="headerlink" href="#id16" title="链接到此标题。"></a></h4>
+<p>68B Flit 模式使用链路层重试（LLR）机制保证可靠传输。</p>
+<p><strong>LLR 变量</strong>：</p>
+<ul class="simple">
+<li><p>LL_REPLAY_TIMER：重播超时</p></li>
+<li><p>LL_REPLAY_COUNT：最大重播次数</p></li>
+<li><p>LL_RX_ACK_TIMER：确认超时</p></li>
+</ul>
+<p><strong>LLR 状态机</strong>：</p>
+<p>发送端状态：REPLAY、ACTIVE_REPLAY
+接收端状态：RETRY_LOCAL_NORMAL、RETRY_LOCAL_RECOVERY</p>
+<p><strong>重试流程</strong>：</p>
+<ol class="arabic simple">
+<li><p>发送端检测到 CRC 错误或未收到 ACK</p></li>
+<li><p>进入 REPLAY 状态，重发缓冲的数据</p></li>
+<li><p>接收端请求重试时，发送端停止发送新数据</p></li>
+<li><p>重发完成后恢复正常传输</p></li>
+</ol>
+<p>参考来源：第 4.2.8 节</p>
+</section>
+</section>
+<section id="b-flit">
+<h3><a class="toc-backref" href="#id76" role="doc-backlink"><span class="section-number">16.3.3. </span>256B Flit 模式</a><a class="headerlink" href="#b-flit" title="链接到此标题。"></a></h3>
+<p>256B Flit 模式支持更高物理层速率（如 64 GT/s），可靠性和重试机制移至物理层。</p>
+<section id="id17">
+<h4><a class="toc-backref" href="#id77" role="doc-backlink"><span class="section-number">16.3.3.1. </span>Flit 结构</a><a class="headerlink" href="#id17" title="链接到此标题。"></a></h4>
+<p>256B Flit 包含 252 字节负载和 4 字节 CRC：</p>
+<ul class="simple">
+<li><p>Flit 头部：2 字节</p></li>
+<li><p>Flit 数据：240 字节</p></li>
+<li><p>CRC：4 字节（可选 6 字节用于延迟优化）</p></li>
+</ul>
+<p><strong>Slot 定义</strong>：</p>
+<ul class="simple">
+<li><p>G-Slot：通用 Slot，最大 124 位</p></li>
+<li><p>H-Slot：Header Slot，最大 108 位</p></li>
+<li><p>HS-Slot：Header Short Slot，最大 92 位（延迟优化）</p></li>
+</ul>
+<p><strong>隐式数据 Slot 解码</strong>：</p>
+<p>数据和字节使能 Slot 可根据先前消息头部隐式确定。G-Slot 的 MSB 用于编码数据：</p>
+<ul class="simple">
+<li><p>MSB = 1：隐式数据 Slot</p></li>
+<li><p>MSB = 0：显式 Slot 格式</p></li>
+</ul>
+<p>参考来源：第 4.3.1 节、第 4.3.3 节</p>
+</section>
+<section id="id18">
+<h4><a class="toc-backref" href="#id78" role="doc-backlink"><span class="section-number">16.3.3.2. </span>信用返回</a><a class="headerlink" href="#id18" title="链接到此标题。"></a></h4>
+<p>256B Flit 使用 2 字节信用返回编码：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>编码</p></th>
+<th class="head"><p>协议</p></th>
+<th class="head"><p>通道</p></th>
+<th class="head"><p>信用数量</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>04h-08h</p></td>
+<td><p>Cache</p></td>
+<td><p>H2D Request</p></td>
+<td><p>1/4/8/12/16</p></td>
+</tr>
+<tr class="row-odd"><td><p>09h-0Dh</p></td>
+<td><p>Cache</p></td>
+<td><p>D2H Request</p></td>
+<td><p>1/4/8/12/16</p></td>
+</tr>
+<tr class="row-even"><td><p>10h-14h</p></td>
+<td><p>Memory</p></td>
+<td><p>M2S Request</p></td>
+<td><p>1/4/8/12/16</p></td>
+</tr>
+<tr class="row-odd"><td><p>15h-19h</p></td>
+<td><p>Memory</p></td>
+<td><p>S2M BISnp</p></td>
+<td><p>1/4/8/12/16</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 4.3.5 节</p>
+</section>
+<section id="id19">
+<h4><a class="toc-backref" href="#id79" role="doc-backlink"><span class="section-number">16.3.3.3. </span>延迟优化</a><a class="headerlink" href="#id19" title="链接到此标题。"></a></h4>
+<p>256B Flit 支持延迟优化模式：</p>
+<p><strong>延迟优化 Flit</strong>：</p>
+<p>将 256 字节 Flit 分为两个 128 字节半 Flit，允许提前消费：</p>
+<ul class="simple">
+<li><p>Even 半 Flit：字节 0-127</p></li>
+<li><p>Odd 半 Flit：字节 128-255</p></li>
+</ul>
+<p><strong>CRC 处理</strong>：</p>
+<ul class="simple">
+<li><p>每个 128 字节半 Flit 独立计算 6 字节 CRC</p></li>
+<li><p>如果其中一个半 Flit CRC 失败，仍可消费另一个</p></li>
+</ul>
+<p><strong>6 字节 CRC 计算</strong>：</p>
+<p>使用 (130, 136) Reed-Solomon 码，生成多项式：</p>
+<p>g(x) = x^6 + α^147*x^5 + α^107*x^4 + α^250*x^3 + α^114*x^2 + α^161*x + α^21</p>
+<p>参考来源：第 4.3.8 节、第 6.2.3.1.2 节</p>
+</section>
+</section>
+</section>
+<section id="cxl-arb-mux">
+<h2><a class="toc-backref" href="#id80" role="doc-backlink"><span class="section-number">16.4. </span>CXL ARB/MUX</a><a class="headerlink" href="#cxl-arb-mux" title="链接到此标题。"></a></h2>
+<p>ARB/MUX 负责在 CXL.io 和 CXL.cachemem 之间进行仲裁和复用。</p>
+<section id="vlsm">
+<h3><a class="toc-backref" href="#id81" role="doc-backlink"><span class="section-number">16.4.1. </span>虚拟链路状态机（vLSM）</a><a class="headerlink" href="#vlsm" title="链接到此标题。"></a></h3>
+<p>每个链路层接口维护独立的 vLSM 状态。</p>
+<p><strong>vLSM 状态</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>状态</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RESET</p></td>
+<td><p>复位状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>L0_WAIT_ACTIVE</p></td>
+<td><p>等待激活</p></td>
+</tr>
+<tr class="row-even"><td><p>L0</p></td>
+<td><p>正常操作状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>L0p</p></td>
+<td><p>低功耗状态（仅 256B Flit）</p></td>
+</tr>
+<tr class="row-even"><td><p>L1</p></td>
+<td><p>ASPM L1 状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>L2</p></td>
+<td><p>链路断开状态</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>状态转换规则</strong>：</p>
+<ul class="simple">
+<li><p>本地 vLSM 转换：根据本地请求和条件</p></li>
+<li><p>跨链路同步：通过 ALMP（ARB/MUX Link Management Packet）协商</p></li>
+</ul>
+<p>参考来源：第 5.1 节</p>
+</section>
+<section id="almp">
+<h3><a class="toc-backref" href="#id82" role="doc-backlink"><span class="section-number">16.4.2. </span>ALMP 消息</a><a class="headerlink" href="#almp" title="链接到此标题。"></a></h3>
+<p>ALMP 用于 vLSM 状态同步和链路管理。</p>
+<p><strong>ALMP 格式</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字节</p></th>
+<th class="head"><p>字段</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Byte 1</p></td>
+<td><p>Opcode</p></td>
+<td><p>操作码</p></td>
+</tr>
+<tr class="row-odd"><td><p>Byte 2-3</p></td>
+<td><p>vLSM/L0p 信息</p></td>
+<td><p>状态和参数</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>ALMP 操作码</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>操作码</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>State Request ALMP</p></td>
+<td><p>请求状态转换</p></td>
+</tr>
+<tr class="row-odd"><td><p>State Status ALMP</p></td>
+<td><p>报告当前状态</p></td>
+</tr>
+<tr class="row-even"><td><p>L0p Negotiation ALMP</p></td>
+<td><p>L0p 协商</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 5.2 节</p>
+</section>
+<section id="id20">
+<h3><a class="toc-backref" href="#id83" role="doc-backlink"><span class="section-number">16.4.3. </span>仲裁机制</a><a class="headerlink" href="#id20" title="链接到此标题。"></a></h3>
+<p>ARB/MUX 根据 CXL.io 和 CXL.cachemem 的优先级和公平性进行仲裁：</p>
+<ul class="simple">
+<li><p>CXL.io：来自 PCIe 事务层</p></li>
+<li><p>CXL.cachemem：来自 CXL.cache/mem 链路层</p></li>
+</ul>
+<p><strong>ARB/MUX 旁路</strong>：</p>
+<p>在特定条件下可旁路仲裁，直接传输数据，优化延迟。</p>
+<p>参考来源：第 5.3 节</p>
+</section>
+</section>
+<section id="id21">
+<h2><a class="toc-backref" href="#id84" role="doc-backlink"><span class="section-number">16.5. </span>CXL 物理层</a><a class="headerlink" href="#id21" title="链接到此标题。"></a></h2>
+<p>Flex Bus 物理层支持 CXL 和 PCIe 模式的动态协商。</p>
+<section id="id22">
+<h3><a class="toc-backref" href="#id85" role="doc-backlink"><span class="section-number">16.5.1. </span>帧格式</a><a class="headerlink" href="#id22" title="链接到此标题。"></a></h3>
+<p><strong>CXL 1.1/CXL 2.0 Flit 模式</strong>：</p>
+<p>在 PCIe 128b/130b 编码之上添加 2 字节 Protocol ID 和 2 字节保留字段。</p>
+<p><strong>Protocol ID 编码</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Protocol ID</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0000h</p></td>
+<td><p>NULL Flit（链路初始化）</p></td>
+</tr>
+<tr class="row-odd"><td><p>0001h</p></td>
+<td><p>CXL.io 数据块</p></td>
+</tr>
+<tr class="row-even"><td><p>0002h</p></td>
+<td><p>CXL.cache/mem 数据块</p></td>
+</tr>
+<tr class="row-odd"><td><p>0003h</p></td>
+<td><p>CXL.cachemem 控制消息</p></td>
+</tr>
+<tr class="row-even"><td><p>FFFFh</p></td>
+<td><p>错误指示</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>256B Flit 模式</strong>：</p>
+<p>Flit 头部包含 Flit Type 字段：</p>
+<ul class="simple">
+<li><p>00b：协议 Flit</p></li>
+<li><p>01b：控制 Flit</p></li>
+<li><p>10b：反向协议 Flit</p></li>
+</ul>
+<p>参考来源：第 6.2 节</p>
+</section>
+<section id="id23">
+<h3><a class="toc-backref" href="#id86" role="doc-backlink"><span class="section-number">16.5.2. </span>链路训练</a><a class="headerlink" href="#id23" title="链接到此标题。"></a></h3>
+<p><strong>模式协商</strong>：</p>
+<p>Flex Bus 模式通过修改的 TS1/TS2 Ordered Set 进行协商：</p>
+<p><strong>阶段 1</strong>：下游端口发送修改的 TS1，通告 Flex Bus 能力
+<strong>阶段 2</strong>：下游端口发送修改的 TS2，指示最终选择</p>
+<p><strong>协商字段</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Bit 0: PCIe capable/enable</p></td>
+<td><p>PCIe 能力/使能</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bit 1: CXL.io capable/enable</p></td>
+<td><p>CXL.io 能力/使能</p></td>
+</tr>
+<tr class="row-even"><td><p>Bit 2: CXL.mem capable/enable</p></td>
+<td><p>CXL.mem 能力/使能</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bit 3: CXL.cache capable/enable</p></td>
+<td><p>CXL.cache 能力/使能</p></td>
+</tr>
+<tr class="row-even"><td><p>Bit 4: CXL 2.0 capable/enable</p></td>
+<td><p>CXL 2.0 能力/使能</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bit 8: MLD capable/enable</p></td>
+<td><p>多逻辑设备能力</p></td>
+</tr>
+<tr class="row-even"><td><p>Bit 9: 68B-Enhanced Flit capable</p></td>
+<td><p>68B 增强 Flit 能力</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bit 10: Sync Header Bypass capable</p></td>
+<td><p>同步头旁路能力</p></td>
+</tr>
+<tr class="row-even"><td><p>Bit 11: 256B Latency-Optimized Flit capable</p></td>
+<td><p>256B 延迟优化 Flit 能力</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>CXL 2.0 vs CXL 1.1 协商</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>上游组件</p></th>
+<th class="head"><p>下游组件</p></th>
+<th class="head"><p>链路训练结果</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Host - CXL 2.0</p></td>
+<td><p>Switch - CXL 2.0</p></td>
+<td><p>CXL 2.0 模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Host - CXL 1.1</p></td>
+<td><p>Switch - CXL 2.0</p></td>
+<td><p>CXL 协商失败</p></td>
+</tr>
+<tr class="row-even"><td><p>Host - CXL 2.0</p></td>
+<td><p>Endpoint - CXL 1.1</p></td>
+<td><p>CXL 1.1 模式（初始上电）/ 失败（热添加）</p></td>
+</tr>
+<tr class="row-odd"><td><p>Host - CXL 1.1</p></td>
+<td><p>Endpoint - CXL 2.0</p></td>
+<td><p>CXL 1.1 模式</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 6.4 节</p>
+</section>
+<section id="retimer">
+<h3><a class="toc-backref" href="#id87" role="doc-backlink"><span class="section-number">16.5.3. </span>Retimer 支持</a><a class="headerlink" href="#retimer" title="链接到此标题。"></a></h3>
+<p>Retimer 用于扩展链路距离，支持 Sync Header Bypass 优化。</p>
+<p><strong>Retimer 感知要求</strong>：</p>
+<ul class="simple">
+<li><p>Retimer 必须通告 CXL 感知能力</p></li>
+<li><p>Sync Header Bypass 需要 Retimer 支持</p></li>
+<li><p>通过修改的 TS1/TS2 中 Retimer1/Retimer2 CXL aware 位指示</p></li>
+</ul>
+<p>参考来源：第 6.8 节</p>
+</section>
+</section>
+<section id="id24">
+<h2><a class="toc-backref" href="#id88" role="doc-backlink"><span class="section-number">16.6. </span>CXL 交换</a><a class="headerlink" href="#id24" title="链接到此标题。"></a></h2>
+<p>CXL Switch 支持多虚拟 CXL Switch（VCS）和热插拔功能。</p>
+<section id="switch">
+<h3><a class="toc-backref" href="#id89" role="doc-backlink"><span class="section-number">16.6.1. </span>Switch 架构</a><a class="headerlink" href="#switch" title="链接到此标题。"></a></h3>
+<p><strong>单 VCS Switch</strong>：一个物理 Switch 实现单个 VCS
+<strong>多 VCS Switch</strong>：一个物理 Switch 实现多个隔离的 VCS，每个 VCS 连接不同主机</p>
+<p><strong>MLD 端口支持</strong>：</p>
+<p>Switch 可支持 MLD 端口，每个端口可绑定多个 LD 到不同的 vPPB。</p>
+<p>参考来源：第 7.1 节</p>
+</section>
+<section id="id25">
+<h3><a class="toc-backref" href="#id90" role="doc-backlink"><span class="section-number">16.6.2. </span>绑定与解绑</a><a class="headerlink" href="#id25" title="链接到此标题。"></a></h3>
+<p><strong>绑定操作</strong>：</p>
+<p>将 vPPB 绑定到物理端口或 LD：</p>
+<ol class="arabic simple">
+<li><p>Fabric Manager 发送 Bind vPPB 命令</p></li>
+<li><p>Switch 配置路由</p></li>
+<li><p>返回完成事件</p></li>
+</ol>
+<p><strong>解绑操作</strong>：</p>
+<p>将 vPPB 从物理端口或 LD 解绑：</p>
+<ul class="simple">
+<li><p>等待链路断开后解绑</p></li>
+<li><p>模拟管理热移除</p></li>
+<li><p>模拟意外热移除</p></li>
+</ul>
+<p>参考来源：第 7.2.3 节</p>
+</section>
+<section id="fabric-manager-api">
+<h3><a class="toc-backref" href="#id91" role="doc-backlink"><span class="section-number">16.6.3. </span>Fabric Manager API</a><a class="headerlink" href="#fabric-manager-api" title="链接到此标题。"></a></h3>
+<p>FM API 提供 Switch 和 MLD 管理接口。</p>
+<p><strong>命令集</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>命令集</p></th>
+<th class="head"><p>功能</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Physical Switch</p></td>
+<td><p>识别 Switch、获取端口状态、端口控制</p></td>
+</tr>
+<tr class="row-odd"><td><p>Virtual Switch</p></td>
+<td><p>获取 VCS 信息、绑定/解绑 vPPB、生成 AER 事件</p></td>
+</tr>
+<tr class="row-even"><td><p>MLD Port</p></td>
+<td><p>隧道管理命令、LD 配置/内存请求</p></td>
+</tr>
+<tr class="row-odd"><td><p>MLD Component</p></td>
+<td><p>LD 信息/分配、QoS 控制</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>消息格式</strong>：</p>
+<p>FM API 消息使用 CCI（Component Command Interface）消息格式：</p>
+<ul class="simple">
+<li><p>命令 opcode：标识命令类型</p></li>
+<li><p>输入载荷：命令参数</p></li>
+<li><p>输出载荷：返回数据</p></li>
+</ul>
+<p>参考来源：第 7.6 节</p>
+</section>
+<section id="fabric">
+<h3><a class="toc-backref" href="#id92" role="doc-backlink"><span class="section-number">16.6.4. </span>Fabric 地址空间</a><a class="headerlink" href="#fabric" title="链接到此标题。"></a></h3>
+<p>跨域通信使用 Fabric 地址空间。</p>
+<p><strong>地址映射</strong>：</p>
+<ul class="simple">
+<li><p>主机物理地址（HPA）映射到 Fabric 地址</p></li>
+<li><p>交换机入口将 HPA 解码为目标 ID</p></li>
+<li><p>设备使用 Fabric 地址进行跨域访问</p></li>
+</ul>
+<p><strong>GFAM 访问保护</strong>：</p>
+<ul class="simple">
+<li><p>使用 SPID 进行访问权限验证</p></li>
+<li><p>GFAM 设备仅使用低位地址</p></li>
+</ul>
+<p>参考来源：第 7.7 节</p>
+</section>
+</section>
+<section id="id26">
+<h2><a class="toc-backref" href="#id93" role="doc-backlink"><span class="section-number">16.7. </span>控制与状态寄存器</a><a class="headerlink" href="#id26" title="链接到此标题。"></a></h2>
+<p>CXL 寄存器分为配置空间寄存器和内存映射寄存器。</p>
+<section id="dvsec">
+<h3><a class="toc-backref" href="#id94" role="doc-backlink"><span class="section-number">16.7.1. </span>DVSEC 结构</a><a class="headerlink" href="#dvsec" title="链接到此标题。"></a></h3>
+<p><a href="#id27"><span class="problematic" id="id28">**</span></a>CXL 设备 DVSEC**（DVSEC ID 0000h）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DVSEC CXL Capability</p></td>
+<td><p>设备能力：缓存大小、内存大小、偏置支持等</p></td>
+</tr>
+<tr class="row-odd"><td><p>DVSEC CXL Control</p></td>
+<td><p>控制位：缓存使能、内存使能等</p></td>
+</tr>
+<tr class="row-even"><td><p>DVSEC CXL Status</p></td>
+<td><p>状态位：缓存无效、复位状态等</p></td>
+</tr>
+<tr class="row-odd"><td><p>DVSEC CXL Control2</p></td>
+<td><p>扩展控制：禁止缓存、复位、安全擦除使能等</p></td>
+</tr>
+<tr class="row-even"><td><p>DVSEC CXL Range Registers</p></td>
+<td><p>CXL Range 1/2 Base/Limit 寄存器</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id29"><span class="problematic" id="id30">**</span></a>CXL 2.0 端口扩展 DVSEC**（DVSEC ID 0003h）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Port Extension Status</p></td>
+<td><p>PM 初始化完成、Viral 状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>Port Control Extensions</p></td>
+<td><p>SBR/Link Disable 解除掩码、Alt 内存空间使能</p></td>
+</tr>
+<tr class="row-even"><td><p>Alternate Bus/Memory Base/Limit</p></td>
+<td><p>替代地址解码范围</p></td>
+</tr>
+<tr class="row-odd"><td><p>CXL RCRB Base</p></td>
+<td><p>CXL 1.1 RCRB 基地址</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 8.1 节</p>
+</section>
+<section id="hdm">
+<h3><a class="toc-backref" href="#id95" role="doc-backlink"><span class="section-number">16.7.2. </span>HDM 解码器</a><a class="headerlink" href="#hdm" title="链接到此标题。"></a></h3>
+<p>HDM（Host-managed Device Memory）解码器将主机物理地址映射到设备物理地址。</p>
+<p><strong>解码器寄存器结构</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Base High/Low</p></td>
+<td><p>地址范围基址</p></td>
+</tr>
+<tr class="row-odd"><td><p>Size High/Low</p></td>
+<td><p>地址范围大小</p></td>
+</tr>
+<tr class="row-even"><td><p>Control</p></td>
+<td><p>交错粒度（IG）、交错路数（IW）、提交控制</p></td>
+</tr>
+<tr class="row-odd"><td><p>Target List High/Low</p></td>
+<td><p>交错目标端口列表</p></td>
+</tr>
+<tr class="row-even"><td><p>DPA Skip High/Low</p></td>
+<td><p>DPA 跳过长度（设备端）</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>交错编码</strong>：</p>
+<ul class="simple">
+<li><p><strong>交错粒度（IG）</strong>：256B、512B、1KB、2KB、4KB、8KB、16KB</p></li>
+<li><p><strong>交错路数（IW）</strong>：1路、2路、4路、8路、16路、3路、6路、12路</p></li>
+</ul>
+<p><strong>解码器提交</strong>：</p>
+<ol class="arabic simple">
+<li><p>配置解码器寄存器</p></li>
+<li><p>可选设置 Lock On Commit 位</p></li>
+<li><p>设置 Commit 位</p></li>
+<li><p>等待 Committed 位置位</p></li>
+</ol>
+<p><a href="#id31"><span class="problematic" id="id32">**</span></a>一致性检查**（Lock On Commit = 1 时）：</p>
+<ul class="simple">
+<li><p>解码器地址范围不重叠</p></li>
+<li><p>交错目标端口不重复</p></li>
+<li><p>地址范围有效（无回绕）</p></li>
+</ul>
+<p>参考来源：第 8.2.5.19 节</p>
+</section>
+<section id="ide">
+<h3><a class="toc-backref" href="#id96" role="doc-backlink"><span class="section-number">16.7.3. </span>IDE 能力结构</a><a class="headerlink" href="#ide" title="链接到此标题。"></a></h3>
+<p>CXL IDE（Integrity and Data Encryption）提供链路完整性和数据加密。</p>
+<p><strong>IDE 模式</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>模式</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Containment Mode</p></td>
+<td><p>容器模式，检测到错误后阻止数据传输</p></td>
+</tr>
+<tr class="row-odd"><td><p>Skid Mode</p></td>
+<td><p>滑动模式，允许有限数据在错误检测后传输</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>IDE 能力寄存器</strong>：</p>
+<ul class="simple">
+<li><p>CXL IDE Capable：IDE 能力指示</p></li>
+<li><p>Supported CXL IDE Modes：支持的模式</p></li>
+<li><p>Supported Algorithms：支持的算法（AES-GCM 256-bit key, 96-bit MAC）</p></li>
+</ul>
+<p><strong>IDE 控制</strong>：</p>
+<ul class="simple">
+<li><p>PCRC Disable：禁止明文 CRC 增强</p></li>
+<li><p>Key Refresh Time：密钥刷新时间</p></li>
+<li><p>Truncation Transmit Delay：截断传输延迟</p></li>
+</ul>
+<p>参考来源：第 8.2.5.21 节</p>
+</section>
+<section id="cci">
+<h3><a class="toc-backref" href="#id97" role="doc-backlink"><span class="section-number">16.7.4. </span>组件命令接口（CCI）</a><a class="headerlink" href="#cci" title="链接到此标题。"></a></h3>
+<p>CCI 提供统一的命令接口，用于设备管理和状态查询。</p>
+<p><strong>命令返回码</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>返回码</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Success</p></td>
+<td><p>命令成功</p></td>
+</tr>
+<tr class="row-odd"><td><p>Background Command Started</p></td>
+<td><p>后台命令已启动</p></td>
+</tr>
+<tr class="row-even"><td><p>Invalid Input</p></td>
+<td><p>输入参数无效</p></td>
+</tr>
+<tr class="row-odd"><td><p>Internal Error</p></td>
+<td><p>内部错误</p></td>
+</tr>
+<tr class="row-even"><td><p>Retry Required</p></td>
+<td><p>需要重试</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unsupported</p></td>
+<td><p>不支持</p></td>
+</tr>
+<tr class="row-even"><td><p>Busy</p></td>
+<td><p>设备忙</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>命令集</strong>：</p>
+<ol class="arabic simple">
+<li><p><strong>事件命令集</strong>：获取/清除事件记录</p></li>
+<li><p><strong>固件命令集</strong>：传输/激活固件</p></li>
+<li><p><strong>时间戳命令集</strong>：获取/设置时间戳</p></li>
+<li><p><strong>日志命令集</strong>：获取支持的日志、获取日志</p></li>
+<li><p><strong>特性命令集</strong>：获取/设置特性</p></li>
+<li><p><strong>维护命令集</strong>：执行维护操作（PPR）</p></li>
+<li><p><strong>内存设备命令集</strong>：识别设备、分区信息、健康状态、毒化列表等</p></li>
+<li><p><strong>FM API 命令集</strong>：Switch 和 MLD 管理</p></li>
+<li><p><strong>信息与状态命令集</strong>：识别、后台操作状态</p></li>
+</ol>
+<p>参考来源：第 8.2.10 节</p>
+<section id="id33">
+<h4><a class="toc-backref" href="#id98" role="doc-backlink"><span class="section-number">16.7.4.1. </span>事件记录</a><a class="headerlink" href="#id33" title="链接到此标题。"></a></h4>
+<p>CCI 支持多种事件记录类型：</p>
+<p><strong>通用事件记录格式</strong>：</p>
+<ul class="simple">
+<li><p>事件类型</p></li>
+<li><p>时间戳</p></li>
+<li><p>保留字段</p></li>
+</ul>
+<p><strong>事件类型</strong>：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>事件类型</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>General Media Event</p></td>
+<td><p>通用媒体事件（ECC 错误等）</p></td>
+</tr>
+<tr class="row-odd"><td><p>DRAM Event</p></td>
+<td><p>DRAM 事件</p></td>
+</tr>
+<tr class="row-even"><td><p>Memory Module Event</p></td>
+<td><p>内存模块事件</p></td>
+</tr>
+<tr class="row-odd"><td><p>Vendor Specific Event</p></td>
+<td><p>厂商特定事件</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 8.2.10.1 节</p>
+</section>
+</section>
+</section>
+<section id="id34">
+<h2><a class="toc-backref" href="#id99" role="doc-backlink"><span class="section-number">16.8. </span>复位与初始化</a><a class="headerlink" href="#id34" title="链接到此标题。"></a></h2>
+<section id="id35">
+<h3><a class="toc-backref" href="#id100" role="doc-backlink"><span class="section-number">16.8.1. </span>CXL 设备复位类型</a><a class="headerlink" href="#id35" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>复位类型</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Hot Reset</p></td>
+<td><p>通过链路触发（LTSSM 或链路断开）</p></td>
+</tr>
+<tr class="row-odd"><td><p>Warm Reset</p></td>
+<td><p>通过外部信号 PERST# 触发</p></td>
+</tr>
+<tr class="row-even"><td><p>Cold Reset</p></td>
+<td><p>主电源移除和 PERST#</p></td>
+</tr>
+<tr class="row-odd"><td><p>CXL Reset</p></td>
+<td><p>软件触发的协议级复位</p></td>
+</tr>
+<tr class="row-even"><td><p>Function Level Reset (FLR)</p></td>
+<td><p>功能级复位</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 9.1 节</p>
+</section>
+<section id="id36">
+<h3><a class="toc-backref" href="#id101" role="doc-backlink"><span class="section-number">16.8.2. </span>系统复位流程</a><a class="headerlink" href="#id36" title="链接到此标题。"></a></h3>
+<p><strong>平台触发的复位流程</strong>：</p>
+<ol class="arabic simple">
+<li><p>主机发送 PM VDM（RESETPREP）通知设备</p></li>
+<li><p>设备刷新上下文到主机内存</p></li>
+<li><p>设备将内存置于安全状态（如自刷新）</p></li>
+<li><p>设备响应 RESETPREP</p></li>
+<li><p>主机进入 LTSSM Hot-Reset</p></li>
+</ol>
+<p><strong>意外复位</strong>：</p>
+<p>无警告消息，直接进入 LTSSM Detect 或 PERST#。</p>
+<p>参考来源：第 9.3 节</p>
+</section>
+<section id="cxl-reset">
+<h3><a class="toc-backref" href="#id102" role="doc-backlink"><span class="section-number">16.8.3. </span>CXL Reset</a><a class="headerlink" href="#cxl-reset" title="链接到此标题。"></a></h3>
+<p>CXL Reset 复位所有 CXL.cache 和 CXL.mem 状态，但不影响物理链路。</p>
+<p><strong>复位行为</strong>：</p>
+<ul class="simple">
+<li><p>CXL.mem 读请求：静默丢弃</p></li>
+<li><p>CXL.mem 写请求：持久 HDM 保持，易失性 HDM 可丢弃</p></li>
+<li><p>设备缓存：写回并无效化</p></li>
+<li><p>非粘性寄存器：初始化为默认值</p></li>
+<li><p>粘性寄存器：保持不变</p></li>
+</ul>
+<p><strong>易失性 HDM 内容处理</strong>：</p>
+<ul class="simple">
+<li><p>CXL Reset Mem Clr Capable 位：指示清除/随机化能力</p></li>
+<li><p>CXL Reset Mem Clr Enable 位：请求清除/随机化</p></li>
+</ul>
+<p>参考来源：第 9.7 节</p>
+</section>
+<section id="gpf">
+<h3><a class="toc-backref" href="#id103" role="doc-backlink"><span class="section-number">16.8.4. </span>全局持久刷新（GPF）</a><a class="headerlink" href="#gpf" title="链接到此标题。"></a></h3>
+<p>GPF 用于电源故障场景，确保持久数据写入持久存储。</p>
+<p><strong>GPF 阶段</strong>：</p>
+<ul class="simple">
+<li><p><strong>Phase 1</strong>：主机发起 GPF 警告，设备准备</p></li>
+<li><p><strong>Phase 2</strong>：设备执行刷新操作，主机等待</p></li>
+</ul>
+<p><strong>GPF 寄存器</strong>：</p>
+<ul class="simple">
+<li><p>Port GPF Phase 1/2 Timeout：超时配置</p></li>
+<li><p>Device GPF Phase 2 Time/Power：设备能力和状态</p></li>
+</ul>
+<p>参考来源：第 9.8 节</p>
+</section>
+<section id="id37">
+<h3><a class="toc-backref" href="#id104" role="doc-backlink"><span class="section-number">16.8.5. </span>热插拔</a><a class="headerlink" href="#id37" title="链接到此标题。"></a></h3>
+<p>CXL 支持两种热插拔模式：</p>
+<p><strong>管理热插拔</strong>：</p>
+<ol class="arabic simple">
+<li><p>主机发送 PM VDM 通知设备</p></li>
+<li><p>设备准备断开连接</p></li>
+<li><p>主机发送 Unbind 请求</p></li>
+<li><p>Switch 解绑 vPPB</p></li>
+</ol>
+<p><strong>意外热移除</strong>：</p>
+<p>设备突然断开，Switch 检测链路断开并通知 FM。</p>
+<p>参考来源：第 9.9 节</p>
+</section>
+</section>
+<section id="id38">
+<h2><a class="toc-backref" href="#id105" role="doc-backlink"><span class="section-number">16.9. </span>电源管理</a><a class="headerlink" href="#id38" title="链接到此标题。"></a></h2>
+<p>CXL 电源管理遵循 PCIe ASPM 规范，并添加 CXL 特定的 PM VDM 消息。</p>
+<section id="pm">
+<h3><a class="toc-backref" href="#id106" role="doc-backlink"><span class="section-number">16.9.1. </span>PM 状态</a><a class="headerlink" href="#pm" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>状态</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>L0</p></td>
+<td><p>正常操作</p></td>
+</tr>
+<tr class="row-odd"><td><p>L0s</p></td>
+<td><p>低功耗待机（可选）</p></td>
+</tr>
+<tr class="row-even"><td><p>L0p</p></td>
+<td><p>低功耗协议状态（256B Flit 模式）</p></td>
+</tr>
+<tr class="row-odd"><td><p>L1</p></td>
+<td><p>ASPM L1</p></td>
+</tr>
+<tr class="row-even"><td><p>L2</p></td>
+<td><p>链路断开</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id39">
+<h3><a class="toc-backref" href="#id107" role="doc-backlink"><span class="section-number">16.9.2. </span>PM 消息</a><a class="headerlink" href="#id39" title="链接到此标题。"></a></h3>
+<p>CXL PM VDM 消息类型：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>消息</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AGENT_INFO</p></td>
+<td><p>能力向量交换</p></td>
+</tr>
+<tr class="row-odd"><td><p>RESETPREP</p></td>
+<td><p>复位准备通知</p></td>
+</tr>
+<tr class="row-even"><td><p>PMREQ</p></td>
+<td><p>电源管理请求</p></td>
+</tr>
+<tr class="row-odd"><td><p>GPF</p></td>
+<td><p>全局持久刷新</p></td>
+</tr>
+</tbody>
+</table>
+<p>参考来源：第 10 章</p>
+</section>
+</section>
+<section id="id40">
+<h2><a class="toc-backref" href="#id108" role="doc-backlink"><span class="section-number">16.10. </span>安全性</a><a class="headerlink" href="#id40" title="链接到此标题。"></a></h2>
+<p>CXL IDE（Integrity and Data Encryption）提供链路级安全。</p>
+<section id="id41">
+<h3><a class="toc-backref" href="#id109" role="doc-backlink"><span class="section-number">16.10.1. </span>IDE 架构</a><a class="headerlink" href="#id41" title="链接到此标题。"></a></h3>
+<p><strong>68B Flit 模式 IDE</strong>：</p>
+<ul class="simple">
+<li><p>使用 H6 Slot 携带 MAC</p></li>
+<li><p>每个 Flit 包含 96 位 MAC</p></li>
+</ul>
+<p><strong>256B Flit 模式 IDE</strong>：</p>
+<ul class="simple">
+<li><p>MAC 在 Flit 末尾</p></li>
+<li><p>支持延迟优化模式</p></li>
+</ul>
+</section>
+<section id="id42">
+<h3><a class="toc-backref" href="#id110" role="doc-backlink"><span class="section-number">16.10.2. </span>IDE 密钥管理</a><a class="headerlink" href="#id42" title="链接到此标题。"></a></h3>
+<p><strong>密钥刷新协议（CXL_IDE_KM）</strong>：</p>
+<ol class="arabic simple">
+<li><p>发现消息：查询 IDE 能力</p></li>
+<li><p>密钥编程消息：设置加密密钥</p></li>
+<li><p>激活/密钥刷新消息：切换到新密钥</p></li>
+<li><p>获取密钥消息：查询当前密钥状态</p></li>
+</ol>
+<p><strong>早 MAC 终止</strong>：</p>
+<p>允许提前发送 MAC 以优化延迟，但需要截断传输延迟配置。</p>
+<p>参考来源：第 11 章</p>
+</section>
+</section>
+<section id="id43">
+<h2><a class="toc-backref" href="#id111" role="doc-backlink"><span class="section-number">16.11. </span>可靠性与可用性</a><a class="headerlink" href="#id43" title="链接到此标题。"></a></h2>
+<section id="id44">
+<h3><a class="toc-backref" href="#id112" role="doc-backlink"><span class="section-number">16.11.1. </span>错误处理</a><a class="headerlink" href="#id44" title="链接到此标题。"></a></h3>
+<p><strong>协议错误</strong>：</p>
+<ul class="simple">
+<li><p>CRC 错误：触发链路层重试</p></li>
+<li><p>事务超时：报告超时错误</p></li>
+<li><p>监听响应错误：记录并报告</p></li>
+</ul>
+<p><strong>隔离机制</strong>：</p>
+<p>CXL.cache/mem 支持隔离状态，在检测到致命错误时：</p>
+<ul class="simple">
+<li><p>CXL.mem：停止处理请求</p></li>
+<li><p>CXL.cache：停止处理监听</p></li>
+</ul>
+<p><strong>Viral 处理</strong>：</p>
+<p>Viral 状态用于传播不可恢复错误：</p>
+<ul class="simple">
+<li><p>设备检测到不可恢复错误时进入 Viral 状态</p></li>
+<li><p>Switch 转发 Viral 状态</p></li>
+<li><p>主机处理 Viral 状态</p></li>
+</ul>
+<p>参考来源：第 12 章</p>
+</section>
+</section>
+<section id="id45">
+<h2><a class="toc-backref" href="#id113" role="doc-backlink"><span class="section-number">16.12. </span>性能监控</a><a class="headerlink" href="#id45" title="链接到此标题。"></a></h2>
+<section id="id46">
+<h3><a class="toc-backref" href="#id114" role="doc-backlink"><span class="section-number">16.12.1. </span>QoS 遥测</a><a class="headerlink" href="#id46" title="链接到此标题。"></a></h3>
+<p>设备通过 DevLoad 字段报告负载状态，主机根据负载调整请求速率。</p>
+</section>
+<section id="cpmu">
+<h3><a class="toc-backref" href="#id115" role="doc-backlink"><span class="section-number">16.12.2. </span>性能监控单元（CPMU）</a><a class="headerlink" href="#cpmu" title="链接到此标题。"></a></h3>
+<p>CPMU 提供性能计数器：</p>
+<ul class="simple">
+<li><p>事件类型：读写请求、延迟、带宽等</p></li>
+<li><p>过滤器：按地址范围、事务类型过滤</p></li>
+<li><p>计数器配置：事件选择、阈值设置</p></li>
+</ul>
+<p>参考来源：第 13 章</p>
+</section>
+</section>
+<section id="id47">
+<h2><a class="toc-backref" href="#id116" role="doc-backlink"><span class="section-number">16.13. </span>总结</a><a class="headerlink" href="#id47" title="链接到此标题。"></a></h2>
+<p>CXL 3.0 规范定义了一套完整的互连架构，支持：</p>
+<ol class="arabic simple">
+<li><p><strong>三种设备类型</strong>：Type 1（带缓存）、Type 2（带内存的加速器）、Type 3（内存扩展器）</p></li>
+<li><p><strong>三种协议</strong>：CXL.io、CXL.cache、CXL.mem</p></li>
+<li><p><strong>多种 Flit 模式</strong>：68B、68B-Enhanced、256B</p></li>
+<li><p><strong>交换与 Fabric</strong>：支持多主机、MLD、GFAM</p></li>
+<li><p><strong>完整的管理框架</strong>：寄存器、命令接口、电源管理、安全、RAS</p></li>
+</ol>
+<p>CXL 的核心价值在于将设备附加内存以一致性方式集成到系统地址空间，
+为高性能计算和数据中心场景提供灵活的内存扩展和加速器互联解决方案。</p>
+<p>参考来源：CXL 3.0 规范全文</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../pcie/PCI_Express_Base_5_0_ATS.html" class="btn btn-neutral float-left" title="15. PCI Express 地址翻译与中断机制分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../lpddr5.html" class="btn btn-neutral float-right" title="17. LPDDR5 SDRAM 规范知识点梳理" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

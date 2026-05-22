@@ -1,0 +1,1812 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>17. LPDDR5 SDRAM 规范知识点梳理 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="18. LPDDR5 DVFS（动态电压频率调整）机制" href="lpddr5_dvfs.html" />
+    <link rel="prev" title="16. Compute Express Link (CXL) 规范分析" href="cxl/CXL_Spec.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">17. LPDDR5 SDRAM 规范知识点梳理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#lpddr5">17.1. LPDDR5 概述</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">17.1.1. 1 规范范围与定位</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">17.1.2. 2 核心设计理念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">17.1.3. 3 支持的密度规格</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">17.2. 信号引脚定义</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">17.2.1. 1 核心信号引脚</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">17.2.2. 2 电源引脚</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dmi">17.2.3. 3 DMI 引脚多功能定义</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#bank">17.3. Bank 架构</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bg-4-banks-4-bank-groups">17.3.1. 1 BG 模式（4 Banks / 4 Bank Groups）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#b-8-banks">17.3.2. 2 8B 模式（8 Banks）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#b-16-banks">17.3.3. 3 16B 模式（16 Banks）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">17.3.4. 4 Bank 架构切换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prefetch">17.3.5. 5 数据预取（Prefetch）与突发长度</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#wck">17.4. WCK 时钟架构</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wck-ck">17.4.1. 1 WCK 与 CK 的关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wck2ck-wck2ck-synchronization">17.4.2. 2 WCK2CK 同步（WCK2CK Synchronization）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wck-always-on">17.4.3. 3 WCK Always On 模式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#single-ended-mode">17.4.4. 4 单端模式（Single-Ended Mode）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">17.5. 初始化与训练</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">17.5.1. 1 上电初始化流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zq-zq-calibration">17.5.2. 2 ZQ 校准（ZQ Calibration）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-bus-training">17.5.3. 3 命令总线训练（Command Bus Training）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ca-vref">17.5.4. 4 CA VREF 训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dq-vref">17.5.5. 5 DQ VREF 训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wck2ck-leveling">17.5.6. 6 WCK2CK Leveling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dca-duty-cycle-adjuster">17.5.7. 7 占空比调节器（DCA - Duty Cycle Adjuster）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dcm-duty-cycle-monitor">17.5.8. 8 占空比监视器（DCM - Duty Cycle Monitor）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#read-dq-calibration-rdc">17.5.9. 9 Read DQ Calibration (RDC)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wck-dq-wck2dq-training">17.5.10. 10 WCK-DQ 训练（WCK2DQ Training）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rdqs-toggle">17.5.11. 11 RDQS Toggle 模式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enhanced-rdqs-training">17.5.12. 12 Enhanced RDQS Training 模式</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">17.6. 状态机</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id16">17.6.1. 1 简化状态图</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">17.6.2. 2 关键状态转换时序</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id18">17.7. 命令系统</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id19">17.7.1. 1 命令结构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">17.7.2. 2 核心命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cas">17.7.3. 3 CAS 命令操作数</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id21">17.8. 读写操作</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#read">17.8.1. 1 Read 操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write">17.8.2. 2 Write 操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#masked-write">17.8.3. 3 Masked Write</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-precharge">17.8.4. 4 Auto-Precharge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-bus-inversion-dbi">17.8.5. 5 Data Bus Inversion (DBI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bl-n">17.8.6. 6 有效突发长度（BL/n）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id22">17.9. 刷新机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#refresh">17.9.1. 1 刷新命令（Refresh）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">17.9.2. 2 刷新管理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimized-refresh">17.9.3. 3 优化刷新（Optimized Refresh）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#self-refresh">17.9.4. 4 自刷新（Self Refresh）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pasr">17.9.5. 5 部分数组自刷新（PASR）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parc">17.9.6. 6 部分数组刷新控制（PARC）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#refresh-management-rfm">17.9.7. 7 刷新管理命令（Refresh Management - RFM）</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id24">17.10. 电源管理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#power-down">17.10.1. 1 Power Down</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deep-sleep-mode">17.10.2. 2 Deep Sleep Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dvfs">17.10.3. 3 动态电压频率调节（DVFS）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vref-current-generator-vrcg">17.10.4. 4 VREF Current Generator (VRCG)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#odt">17.11. 端接（ODT）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#on-die-termination">17.11.1. 1 On-Die Termination 概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dram-odt-nt-odt">17.11.2. 2 非目标 DRAM ODT（NT-ODT）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#asynchronous-odt">17.11.3. 3 Asynchronous ODT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mode-register">17.12. 模式寄存器（Mode Register）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id29">17.12.1. 1 概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">17.12.2. 2 关键模式寄存器</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id31">17.13. 特殊功能</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-copy">17.13.1. 1 Data Copy 功能</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write-x">17.13.2. 2 Write X 操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-package-repair-ppr">17.13.3. 3 Post Package Repair (PPR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decision-feedback-equalization-dfe">17.13.4. 4 Decision Feedback Equalization (DFE)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#link-ecc">17.13.5. 5 Link ECC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">17.13.6. 6 温度传感器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#twck2dq-interval-oscillator">17.13.7. 7 tWCK2DQ Interval Oscillator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ac-dc">17.14. AC/DC 规范</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id37">17.14.1. 1 速度等级</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dc">17.14.2. 2 DC 操作条件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ac">17.14.3. 3 AC 参数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id38">17.14.4. 4 信号电平</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">17.14.5. 5 温度范围</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id40">17.15. 封装与引脚</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id41">17.15.1. 1 封装类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#byte-mode">17.15.2. 2 Byte Mode 设备</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rank">17.15.3. 3 Rank 分配</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id42">17.16. 关键时序参数汇总</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id43">17.17. 命令时序约束</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ras">17.17.1. 1 基本 RAS 时序</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">17.17.2. 2 基本 CAS 时序</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id45">17.18. 多 Rank 操作</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rank-to-rank">17.18.1. 1 Rank-to-Rank 时序</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">17.18.2. 2 Rank 切换优化</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id47">17.19. 术语表</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">17. </span>LPDDR5 SDRAM 规范知识点梳理</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lpddr5.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lpddr5-sdram">
+<h1><span class="section-number">17. </span>LPDDR5 SDRAM 规范知识点梳理<a class="headerlink" href="#lpddr5-sdram" title="链接到此标题。"></a></h1>
+<p>本文档基于 JEDEC LPDDR5 规范（JC-42.6-1854.99A）梳理 LPDDR5 SDRAM 的核心概念、
+架构设计和关键技术特性。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#lpddr5" id="id48">LPDDR5 概述</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id2" id="id49">1 规范范围与定位</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id50">2 核心设计理念</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id51">3 支持的密度规格</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id5" id="id52">信号引脚定义</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id6" id="id53">1 核心信号引脚</a></p></li>
+<li><p><a class="reference internal" href="#id7" id="id54">2 电源引脚</a></p></li>
+<li><p><a class="reference internal" href="#dmi" id="id55">3 DMI 引脚多功能定义</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bank" id="id56">Bank 架构</a></p>
+<ul>
+<li><p><a class="reference internal" href="#bg-4-banks-4-bank-groups" id="id57">1 BG 模式（4 Banks / 4 Bank Groups）</a></p></li>
+<li><p><a class="reference internal" href="#b-8-banks" id="id58">2 8B 模式（8 Banks）</a></p></li>
+<li><p><a class="reference internal" href="#b-16-banks" id="id59">3 16B 模式（16 Banks）</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id60">4 Bank 架构切换</a></p></li>
+<li><p><a class="reference internal" href="#prefetch" id="id61">5 数据预取（Prefetch）与突发长度</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#wck" id="id62">WCK 时钟架构</a></p>
+<ul>
+<li><p><a class="reference internal" href="#wck-ck" id="id63">1 WCK 与 CK 的关系</a></p></li>
+<li><p><a class="reference internal" href="#wck2ck-wck2ck-synchronization" id="id64">2 WCK2CK 同步（WCK2CK Synchronization）</a></p></li>
+<li><p><a class="reference internal" href="#wck-always-on" id="id65">3 WCK Always On 模式</a></p></li>
+<li><p><a class="reference internal" href="#single-ended-mode" id="id66">4 单端模式（Single-Ended Mode）</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id9" id="id67">初始化与训练</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id10" id="id68">1 上电初始化流程</a></p></li>
+<li><p><a class="reference internal" href="#zq-zq-calibration" id="id69">2 ZQ 校准（ZQ Calibration）</a></p></li>
+<li><p><a class="reference internal" href="#command-bus-training" id="id70">3 命令总线训练（Command Bus Training）</a></p></li>
+<li><p><a class="reference internal" href="#ca-vref" id="id71">4 CA VREF 训练</a></p></li>
+<li><p><a class="reference internal" href="#dq-vref" id="id72">5 DQ VREF 训练</a></p></li>
+<li><p><a class="reference internal" href="#wck2ck-leveling" id="id73">6 WCK2CK Leveling</a></p></li>
+<li><p><a class="reference internal" href="#dca-duty-cycle-adjuster" id="id74">7 占空比调节器（DCA - Duty Cycle Adjuster）</a></p></li>
+<li><p><a class="reference internal" href="#dcm-duty-cycle-monitor" id="id75">8 占空比监视器（DCM - Duty Cycle Monitor）</a></p></li>
+<li><p><a class="reference internal" href="#read-dq-calibration-rdc" id="id76">9 Read DQ Calibration (RDC)</a></p></li>
+<li><p><a class="reference internal" href="#wck-dq-wck2dq-training" id="id77">10 WCK-DQ 训练（WCK2DQ Training）</a></p></li>
+<li><p><a class="reference internal" href="#rdqs-toggle" id="id78">11 RDQS Toggle 模式</a></p></li>
+<li><p><a class="reference internal" href="#enhanced-rdqs-training" id="id79">12 Enhanced RDQS Training 模式</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id15" id="id80">状态机</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id16" id="id81">1 简化状态图</a></p></li>
+<li><p><a class="reference internal" href="#id17" id="id82">2 关键状态转换时序</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id18" id="id83">命令系统</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id19" id="id84">1 命令结构</a></p></li>
+<li><p><a class="reference internal" href="#id20" id="id85">2 核心命令</a></p></li>
+<li><p><a class="reference internal" href="#cas" id="id86">3 CAS 命令操作数</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id21" id="id87">读写操作</a></p>
+<ul>
+<li><p><a class="reference internal" href="#read" id="id88">1 Read 操作</a></p></li>
+<li><p><a class="reference internal" href="#write" id="id89">2 Write 操作</a></p></li>
+<li><p><a class="reference internal" href="#masked-write" id="id90">3 Masked Write</a></p></li>
+<li><p><a class="reference internal" href="#auto-precharge" id="id91">4 Auto-Precharge</a></p></li>
+<li><p><a class="reference internal" href="#data-bus-inversion-dbi" id="id92">5 Data Bus Inversion (DBI)</a></p></li>
+<li><p><a class="reference internal" href="#bl-n" id="id93">6 有效突发长度（BL/n）</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id22" id="id94">刷新机制</a></p>
+<ul>
+<li><p><a class="reference internal" href="#refresh" id="id95">1 刷新命令（Refresh）</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id96">2 刷新管理</a></p></li>
+<li><p><a class="reference internal" href="#optimized-refresh" id="id97">3 优化刷新（Optimized Refresh）</a></p></li>
+<li><p><a class="reference internal" href="#self-refresh" id="id98">4 自刷新（Self Refresh）</a></p></li>
+<li><p><a class="reference internal" href="#pasr" id="id99">5 部分数组自刷新（PASR）</a></p></li>
+<li><p><a class="reference internal" href="#parc" id="id100">6 部分数组刷新控制（PARC）</a></p></li>
+<li><p><a class="reference internal" href="#refresh-management-rfm" id="id101">7 刷新管理命令（Refresh Management - RFM）</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id24" id="id102">电源管理</a></p>
+<ul>
+<li><p><a class="reference internal" href="#power-down" id="id103">1 Power Down</a></p></li>
+<li><p><a class="reference internal" href="#deep-sleep-mode" id="id104">2 Deep Sleep Mode</a></p></li>
+<li><p><a class="reference internal" href="#dvfs" id="id105">3 动态电压频率调节（DVFS）</a></p></li>
+<li><p><a class="reference internal" href="#vref-current-generator-vrcg" id="id106">4 VREF Current Generator (VRCG)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#odt" id="id107">端接（ODT）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#on-die-termination" id="id108">1 On-Die Termination 概述</a></p></li>
+<li><p><a class="reference internal" href="#dram-odt-nt-odt" id="id109">2 非目标 DRAM ODT（NT-ODT）</a></p></li>
+<li><p><a class="reference internal" href="#asynchronous-odt" id="id110">3 Asynchronous ODT</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mode-register" id="id111">模式寄存器（Mode Register）</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id29" id="id112">1 概述</a></p></li>
+<li><p><a class="reference internal" href="#id30" id="id113">2 关键模式寄存器</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id31" id="id114">特殊功能</a></p>
+<ul>
+<li><p><a class="reference internal" href="#data-copy" id="id115">1 Data Copy 功能</a></p></li>
+<li><p><a class="reference internal" href="#write-x" id="id116">2 Write X 操作</a></p></li>
+<li><p><a class="reference internal" href="#post-package-repair-ppr" id="id117">3 Post Package Repair (PPR)</a></p></li>
+<li><p><a class="reference internal" href="#decision-feedback-equalization-dfe" id="id118">4 Decision Feedback Equalization (DFE)</a></p></li>
+<li><p><a class="reference internal" href="#link-ecc" id="id119">5 Link ECC</a></p></li>
+<li><p><a class="reference internal" href="#id36" id="id120">6 温度传感器</a></p></li>
+<li><p><a class="reference internal" href="#twck2dq-interval-oscillator" id="id121">7 tWCK2DQ Interval Oscillator</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ac-dc" id="id122">AC/DC 规范</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id37" id="id123">1 速度等级</a></p></li>
+<li><p><a class="reference internal" href="#dc" id="id124">2 DC 操作条件</a></p></li>
+<li><p><a class="reference internal" href="#ac" id="id125">3 AC 参数</a></p></li>
+<li><p><a class="reference internal" href="#id38" id="id126">4 信号电平</a></p></li>
+<li><p><a class="reference internal" href="#id39" id="id127">5 温度范围</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id40" id="id128">封装与引脚</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id41" id="id129">1 封装类型</a></p></li>
+<li><p><a class="reference internal" href="#byte-mode" id="id130">2 Byte Mode 设备</a></p></li>
+<li><p><a class="reference internal" href="#rank" id="id131">3 Rank 分配</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id42" id="id132">关键时序参数汇总</a></p></li>
+<li><p><a class="reference internal" href="#id43" id="id133">命令时序约束</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ras" id="id134">1 基本 RAS 时序</a></p></li>
+<li><p><a class="reference internal" href="#id44" id="id135">2 基本 CAS 时序</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id45" id="id136">多 Rank 操作</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rank-to-rank" id="id137">1 Rank-to-Rank 时序</a></p></li>
+<li><p><a class="reference internal" href="#id46" id="id138">2 Rank 切换优化</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id47" id="id139">术语表</a></p></li>
+</ul>
+</nav>
+<section id="lpddr5">
+<h2><a class="toc-backref" href="#id48" role="doc-backlink"><span class="section-number">17.1. </span>LPDDR5 概述</a><a class="headerlink" href="#lpddr5" title="链接到此标题。"></a></h2>
+<section id="id2">
+<h3><a class="toc-backref" href="#id49" role="doc-backlink"><span class="section-number">17.1.1. </span>1 规范范围与定位</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h3>
+<p>LPDDR5（Low Power Double Data Rate 5）是 JEDEC 定义的低功耗同步动态随机存取存储器标准，
+适用于移动设备和嵌入式系统。该标准继承并融合了 DDR2/3/4 和 LPDDR/2/3/4 的设计理念。</p>
+<ul class="simple">
+<li><p><strong>设备密度范围</strong>：2 Gb 至 32 Gb</p></li>
+<li><p><strong>数据位宽</strong>：x16（单通道 16 位）或 x8（单通道 8 位，Byte Mode）</p></li>
+<li><p><strong>通道数</strong>：1 通道（Channel）</p></li>
+<li><p><strong>参考规范</strong>：DDR2 (JESD79-2), DDR3 (JESD79-3), DDR4 (JESD79-4),
+LPDDR (JESD209), LPDDR2 (JESD209-2), LPDDR3 (JESD209-3), LPDDR4 (JESD209-4)</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3><a class="toc-backref" href="#id50" role="doc-backlink"><span class="section-number">17.1.2. </span>2 核心设计理念</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>LPDDR5 的核心设计目标是**高性能与低功耗的平衡**：</p>
+<ul class="simple">
+<li><p>采用命令时钟（CK）与数据时钟（WCK）分离的架构，WCK 仅在需要传输数据时运行以节省功耗</p></li>
+<li><p>数据传输使用双倍数据速率（DDR）信令，命令/地址总线也采用 DDR 信令</p></li>
+<li><p>支持动态电压频率调节（DVFS），可根据负载动态调整工作频率和电压</p></li>
+<li><p>数据总线支持 0.5V VDDQ 标称电压下的高速操作</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3><a class="toc-backref" href="#id51" role="doc-backlink"><span class="section-number">17.1.3. </span>3 支持的密度规格</a><a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p>LPDDR5 支持以下密度等级：</p>
+<ul class="simple">
+<li><p>2Gb: 2,147,483,648 bits</p></li>
+<li><p>4Gb: 4,294,967,296 bits</p></li>
+<li><p>8Gb: 8,589,934,592 bits</p></li>
+<li><p>12Gb: 12,884,901,888 bits</p></li>
+<li><p>16Gb: 17,179,869,184 bits</p></li>
+<li><p>24Gb: 25,769,803,776 bits</p></li>
+<li><p>32Gb: 34,359,738,368 bits</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2><a class="toc-backref" href="#id52" role="doc-backlink"><span class="section-number">17.2. </span>信号引脚定义</a><a class="headerlink" href="#id5" title="链接到此标题。"></a></h2>
+<section id="id6">
+<h3><a class="toc-backref" href="#id53" role="doc-backlink"><span class="section-number">17.2.1. </span>1 核心信号引脚</a><a class="headerlink" href="#id6" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>信号名称</p></th>
+<th class="head"><p>类型</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CK_t, CK_c</p></td>
+<td><p>Input</p></td>
+<td><p><strong>差分命令时钟</strong>：所有 DDR 命令/地址输入在 CK_t 和 CK_c 的交叉点（上升沿和下降沿）被采样。SDR 输入信号（如 CS）仅在 CK_t 上升沿被采样。</p></td>
+</tr>
+<tr class="row-odd"><td><p>CS</p></td>
+<td><p>Input</p></td>
+<td><p><strong>片选信号（SDR）</strong>：CS 是命令码的一部分，在 CK_t 上升沿被采样。在 Power-Down 或 Deep Sleep 模式下变为异步信号。</p></td>
+</tr>
+<tr class="row-even"><td><p>CA[6:0]</p></td>
+<td><p>Input</p></td>
+<td><p><strong>命令/地址输入（DDR）</strong>：7 位双向信号，用于传输命令、地址、Bank 地址、配置信息和训练数据。</p></td>
+</tr>
+<tr class="row-odd"><td><p>DQ[15:0]</p></td>
+<td><p>I/O</p></td>
+<td><p><strong>双向数据总线</strong>：16 位数据总线（x16 模式）或 8 位数据总线（x8 模式）。</p></td>
+</tr>
+<tr class="row-even"><td><p>WCK[1:0]_t, WCK[1:0]_c</p></td>
+<td><p>Input</p></td>
+<td><p><strong>差分写数据时钟</strong>：用于 WRITE 数据捕获和 READ 数据输出的差分时钟。每个字节对应一组 WCK。</p></td>
+</tr>
+<tr class="row-odd"><td><p>RDQS[1:0]_t, RDQS[1:0]_c</p></td>
+<td><p>I/O</p></td>
+<td><p><strong>读数据选通信号</strong>：READ 操作中用于选通数据的差分输出时钟。RDQS_t 在写操作（Link Protection 启用时）还用作 Parity 引脚。</p></td>
+</tr>
+<tr class="row-even"><td><p>DMI[1:0]</p></td>
+<td><p>I/O</p></td>
+<td><p><strong>数据掩码反转</strong>：多功能引脚，可配置为 DM（Data Mask）、DBI（Data Bus Inversion）和 Parity。</p></td>
+</tr>
+<tr class="row-odd"><td><p>ZQ</p></td>
+<td><p>Reference</p></td>
+<td><p><strong>校准参考</strong>：用于校准输出驱动强度和端接电阻的参考引脚，需通过 240 ohm +/-1% 电阻连接到 VDDQ。每颗 Die 一个 ZQ pad。</p></td>
+</tr>
+<tr class="row-even"><td><p>RESET_n</p></td>
+<td><p>Input</p></td>
+<td><p><strong>异步复位信号</strong>：低电平有效时复位 Die。</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id7">
+<h3><a class="toc-backref" href="#id54" role="doc-backlink"><span class="section-number">17.2.2. </span>2 电源引脚</a><a class="headerlink" href="#id7" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>电源名称</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>VDDQ</p></td>
+<td><p>I/O 电源，标称 0.5V（高速模式），支持 0.3V-0.5V（低速模式）</p></td>
+</tr>
+<tr class="row-odd"><td><p>VDD1</p></td>
+<td><p>内部逻辑电源</p></td>
+</tr>
+<tr class="row-even"><td><p>VDD2H</p></td>
+<td><p>高频工作电压（DVFSQ 高电压）</p></td>
+</tr>
+<tr class="row-odd"><td><p>VDD2L</p></td>
+<td><p>低频工作电压（DVFSQ 低电压）</p></td>
+</tr>
+<tr class="row-even"><td><p>VSS</p></td>
+<td><p>接地参考</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dmi">
+<h3><a class="toc-backref" href="#id55" role="doc-backlink"><span class="section-number">17.2.3. </span>3 DMI 引脚多功能定义</a><a class="headerlink" href="#dmi" title="链接到此标题。"></a></h3>
+<p>DMI 引脚根据配置不同具有多种功能：</p>
+</section>
+</section>
+<section id="bank">
+<h2><a class="toc-backref" href="#id56" role="doc-backlink"><span class="section-number">17.3. </span>Bank 架构</a><a class="headerlink" href="#bank" title="链接到此标题。"></a></h2>
+<p>LPDDR5 支持三种可选择的 Bank 架构，由 <strong>MR3 OP[4:3]</strong> 控制：</p>
+<section id="bg-4-banks-4-bank-groups">
+<h3><a class="toc-backref" href="#id57" role="doc-backlink"><span class="section-number">17.3.1. </span>1 BG 模式（4 Banks / 4 Bank Groups）</a><a class="headerlink" href="#bg-4-banks-4-bank-groups" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>全称</strong>：Bank Group Mode</p></li>
+<li><p><strong>结构</strong>：4 个 Bank + 4 个 Bank Group，共 4 个 Bank</p></li>
+<li><p><strong>支持速率</strong>：大于 3200 Mbps（&gt;3200 Mbps）</p></li>
+<li><p><strong>突发长度</strong>：BL16 或 BL32</p></li>
+<li><p><strong>地址映射</strong>：</p>
+<ul>
+<li><p>CA0 -&gt; BA0 (Bank Address)</p></li>
+<li><p>CA1 -&gt; BA1</p></li>
+<li><p>CA2 -&gt; BG0 (Bank Group Address)</p></li>
+<li><p>CA3 -&gt; BG1</p></li>
+</ul>
+</li>
+<li><p><strong>特点</strong>：Bank Group 架构允许不同 Bank Group 之间的访问可以更快地背靠背执行，
+从而提高总线利用率。BG 模式是高速操作（&gt;3200 Mbps）的推荐模式。</p></li>
+</ul>
+</section>
+<section id="b-8-banks">
+<h3><a class="toc-backref" href="#id58" role="doc-backlink"><span class="section-number">17.3.2. </span>2 8B 模式（8 Banks）</a><a class="headerlink" href="#b-8-banks" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>全称</strong>：8 Bank Mode</p></li>
+<li><p><strong>结构</strong>：8 个 Bank，无 Bank Group</p></li>
+<li><p><strong>支持速率</strong>：全速率范围</p></li>
+<li><p><strong>突发长度</strong>：仅 BL32</p></li>
+<li><p><strong>地址映射</strong>：</p>
+<ul>
+<li><p>CA0 -&gt; BA0</p></li>
+<li><p>CA1 -&gt; BA1</p></li>
+<li><p>CA2 -&gt; BA2</p></li>
+<li><p>CA3 -&gt; B4 (READ) / V (ACT-1, PRE, MWR, WR)</p></li>
+</ul>
+</li>
+<li><p><strong>特点</strong>：8 Bank 模式的页面大小与 BG/16B 模式不同（是其两倍），
+因此 Bank 地址的物理含义不同。</p></li>
+</ul>
+</section>
+<section id="b-16-banks">
+<h3><a class="toc-backref" href="#id59" role="doc-backlink"><span class="section-number">17.3.3. </span>3 16B 模式（16 Banks）</a><a class="headerlink" href="#b-16-banks" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>全称</strong>：16 Bank Mode</p></li>
+<li><p><strong>结构</strong>：16 个 Bank，无 Bank Group</p></li>
+<li><p><strong>支持速率</strong>：等于或小于 3200 Mbps（&lt;=3200 Mbps）</p></li>
+<li><p><strong>突发长度</strong>：BL16 或 BL32</p></li>
+<li><p><strong>地址映射</strong>：</p>
+<ul>
+<li><p>CA0 -&gt; BA0</p></li>
+<li><p>CA1 -&gt; BA1</p></li>
+<li><p>CA2 -&gt; BA2</p></li>
+<li><p>CA3 -&gt; BA3</p></li>
+</ul>
+</li>
+<li><p><strong>特点</strong>：提供更多的 Bank 数量，适合需要大量并行访问的场景。</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3><a class="toc-backref" href="#id60" role="doc-backlink"><span class="section-number">17.3.4. </span>4 Bank 架构切换</a><a class="headerlink" href="#id8" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>默认 Bank 架构为 <strong>16B 模式</strong></p></li>
+<li><p>16B 和 BG 模式具有**相同的页面大小**，可通过 FSP（Frequency Set Point）流程切换</p></li>
+<li><p>8B 模式与 16B/BG 模式**页面大小不同**，必须通过 Reset 来切换</p></li>
+<li><p>Bank 架构切换应在 Idle 状态下执行</p></li>
+</ul>
+</section>
+<section id="prefetch">
+<h3><a class="toc-backref" href="#id61" role="doc-backlink"><span class="section-number">17.3.5. </span>5 数据预取（Prefetch）与突发长度</a><a class="headerlink" href="#prefetch" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>BG 模式</strong>：支持 16n 和 32n 预取</p></li>
+<li><p><strong>8B 模式</strong>：仅支持 32n 预取</p></li>
+<li><p><strong>16B 模式</strong>：支持 16n 和 32n 预取</p></li>
+<li><p>BL32 交错（interleaved）传输仅在 WCK:CK = 4:1 时支持</p></li>
+</ul>
+</section>
+</section>
+<section id="wck">
+<h2><a class="toc-backref" href="#id62" role="doc-backlink"><span class="section-number">17.4. </span>WCK 时钟架构</a><a class="headerlink" href="#wck" title="链接到此标题。"></a></h2>
+<section id="wck-ck">
+<h3><a class="toc-backref" href="#id63" role="doc-backlink"><span class="section-number">17.4.1. </span>1 WCK 与 CK 的关系</a><a class="headerlink" href="#wck-ck" title="链接到此标题。"></a></h3>
+<p>LPDDR5 采用**命令时钟（CK）与数据时钟（WCK）分离**的架构：</p>
+<ul class="simple">
+<li><p><strong>CK（Command Clock）</strong>：命令时钟，用于采样所有命令和地址信号</p></li>
+<li><p><strong>WCK（Write Clock）</strong>：数据时钟，用于数据写入捕获和数据读出输出</p></li>
+<li><p><strong>WCK:CK 比率</strong>：可通过 <strong>MR18 OP[7]</strong> 选择 <strong>2:1</strong> 或 <strong>4:1</strong></p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>CK 频率</p></th>
+<th class="head"><p>WCK 频率 (2:1)</p></th>
+<th class="head"><p>WCK 频率 (4:1)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>200 MHz</p></td>
+<td><p>400 MHz</p></td>
+<td><p>800 MHz</p></td>
+</tr>
+<tr class="row-odd"><td><p>400 MHz</p></td>
+<td><p>800 MHz</p></td>
+<td><p>1600 MHz</p></td>
+</tr>
+<tr class="row-even"><td><p>533 MHz</p></td>
+<td><p>1066 MHz</p></td>
+<td><p>2134 MHz</p></td>
+</tr>
+<tr class="row-odd"><td><p>800 MHz</p></td>
+<td><p>1600 MHz</p></td>
+<td><p>3200 Mbps</p></td>
+</tr>
+<tr class="row-even"><td><p>1067 MHz</p></td>
+<td><p>2134 MHz</p></td>
+<td><p>4267 Mbps</p></td>
+</tr>
+<tr class="row-odd"><td><p>1600 MHz</p></td>
+<td><p>3200 MHz</p></td>
+<td><p>6400 Mbps</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="wck2ck-wck2ck-synchronization">
+<h3><a class="toc-backref" href="#id64" role="doc-backlink"><span class="section-number">17.4.2. </span>2 WCK2CK 同步（WCK2CK Synchronization）</a><a class="headerlink" href="#wck2ck-wck2ck-synchronization" title="链接到此标题。"></a></h3>
+<p>由于 WCK 通常在不传输数据时停止（以节省功耗），当 WCK 需要重新启动时，
+必须与 CK 进行相位同步：</p>
+<ul class="simple">
+<li><p><strong>同步目的</strong>：确保 WCK 的分频相位与 CK 对齐，使读写数据的时序正确</p></li>
+<li><p><strong>同步方式</strong>：通过 CAS 命令中的 WCK2CK Sync 位（WS_RD, WS_WR, WS_FS）触发</p></li>
+<li><p><strong>同步过程</strong>：</p>
+<ol class="arabic simple">
+<li><p>控制器发送 CAS 命令（携带 WS_RD/WS_WR/WS_FS 位）</p></li>
+<li><p>DRAM 内部进行 WCK 与 CK 的相位对齐</p></li>
+<li><p>同步完成后，可以发送 Read/Write 命令</p></li>
+</ol>
+</li>
+<li><p><strong>WS_FAST 模式</strong>：CAS(WS_FAST=1) 提供最小延迟的同步操作，
+适用于对延迟敏感的场景</p></li>
+<li><p><strong>Rank-to-Rank 同步</strong>：多 Rank 系统中，不同 Rank 的 WCK2CK 同步可以并行进行</p></li>
+</ul>
+</section>
+<section id="wck-always-on">
+<h3><a class="toc-backref" href="#id65" role="doc-backlink"><span class="section-number">17.4.3. </span>3 WCK Always On 模式</a><a class="headerlink" href="#wck-always-on" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>WCK 可以配置为始终运行（Always On），避免频繁同步带来的延迟开销</p></li>
+<li><p>适用于需要频繁进行读/写切换的场景</p></li>
+<li><p>支持 Enhanced WCK Always On 模式，提供更精细的功耗控制</p></li>
+<li><p>通过 CAS(WS_OFF) 命令关闭 WCK Always On 模式</p></li>
+</ul>
+</section>
+<section id="single-ended-mode">
+<h3><a class="toc-backref" href="#id66" role="doc-backlink"><span class="section-number">17.4.4. </span>4 单端模式（Single-Ended Mode）</a><a class="headerlink" href="#single-ended-mode" title="链接到此标题。"></a></h3>
+<p>CK、WCK 和 RDQS 信号支持在差分模式和单端模式之间切换：</p>
+<ul class="simple">
+<li><p><strong>差分模式</strong>：高速操作时的默认模式</p></li>
+<li><p><strong>单端模式</strong>：低速操作时使用，减少功耗</p></li>
+<li><p><strong>切换规则</strong>：CK、WCK 和 RDQS 必须在同一 FSP 下统一切换</p></li>
+<li><p><strong>切换时序</strong>：需要额外的 MRW AC 时间（附加 nCK）</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h2><a class="toc-backref" href="#id67" role="doc-backlink"><span class="section-number">17.5. </span>初始化与训练</a><a class="headerlink" href="#id9" title="链接到此标题。"></a></h2>
+<section id="id10">
+<h3><a class="toc-backref" href="#id68" role="doc-backlink"><span class="section-number">17.5.1. </span>1 上电初始化流程</a><a class="headerlink" href="#id10" title="链接到此标题。"></a></h3>
+<p>LPDDR5 的初始化流程包括以下关键步骤：</p>
+<ol class="arabic simple">
+<li><p><strong>电压斜坡（Voltage Ramp）</strong>：确保 VDDQ、VDD1、VDD2H、VDD2L 等电源稳定</p></li>
+<li><p><strong>RESET_n 释放</strong>：等待 RESET_n 信号释放，完成设备复位</p></li>
+<li><p><strong>ZQ 校准初始化</strong>：通过 ZQ 引脚校准驱动强度和端接电阻</p></li>
+<li><p><strong>模式寄存器配置</strong>：通过 MRW 命令配置工作模式</p></li>
+<li><p><strong>训练序列</strong>：执行各种信号完整性训练</p></li>
+</ol>
+</section>
+<section id="zq-zq-calibration">
+<h3><a class="toc-backref" href="#id69" role="doc-backlink"><span class="section-number">17.5.2. </span>2 ZQ 校准（ZQ Calibration）</a><a class="headerlink" href="#zq-zq-calibration" title="链接到此标题。"></a></h3>
+<p>ZQ 校准用于校准 DRAM 的输出驱动强度和端接电阻：</p>
+<p><strong>两种校准模式</strong>：</p>
+<ul class="simple">
+<li><p><strong>Background Calibration（后台校准）</strong>：
+- DRAM 在后台自动执行校准
+- 使用 MPC 命令或模式寄存器控制
+- 持续运行，校准结果自动更新
+- 支持 ZQ Stop 功能
+- 适合温度变化较大的场景</p></li>
+<li><p><strong>Command-Based Calibration（命令校准）</strong>：
+- 由控制器通过命令触发校准
+- 需要显式发送 ZQ Latch 命令来保存校准结果
+- 适合精确控制校准时机的场景</p></li>
+</ul>
+<p><strong>ZQ 相关功能</strong>：</p>
+<ul class="simple">
+<li><p><strong>ZQ Stop</strong>：停止后台 ZQ 校准，节省功耗</p></li>
+<li><p><strong>ZQ Reset</strong>：重置校准电路</p></li>
+<li><p><strong>ZQ 电阻共享</strong>：多 Die 封装中可共享 ZQ 电阻</p></li>
+<li><p><strong>ZQ 外部电阻</strong>：必须使用 240 ohm +/-1% 精度电阻</p></li>
+</ul>
+</section>
+<section id="command-bus-training">
+<h3><a class="toc-backref" href="#id70" role="doc-backlink"><span class="section-number">17.5.3. </span>3 命令总线训练（Command Bus Training）</a><a class="headerlink" href="#command-bus-training" title="链接到此标题。"></a></h3>
+<p>命令总线训练确保 CA 信号能够被 DRAM 正确采样：</p>
+<ul class="simple">
+<li><p><strong>Training Mode1</strong>：基本训练模式，使用 DQ 输出来回传训练结果</p></li>
+<li><p><strong>Training Mode2</strong>：高级训练模式，支持 VREF(CA) 值的在线更新</p></li>
+<li><p><strong>三个物理 Mode Register</strong>：MR16 OP[3:0] 选择不同的物理寄存器，
+每个 FSP 有独立的训练参数</p></li>
+<li><p><strong>支持 DVFSQ</strong>：训练可以在 DVFSQ 模式下执行</p></li>
+</ul>
+<p><strong>训练流程</strong>：</p>
+<ol class="arabic simple">
+<li><p>进入命令总线训练模式</p></li>
+<li><p>发送训练模式（CA Pattern）</p></li>
+<li><p>从 DQ 引脚读取训练结果</p></li>
+<li><p>根据结果调整发送时序</p></li>
+<li><p>退出训练模式</p></li>
+</ol>
+</section>
+<section id="ca-vref">
+<h3><a class="toc-backref" href="#id71" role="doc-backlink"><span class="section-number">17.5.4. </span>4 CA VREF 训练</a><a class="headerlink" href="#ca-vref" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>训练命令/地址总线的参考电压（VREF_CA）</p></li>
+<li><p>确保所有 CA 信号都能在正确的阈值被采样</p></li>
+<li><p>训练结果存储在 <strong>MR12</strong> 中</p></li>
+</ul>
+</section>
+<section id="dq-vref">
+<h3><a class="toc-backref" href="#id72" role="doc-backlink"><span class="section-number">17.5.5. </span>5 DQ VREF 训练</a><a class="headerlink" href="#dq-vref" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>训练数据总线的参考电压（VREF_DQ）</p></li>
+<li><p>确保数据信号能够被正确接收</p></li>
+<li><p>训练结果存储在 <a href="#id11"><span class="problematic" id="id12">**</span></a>MR14**（DQ[7:0]）和 <a href="#id13"><span class="problematic" id="id14">**</span></a>MR15**（DQ[15:8]）中</p></li>
+</ul>
+</section>
+<section id="wck2ck-leveling">
+<h3><a class="toc-backref" href="#id73" role="doc-backlink"><span class="section-number">17.5.6. </span>6 WCK2CK Leveling</a><a class="headerlink" href="#wck2ck-leveling" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>调整 WCK 与 CK 之间的相位对齐</p></li>
+<li><p>在 LPDDR4 中称为 Write Leveling</p></li>
+<li><p>使用 Leveling 模式输出对齐结果</p></li>
+<li><p>确保写入数据的采样窗口正确</p></li>
+</ul>
+</section>
+<section id="dca-duty-cycle-adjuster">
+<h3><a class="toc-backref" href="#id74" role="doc-backlink"><span class="section-number">17.5.7. </span>7 占空比调节器（DCA - Duty Cycle Adjuster）</a><a class="headerlink" href="#dca-duty-cycle-adjuster" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>用于补偿 WCK 的占空比失真</p></li>
+<li><p>调节范围：约 +/-5% 的占空比调节</p></li>
+<li><p>DCA 代码变化会影响 DQ 输出和 RDQS 时序</p></li>
+<li><p>有助于在高速操作下维持信号完整性</p></li>
+</ul>
+</section>
+<section id="dcm-duty-cycle-monitor">
+<h3><a class="toc-backref" href="#id75" role="doc-backlink"><span class="section-number">17.5.8. </span>8 占空比监视器（DCM - Duty Cycle Monitor）</a><a class="headerlink" href="#dcm-duty-cycle-monitor" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>监测 WCK 的实际占空比</p></li>
+<li><p>可由控制器读取占空比监测结果</p></li>
+<li><p>帮助控制器判断是否需要调整 DCA</p></li>
+</ul>
+</section>
+<section id="read-dq-calibration-rdc">
+<h3><a class="toc-backref" href="#id76" role="doc-backlink"><span class="section-number">17.5.9. </span>9 Read DQ Calibration (RDC)</a><a class="headerlink" href="#read-dq-calibration-rdc" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>用于校准读取数据路径上的时序偏移</p></li>
+<li><p>通过发送 RDC 命令，DRAM 输出已知的校准模式</p></li>
+<li><p>控制器根据返回的模式调整接收时序</p></li>
+<li><p>支持 DMI Output Behavior Mode 1 和 Mode 2</p></li>
+</ul>
+</section>
+<section id="wck-dq-wck2dq-training">
+<h3><a class="toc-backref" href="#id77" role="doc-backlink"><span class="section-number">17.5.10. </span>10 WCK-DQ 训练（WCK2DQ Training）</a><a class="headerlink" href="#wck-dq-wck2dq-training" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>调整 WCK 到 DQ 的时序关系</p></li>
+<li><p><strong>Write FIFO Training</strong>：调整写入数据的 FIFO 时序</p></li>
+<li><p><strong>Read FIFO Training</strong>：调整读取数据的 FIFO 时序</p></li>
+<li><p><strong>WCK-RDQS_t/Parity Training</strong>：训练读数据选通信号的时序</p></li>
+<li><p>支持 FIFO Pointer Reset 和同步操作</p></li>
+</ul>
+</section>
+<section id="rdqs-toggle">
+<h3><a class="toc-backref" href="#id78" role="doc-backlink"><span class="section-number">17.5.11. </span>11 RDQS Toggle 模式</a><a class="headerlink" href="#rdqs-toggle" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>RDQS 信号在非 Read 操作期间持续翻转</p></li>
+<li><p>用于训练期间监视 RDQS 信号质量</p></li>
+<li><p>进入/退出需要满足特定的时序约束</p></li>
+</ul>
+</section>
+<section id="enhanced-rdqs-training">
+<h3><a class="toc-backref" href="#id79" role="doc-backlink"><span class="section-number">17.5.12. </span>12 Enhanced RDQS Training 模式</a><a class="headerlink" href="#enhanced-rdqs-training" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>增强的 RDQS 训练模式，提供更精确的训练能力</p></li>
+<li><p>支持在 Read 操作期间进行训练</p></li>
+<li><p>训练结果可以在线更新</p></li>
+</ul>
+</section>
+</section>
+<section id="id15">
+<h2><a class="toc-backref" href="#id80" role="doc-backlink"><span class="section-number">17.6. </span>状态机</a><a class="headerlink" href="#id15" title="链接到此标题。"></a></h2>
+<section id="id16">
+<h3><a class="toc-backref" href="#id81" role="doc-backlink"><span class="section-number">17.6.1. </span>1 简化状态图</a><a class="headerlink" href="#id16" title="链接到此标题。"></a></h3>
+<p>LPDDR5 的核心操作状态包括：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Reset --&gt; Idle (初始化完成后)
+Idle --&gt; Active (ACT 命令激活一行)
+Active --&gt; Read/Write (READ/WRITE 命令)
+Active --&gt; Precharge (PRE 命令关闭行)
+Precharge --&gt; Idle
+Idle --&gt; Power-Down (进入低功耗)
+Power-Down --&gt; Idle (退出低功耗)
+Idle --&gt; Self-Refresh (进入自刷新)
+Self-Refresh --&gt; Idle (退出自刷新)
+Idle/Active --&gt; Deep Sleep (进入深度休眠)
+Deep Sleep --&gt; Idle/Self-Refresh (退出深度休眠)
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h3><a class="toc-backref" href="#id82" role="doc-backlink"><span class="section-number">17.6.2. </span>2 关键状态转换时序</a><a class="headerlink" href="#id17" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>tRCD</strong>：ACT 到 READ/WRITE 的最小延迟</p></li>
+<li><p><strong>tRAS</strong>：ACT 到 PRE 的最小时间</p></li>
+<li><p><strong>tRP</strong>：PRE 命令执行时间</p></li>
+<li><p><strong>tRC</strong>：同一 Bank 连续 ACT 之间的最小间隔</p></li>
+<li><p><strong>tFAW</strong>：4 个 Bank 窗口内最大 ACT 次数的限制</p></li>
+<li><p><strong>tRRD</strong>：不同 Bank/Bank Group 之间 ACT 的最小间隔</p></li>
+<li><p><strong>tWTR</strong>：WRITE 到 READ 的最小间隔</p></li>
+<li><p><strong>tRTW</strong>：READ 到 WRITE 的最小间隔</p></li>
+</ul>
+</section>
+</section>
+<section id="id18">
+<h2><a class="toc-backref" href="#id83" role="doc-backlink"><span class="section-number">17.7. </span>命令系统</a><a class="headerlink" href="#id18" title="链接到此标题。"></a></h2>
+<section id="id19">
+<h3><a class="toc-backref" href="#id84" role="doc-backlink"><span class="section-number">17.7.1. </span>1 命令结构</a><a class="headerlink" href="#id19" title="链接到此标题。"></a></h3>
+<p>LPDDR5 的命令通过 <strong>CS + CA[6:0]</strong> 编码：</p>
+<ul class="simple">
+<li><p><strong>CS（SDR）</strong>：在 CK_t 上升沿采样，作为命令码的一部分</p></li>
+<li><p><strong>CA[6:0]（DDR）</strong>：在 CK 的上升沿和下降沿都被采样，每个 CK 周期传输 14 位信息</p></li>
+<li><p>大多数命令为 <strong>1 nCK</strong> 持续时间</p></li>
+</ul>
+</section>
+<section id="id20">
+<h3><a class="toc-backref" href="#id85" role="doc-backlink"><span class="section-number">17.7.2. </span>2 核心命令</a><a class="headerlink" href="#id20" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>命令</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ACT (Activate)</p></td>
+<td><p>激活指定 Bank 的指定行，打开一个页面</p></td>
+</tr>
+<tr class="row-odd"><td><p>PRE (Precharge)</p></td>
+<td><p>关闭指定 Bank（或所有 Bank）的活跃行</p></td>
+</tr>
+<tr class="row-even"><td><p>READ</p></td>
+<td><p>从打开的行中读取数据</p></td>
+</tr>
+<tr class="row-odd"><td><p>WRITE</p></td>
+<td><p>向打开的行中写入数据</p></td>
+</tr>
+<tr class="row-even"><td><p>MWR (Masked Write)</p></td>
+<td><p>带掩码的写入操作，可选择性更新字节</p></td>
+</tr>
+<tr class="row-odd"><td><p>REF (Refresh)</p></td>
+<td><p>执行刷新操作，保持数据完整性</p></td>
+</tr>
+<tr class="row-even"><td><p>SRE (Self Refresh Entry)</p></td>
+<td><p>进入自刷新模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>SRX (Self Refresh Exit)</p></td>
+<td><p>退出自刷新模式</p></td>
+</tr>
+<tr class="row-even"><td><p>PDE (Power Down Entry)</p></td>
+<td><p>进入低功耗模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>PDX (Power Down Exit)</p></td>
+<td><p>退出低功耗模式</p></td>
+</tr>
+<tr class="row-even"><td><p>MRW (Mode Register Write)</p></td>
+<td><p>写入模式寄存器配置</p></td>
+</tr>
+<tr class="row-odd"><td><p>MRR (Mode Register Read)</p></td>
+<td><p>读取模式寄存器内容</p></td>
+</tr>
+<tr class="row-even"><td><p>MPC (Multi-Purpose Command)</p></td>
+<td><p>多功能命令（ZQ 校准等）</p></td>
+</tr>
+<tr class="row-odd"><td><p>RESET</p></td>
+<td><p>通过 RESET_n 引脚异步复位</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cas">
+<h3><a class="toc-backref" href="#id86" role="doc-backlink"><span class="section-number">17.7.3. </span>3 CAS 命令操作数</a><a class="headerlink" href="#cas" title="链接到此标题。"></a></h3>
+<p>CAS 命令携带多种操作数位，实现多种功能：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>操作数位</p></th>
+<th class="head"><p>功能描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>WS_FS (WCK2CK Sync)</p></td>
+<td><p>触发 WCK2CK 同步</p></td>
+</tr>
+<tr class="row-odd"><td><p>WS_FAST</p></td>
+<td><p>最小延迟的 WCK2CK 同步</p></td>
+</tr>
+<tr class="row-even"><td><p>WS_RD (Write Sync for Read)</p></td>
+<td><p>为 Read 操作准备 WCK 同步</p></td>
+</tr>
+<tr class="row-odd"><td><p>WS_WR (Write Sync for Write)</p></td>
+<td><p>为 Write 操作准备 WCK 同步</p></td>
+</tr>
+<tr class="row-even"><td><p>WS_OFF</p></td>
+<td><p>关闭 WCK Always On 模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>WCKSUS</p></td>
+<td><p>WCK 暂停</p></td>
+</tr>
+<tr class="row-even"><td><p>DC0-DC3 (Data Copy)</p></td>
+<td><p>数据复制操作</p></td>
+</tr>
+<tr class="row-odd"><td><p>WRX (Write X)</p></td>
+<td><p>写零操作</p></td>
+</tr>
+<tr class="row-even"><td><p>B3</p></td>
+<td><p>Burst Length 3 操作</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id21">
+<h2><a class="toc-backref" href="#id87" role="doc-backlink"><span class="section-number">17.8. </span>读写操作</a><a class="headerlink" href="#id21" title="链接到此标题。"></a></h2>
+<section id="read">
+<h3><a class="toc-backref" href="#id88" role="doc-backlink"><span class="section-number">17.8.1. </span>1 Read 操作</a><a class="headerlink" href="#read" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>Read 操作前必须完成 WCK2CK 同步</p></li>
+<li><p>数据通过 DQ 总线和 RDQS 信号输出</p></li>
+<li><p>支持 BL16 和 BL32 突发长度</p></li>
+<li><p>不同 Bank Group 的背靠背 Read 可以无额外延迟</p></li>
+<li><p>Read Latency（RL）由 MR2 OP[3:0] 和 MR2 OP[6:4] 编程设定</p></li>
+</ul>
+<p><strong>Read Preamble 和 Postamble</strong>：</p>
+<ul class="simple">
+<li><p><strong>tRPRE</strong>：Read Preamble 时间，RDQS 信号在数据输出前开始翻转</p></li>
+<li><p><strong>tRPST</strong>：Read Postamble 时间，RDQS 信号在数据输出后继续翻转</p></li>
+</ul>
+</section>
+<section id="write">
+<h3><a class="toc-backref" href="#id89" role="doc-backlink"><span class="section-number">17.8.2. </span>2 Write 操作</a><a class="headerlink" href="#write" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>Write 操作前必须完成 WCK2CK 同步</p></li>
+<li><p>数据通过 DQ 总线由 WCK 信号采样</p></li>
+<li><p>Write Latency（WL）由 MR2 OP[3:0] 和 MR2 OP[6:4] 编程设定</p></li>
+<li><p>Write Recovery Time（nWR）确保写入数据正确存储到存储单元</p></li>
+</ul>
+<p><strong>Write Preamble 和 Postamble</strong>：</p>
+<ul class="simple">
+<li><p><strong>tWPRE</strong>：Write Preamble 时间</p></li>
+<li><p><strong>tWPST</strong>：Write Postamble 时间</p></li>
+</ul>
+</section>
+<section id="masked-write">
+<h3><a class="toc-backref" href="#id90" role="doc-backlink"><span class="section-number">17.8.3. </span>3 Masked Write</a><a class="headerlink" href="#masked-write" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>允许在写入操作中选择性地屏蔽部分字节</p></li>
+<li><p>通过 DMI 信号指定哪些字节需要被更新</p></li>
+<li><p>适用于部分数据更新的场景，减少读-改-写操作</p></li>
+<li><p>受 tCCDMW 时序约束</p></li>
+</ul>
+</section>
+<section id="auto-precharge">
+<h3><a class="toc-backref" href="#id91" role="doc-backlink"><span class="section-number">17.8.4. </span>4 Auto-Precharge</a><a class="headerlink" href="#auto-precharge" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>在 Read 或 Write 操作中可以自动执行 Precharge</p></li>
+<li><p>减少控制器的命令开销</p></li>
+<li><p>需要注意 Write 到 Read 带 Auto-Precharge 的延迟约束</p></li>
+</ul>
+</section>
+<section id="data-bus-inversion-dbi">
+<h3><a class="toc-backref" href="#id92" role="doc-backlink"><span class="section-number">17.8.5. </span>5 Data Bus Inversion (DBI)</a><a class="headerlink" href="#data-bus-inversion-dbi" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>通过对数据总线进行按位取反来优化信号完整性</p></li>
+<li><p>当原始数据中&quot;0&quot;位多于&quot;1&quot;位时，对数据进行取反以减少翻转</p></li>
+<li><p>通过 MR20 OP[0] 使能</p></li>
+<li><p>DMI 引脚在 Read 时输出 DBI 状态指示</p></li>
+</ul>
+</section>
+<section id="bl-n">
+<h3><a class="toc-backref" href="#id93" role="doc-backlink"><span class="section-number">17.8.6. </span>6 有效突发长度（BL/n）</a><a class="headerlink" href="#bl-n" title="链接到此标题。"></a></h3>
+<p>LPDDR5 引入了 BL/n 的概念，支持更灵活的突发控制：</p>
+<ul class="simple">
+<li><p><strong>BL/n</strong>：标准突发长度</p></li>
+<li><p><strong>BL/n_min</strong>：最小有效突发长度</p></li>
+<li><p><strong>BL/n_max</strong>：最大有效突发长度</p></li>
+<li><p>在背靠背操作中，BL/n_min 允许更紧凑的命令间隔</p></li>
+</ul>
+</section>
+</section>
+<section id="id22">
+<h2><a class="toc-backref" href="#id94" role="doc-backlink"><span class="section-number">17.9. </span>刷新机制</a><a class="headerlink" href="#id22" title="链接到此标题。"></a></h2>
+<section id="refresh">
+<h3><a class="toc-backref" href="#id95" role="doc-backlink"><span class="section-number">17.9.1. </span>1 刷新命令（Refresh）</a><a class="headerlink" href="#refresh" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>DRAM 存储单元中的电荷会随时间泄漏，需要定期刷新</p></li>
+<li><p><strong>All-Bank Refresh</strong>：刷新所有 Bank</p></li>
+<li><p><strong>Per-Bank Refresh</strong>：刷新单个 Bank，其他 Bank 可继续操作</p></li>
+<li><p>刷新间隔 tREFI 和刷新周期 tRFC 由器件密度和工作温度决定</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3><a class="toc-backref" href="#id96" role="doc-backlink"><span class="section-number">17.9.2. </span>2 刷新管理</a><a class="headerlink" href="#id23" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>控制器需要跟踪刷新计数，确保所有行都能在规定时间内被刷新</p></li>
+<li><p>刷新命令可以被**推迟（Postponing）**或**提前（Pulling-in）**</p></li>
+<li><p>最大推迟次数和最大提前次数由规范限制</p></li>
+</ul>
+</section>
+<section id="optimized-refresh">
+<h3><a class="toc-backref" href="#id97" role="doc-backlink"><span class="section-number">17.9.3. </span>3 优化刷新（Optimized Refresh）</a><a class="headerlink" href="#optimized-refresh" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>通过 MR25 OP[7] 控制</p></li>
+<li><p>在特定条件下可以跳过不需要的刷新操作</p></li>
+<li><p>进一步降低刷新功耗</p></li>
+</ul>
+</section>
+<section id="self-refresh">
+<h3><a class="toc-backref" href="#id98" role="doc-backlink"><span class="section-number">17.9.4. </span>4 自刷新（Self Refresh）</a><a class="headerlink" href="#self-refresh" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>DRAM 自己管理刷新操作</p></li>
+<li><p>控制器无需发送刷新命令</p></li>
+<li><p>适用于系统长时间空闲的场景</p></li>
+<li><p>支持在自刷新期间进入 Power-Down 以进一步降低功耗</p></li>
+</ul>
+</section>
+<section id="pasr">
+<h3><a class="toc-backref" href="#id99" role="doc-backlink"><span class="section-number">17.9.5. </span>5 部分数组自刷新（PASR）</a><a class="headerlink" href="#pasr" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>可以选择性地只刷新部分存储阵列</p></li>
+<li><p>通过模式寄存器配置 Segment Masking</p></li>
+<li><p>适用于不需要保留全部数据的低功耗场景</p></li>
+</ul>
+</section>
+<section id="parc">
+<h3><a class="toc-backref" href="#id100" role="doc-backlink"><span class="section-number">17.9.6. </span>6 部分数组刷新控制（PARC）</a><a class="headerlink" href="#parc" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>控制需要刷新的数组区域范围</p></li>
+<li><p>与 PASR 类似但粒度不同</p></li>
+</ul>
+</section>
+<section id="refresh-management-rfm">
+<h3><a class="toc-backref" href="#id101" role="doc-backlink"><span class="section-number">17.9.7. </span>7 刷新管理命令（Refresh Management - RFM）</a><a class="headerlink" href="#refresh-management-rfm" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>LPDDR5 引入了 RFM 命令用于精细化的刷新管理</p></li>
+<li><p>支持 Sub-Bank 级别的刷新</p></li>
+<li><p>可以对特定 Sub-Bank 区域执行刷新操作</p></li>
+</ul>
+</section>
+</section>
+<section id="id24">
+<h2><a class="toc-backref" href="#id102" role="doc-backlink"><span class="section-number">17.10. </span>电源管理</a><a class="headerlink" href="#id24" title="链接到此标题。"></a></h2>
+<section id="power-down">
+<h3><a class="toc-backref" href="#id103" role="doc-backlink"><span class="section-number">17.10.1. </span>1 Power Down</a><a class="headerlink" href="#power-down" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>关闭 DRAM 的大部分内部时钟和逻辑以降低功耗</p></li>
+<li><p>保留当前状态（包括打开的行）</p></li>
+<li><p>支持从 Active 状态、Idle 状态进入</p></li>
+<li><p>退出 Power Down 后可以继续之前的操作</p></li>
+</ul>
+</section>
+<section id="deep-sleep-mode">
+<h3><a class="toc-backref" href="#id104" role="doc-backlink"><span class="section-number">17.10.2. </span>2 Deep Sleep Mode</a><a class="headerlink" href="#deep-sleep-mode" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>比 Power Down 更深度的低功耗状态</p></li>
+<li><p>关闭更多内部电路</p></li>
+<li><p>支持从 Idle 和 Self Refresh 状态进入</p></li>
+<li><p>退出时需要更长的恢复时间</p></li>
+<li><p>通过 CS 信号异步唤醒</p></li>
+</ul>
+</section>
+<section id="dvfs">
+<h3><a class="toc-backref" href="#id105" role="doc-backlink"><span class="section-number">17.10.3. </span>3 动态电压频率调节（DVFS）</a><a class="headerlink" href="#dvfs" title="链接到此标题。"></a></h3>
+<p>LPDDR5 支持两种 DVFS 模式：</p>
+<p><a href="#id25"><span class="problematic" id="id26">**</span></a>DVFSC 模式**（Clock DVFS）：</p>
+<ul class="simple">
+<li><p>仅改变 CK 和 WCK 频率，电压保持不变</p></li>
+<li><p>频率切换更快速</p></li>
+<li><p>通过 FSP（Frequency Set Point）机制实现</p></li>
+<li><p>支持最多 4 个频率设置点</p></li>
+</ul>
+<p><a href="#id27"><span class="problematic" id="id28">**</span></a>DVFSQ 模式**（Quick DVFS）：</p>
+<ul class="simple">
+<li><p>同时改变频率和 VDDQ 电压</p></li>
+<li><p>低频时使用 VDD2L（低电压），高频时使用 VDD2H（高电压）</p></li>
+<li><p>提供更大的功耗节省</p></li>
+<li><p>需要等待 VDDQ 电压斜坡稳定</p></li>
+</ul>
+<p><strong>频率设置点（FSP）</strong>：</p>
+<ul class="simple">
+<li><p>LPDDR5 支持多个频率设置点</p></li>
+<li><p>每个 FSP 有独立的模式寄存器配置</p></li>
+<li><p>FSP 切换通过 CAS 命令触发</p></li>
+<li><p>切换时序由 tFC 参数定义</p></li>
+</ul>
+</section>
+<section id="vref-current-generator-vrcg">
+<h3><a class="toc-backref" href="#id106" role="doc-backlink"><span class="section-number">17.10.4. </span>4 VREF Current Generator (VRCG)</a><a class="headerlink" href="#vref-current-generator-vrcg" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>为 VREF(CA) 和 VREF(DQ) 生成参考电压</p></li>
+<li><p>支持高电流模式（High Current Mode）和普通模式</p></li>
+<li><p>在 VREF 更新时需要切换到高电流模式</p></li>
+<li><p>VRCG 的使能/禁用有时序要求</p></li>
+</ul>
+</section>
+</section>
+<section id="odt">
+<h2><a class="toc-backref" href="#id107" role="doc-backlink"><span class="section-number">17.11. </span>端接（ODT）</a><a class="headerlink" href="#odt" title="链接到此标题。"></a></h2>
+<section id="on-die-termination">
+<h3><a class="toc-backref" href="#id108" role="doc-backlink"><span class="section-number">17.11.1. </span>1 On-Die Termination 概述</a><a class="headerlink" href="#on-die-termination" title="链接到此标题。"></a></h3>
+<p>LPDDR5 在 CA 总线、DQ 总线、WCK 和 CS 信号上都支持 On-Die Termination（ODT）：</p>
+<ul class="simple">
+<li><p><strong>CA Bus ODT</strong>：命令/地址总线的端接电阻</p></li>
+<li><p><strong>DQ Bus ODT</strong>：数据总线的端接电阻</p></li>
+<li><p><strong>WCK ODT</strong>：写时钟的端接电阻</p></li>
+<li><p><strong>CS ODT</strong>：片选信号的端接电阻</p></li>
+<li><p>ODT 电阻值通过 ZQ 校准确定，典型值为 RZQ (240 ohm) 的 1/3、1/4、1/6 等</p></li>
+</ul>
+</section>
+<section id="dram-odt-nt-odt">
+<h3><a class="toc-backref" href="#id109" role="doc-backlink"><span class="section-number">17.11.2. </span>2 非目标 DRAM ODT（NT-ODT）</a><a class="headerlink" href="#dram-odt-nt-odt" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>多 Rank 系统中，非目标 Rank 的 DQ 总线端接</p></li>
+<li><p>减少 Rank 切换时的总线反射</p></li>
+<li><p>支持同步和异步 ODT 模式</p></li>
+<li><p>分为 Write NT-ODT 和 Read NT-ODT</p></li>
+</ul>
+<p><strong>NT-ODT 控制</strong>：</p>
+<ul class="simple">
+<li><p>通过 MR10、MR11、MR12 等寄存器配置</p></li>
+<li><p>由 MR0 OP[0] 控制时序模式</p></li>
+<li><p>支持两种时序模式（MR0 OP[0]=0B 和 MR0 OP[0]=1B）</p></li>
+</ul>
+<p><strong>Unified NT-ODT 行为</strong>：</p>
+<ul class="simple">
+<li><p>统一了不同模式下的 NT-ODT 行为</p></li>
+<li><p>支持 DMI、RDQS_t、RDQS_c 的独立 ODT 控制</p></li>
+<li><p>适用于 DVFSC 和 DVFSQ 模式</p></li>
+</ul>
+</section>
+<section id="asynchronous-odt">
+<h3><a class="toc-backref" href="#id110" role="doc-backlink"><span class="section-number">17.11.3. </span>3 Asynchronous ODT</a><a class="headerlink" href="#asynchronous-odt" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>ODT 的开启/关闭可以异步执行</p></li>
+<li><p>由 ODTLon 和 ODTLoff 寄存器控制延迟</p></li>
+<li><p>适用于高速操作场景</p></li>
+</ul>
+</section>
+</section>
+<section id="mode-register">
+<h2><a class="toc-backref" href="#id111" role="doc-backlink"><span class="section-number">17.12. </span>模式寄存器（Mode Register）</a><a class="headerlink" href="#mode-register" title="链接到此标题。"></a></h2>
+<section id="id29">
+<h3><a class="toc-backref" href="#id112" role="doc-backlink"><span class="section-number">17.12.1. </span>1 概述</a><a class="headerlink" href="#id29" title="链接到此标题。"></a></h3>
+<p>LPDDR5 定义了大量的模式寄存器（MR0 至 MR57+），用于配置器件的各种参数：</p>
+<ul class="simple">
+<li><p>每个 FSP（频率设置点）有**三个物理寄存器**，通过 MR16 OP[3:0] 选择</p></li>
+<li><p>通过 MRW 命令写入，MRR 命令读取</p></li>
+<li><p>地址通过 MA[7:0] 指定，数据通过 OP[7:0] 传输</p></li>
+</ul>
+</section>
+<section id="id30">
+<h3><a class="toc-backref" href="#id113" role="doc-backlink"><span class="section-number">17.12.2. </span>2 关键模式寄存器</a><a class="headerlink" href="#id30" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器</p></th>
+<th class="head"><p>地址</p></th>
+<th class="head"><p>主要功能</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MR0</p></td>
+<td><p>00H</p></td>
+<td><p>Burst Length、RL/WL 设置、NT-ODT 时序模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR1</p></td>
+<td><p>01H</p></td>
+<td><p>Driver Strength、ODT 设置</p></td>
+</tr>
+<tr class="row-even"><td><p>MR2</p></td>
+<td><p>02H</p></td>
+<td><p>Read Latency、Write Latency、nRTP、nWR</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR3</p></td>
+<td><p>03H</p></td>
+<td><p>Bank 架构选择（BG/8B/16B）、DBI 设置</p></td>
+</tr>
+<tr class="row-even"><td><p>MR4</p></td>
+<td><p>04H</p></td>
+<td><p>温度传感器设置、刷新参数</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR10</p></td>
+<td><p>0AH</p></td>
+<td><p>DQ VREF 设置、RDQS 控制</p></td>
+</tr>
+<tr class="row-even"><td><p>MR11</p></td>
+<td><p>0BH</p></td>
+<td><p>DQ ODT 设置、NT-ODT 控制</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR12</p></td>
+<td><p>0CH</p></td>
+<td><p>CA VREF 设置</p></td>
+</tr>
+<tr class="row-even"><td><p>MR14</p></td>
+<td><p>0EH</p></td>
+<td><p>DQ[7:0] VREF 设置</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR15</p></td>
+<td><p>0FH</p></td>
+<td><p>DQ[15:8] VREF 设置</p></td>
+</tr>
+<tr class="row-even"><td><p>MR16</p></td>
+<td><p>10H</p></td>
+<td><p>物理寄存器选择（FSP 映射）</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR18</p></td>
+<td><p>12H</p></td>
+<td><p>WCK:CK 比率设置、Custom Gear Down</p></td>
+</tr>
+<tr class="row-even"><td><p>MR20</p></td>
+<td><p>14H</p></td>
+<td><p>RDQS 模式、DBI 控制</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR25</p></td>
+<td><p>19H</p></td>
+<td><p>优化刷新控制、VDD2L 参数</p></td>
+</tr>
+<tr class="row-even"><td><p>MR27</p></td>
+<td><p>1BH</p></td>
+<td><p>RFM（Refresh Management）配置</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR42</p></td>
+<td><p>2AH</p></td>
+<td><p>PPR（Post Package Repair）控制</p></td>
+</tr>
+<tr class="row-even"><td><p>MR45</p></td>
+<td><p>2DH</p></td>
+<td><p>Link ECC 配置</p></td>
+</tr>
+<tr class="row-odd"><td><p>MR57</p></td>
+<td><p>39H</p></td>
+<td><p>Sub-Bank 寻址和 RFM 控制</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id31">
+<h2><a class="toc-backref" href="#id114" role="doc-backlink"><span class="section-number">17.13. </span>特殊功能</a><a class="headerlink" href="#id31" title="链接到此标题。"></a></h2>
+<section id="data-copy">
+<h3><a class="toc-backref" href="#id115" role="doc-backlink"><span class="section-number">17.13.1. </span>1 Data Copy 功能</a><a class="headerlink" href="#data-copy" title="链接到此标题。"></a></h3>
+<p>LPDDR5 支持数据复制功能，用于内部数据搬运：</p>
+<p><strong>Write Data Copy</strong>：</p>
+<ul class="simple">
+<li><p>将已写入 DRAM 的数据复制到相邻地址</p></li>
+<li><p>通过 CAS 命令的 DC0-DC3 操作数触发</p></li>
+<li><p>DMI 引脚输出命中/未命中标志</p></li>
+<li><p>适用于数据初始化和填充场景</p></li>
+</ul>
+<p><strong>Read Data Copy</strong>：</p>
+<ul class="simple">
+<li><p>读取已存储的数据并复制到相邻地址</p></li>
+<li><p>支持与 DBI 功能配合使用</p></li>
+</ul>
+</section>
+<section id="write-x">
+<h3><a class="toc-backref" href="#id116" role="doc-backlink"><span class="section-number">17.13.2. </span>2 Write X 操作</a><a class="headerlink" href="#write-x" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>快速将指定区域填充为零</p></li>
+<li><p>通过 CAS(WRX) 命令触发</p></li>
+<li><p>适用于内存清零场景</p></li>
+<li><p>可与普通的 Write 操作混合使用</p></li>
+</ul>
+</section>
+<section id="post-package-repair-ppr">
+<h3><a class="toc-backref" href="#id117" role="doc-backlink"><span class="section-number">17.13.3. </span>3 Post Package Repair (PPR)</a><a class="headerlink" href="#post-package-repair-ppr" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><a href="#id32"><span class="problematic" id="id33">**</span></a>封装后修复**功能，用于修复已出厂的存储器件中的缺陷行</p></li>
+<li><p>通过 MR42 配置 PPR 参数</p></li>
+<li><p>支持 <strong>Guard Key 保护</strong>，防止误操作</p></li>
+<li><p>修复过程：标记缺陷行 -&gt; 修复行地址 -&gt; 修复确认</p></li>
+</ul>
+</section>
+<section id="decision-feedback-equalization-dfe">
+<h3><a class="toc-backref" href="#id118" role="doc-backlink"><span class="section-number">17.13.4. </span>4 Decision Feedback Equalization (DFE)</a><a class="headerlink" href="#decision-feedback-equalization-dfe" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><a href="#id34"><span class="problematic" id="id35">**</span></a>判决反馈均衡**技术</p></li>
+<li><p>用于高速操作下的信号质量改善</p></li>
+<li><p>通过 DFE 预驱动要求确保信号完整性</p></li>
+</ul>
+</section>
+<section id="link-ecc">
+<h3><a class="toc-backref" href="#id119" role="doc-backlink"><span class="section-number">17.13.5. </span>5 Link ECC</a><a class="headerlink" href="#link-ecc" title="链接到此标题。"></a></h3>
+<p>LPDDR5 引入了链路级 ECC 保护：</p>
+<ul class="simple">
+<li><p><strong>Write Link ECC</strong>：在写入数据时附加 ECC 校验位</p></li>
+<li><p><strong>Read Link ECC</strong>：在读取数据时进行 ECC 校验</p></li>
+<li><p>通过 MR45 配置</p></li>
+<li><p>ECC 校验矩阵覆盖 DQ 数据和 DMI 信号</p></li>
+<li><p>提供端到端的数据完整性保护</p></li>
+</ul>
+</section>
+<section id="id36">
+<h3><a class="toc-backref" href="#id120" role="doc-backlink"><span class="section-number">17.13.6. </span>6 温度传感器</a><a class="headerlink" href="#id36" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>LPDDR5 内置温度传感器</p></li>
+<li><p>通过 MR4 OP[2:0] 配置</p></li>
+<li><p>控制器可以通过 MPC 命令读取温度值</p></li>
+<li><p>用于刷新速率调整（温度补偿）和过热保护</p></li>
+</ul>
+</section>
+<section id="twck2dq-interval-oscillator">
+<h3><a class="toc-backref" href="#id121" role="doc-backlink"><span class="section-number">17.13.7. </span>7 tWCK2DQ Interval Oscillator</a><a class="headerlink" href="#twck2dq-interval-oscillator" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>内部振荡器，用于测量 WCK 到 DQ 的时序间隔</p></li>
+<li><p>分为 WCK2DQI（Input）和 WCK2DQO（Output）两种</p></li>
+<li><p>可通过 MPC 命令启动/停止</p></li>
+<li><p>测量结果用于训练和校准</p></li>
+</ul>
+</section>
+</section>
+<section id="ac-dc">
+<h2><a class="toc-backref" href="#id122" role="doc-backlink"><span class="section-number">17.14. </span>AC/DC 规范</a><a class="headerlink" href="#ac-dc" title="链接到此标题。"></a></h2>
+<section id="id37">
+<h3><a class="toc-backref" href="#id123" role="doc-backlink"><span class="section-number">17.14.1. </span>1 速度等级</a><a class="headerlink" href="#id37" title="链接到此标题。"></a></h3>
+<p>LPDDR5 定义了多个速度等级：</p>
+</section>
+<section id="dc">
+<h3><a class="toc-backref" href="#id124" role="doc-backlink"><span class="section-number">17.14.2. </span>2 DC 操作条件</a><a class="headerlink" href="#dc" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>VDDQ</strong>：标称 0.5V（高速），0.3V-0.5V（低速）</p></li>
+<li><p><strong>VDD1</strong>：内部逻辑电源</p></li>
+<li><p><strong>VDD2H/VDD2L</strong>：高频/低频工作电源</p></li>
+<li><p><strong>VDDQ 容差</strong>：在允许范围内有规定的容差要求</p></li>
+</ul>
+</section>
+<section id="ac">
+<h3><a class="toc-backref" href="#id125" role="doc-backlink"><span class="section-number">17.14.3. </span>3 AC 参数</a><a class="headerlink" href="#ac" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>tCK</strong>：CK 时钟周期</p></li>
+<li><p><strong>tWCK</strong>：WCK 时钟周期</p></li>
+<li><p><strong>tJIT(per)</strong>：周期抖动</p></li>
+<li><p><strong>tJIT(cc)</strong>：周期间抖动</p></li>
+<li><p><strong>tWCK2DQI</strong>：WCK 到 DQ Input 的时序</p></li>
+<li><p><strong>tWCK2DQO</strong>：WCK 到 DQ Output 的时序</p></li>
+</ul>
+</section>
+<section id="id38">
+<h3><a class="toc-backref" href="#id126" role="doc-backlink"><span class="section-number">17.14.4. </span>4 信号电平</a><a class="headerlink" href="#id38" title="链接到此标题。"></a></h3>
+<p><strong>LVSTL（Low Voltage Swing Terminated Logic）</strong>：</p>
+<ul class="simple">
+<li><p>适用于 DQ、WCK、RDQS 等高速信号</p></li>
+<li><p>标称信号摆幅：VDDQ/2（约 250mV）</p></li>
+<li><p>需要端接电阻（ODT）</p></li>
+</ul>
+<p><strong>1.05V High Speed LVCMOS</strong>：</p>
+<ul class="simple">
+<li><p>适用于 CK、CA、CS 等命令/地址信号</p></li>
+<li><p>输入电平符合 LVCMOS 标准</p></li>
+</ul>
+</section>
+<section id="id39">
+<h3><a class="toc-backref" href="#id127" role="doc-backlink"><span class="section-number">17.14.5. </span>5 温度范围</a><a class="headerlink" href="#id39" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>商业级</strong>：0°C 至 +85°C（典型）, -30°C 至 +85°C（扩展）</p></li>
+<li><p><strong>工业级</strong>：-40°C 至 +105°C</p></li>
+<li><p><strong>汽车级</strong>：-40°C 至 +105°C（有额外规范）</p></li>
+</ul>
+</section>
+</section>
+<section id="id40">
+<h2><a class="toc-backref" href="#id128" role="doc-backlink"><span class="section-number">17.15. </span>封装与引脚</a><a class="headerlink" href="#id40" title="链接到此标题。"></a></h2>
+<section id="id41">
+<h3><a class="toc-backref" href="#id129" role="doc-backlink"><span class="section-number">17.15.1. </span>1 封装类型</a><a class="headerlink" href="#id41" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>315-ball POP Package</strong>：叠层封装</p></li>
+<li><p><strong>0.80mm x 0.70mm</strong>：小型化封装尺寸</p></li>
+<li><p>支持 x16 单通道和 x32 双通道配置</p></li>
+</ul>
+</section>
+<section id="byte-mode">
+<h3><a class="toc-backref" href="#id130" role="doc-backlink"><span class="section-number">17.15.2. </span>2 Byte Mode 设备</a><a class="headerlink" href="#byte-mode" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>x16 设备可以通过 Byte Mode 作为两个 x8 设备使用</p></li>
+<li><p>每个 Byte 有独立的 DQ[7:0]、WCK、RDQS、DMI 信号</p></li>
+<li><p>支持独立的 MRW/MRR 操作</p></li>
+</ul>
+</section>
+<section id="rank">
+<h3><a class="toc-backref" href="#id131" role="doc-backlink"><span class="section-number">17.15.3. </span>3 Rank 分配</a><a class="headerlink" href="#rank" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>单通道双 Rank 封装支持两个 Rank 共享同一个 CA 总线</p></li>
+<li><p>每个 Rank 有独立的 CS、DQ、WCK、RDQS 和 DMI 信号</p></li>
+<li><p>Rank 切换需要满足 tRANK-RANK 时序要求</p></li>
+</ul>
+</section>
+</section>
+<section id="id42">
+<h2><a class="toc-backref" href="#id132" role="doc-backlink"><span class="section-number">17.16. </span>关键时序参数汇总</a><a class="headerlink" href="#id42" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>参数</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tRCD</p></td>
+<td><p>ACT 到 READ/WRITE 的最小延迟</p></td>
+</tr>
+<tr class="row-odd"><td><p>tRAS</p></td>
+<td><p>ACT 到 PRE 的最小时间（行活跃时间）</p></td>
+</tr>
+<tr class="row-even"><td><p>tRP</p></td>
+<td><p>PRE 命令执行时间</p></td>
+</tr>
+<tr class="row-odd"><td><p>tRC</p></td>
+<td><p>同一 Bank 连续 ACT 之间的最小间隔（tRCD + tRP 理论最小值，实际 tRC &gt;= tRAS + tRP）</p></td>
+</tr>
+<tr class="row-even"><td><p>tRRD</p></td>
+<td><p>不同 Bank/Bank Group 之间 ACT 的最小间隔</p></td>
+</tr>
+<tr class="row-odd"><td><p>tFAW</p></td>
+<td><p>4 个 Bank 窗口内最大 ACT 次数的时间限制</p></td>
+</tr>
+<tr class="row-even"><td><p>tWTR</p></td>
+<td><p>WRITE 到 READ 的最小间隔</p></td>
+</tr>
+<tr class="row-odd"><td><p>tRTW</p></td>
+<td><p>READ 到 WRITE 的最小间隔</p></td>
+</tr>
+<tr class="row-even"><td><p>tCCD</p></td>
+<td><p>同一 Bank Group 内连续 CAS 命令的最小间隔</p></td>
+</tr>
+<tr class="row-odd"><td><p>tCCDMW</p></td>
+<td><p>Masked Write 相关时序约束</p></td>
+</tr>
+<tr class="row-even"><td><p>tRFC</p></td>
+<td><p>刷新周期时间</p></td>
+</tr>
+<tr class="row-odd"><td><p>tREFI</p></td>
+<td><p>刷新间隔时间</p></td>
+</tr>
+<tr class="row-even"><td><p>tXS</p></td>
+<td><p>Self Refresh 退出时间</p></td>
+</tr>
+<tr class="row-odd"><td><p>tXSR</p></td>
+<td><p>Self Refresh 退出恢复时间</p></td>
+</tr>
+<tr class="row-even"><td><p>tCKESR</p></td>
+<td><p>Self Refresh 中的 CK 停止时间</p></td>
+</tr>
+<tr class="row-odd"><td><p>tWCK2CK</p></td>
+<td><p>WCK2CK 同步时间</p></td>
+</tr>
+<tr class="row-even"><td><p>tFC</p></td>
+<td><p>FSP 切换时间</p></td>
+</tr>
+<tr class="row-odd"><td><p>tXP</p></td>
+<td><p>Power Down 退出时间</p></td>
+</tr>
+<tr class="row-even"><td><p>tXPDLL</p></td>
+<td><p>DLL 锁定时间（Power Down 后）</p></td>
+</tr>
+<tr class="row-odd"><td><p>tVREFCA</p></td>
+<td><p>VREF(CA) 更新时间</p></td>
+</tr>
+<tr class="row-even"><td><p>tVREFDQ</p></td>
+<td><p>VREF(DQ) 更新时间</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id43">
+<h2><a class="toc-backref" href="#id133" role="doc-backlink"><span class="section-number">17.17. </span>命令时序约束</a><a class="headerlink" href="#id43" title="链接到此标题。"></a></h2>
+<section id="ras">
+<h3><a class="toc-backref" href="#id134" role="doc-backlink"><span class="section-number">17.17.1. </span>1 基本 RAS 时序</a><a class="headerlink" href="#ras" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>操作组合</p></th>
+<th class="head"><p>时序要求</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ACT -&gt; ACT (Same Bank)</p></td>
+<td><p>tRC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACT -&gt; ACT (Different Bank in Same BG)</p></td>
+<td><p>tRRD_S (Same BG)</p></td>
+</tr>
+<tr class="row-even"><td><p>ACT -&gt; ACT (Different Bank in Different BG)</p></td>
+<td><p>tRRD_L (Different BG)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACT -&gt; READ/WRITE (Same Bank)</p></td>
+<td><p>tRCD</p></td>
+</tr>
+<tr class="row-even"><td><p>ACT -&gt; PRE (Same Bank)</p></td>
+<td><p>tRAS</p></td>
+</tr>
+<tr class="row-odd"><td><p>READ/WRITE -&gt; PRE (Same Bank)</p></td>
+<td><p>tRTP + tRP 或 tRBTP</p></td>
+</tr>
+<tr class="row-even"><td><p>PRE -&gt; ACT (Same Bank)</p></td>
+<td><p>tRP</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id44">
+<h3><a class="toc-backref" href="#id135" role="doc-backlink"><span class="section-number">17.17.2. </span>2 基本 CAS 时序</a><a class="headerlink" href="#id44" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>操作组合</p></th>
+<th class="head"><p>时序要求</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>READ -&gt; READ (Same Bank, Same BG)</p></td>
+<td><p>BL/n + tCCD_S</p></td>
+</tr>
+<tr class="row-odd"><td><p>READ -&gt; READ (Different BG)</p></td>
+<td><p>BL/n + tCCD_L</p></td>
+</tr>
+<tr class="row-even"><td><p>WRITE -&gt; WRITE (Same Bank, Same BG)</p></td>
+<td><p>BL/n + tCCD_S</p></td>
+</tr>
+<tr class="row-odd"><td><p>WRITE -&gt; WRITE (Different BG)</p></td>
+<td><p>BL/n + tCCD_L</p></td>
+</tr>
+<tr class="row-even"><td><p>READ -&gt; WRITE</p></td>
+<td><p>RL + BL/n + tRTW</p></td>
+</tr>
+<tr class="row-odd"><td><p>WRITE -&gt; READ</p></td>
+<td><p>WL + BL/n + tWTR</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id45">
+<h2><a class="toc-backref" href="#id136" role="doc-backlink"><span class="section-number">17.18. </span>多 Rank 操作</a><a class="headerlink" href="#id45" title="链接到此标题。"></a></h2>
+<section id="rank-to-rank">
+<h3><a class="toc-backref" href="#id137" role="doc-backlink"><span class="section-number">17.18.1. </span>1 Rank-to-Rank 时序</a><a class="headerlink" href="#rank-to-rank" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>tRANK-RANK</strong>：不同 Rank 之间的最小命令间隔</p></li>
+<li><p>Rank 切换需要考虑 WCK2CK 同步时间</p></li>
+<li><p>NT-ODT 的开关时序影响 Rank 切换效率</p></li>
+</ul>
+</section>
+<section id="id46">
+<h3><a class="toc-backref" href="#id138" role="doc-backlink"><span class="section-number">17.18.2. </span>2 Rank 切换优化</a><a class="headerlink" href="#id46" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p>支持广播 WCK2CK 同步（CAS-WS_FS Broadcast ON）</p></li>
+<li><p>支持 Enhanced WCK Always On 模式减少同步开销</p></li>
+<li><p>NT-ODT Unified 模式简化了多 Rank ODT 管理</p></li>
+</ul>
+</section>
+</section>
+<section id="id47">
+<h2><a class="toc-backref" href="#id139" role="doc-backlink"><span class="section-number">17.19. </span>术语表</a><a class="headerlink" href="#id47" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>缩写</p></th>
+<th class="head"><p>全称/含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ACT</p></td>
+<td><p>Activate（激活命令）</p></td>
+</tr>
+<tr class="row-odd"><td><p>BG</p></td>
+<td><p>Bank Group（Bank 组）</p></td>
+</tr>
+<tr class="row-even"><td><p>BL</p></td>
+<td><p>Burst Length（突发长度）</p></td>
+</tr>
+<tr class="row-odd"><td><p>CA</p></td>
+<td><p>Command/Address（命令/地址）</p></td>
+</tr>
+<tr class="row-even"><td><p>CK</p></td>
+<td><p>Clock（命令时钟）</p></td>
+</tr>
+<tr class="row-odd"><td><p>CKR</p></td>
+<td><p>WCK to CK Ratio（WCK:CK 比率）</p></td>
+</tr>
+<tr class="row-even"><td><p>DBI</p></td>
+<td><p>Data Bus Inversion（数据总线反转）</p></td>
+</tr>
+<tr class="row-odd"><td><p>DCA</p></td>
+<td><p>Duty Cycle Adjuster（占空比调节器）</p></td>
+</tr>
+<tr class="row-even"><td><p>DCM</p></td>
+<td><p>Duty Cycle Monitor（占空比监视器）</p></td>
+</tr>
+<tr class="row-odd"><td><p>DFE</p></td>
+<td><p>Decision Feedback Equalization（判决反馈均衡）</p></td>
+</tr>
+<tr class="row-even"><td><p>DM</p></td>
+<td><p>Data Mask（数据掩码）</p></td>
+</tr>
+<tr class="row-odd"><td><p>DMI</p></td>
+<td><p>Data Mask Inversion（数据掩码反转）</p></td>
+</tr>
+<tr class="row-even"><td><p>DQ</p></td>
+<td><p>Data Queue（数据总线）</p></td>
+</tr>
+<tr class="row-odd"><td><p>DVFS</p></td>
+<td><p>Dynamic Voltage and Frequency Scaling（动态电压频率调节）</p></td>
+</tr>
+<tr class="row-even"><td><p>DVFSC</p></td>
+<td><p>DVFS Clock（时钟 DVFS）</p></td>
+</tr>
+<tr class="row-odd"><td><p>DVFSQ</p></td>
+<td><p>DVFS Quick（快速 DVFS）</p></td>
+</tr>
+<tr class="row-even"><td><p>ECC</p></td>
+<td><p>Error Correcting Code（纠错码）</p></td>
+</tr>
+<tr class="row-odd"><td><p>FSP</p></td>
+<td><p>Frequency Set Point（频率设置点）</p></td>
+</tr>
+<tr class="row-even"><td><p>LVCMOS</p></td>
+<td><p>Low Voltage CMOS（低压 CMOS）</p></td>
+</tr>
+<tr class="row-odd"><td><p>LVSTL</p></td>
+<td><p>Low Voltage Swing Terminated Logic（低电压摆幅端接逻辑）</p></td>
+</tr>
+<tr class="row-even"><td><p>MRW/MRR</p></td>
+<td><p>Mode Register Write/Read（模式寄存器写/读）</p></td>
+</tr>
+<tr class="row-odd"><td><p>MPC</p></td>
+<td><p>Multi-Purpose Command（多功能命令）</p></td>
+</tr>
+<tr class="row-even"><td><p>NT-ODT</p></td>
+<td><p>Non-Target On-Die Termination（非目标片上端接）</p></td>
+</tr>
+<tr class="row-odd"><td><p>ODT</p></td>
+<td><p>On-Die Termination（片上端接）</p></td>
+</tr>
+<tr class="row-even"><td><p>PASR</p></td>
+<td><p>Partial Array Self Refresh（部分阵列自刷新）</p></td>
+</tr>
+<tr class="row-odd"><td><p>PDE/PDX</p></td>
+<td><p>Power Down Entry/Exit（电源下降进入/退出）</p></td>
+</tr>
+<tr class="row-even"><td><p>PPR</p></td>
+<td><p>Post Package Repair（封装后修复）</p></td>
+</tr>
+<tr class="row-odd"><td><p>PRE</p></td>
+<td><p>Precharge（预充电）</p></td>
+</tr>
+<tr class="row-even"><td><p>RDQS</p></td>
+<td><p>Read Data Strobe（读数据选通）</p></td>
+</tr>
+<tr class="row-odd"><td><p>RFM</p></td>
+<td><p>Refresh Management（刷新管理）</p></td>
+</tr>
+<tr class="row-even"><td><p>RL</p></td>
+<td><p>Read Latency（读延迟）</p></td>
+</tr>
+<tr class="row-odd"><td><p>SDR/DDR</p></td>
+<td><p>Single Data Rate / Double Data Rate（单/双数据速率）</p></td>
+</tr>
+<tr class="row-even"><td><p>SRE/SRX</p></td>
+<td><p>Self Refresh Entry/Exit（自刷新进入/退出）</p></td>
+</tr>
+<tr class="row-odd"><td><p>VREF</p></td>
+<td><p>Reference Voltage（参考电压）</p></td>
+</tr>
+<tr class="row-even"><td><p>VRCG</p></td>
+<td><p>VREF Current Generator（VREF 电流发生器）</p></td>
+</tr>
+<tr class="row-odd"><td><p>WL</p></td>
+<td><p>Write Latency（写延迟）</p></td>
+</tr>
+<tr class="row-even"><td><p>WCK</p></td>
+<td><p>Write Clock（写时钟）</p></td>
+</tr>
+<tr class="row-odd"><td><p>ZQ</p></td>
+<td><p>ZQ Calibration（ZQ 校准）</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="cxl/CXL_Spec.html" class="btn btn-neutral float-left" title="16. Compute Express Link (CXL) 规范分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="lpddr5_dvfs.html" class="btn btn-neutral float-right" title="18. LPDDR5 DVFS（动态电压频率调整）机制" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

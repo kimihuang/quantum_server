@@ -1,0 +1,42 @@
+  [ENABLED ] group_math (3 modules)
+    [ENABLED ] module_add               (4 cases, 0 disabled)
+      [ENABLED ] test_1_plus_1
+      [ENABLED ] test_neg_add
+      [ENABLED ] test_zero_add
+      [ENABLED ] test_large_add
+    [ENABLED ] module_sub               (3 cases, 0 disabled)
+      [ENABLED ] test_5_minus_3
+      [ENABLED ] test_neg_minus_neg
+      [ENABLED ] test_zero_minus_zero
+    [ENABLED ] module_mul               (3 cases, 0 disabled)
+      [ENABLED ] test_2_times_3
+      [ENABLED ] test_neg_times_neg
+      [ENABLED ] test_overflow
+  [ENABLED ] group_string (3 modules)
+    [ENABLED ] module_concat            (3 cases, 0 disabled)
+      [ENABLED ] test_basic_concat
+      [ENABLED ] test_empty_concat
+      [ENABLED ] test_concat_null_term
+    [ENABLED ] module_len               (3 cases, 0 disabled)
+      [ENABLED ] test_ascii_len
+      [ENABLED ] test_empty_len
+      [ENABLED ] test_space_len
+    [ENABLED ] module_copy              (3 cases, 0 disabled)
+      [ENABLED ] test_strcpy_basic
+      [ENABLED ] test_strncpy_exact
+      [ENABLED ] test_memcpy
+  [ENABLED ] group_i2c (1 modules)
+    [ENABLED ] module_i2c_transfer      (4 cases, 0 disabled)
+      [ENABLED ] test_i2c_write_byte
+      [ENABLED ] test_i2c_read_byte
+      [ENABLED ] test_i2c_multi_byte_transfer
+      [ENABLED ] test_i2c_invalid_addr
+  [ENABLED ] group_timer (2 modules)
+    [ENABLED ] module_timer_basic       (2 cases, 0 disabled)
+      [ENABLED ] test_timer_single_shot
+      [ENABLED ] test_timer_stop
+    [ENABLED ] module_timer_interrupt   (2 cases, 0 disabled)
+      [ENABLED ] test_timer_periodic
+      [ENABLED ] test_timer_periodic_overflow
+
+  Total: 4 groups, 9 modules, 27 cases

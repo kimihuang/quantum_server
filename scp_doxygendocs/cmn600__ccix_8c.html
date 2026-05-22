@@ -1,0 +1,982 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: scp_firmware/module/cmn600/src/cmn600_ccix.c 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cmn600__ccix_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">宏定义</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">cmn600_ccix.c 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>CMN-600 CCIX 功能实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;<a class="el" href="cmn600_8h_source.html">cmn600.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="cmn600__ccix_8h_source.html">internal/cmn600_ccix.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="cmn600__ctx_8h_source.html">internal/cmn600_ctx.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="mod__cmn600_8h_source.html">mod_cmn600.h</a>&gt;</code><br />
+<code>#include &lt;mod_timer.h&gt;</code><br />
+<code>#include &lt;fwk_assert.h&gt;</code><br />
+<code>#include &lt;fwk_id.h&gt;</code><br />
+<code>#include &lt;fwk_log.h&gt;</code><br />
+<code>#include &lt;fwk_math.h&gt;</code><br />
+<code>#include &lt;fwk_module_idx.h&gt;</code><br />
+<code>#include &lt;fwk_status.h&gt;</code><br />
+<code>#include &lt;inttypes.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stddef.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+</div>
+<p><a href="cmn600__ccix_8c_source.html">浏览源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:ab1a624c04493635b9de587eea26e8016" id="r_ab1a624c04493635b9de587eea26e8016"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#ab1a624c04493635b9de587eea26e8016">MOD_NAME</a>&#160;&#160;&#160;&quot;[CMN600] &quot;</td></tr>
+<tr class="memdesc:ab1a624c04493635b9de587eea26e8016"><td class="mdescLeft">&#160;</td><td class="mdescRight">模块日志输出的前缀标识  <br /></td></tr>
+<tr class="separator:ab1a624c04493635b9de587eea26e8016"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a55c705e278f08ccd16742dd27b0609f1" id="r_a55c705e278f08ccd16742dd27b0609f1"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a55c705e278f08ccd16742dd27b0609f1">cxg_link_wait_condition</a> (void *data)</td></tr>
+<tr class="memdesc:a55c705e278f08ccd16742dd27b0609f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 链路等待条件回调函数  <br /></td></tr>
+<tr class="separator:a55c705e278f08ccd16742dd27b0609f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a659bdd1923053c52a710382fcb3742c8" id="r_a659bdd1923053c52a710382fcb3742c8"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a659bdd1923053c52a710382fcb3742c8">enable_smp_mode</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>)</td></tr>
+<tr class="memdesc:a659bdd1923053c52a710382fcb3742c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">使能 SMP (Symmetric Multiprocessing) 模式  <br /></td></tr>
+<tr class="separator:a659bdd1923053c52a710382fcb3742c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c4a5779725ac08923d301ba32e1a658" id="r_a0c4a5779725ac08923d301ba32e1a658"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a0c4a5779725ac08923d301ba32e1a658">program_cxg_ra_rnf_ldid_to_raid_reg</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t ldid_value, uint8_t raid)</td></tr>
+<tr class="memdesc:a0c4a5779725ac08923d301ba32e1a658"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 CXRA RN-F LDID-to-RAID 映射寄存器  <br /></td></tr>
+<tr class="separator:a0c4a5779725ac08923d301ba32e1a658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c6c30d5e90fbbcffa8f18ff97e19e1e" id="r_a0c6c30d5e90fbbcffa8f18ff97e19e1e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a0c6c30d5e90fbbcffa8f18ff97e19e1e">program_cxg_ra_rni_ldid_to_raid_reg</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t ldid_value, uint8_t raid)</td></tr>
+<tr class="memdesc:a0c6c30d5e90fbbcffa8f18ff97e19e1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 CXRA RN-I LDID-to-RAID 映射寄存器  <br /></td></tr>
+<tr class="separator:a0c6c30d5e90fbbcffa8f18ff97e19e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b49d81384f794a9348cdde87c64c298" id="r_a7b49d81384f794a9348cdde87c64c298"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a7b49d81384f794a9348cdde87c64c298">program_cxg_ra_rnd_ldid_to_raid_reg</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t ldid_value, uint8_t raid)</td></tr>
+<tr class="memdesc:a7b49d81384f794a9348cdde87c64c298"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 CXRA RN-D LDID-to-RAID 映射寄存器  <br /></td></tr>
+<tr class="separator:a7b49d81384f794a9348cdde87c64c298"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a695435a61d683e00365438f33340d1b4" id="r_a695435a61d683e00365438f33340d1b4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a695435a61d683e00365438f33340d1b4">program_agentid_to_linkid_reg</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t agent_id, uint8_t link_id)</td></tr>
+<tr class="memdesc:a695435a61d683e00365438f33340d1b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 AgentID-to-LinkID 映射寄存器  <br /></td></tr>
+<tr class="separator:a695435a61d683e00365438f33340d1b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a903c68edb161acc80b19cdc38bb090b2" id="r_a903c68edb161acc80b19cdc38bb090b2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a903c68edb161acc80b19cdc38bb090b2">program_cxg_ha_id</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t remote_ha_id)</td></tr>
+<tr class="memdesc:a903c68edb161acc80b19cdc38bb090b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 CXHA Home Agent ID  <br /></td></tr>
+<tr class="separator:a903c68edb161acc80b19cdc38bb090b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55493adf67c9fec5e86dbe689bc9ec0f" id="r_a55493adf67c9fec5e86dbe689bc9ec0f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a55493adf67c9fec5e86dbe689bc9ec0f">program_cxg_ha_raid_to_ldid_lut</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t raid_id, uint8_t ldid)</td></tr>
+<tr class="memdesc:a55493adf67c9fec5e86dbe689bc9ec0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 CXHA RAID-to-LDID 查找表  <br /></td></tr>
+<tr class="separator:a55493adf67c9fec5e86dbe689bc9ec0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a893a3004002b2401d2fb262e2a59912c" id="r_a893a3004002b2401d2fb262e2a59912c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a893a3004002b2401d2fb262e2a59912c">program_hnf_ldid_to_chi_node_id_reg</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t ldid, uint32_t node_id, uint8_t local_remote)</td></tr>
+<tr class="memdesc:a893a3004002b2401d2fb262e2a59912c"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 HN-F LDID-to-CHI-Node-ID 寄存器  <br /></td></tr>
+<tr class="separator:a893a3004002b2401d2fb262e2a59912c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba73b009d647f40a5b473cfe89d69189" id="r_aba73b009d647f40a5b473cfe89d69189"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#aba73b009d647f40a5b473cfe89d69189">program_cxg_ra_sam_addr_region</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, struct <a class="el" href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a> *config)</td></tr>
+<tr class="memdesc:aba73b009d647f40a5b473cfe89d69189"><td class="mdescLeft">&#160;</td><td class="mdescRight">编程 CXRA SAM 地址区域寄存器  <br /></td></tr>
+<tr class="separator:aba73b009d647f40a5b473cfe89d69189"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4ef28cb3bf98702c776cf8852b7b3c9" id="r_ae4ef28cb3bf98702c776cf8852b7b3c9"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#ae4ef28cb3bf98702c776cf8852b7b3c9">enable_and_start_ccix_link_up_sequence</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, struct <a class="el" href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a> *config, uint8_t link_id)</td></tr>
+<tr class="memdesc:ae4ef28cb3bf98702c776cf8852b7b3c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">使能并启动 CCIX 链路 UP 序列  <br /></td></tr>
+<tr class="separator:ae4ef28cb3bf98702c776cf8852b7b3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fc9bffccce08056b1f2f15db1068112" id="r_a5fc9bffccce08056b1f2f15db1068112"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a5fc9bffccce08056b1f2f15db1068112">ccix_setup</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, void *remote_config)</td></tr>
+<tr class="memdesc:a5fc9bffccce08056b1f2f15db1068112"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 网关配置设置  <br /></td></tr>
+<tr class="separator:a5fc9bffccce08056b1f2f15db1068112"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41d93798e15e5b5111b9b310367f3873" id="r_a41d93798e15e5b5111b9b310367f3873"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a41d93798e15e5b5111b9b310367f3873">ccix_exchange_protocol_credit</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id)</td></tr>
+<tr class="memdesc:a41d93798e15e5b5111b9b310367f3873"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 协议信用交换  <br /></td></tr>
+<tr class="separator:a41d93798e15e5b5111b9b310367f3873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4b2950e2ed20ed7e27528aa7eeaa067" id="r_ae4b2950e2ed20ed7e27528aa7eeaa067"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#ae4b2950e2ed20ed7e27528aa7eeaa067">ccix_enter_system_coherency</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id)</td></tr>
+<tr class="memdesc:ae4b2950e2ed20ed7e27528aa7eeaa067"><td class="mdescLeft">&#160;</td><td class="mdescRight">进入 CCIX 系统一致性域  <br /></td></tr>
+<tr class="separator:ae4b2950e2ed20ed7e27528aa7eeaa067"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2835736501d1dbb5a752479480706032" id="r_a2835736501d1dbb5a752479480706032"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a2835736501d1dbb5a752479480706032">ccix_enter_dvm_domain</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id)</td></tr>
+<tr class="memdesc:a2835736501d1dbb5a752479480706032"><td class="mdescLeft">&#160;</td><td class="mdescRight">进入 CCIX DVM 域  <br /></td></tr>
+<tr class="separator:a2835736501d1dbb5a752479480706032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a966d301336f726211f14ae636ef9e9aa" id="r_a966d301336f726211f14ae636ef9e9aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8c.html#a966d301336f726211f14ae636ef9e9aa">ccix_capabilities_get</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>)</td></tr>
+<tr class="memdesc:a966d301336f726211f14ae636ef9e9aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取 CCIX 能力信息  <br /></td></tr>
+<tr class="separator:a966d301336f726211f14ae636ef9e9aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>CMN-600 CCIX 功能实现 </p>
+<p>实现 CMN-600 的 CCIX (Cache Coherent Interconnect for Accelerators) 配置功能，包括：</p><ul>
+<li>CCIX Gateway 链路建立序列</li>
+<li>RAID (Requesting Agent ID) / LDID (Logical Device ID) 映射编程</li>
+<li>AgentID-to-LinkID 映射编程</li>
+<li>CXRA SAM 地址区域配置</li>
+<li>SMP 模式使能</li>
+<li>协议信用交换</li>
+<li>系统一致性域和 DVM 域进入</li>
+<li>CCIX 能力信息获取</li>
+</ul>
+<dl class="section copyright"><dt>版权所有</dt><dd>Copyright (c) 2017-2021, Arm Limited and Contributors. All rights reserved. @license SPDX-License-Identifier: BSD-3-Clause </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 中定义.</p>
+</div><h2 class="groupheader">宏定义说明</h2>
+<a id="ab1a624c04493635b9de587eea26e8016" name="ab1a624c04493635b9de587eea26e8016"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1a624c04493635b9de587eea26e8016">&#9670;&#160;</a></span>MOD_NAME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MOD_NAME&#160;&#160;&#160;&quot;[CMN600] &quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>模块日志输出的前缀标识 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00042">42</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">函数说明</h2>
+<a id="a966d301336f726211f14ae636ef9e9aa" name="a966d301336f726211f14ae636ef9e9aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a966d301336f726211f14ae636ef9e9aa">&#9670;&#160;</a></span>ccix_capabilities_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ccix_capabilities_get </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取 CCIX 能力信息 </p>
+<p>从 CXRA/CXHA/CXLA 的硬件寄存器中读取 CCIX 能力参数：</p><ul>
+<li>请求信用数（CXRA Request Tracker 深度）</li>
+<li>侦听信用数（CXHA Snoop Tracker 深度）</li>
+<li>数据信用数（CXHA WDB 深度）</li>
+<li>最大包大小（CXLA 能力寄存器）</li>
+<li>优化 TLP（CMN-600 始终支持）</li>
+<li>消息打包（CXLA 能力寄存器反相读取）</li>
+</ul>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针，ccix_host_info 字段将被更新 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00853">853</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2835736501d1dbb5a752479480706032" name="a2835736501d1dbb5a752479480706032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2835736501d1dbb5a752479480706032">&#9670;&#160;</a></span>ccix_enter_dvm_domain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_enter_dvm_domain </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进入 CCIX DVM 域 </p>
+<p>进入 DVM (Distributed Virtual Memory) 域</p>
+<p>设置 CXRA 链路控制寄存器的 DVMDOMAIN_REQ 位， 请求进入 DVM 域，并等待 DVMDOMAIN ACK 确认。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00809">809</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae4b2950e2ed20ed7e27528aa7eeaa067" name="ae4b2950e2ed20ed7e27528aa7eeaa067"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4b2950e2ed20ed7e27528aa7eeaa067">&#9670;&#160;</a></span>ccix_enter_system_coherency()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_enter_system_coherency </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进入 CCIX 系统一致性域 </p>
+<p>设置 CXHA 链路控制寄存器的 DVMDOMAIN_REQ 位， 请求进入系统一致性域，并等待 DVMDOMAIN ACK 确认。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00772">772</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a41d93798e15e5b5111b9b310367f3873" name="a41d93798e15e5b5111b9b310367f3873"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41d93798e15e5b5111b9b310367f3873">&#9670;&#160;</a></span>ccix_exchange_protocol_credit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_exchange_protocol_credit </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX 协议信用交换 </p>
+<p>在 CXRA/CXHA 的链路控制寄存器中设置 UP 位， 触发协议信用交换。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00749">749</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5fc9bffccce08056b1f2f15db1068112" name="a5fc9bffccce08056b1f2f15db1068112"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fc9bffccce08056b1f2f15db1068112">&#9670;&#160;</a></span>ccix_setup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_setup </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>remote_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX 网关配置设置 </p>
+<p>完整的 CCIX Gateway 配置流程：</p><ol type="1">
+<li>如需 SMP 模式则使能</li>
+<li>为本地 RN-F/RN-D/RN-I 代理分配 RAID 并编程 LDID-to-RAID 映射</li>
+<li>为所有本地代理编程 AgentID-to-LinkID 映射</li>
+<li>配置 CXHA HA ID</li>
+<li>为远端 RN-F 代理编程 CXHA RAID-to-LDID 映射和 HN-F LDID-to-CHI-Node-ID</li>
+<li>配置 CXRA SAM 地址区域</li>
+<li>启动 CCIX 链路 UP 序列 </li>
+</ol>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00610">610</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a55c705e278f08ccd16742dd27b0609f1" name="a55c705e278f08ccd16742dd27b0609f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55c705e278f08ccd16742dd27b0609f1">&#9670;&#160;</a></span>cxg_link_wait_condition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool cxg_link_wait_condition </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>CCIX 链路等待条件回调函数 </p>
+<p>根据 wait_data-&gt;cond 检查 CXRA/CXHA 链路寄存器的状态， 判断指定的链路条件是否满足。该函数作为回调传递给 timer_api-&gt;wait()，用于轮询链路状态变化。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>指向 struct <a class="el" href="structcxg__wait__condition__data.html" title="CCIX 链路等待条件数据">cxg_wait_condition_data</a> 的指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>true 指定条件已满足；false 条件未满足 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00055">55</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae4ef28cb3bf98702c776cf8852b7b3c9" name="ae4ef28cb3bf98702c776cf8852b7b3c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4ef28cb3bf98702c776cf8852b7b3c9">&#9670;&#160;</a></span>enable_and_start_ccix_link_up_sequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int enable_and_start_ccix_link_up_sequence </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a> *&#160;</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>使能并启动 CCIX 链路 UP 序列 </p>
+<p>执行完整的 CCIX 链路建立流程：</p><ol type="1">
+<li>配置 CXLA 协议参数（优化 TLP、消息打包、最大包大小、PCIe 总线号、Traffic Class、Vendor ID）</li>
+<li>设置链路使能位，等待 EN 位置位</li>
+<li>验证链路 DOWN 状态（UP 位清零、DOWN 位置位、ACK 位清零）</li>
+<li>发起链路 UP 请求（REQ 位置位），等待 ACK 位置位和 DOWN 位清零</li>
+</ol>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">config</td><td>远端节点 CCIX 配置数据 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">link_id</td><td>CCIX 链路标识符（0-2）</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>FWK_SUCCESS 成功；FWK_E_PARAM link_id 超出范围； 其他错误码表示链路建立超时 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00455">455</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a659bdd1923053c52a710382fcb3742c8" name="a659bdd1923053c52a710382fcb3742c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a659bdd1923053c52a710382fcb3742c8">&#9670;&#160;</a></span>enable_smp_mode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int enable_smp_mode </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>使能 SMP (Symmetric Multiprocessing) 模式 </p>
+<p>根据 CMN-600 修订版本采用不同的 SMP 模式配置方式：</p><ul>
+<li>r2p0：通过 CXRA/CXHA UNIT_INFO 的只读位判断硬件是否支持</li>
+<li>r3p0+：通过 CXRA/CXHA/CXLA AUX_CTRL 的可写位配置使能</li>
+<li>r1p3 及以下：无 SMP 模式寄存器，直接返回成功</li>
+</ul>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>FWK_SUCCESS 成功；FWK_E_SUPPORT r2p0 版本硬件不支持 SMP 模式 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00131">131</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a695435a61d683e00365438f33340d1b4" name="a695435a61d683e00365438f33340d1b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a695435a61d683e00365438f33340d1b4">&#9670;&#160;</a></span>program_agentid_to_linkid_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_agentid_to_linkid_reg </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>agent_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 AgentID-to-LinkID 映射寄存器 </p>
+<p>在 CXRA、CXHA 和 CXLA 的 AgentID-to-LinkID 寄存器中 写入映射关系，并设置对应的有效位。 每个 64 位寄存器容纳 8 个映射项（每项 8 位）。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">agent_id</td><td>代理标识符 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">link_id</td><td>CCIX 链路标识符 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00286">286</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a903c68edb161acc80b19cdc38bb090b2" name="a903c68edb161acc80b19cdc38bb090b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a903c68edb161acc80b19cdc38bb090b2">&#9670;&#160;</a></span>program_cxg_ha_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_cxg_ha_id </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>remote_ha_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 CXHA Home Agent ID </p>
+<p>设置本地 HA ID 为 chip_id，记录远端 HA ID， 并将 HA ID 写入 CXHA 的 CXG_HA_ID 寄存器。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">remote_ha_id</td><td>远端 Home Agent ID </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00324">324</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a55493adf67c9fec5e86dbe689bc9ec0f" name="a55493adf67c9fec5e86dbe689bc9ec0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55493adf67c9fec5e86dbe689bc9ec0f">&#9670;&#160;</a></span>program_cxg_ha_raid_to_ldid_lut()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_cxg_ha_raid_to_ldid_lut </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>raid_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>ldid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 CXHA RAID-to-LDID 查找表 </p>
+<p>在 CXHA 的 RNF RAID-to-LDID 寄存器中写入映射项， 并设置 RNF 标志位和有效位。 每个 64 位寄存器容纳 8 个映射项（每项 8 位）。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">raid_id</td><td>RAID 标识符 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ldid</td><td>对应的 LDID 值 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00344">344</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7b49d81384f794a9348cdde87c64c298" name="a7b49d81384f794a9348cdde87c64c298"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b49d81384f794a9348cdde87c64c298">&#9670;&#160;</a></span>program_cxg_ra_rnd_ldid_to_raid_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_cxg_ra_rnd_ldid_to_raid_reg </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>ldid_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>raid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 CXRA RN-D LDID-to-RAID 映射寄存器 </p>
+<p>将 RN-D 的 LDID 值映射到对应的 RAID， 并设置有效位。每个 64 位寄存器容纳 8 个映射项。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ldid_value</td><td>LDID 值 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">raid</td><td>分配的 RAID 值</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>调用后 ctx-&gt;raid_value 会递增 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00252">252</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0c4a5779725ac08923d301ba32e1a658" name="a0c4a5779725ac08923d301ba32e1a658"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c4a5779725ac08923d301ba32e1a658">&#9670;&#160;</a></span>program_cxg_ra_rnf_ldid_to_raid_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_cxg_ra_rnf_ldid_to_raid_reg </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>ldid_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>raid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 CXRA RN-F LDID-to-RAID 映射寄存器 </p>
+<p>将 RN-F 的 LDID 值映射到对应的 RAID， 并设置有效位。每个 64 位寄存器容纳 8 个映射项。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ldid_value</td><td>LDID 值 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">raid</td><td>分配的 RAID 值</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>调用后 ctx-&gt;raid_value 会递增 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00182">182</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0c6c30d5e90fbbcffa8f18ff97e19e1e" name="a0c6c30d5e90fbbcffa8f18ff97e19e1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c6c30d5e90fbbcffa8f18ff97e19e1e">&#9670;&#160;</a></span>program_cxg_ra_rni_ldid_to_raid_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_cxg_ra_rni_ldid_to_raid_reg </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>ldid_value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>raid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 CXRA RN-I LDID-to-RAID 映射寄存器 </p>
+<p>将 RN-I 的 LDID 值映射到对应的 RAID， 并设置有效位。每个 64 位寄存器容纳 8 个映射项。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ldid_value</td><td>LDID 值 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">raid</td><td>分配的 RAID 值</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>调用后 ctx-&gt;raid_value 会递增 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00217">217</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aba73b009d647f40a5b473cfe89d69189" name="aba73b009d647f40a5b473cfe89d69189"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba73b009d647f40a5b473cfe89d69189">&#9670;&#160;</a></span>program_cxg_ra_sam_addr_region()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_cxg_ra_sam_addr_region </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">struct <a class="el" href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a> *&#160;</td>
+          <td class="paramname"><em>config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 CXRA SAM 地址区域寄存器 </p>
+<p>根据远端节点配置中的 HA 内存映射表，配置 CXRA 的 SAM 地址区域。 每个区域包含大小编码、基地址、远端 HA ID 和有效位。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">config</td><td>远端节点 CCIX 配置数据</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>区域大小必须为 64KB 的倍数且为 2 的幂次 </dd>
+<dd>
+区域基地址必须按区域大小自然对齐 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00411">411</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a893a3004002b2401d2fb262e2a59912c" name="a893a3004002b2401d2fb262e2a59912c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a893a3004002b2401d2fb262e2a59912c">&#9670;&#160;</a></span>program_hnf_ldid_to_chi_node_id_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void program_hnf_ldid_to_chi_node_id_reg </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>ldid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>node_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>local_remote</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>编程 HN-F LDID-to-CHI-Node-ID 寄存器 </p>
+<p>在所有 HN-F 节点的 RN_PHYS_ID 寄存器中写入 远端 RN-F 代理的节点 ID、本地/远端标志和有效位。 每个 64 位寄存器容纳 2 个配置项（每项 32 位）。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">ldid</td><td>逻辑设备 ID </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_id</td><td>节点 ID </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">local_remote</td><td>本地/远端标志（LOCAL_CCIX_NODE 或 REMOTE_CCIX_NODE） </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00375">375</a> 行定义.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_48f311512fb313e8ec1c32eaef206743.html">scp_firmware</a></li><li class="navelem"><a class="el" href="dir_fcc1255ba6bda919d85092c50000c4b5.html">module</a></li><li class="navelem"><a class="el" href="dir_a446bcb378e7d3b34199efec74fac8d3.html">cmn600</a></li><li class="navelem"><a class="el" href="dir_5cfcfa01f4a6472ad01ca99ac164ce3b.html">src</a></li><li class="navelem"><a class="el" href="cmn600__ccix_8c.html">cmn600_ccix.c</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

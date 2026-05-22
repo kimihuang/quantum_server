@@ -1,0 +1,5354 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. AMBA® CHI 一致性协议深度分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/translations.js?v=540d3cec"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="5. AMBA CHI 一致性协议深度分析" href="amba_chi_architecture_coherency_codebuddy.html" />
+    <link rel="prev" title="3. AMBA CHI Architecture Specification 结构梳理" href="amba_chi_architecture_spec.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. AMBA® CHI 一致性协议深度分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 一致性协议整体概述</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4.1.1. 1 一致性协议的基本概念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">4.1.2. 2 一致性点的定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">4.1.3. 3 一致性协议的核心目标</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">4.2. 缓存状态模型深度解析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">4.2.1. 1 缓存状态的基础特征</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">4.2.2. 2 七态缓存模型详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">4.2.3. 3 缓存状态转换规则</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">4.2.4. 4 空缓存行所有权</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">4.2.5. 5 部分脏数据所有权</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">4.3. 请求类型详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">4.3.1. 1 请求分类</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">4.3.2. 2 读请求深入分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">4.3.3. 3 无数据请求深入分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">4.3.4. 4 写请求深入分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">4.3.5. 5 原子请求深入分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">4.3.6. 6 组合写请求深入分析</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">4.4. 监听请求详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id20">4.4.1. 1 监听请求概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">4.4.2. 2 监听请求类型详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">4.4.3. 3 监听请求选择策略</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id25">4.5. 响应类型详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id26">4.5.1. 1 响应分类</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">4.5.2. 2 完成响应详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writedata">4.5.3. 3 WriteData响应详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">4.5.4. 4 监听响应详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">4.5.5. 5 其他响应详解</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id30">4.6. 缓存状态转换详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id31">4.6.1. 1 静默缓存状态转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">4.6.2. 2 请求者的缓存状态转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">4.6.3. 3 被监听者的缓存状态转换</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id34">4.7. 危险条件处理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id35">4.7.1. 1 危险条件概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">4.7.2. 2 请求节点处的危险条件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">4.7.3. 3 互连节点处的危险条件</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id38">4.8. 一致性协议实际应用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id39">4.8.1. 1 读操作的一致性流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">4.8.2. 2 写操作的一致性流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">4.8.3. 3 原子操作的一致性流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">4.8.4. 4 缓存维护操作流程</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id43">4.9. 性能优化和设计考虑</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id44">4.9.1. 1 缓存一致性的性能优化</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">4.9.2. 2 一致性协议的设计考虑</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id46">4.10. 总结</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id47">4.10.1. 1 一致性协议的核心价值</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id48">4.11. 参考文献</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id49">4.12. 文档版本信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>AMBA® CHI 一致性协议深度分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/arm/chi/amba_chi_architecture_coherency.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="amba-chi">
+<h1><span class="section-number">4. </span>AMBA® CHI 一致性协议深度分析<a class="headerlink" href="#amba-chi" title="链接到此标题。"></a></h1>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#id2" id="id61">一致性协议整体概述</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id3" id="id62">1 一致性协议的基本概念</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id63">2 一致性点的定义</a></p></li>
+<li><p><a class="reference internal" href="#id5" id="id64">3 一致性协议的核心目标</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id6" id="id65">缓存状态模型深度解析</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id7" id="id66">1 缓存状态的基础特征</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id67">2 七态缓存模型详解</a></p></li>
+<li><p><a class="reference internal" href="#id9" id="id68">3 缓存状态转换规则</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id69">4 空缓存行所有权</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id70">5 部分脏数据所有权</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id12" id="id71">请求类型详解</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id13" id="id72">1 请求分类</a></p></li>
+<li><p><a class="reference internal" href="#id14" id="id73">2 读请求深入分析</a></p></li>
+<li><p><a class="reference internal" href="#id15" id="id74">3 无数据请求深入分析</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id75">4 写请求深入分析</a></p></li>
+<li><p><a class="reference internal" href="#id17" id="id76">5 原子请求深入分析</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id77">6 组合写请求深入分析</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id19" id="id78">监听请求详解</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id20" id="id79">1 监听请求概述</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id80">2 监听请求类型详解</a></p></li>
+<li><p><a class="reference internal" href="#id24" id="id81">3 监听请求选择策略</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id25" id="id82">响应类型详解</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id26" id="id83">1 响应分类</a></p></li>
+<li><p><a class="reference internal" href="#id27" id="id84">2 完成响应详解</a></p></li>
+<li><p><a class="reference internal" href="#writedata" id="id85">3 WriteData响应详解</a></p></li>
+<li><p><a class="reference internal" href="#id28" id="id86">4 监听响应详解</a></p></li>
+<li><p><a class="reference internal" href="#id29" id="id87">5 其他响应详解</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id30" id="id88">缓存状态转换详解</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id31" id="id89">1 静默缓存状态转换</a></p></li>
+<li><p><a class="reference internal" href="#id32" id="id90">2 请求者的缓存状态转换</a></p></li>
+<li><p><a class="reference internal" href="#id33" id="id91">3 被监听者的缓存状态转换</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id34" id="id92">危险条件处理</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id35" id="id93">1 危险条件概述</a></p></li>
+<li><p><a class="reference internal" href="#id36" id="id94">2 请求节点处的危险条件</a></p></li>
+<li><p><a class="reference internal" href="#id37" id="id95">3 互连节点处的危险条件</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id38" id="id96">一致性协议实际应用</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id39" id="id97">1 读操作的一致性流程</a></p></li>
+<li><p><a class="reference internal" href="#id40" id="id98">2 写操作的一致性流程</a></p></li>
+<li><p><a class="reference internal" href="#id41" id="id99">3 原子操作的一致性流程</a></p></li>
+<li><p><a class="reference internal" href="#id42" id="id100">4 缓存维护操作流程</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id43" id="id101">性能优化和设计考虑</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id44" id="id102">1 缓存一致性的性能优化</a></p></li>
+<li><p><a class="reference internal" href="#id45" id="id103">2 一致性协议的设计考虑</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id46" id="id104">总结</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id47" id="id105">1 一致性协议的核心价值</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id48" id="id106">参考文献</a></p></li>
+<li><p><a class="reference internal" href="#id49" id="id107">文档版本信息</a></p></li>
+</ul>
+</nav>
+<section id="id2">
+<h2><span class="section-number">4.1. </span>一致性协议整体概述<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<section id="id3">
+<h3><span class="section-number">4.1.1. </span>1 一致性协议的基本概念<a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>硬件一致性使得系统组件能够共享内存，而无需软件缓存维护来保持一致性。</p>
+<p><strong>一致性定义：</strong></p>
+<p>如果两个组件对同一内存位置的写入可以被所有组件以相同的顺序观察到，则该内存区域是一致的。</p>
+<p><strong>核心特性：</strong></p>
+<ol class="arabic simple">
+<li><p><strong>写使无效协议（Write-Invalidate Protocol）</strong>
+- 请求节点向共享缓存行写入时，必须先使所有其他副本失效
+- CHI协议采用写使无效机制</p></li>
+<li><p><strong>缓存行粒度</strong>
+- 一致性以64字节缓存行为粒度进行维护
+- 所有缓存操作都在缓存行级别进行</p></li>
+<li><p><strong>主内存更新策略</strong>
+- 主内存仅在缓存行副本不再被任何缓存持有时才需要更新
+- 一致性协议不要求主内存始终是最新的
+- 允许在缓存副本仍存在时更新主内存</p></li>
+<li><p><strong>多点一致性保证</strong>
+- 一致性协议确保所有请求者在任何给定地址位置观察到正确的数据值
+- 每次存储操作后，其他请求者可以获得数据的新副本用于本地缓存</p></li>
+</ol>
+</section>
+<section id="id4">
+<h3><span class="section-number">4.1.2. </span>2 一致性点的定义<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p><strong>关键概念：</strong></p>
+<ul class="simple">
+<li><p><strong>PoC（Point of Coherence）</strong>：一致性点
+- 所有能够访问内存的代理保证看到相同内存位置副本的点
+- 在典型的CHI系统中，PoC是互连中的HN-F</p></li>
+<li><p><strong>PoS（Point of Serialization）</strong>：串行化点
+- 互连中确定来自不同代理的请求之间顺序的点</p></li>
+<li><p><strong>PoE（Point of Encryption）</strong>：加密点
+- 内存系统中到达该点的任何写入都被加密的点</p></li>
+<li><p><strong>PoP（Point of Persistence）</strong>：持久化点
+- 内存系统中在或超出一致性点的点，此时对内存的写入在系统断电时被维护，并在恢复供电时可靠地恢复</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3><span class="section-number">4.1.3. </span>3 一致性协议的核心目标<a class="headerlink" href="#id5" title="链接到此标题。"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>确保数据一致性</strong>
+- 保证所有代理对同一内存位置的视图一致
+- 维护内存访问的全局顺序</p></li>
+<li><p><strong>优化性能</strong>
+- 减少不必要的内存访问
+- 支持缓存间数据转发
+- 允许部分缓存行状态</p></li>
+<li><p><strong>支持多种缓存模型</strong>
+- MESI缓存模型
+- MOESI缓存模型
+- 支持从任何缓存状态转发数据</p></li>
+<li><p><strong>提供灵活性</strong>
+- 支持目录和监听过滤器系统
+- 允许实现特定的优化</p></li>
+</ol>
+</section>
+</section>
+<section id="id6">
+<h2><span class="section-number">4.2. </span>缓存状态模型深度解析<a class="headerlink" href="#id6" title="链接到此标题。"></a></h2>
+<section id="id7">
+<h3><span class="section-number">4.2.1. </span>1 缓存状态的基础特征<a class="headerlink" href="#id7" title="链接到此标题。"></a></h3>
+<p>每个缓存状态基于以下缓存行特征：</p>
+<p><strong>2.1.1 有效性（Valid/Invalid）</strong></p>
+<ul class="simple">
+<li><p><strong>Valid（有效）</strong>：缓存行存在于缓存中</p></li>
+<li><p><strong>Invalid（无效）</strong>：缓存行不存在于缓存中</p></li>
+</ul>
+<p><strong>2.1.2 唯一性与共享性（Unique/Shared）</strong></p>
+<ul class="simple">
+<li><p><strong>Unique（唯一）</strong>：缓存行仅存在于当前缓存中</p></li>
+<li><p><strong>Shared（共享）</strong>：缓存行可能存在于多个缓存中</p></li>
+</ul>
+<p><strong>2.1.3 清洁性与脏状态（Clean/Dirty）</strong></p>
+<ul class="simple">
+<li><p><strong>Clean（清洁）</strong>：缓存没有更新主内存的责任</p></li>
+<li><p><strong>Dirty（脏）</strong>：缓存行相对于主内存已被修改，缓存必须确保主内存最终被更新</p></li>
+</ul>
+<p><strong>2.1.4 完整性（Full/Partial/Empty）</strong></p>
+<ul class="simple">
+<li><p><strong>Full（完整）</strong>：所有字节都有效</p></li>
+<li><p><strong>Partial（部分）</strong>：部分字节有效</p></li>
+<li><p><strong>Empty（空）</strong>：没有字节有效</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3><span class="section-number">4.2.2. </span>2 七态缓存模型详解<a class="headerlink" href="#id8" title="链接到此标题。"></a></h3>
+<p>CHI协议定义了七种缓存状态：</p>
+<p><strong>2.2.1 I（Invalid）- 无效状态</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：缓存行不存在于缓存中
+特性：
+  - 不占用缓存资源
+  - 不需要维护一致性
+  - 任何访问都需要从内存或其他缓存获取数据
+</pre></div>
+</div>
+<p><strong>2.2.2 UC（Unique Clean）- 唯一清洁</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：缓存行仅存在于当前缓存，且未被修改
+特性：
+  - 缓存行唯一存在于此缓存
+  - 相对于内存未被修改
+  - 可以修改而无需通知其他缓存
+  - 响应请求数据的监听时：
+    * 被请求时可以返回到Home
+    * 被指示时可以直接转发给请求者
+用途：
+  - 读取操作的最终状态
+  - 写入操作的准备状态
+</pre></div>
+</div>
+<p><strong>2.2.3 UCE（Unique Clean Empty）- 唯一清洁空</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：缓存行处于唯一状态但没有有效的数据字节
+特性：
+  - 缓存行仅存在于当前缓存
+  - 处于唯一状态但数据字节均无效
+  - 可以修改而无需通知其他缓存
+  - 响应请求数据的监听时：
+    * 即使被请求也不能返回到Home
+    * 即使被指示也不能直接转发给请求者
+使用场景：
+  - 提前获取写入权限以节省系统带宽
+  - 请求者预期写入缓存行前获得空缓存行
+</pre></div>
+</div>
+<p><strong>2.2.4 UD（Unique Dirty）- 唯一脏</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：缓存行仅存在于当前缓存，且已被修改
+特性：
+  - 缓存行唯一存在于此缓存
+  - 相对于内存已被修改
+  - 驱逐时必须写回到下一级缓存或内存
+  - 可以修改而无需通知其他缓存
+  - 响应请求数据的监听时：
+    * 被请求时必须返回到Home
+    * 被指示时期望直接转发给请求者
+用途：
+  - 写入操作的最终状态
+  - 需要维护数据的最新版本
+</pre></div>
+</div>
+<p><strong>2.2.5 UDP（Unique Dirty Partial）- 唯一脏部分</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：缓存行唯一，但部分字节有效
+特性：
+  - 缓存行唯一
+  - 部分字节有效（可能包括无或全部字节）
+  - 相对于内存已被修改
+  - 驱逐时必须与下一级缓存或内存的数据合并
+  - 可以修改而无需通知其他缓存
+  - 响应请求数据的监听时：
+    * 必须返回到Home
+    * 即使被指示也不能直接转发给请求者
+使用场景：
+  - 部分写入操作
+  - 需要与内存数据合并的缓存行
+</pre></div>
+</div>
+<p><strong>2.2.6 SC（Shared Clean）- 共享清洁</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：其他缓存可能有该缓存行的共享副本
+特性：
+  - 可能相对于内存已被修改
+  - 缓存没有责任在驱逐时写回缓存行
+  - 修改前必须使共享副本失效并获取唯一所有权
+  - 响应请求数据的监听时：
+    * 如果RetToSrc位未设置，要求不返回数据
+    * 如果RetToSrc位设置，期望返回数据
+    * 被指示时期望直接转发给请求者
+用途：
+  - 只读数据共享
+  - 多个处理器读取相同数据
+</pre></div>
+</div>
+<p><strong>2.2.7 SD（Shared Dirty）- 共享脏</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：其他缓存可能有该缓存行的共享副本
+特性：
+  - 相对于内存已被修改
+  - 驱逐时必须写回到下一级缓存或内存
+  - 修改前必须使共享副本失效并获取唯一所有权
+  - 响应请求数据的监听时：
+    * 被请求时必须返回到Home
+    * 被指示时期望直接转发给请求者
+用途：
+  - 共享修改的数据
+  - 需要写回的共享缓存行
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h3><span class="section-number">4.2.3. </span>3 缓存状态转换规则<a class="headerlink" href="#id9" title="链接到此标题。"></a></h3>
+<p><strong>2.3.1 静默转换（Silent Transitions）</strong></p>
+<p>缓存可以由于内部事件而改变状态，无需通知系统其余部分：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>允许的静默转换：
+
+1. 缓存驱逐（Cache Eviction）
+   - UC → I
+   - UCE → I
+   - SC → I
+
+2. 本地共享（Local Sharing）
+   - UC → SC
+   - UD → SD
+   说明：RN-F将唯一缓存行指定为共享，实际上忽略了缓存行对RN-F仍保持唯一的事实
+
+3. 存储操作（Store Operations）
+   - UC → UD（完整或部分缓存行存储）
+   - UCE → UDP（部分缓存行存储）
+   - UD → UD（完整缓存行存储）
+   - UDP → UD（填充缓存行的存储）
+
+4. 缓存失效（Cache Invalidate）
+   - UD → I
+   - UDP → I
+</pre></div>
+</div>
+<p><strong>2.3.2 转换约束</strong></p>
+<ul class="simple">
+<li><p>UC → UCE 转换不被允许</p></li>
+<li><p>静默转换序列可以发生</p></li>
+<li><p>导致缓存行处于UD、UDP或SC状态的任何静默转换可以进一步进行静默转换</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3><span class="section-number">4.2.4. </span>4 空缓存行所有权<a class="headerlink" href="#id10" title="链接到此标题。"></a></h3>
+<p><strong>定义：</strong>
+空缓存行是以唯一状态持有的缓存行，用于防止缓存行的其他副本存在。空缓存行中没有有效的数据字节。</p>
+<p><strong>使用场景：</strong></p>
+<ol class="arabic simple">
+<li><p><strong>节省系统带宽</strong>
+- 请求者在开始写入之前故意获取空缓存行
+- 期望写入缓存行的请求者可以获取具有存储权限的空缓存行，而不是获取缓存行的有效副本</p></li>
+<li><p><strong>权限请求期间的转换</strong>
+- 当请求存储权限时，请求者如果有缓存行副本可以转换到空状态
+- 在请求完成之前，该缓存行副本被失效
+- 结果是请求者具有存储权限的空缓存行</p></li>
+</ol>
+<p><strong>空缓存行状态：</strong>
+- UCE（Unique Clean Empty）
+- UDP（Unique Dirty Partial）</p>
+</section>
+<section id="id11">
+<h3><span class="section-number">4.2.5. </span>5 部分脏数据所有权<a class="headerlink" href="#id11" title="链接到此标题。"></a></h3>
+<p><strong>工作原理：</strong>
+一旦获得不带数据的缓存行所有权，请求者被允许（但不要求）存储到缓存行。</p>
+<p><strong>状态转换：</strong>
+- 如果请求者修改缓存行的部分，缓存行保持部分唯一脏状态
+- 此缓存行状态为UDP（Unique Dirty Partial）</p>
+<p><strong>处理要求：</strong>
+- 驱逐时必须与下一级缓存或内存的数据合并
+- 以形成完整的有效缓存行</p>
+</section>
+</section>
+<section id="id12">
+<h2><span class="section-number">4.3. </span>请求类型详解<a class="headerlink" href="#id12" title="链接到此标题。"></a></h2>
+<section id="id13">
+<h3><span class="section-number">4.3.1. </span>1 请求分类<a class="headerlink" href="#id13" title="链接到此标题。"></a></h3>
+<p>CHI协议请求按以下方式分类：</p>
+<ol class="arabic simple">
+<li><p><strong>读请求（Read Transactions）</strong>
+- 向请求者提供数据响应</p></li>
+<li><p><strong>无数据请求（Dataless Transactions）</strong>
+- 不向请求者提供数据响应</p></li>
+<li><p><strong>写请求（Write Transactions）</strong>
+- 数据从请求者移动到完成者</p></li>
+<li><p><strong>组合写请求（Combined Write Transactions）</strong>
+- 数据从请求者移动并执行缓存维护操作</p></li>
+<li><p><strong>原子请求（Atomic Transactions）</strong>
+- 数据从请求者移动，某些请求类型向请求者提供数据响应</p></li>
+<li><p><strong>填充请求（Stash Transactions）</strong>
+- 数据在系统中移动以提高性能</p></li>
+<li><p><strong>其他请求（Other Transactions）</strong>
+- 不涉及系统中的数据移动
+- 用于辅助DVM维护
+- 用于预热后续读请求的内存控制器</p></li>
+</ol>
+</section>
+<section id="id14">
+<h3><span class="section-number">4.3.2. </span>2 读请求深入分析<a class="headerlink" href="#id14" title="链接到此标题。"></a></h3>
+<p><strong>3.2.1 读请求的共同特性</strong></p>
+<ol class="arabic simple">
+<li><p><strong>数据响应要求</strong>
+- 必须在完成响应中包含数据（MakeReadUnique除外）
+- MakeReadUnique的数据响应是可选的</p></li>
+<li><p><strong>数据来源</strong>
+- 可以来自Home节点、另一个请求节点或从属节点</p></li>
+<li><p><strong>缓存行为</strong>
+- 分配读事务：接收的数据如果缓存，必须以系统一致方式缓存
+- 非分配读事务（ReadNoSnp和ReadOnce*）：接收的数据不预期被缓存</p></li>
+<li><p><strong>缓存状态变化</strong>
+- 可以导致请求者的缓存状态变化
+- 可以导致系统中其他请求节点的缓存状态变化</p></li>
+</ol>
+<p><strong>3.2.2 具体读请求类型</strong></p>
+<p><strong>ReadNoSnp（非监听读）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：请求节点对非监听地址区域的读请求
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>或从Home节点到任何地址区域以获取所寻址数据的副本</p></li>
+<li><p>不触发监听操作</p></li>
+<li><p>数据不要求以一致方式缓存</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>ReadNoSnpSep（非监听读-分离响应）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：从Home节点到从属节点的读请求
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>请求完成者仅发送数据响应</p></li>
+<li><p>用于使用分离的完成和数据响应来完成读事务</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>ReadOnce（一次性读）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，获取一致性数据的快照
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>获取数据的一致性快照</p></li>
+<li><p>不强制其他缓存副本的状态变化</p></li>
+<li><p>适用于临时读取数据</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>ReadOnceCleanInvalid（读-清理-失效）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，获取一致性数据的快照
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>建议（但不要求）清理并使其他缓存行的缓存副本失效</p></li>
+<li><p>如果脏副本被失效，必须写回内存</p></li>
+<li><p>用于数据仍有效但近期不使用的情况</p></li>
+<li><p>改善缓存效率，减少缓存污染</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I
+注意事项：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>清理和失效是提示，事务完成不保证清理或移除所有缓存副本</p></li>
+<li><p>不能用作CMO的替代</p></li>
+<li><p>可能导致缓存行释放，如果事务可能被其他代理用于独占访问需谨慎</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>ReadOnceMakeInvalid（读-使失效）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，获取一致性数据的快照
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>建议（但不要求）使其他缓存行的缓存副本失效</p></li>
+<li><p>如果脏副本被失效，缓存行不需要写回内存</p></li>
+<li><p>如果失效提示被接受且脏副本未写回内存，所有缓存副本必须被失效</p></li>
+<li><p>用于确定缓存数据不会被再次使用的情况</p></li>
+<li><p>释放缓存并丢弃脏数据，避免不必要的WriteBack</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I
+注意事项：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>失效是提示，不能保证移除所有缓存副本</p></li>
+<li><p>不能用作CMO的替代</p></li>
+<li><p>可能导致脏缓存行丢失，必须严格限制在已知且无害的场景</p></li>
+<li><p>要求缓存行失效在读数据响应之前提交</p></li>
+<li><p>数据必须以I、UC或UD状态提供给请求者</p></li>
+<li><p>请求者必须忽略响应中的缓存状态</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>ReadClean（读清洁）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，获取缓存行的清洁副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>用于将缓存行分配到不支持脏缓存行的缓存（如指令缓存）</p></li>
+<li><p>数据必须仅以UC或SC状态提供给请求者</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I（TagOp=Transfer时可为UC, UCE, SC, SD）
+最终状态：SC</p>
+</div></blockquote>
+<p><strong>ReadNotSharedDirty（读非共享脏）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，执行缓存行加载
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>数据必须仅以UC、UD或SC状态提供给请求者</p></li>
+<li><p>不允许SD状态</p></li>
+<li><p>当请求者不能接受SD状态数据时使用</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I, UCE
+最终状态：SC</p>
+</div></blockquote>
+<p><strong>ReadShared（读共享）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，执行缓存行加载
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>数据必须以UC、UD、SC或SD状态提供给请求者</p></li>
+<li><p>当请求者能够接受SD状态数据时使用</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I, UCE
+最终状态：SC</p>
+</div></blockquote>
+<p><strong>ReadUnique（读唯一）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，执行缓存行存储
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>数据必须仅以UC或UD状态提供给请求者</p></li>
+<li><p>获取唯一副本以便进行修改</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I, SC, UC, UCE, UD, SD
+最终状态：UC或UD</p>
+</div></blockquote>
+<p><strong>ReadPreferUnique（读首选唯一）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，请求缓存行的唯一副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>请求者偏好（但不要求）数据以唯一状态返回</p></li>
+<li><p>如果另一个请求节点当前正在使用相同地址执行独占序列，则以共享状态提供数据</p></li>
+<li><p>允许始终以共享状态向请求者提供数据</p></li>
+<li><p>用于提高独占序列的执行效率</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I, UC, UCE, UD, SD, SC
+最终状态：SC或UC/UD</p>
+</div></blockquote>
+<p><strong>MakeReadUnique（使读唯一）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的读请求，请求缓存行的唯一副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>典型用法：请求者有缓存行的共享副本，想要获取存储到缓存行的权限</p></li>
+<li><p>如果请求者收到失效监听且需要保留数据，则保证数据返回</p></li>
+<li><p>永远不需要重新发送请求以获取缓存行的唯一副本</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：SC（请求者有共享副本时）
+最终状态：UC或UD或SC（独占版本）</p>
+</div></blockquote>
+<p><strong>3.2.3 读请求属性值</strong></p>
+<p>关键属性包括：
+- <strong>Size</strong>：请求大小（字节）
+- <strong>Excl</strong>：独占属性
+- <strong>SnpAttr</strong>：监听属性
+- <strong>MemAttr</strong>：内存属性（A、C、D、E位）
+- <strong>Order</strong>：排序要求
+- <strong>LikelyShared</strong>：可能共享
+- <strong>ExpCompAck</strong>：期望完成确认</p>
+</section>
+<section id="id15">
+<h3><span class="section-number">4.3.3. </span>3 无数据请求深入分析<a class="headerlink" href="#id15" title="链接到此标题。"></a></h3>
+<p><strong>3.3.1 无数据请求分类</strong></p>
+<ol class="arabic simple">
+<li><p><strong>所有权请求</strong>
+- CleanUnique：将缓存状态更改为唯一以执行存储
+- MakeUnique：获取缓存行所有权且无数据响应</p></li>
+<li><p><strong>驱逐请求</strong>
+- Evict：指示清洁缓存行不再被请求节点缓存</p></li>
+<li><p><strong>独立填充请求</strong>
+- StashOnceUnique/StashOnceSepUnique：尝试将缓存行移动到目标缓存以支持存储
+- StashOnceShared/StashOnceSepShared：尝试将缓存行移动到目标缓存</p></li>
+<li><p><strong>缓存维护事务（CMO）</strong>
+- CleanShared：确保所有缓存副本更改为非脏状态
+- CleanSharedPersist：确保脏缓存副本写回到持久化点
+- CleanSharedPersistSep：支持分离的Comp和Persist响应
+- CleanInvalid：确保所有缓存副本失效
+- CleanInvalidPoPA：确保PoPA之前的所有缓存副本失效
+- MakeInvalid：确保所有缓存副本失效，允许丢弃脏副本</p></li>
+</ol>
+<p><strong>3.3.2 CleanUnique（清理唯一）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的请求，将请求者的缓存状态更改为唯一以执行存储
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>典型用法：请求者有缓存行的共享副本，想要获取存储到缓存行的权限</p></li>
+<li><p>被监听缓存中的任何脏副本必须写回内存</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：UC, UCE, SC, SD
+最终状态：UC, UCE, UD</p>
+</div></blockquote>
+<p><strong>3.3.3 MakeUnique（使唯一）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的请求，获取缓存行所有权且无数据响应
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>仅在请求者保证将存储到缓存行的所有字节时使用</p></li>
+<li><p>被监听缓存中的任何脏副本必须在不执行数据传输的情况下失效</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：SC, SD, I
+最终状态：UD</p>
+</div></blockquote>
+<p><strong>3.3.4 Evict（驱逐）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：指示清洁缓存行不再被请求节点缓存
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>用于释放缓存资源</p></li>
+<li><p>不涉及数据移动</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>3.3.5 填充请求</strong></p>
+<p><strong>StashOnceUnique（填充一次唯一）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：尝试将寻址缓存行移动到目标缓存以使目标能够存储该行
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>包括另一个请求节点的有效节点ID作为填充目标</p></li>
+<li><p>包括可选的LPID</p></li>
+<li><p>建议（但不要求）监听其他代理</p></li>
+<li><p>目标请求节点的DataPull请求被视为ReadUnique请求</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>StashOnceShared（填充一次共享）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：尝试将寻址缓存行移动到目标缓存
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>包括另一个请求节点的节点ID</p></li>
+<li><p>可以包括该节点内的LPID</p></li>
+<li><p>目标请求节点的DataPull请求被视为ReadNotSharedDirty请求</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>3.3.6 缓存维护操作（CMO）详解</strong></p>
+<p><strong>CleanShared（清理共享）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>完成响应确保：</dt><dd><ul class="simple">
+<li><p>所有缓存副本更改为非脏状态</p></li>
+<li><p>任何脏副本写回内存</p></li>
+</ul>
+</dd>
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>用于确保数据持久化</p></li>
+<li><p>支持软件缓存管理</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：SC, UC, I
+最终状态：无变化（缓存状态字段被忽略）</p>
+</div></blockquote>
+<p><strong>CleanSharedPersist（清理共享持久化）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>完成响应确保：</dt><dd><ul class="simple">
+<li><p>所有缓存副本更改为非脏状态</p></li>
+<li><p>任何脏缓存副本写回到持久化点（PoP）</p></li>
+</ul>
+</dd>
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>用于非易失性内存环境</p></li>
+<li><p>确保数据在断电后可恢复</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：SC, UC, I
+最终状态：无变化</p>
+</div></blockquote>
+<p><strong>CleanSharedPersistSep（清理共享持久化-分离）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>完成响应确保：</dt><dd><ul class="simple">
+<li><p>所有缓存副本更改为非脏状态</p></li>
+<li><p>任何脏缓存副本写回到PoP</p></li>
+</ul>
+</dd>
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>功能类似于CleanSharedPersist但允许两个分离的响应</p></li>
+<li><p>当发送PCMO时，预期（但不要求）请求者使用CleanSharedPersistSep事务</p></li>
+<li><p>必须支持接收分离的Comp和Persist响应以及组合的CompPersist响应</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：SC, UC, I
+最终状态：无变化</p>
+</div></blockquote>
+<p><strong>CleanInvalid（清理失效）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>完成响应确保：</dt><dd><ul class="simple">
+<li><p>所有缓存副本失效</p></li>
+<li><p>要求任何缓存脏副本必须写回内存</p></li>
+</ul>
+</dd>
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>用于确保所有缓存中的数据被移除</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>CleanInvalidPoPA（清理失效-PoPA）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>完成响应确保：</dt><dd><ul class="simple">
+<li><p>PoPA之前的所有缓存副本失效</p></li>
+<li><p>要求任何缓存脏副本必须写回到PoPA之外</p></li>
+</ul>
+</dd>
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>使一个PAS中位置的写入对其他物理地址空间可见</p></li>
+<li><p>可能需要其他物理地址空间中的额外缓存维护操作</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>MakeInvalid（使失效）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>完成响应确保：</dt><dd><ul class="simple">
+<li><p>所有缓存副本失效</p></li>
+<li><p>允许丢弃任何缓存脏副本</p></li>
+</ul>
+</dd>
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>不要求写回脏数据</p></li>
+<li><p>可以更快的失效操作</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>CMO的共同特性：</strong></p>
+<ol class="arabic simple">
+<li><p><strong>响应字段处理</strong>
+- Comp中的Resp字段值指示缓存状态，必须被请求者和Home忽略
+- Home和Subordinate之间的MemAttr值必须保留
+- Order字段不能断言</p></li>
+<li><p><strong>事务排序</strong>
+- 针对特定地址的CMO必须在之前可分配数据的所有先前事务完成后发送
+- 可分配数据的事务必须在之前的CMO完成后发送</p></li>
+<li><p><strong>完成者行为</strong>
+- 完成者被允许（但不要求）等待WriteData以发送Persist响应
+- 不支持持久化的内存位置的早期Persist示例</p></li>
+<li><p><strong>传播要求</strong>
+- CMO必须传播到所有基于可缓存性区分的缓存
+- CMO必须对以相同地址和相同PAS缓存的所有缓存行操作</p></li>
+<li><p><strong>组合能力</strong>
+- CMO被允许（但不要求）与相同地址的写事务组合</p></li>
+<li><p><strong>Nonshareable_Cache_Maint属性</strong>
+- 如果为True，CMO必须应用于页表中标记为可缓存的位置
+- 无论标记为Non-shareable还是Shareable
+- 必须传播到任何基于共享性区分其条目的缓存</p></li>
+</ol>
+<p><strong>3.3.7 持久化CMO处理</strong></p>
+<p><strong>Home处的持久化点</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>如果Home是PoP，对于CleanSharedPersistSep：</dt><dd><ul class="simple">
+<li><p>Home被允许不将CleanSharedPersistSep请求转发到Subordinate</p></li>
+<li><p>当Home决定不转发时，必须向请求者返回Persist响应</p></li>
+<li><p>当Home发送Persist响应时，被允许（但不要求）与Comp组合</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Home下游的持久化点</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>如果PoP在Home下游，对于CleanSharedPersistSep：</dt><dd><ul class="simple">
+<li><p>Home必须将请求发送到下游</p></li>
+<li><p>Subordinate节点必须在保证请求被接受后仅返回Comp响应</p></li>
+<li><p>不返回RetryAck响应</p></li>
+<li><p>Subordinate能够保证同一地址的所有先前写入到非易失性内存是持久化的</p></li>
+<li><p>Subordinate必须返回Persist响应</p></li>
+<li><p>Home接收到来自下游的Persist响应</p></li>
+<li><p>Subordinate被允许（但不要求）返回组合的CompPersist响应</p></li>
+<li><p>Home被允许（但不要求）等待Subordinate的Persist响应</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>深度持久化CMO</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>用于高可用性期望：</dt><dd><ul class="simple">
+<li><p>系统需要保证关键操作数据即使在电源和备用电池同时失败时也能保留</p></li>
+<li><p>通过添加机制将先前的写入推送到PoDP来提供保证</p></li>
+<li><p>由PCMO事务上的Deep属性支持</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+<section id="id16">
+<h3><span class="section-number">4.3.4. </span>4 写请求深入分析<a class="headerlink" href="#id16" title="链接到此标题。"></a></h3>
+<p><strong>3.4.1 写请求分类</strong></p>
+<ol class="arabic simple">
+<li><p><strong>立即事务（Immediate Transactions）</strong>
+- 也称为非CopyBack写事务
+- 从请求节点向Home节点传输数据，无需先获得数据的一致性所有权
+- 用于从Home节点向Subordinate节点传输数据</p></li>
+<li><p><strong>CopyBack事务</strong>
+- CopyBack事务移动一致数据从缓存到下一级缓存或内存
+- 不需要监听系统中的其他代理</p></li>
+</ol>
+<p><strong>3.4.2 立即写请求</strong></p>
+<p><strong>WriteNoSnpFull（非监听写-完整）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：从请求节点向非监听地址区域写完整缓存行数据
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>或从Home到任何地址区域的完整缓存行数据</p></li>
+<li><p>所有BE位必须断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteNoSnpPtl（非监听写-部分）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：从请求节点向非监听地址区域写最多一个缓存行数据
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>或从Home到任何地址区域的最多一个缓存行数据</p></li>
+<li><p>BE位必须在指定数据大小的适当字节通道断言</p></li>
+<li><p>数据传输的其余部分取消断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteNoSnpDef（非监听写-可延迟）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：从请求节点向非监听地址区域可延迟地写完整缓存行数据
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>或从Home到任何地址区域的完整缓存行数据</p></li>
+<li><p>所有BE位必须断言</p></li>
+<li><p>允许多个可延迟写事务从同一请求者未完成</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteNoSnpZero（非监听写-零）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：从请求节点向非监听地址区域写数据值为0，不传输数据字节
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>或从Home到任何地址区域写数据值为0，不传输数据字节</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteUniqueFull（写唯一-完整）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的写操作
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>当缓存行在请求者处为Invalid时，将完整缓存行数据写入下一级缓存或内存</p></li>
+<li><p>所有BE位必须断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteUniquePtl（写唯一-部分）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的写操作
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>当缓存行在请求者处为Invalid时，写最多一个缓存行数据到下一级缓存或内存</p></li>
+<li><p>BE位必须在指定数据大小的适当字节通道断言</p></li>
+<li><p>数据传输的其余部分取消断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteUniqueZero（写唯一-零）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的写操作
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>当数据值为0时写操作，不传输数据字节</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteUniqueFullStash（写唯一-完整-填充）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的写操作
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>当缓存行在请求者处为Invalid时，将完整缓存行数据写入下一级缓存或内存</p></li>
+<li><p>还包括向填充目标节点获取寻址缓存行的请求</p></li>
+<li><p>所有BE位必须断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteUniquePtlStash（写唯一-部分-填充）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：对监听地址区域的写操作
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>当缓存行在请求者处为Invalid时，写最多一个缓存行数据到下一级缓存或内存</p></li>
+<li><p>还包括向填充目标节点获取寻址缓存行的请求</p></li>
+<li><p>BE位必须在指定数据大小的适当字节通道断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：I
+最终状态：I</p>
+</div></blockquote>
+<p><strong>3.4.3 CopyBack写请求</strong></p>
+<p><strong>WriteBackFull（写回-完整）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：写回完整缓存行的脏数据到下一级缓存或内存
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>所有BE位必须断言（当写数据不是CopyBackWriteData_I时）</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：UD, SD
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteBackPtl（写回-部分）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：写回最多一个缓存行的脏数据到下一级缓存或内存
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>所有适当的BE位（最多全部64）必须断言</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：UD
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteCleanFull（写清洁-完整）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：写回完整缓存行的脏数据到下一级缓存或内存，并在缓存中保留清洁副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>所有BE位必须断言（当写数据不是CopyBackWriteData_I时）</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：UD, SD
+最终状态：UC或SC</p>
+</div></blockquote>
+<p><strong>WriteEvictFull（写驱逐-完整）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：UniqueClean数据的写回到下一级缓存
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>所有BE位必须断言（当写数据不是CopyBackWriteData_I时）</p></li>
+<li><p>缓存行必须不传播超出其监听域</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：UC
+最终状态：I</p>
+</div></blockquote>
+<p><strong>WriteEvictOrEvict（写驱逐或驱逐）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：清洁数据的写回到下一级缓存
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteEvictFull和Evict合并为一个请求</p></li>
+<li><p>Home节点被允许确定是否发送数据</p></li>
+<li><p>如果完成者不接受数据，可能不发送数据</p></li>
+<li><p>如果发送数据，则数据大小为缓存行长度</p></li>
+<li><p>LikelyShared值指示初始状态：
+* 0 → UC
+* 1 → SC</p></li>
+</ul>
+</div></blockquote>
+<p>初始状态：UC或SC
+最终状态：I</p>
+</div></blockquote>
+<p><strong>3.4.4 写请求特性</strong></p>
+<ol class="arabic simple">
+<li><p><strong>字节使能（BE）</strong>
+- 每个写事务必须断言适当的BE位与数据
+- BE位指示哪些字节通道包含有效数据</p></li>
+<li><p><strong>DWT（直接写传输）流</strong>
+- 立即写请求，除WriteNoSnpZero和WriteUniqueZero外，允许DWT流
+- WriteNoSnpZero和WriteUniqueZero的DWT流从不允许</p></li>
+<li><p><strong>缓存状态</strong>
+- 立即写事务的初始状态为I
+- CopyBack事务有特定的初始状态要求</p></li>
+</ol>
+</section>
+<section id="id17">
+<h3><span class="section-number">4.3.5. </span>5 原子请求深入分析<a class="headerlink" href="#id17" title="链接到此标题。"></a></h3>
+<p><strong>3.5.1 原子操作概念</strong></p>
+<p><strong>原子操作（Atomic Operation）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>定义：执行涉及多个数据值的函数，使得原始值的加载、函数的执行和更新值的存储以原子方式发生
+含义：在操作期间没有其他代理能够访问该位置</p>
+</div></blockquote>
+<p><strong>原子事务（Atomic Transaction）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>定义：用于将原子操作连同执行原子操作所需的数据值从一个系统中的代理传递到另一个代理的事务
+目的：原子操作可以由需要执行操作的组件之外的组件执行</p>
+</div></blockquote>
+<p><strong>3.5.2 原子事务类型</strong></p>
+<p>CHI协议定义了四种原子事务类型：</p>
+<p><strong>AtomicStore（原子存储）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>发送单个数据值、地址和要执行的原子操作</p></li>
+<li><p>目标（Home节点或Subordinate节点）使用原子事务中提供的数据对指定地址位置执行所需操作</p></li>
+<li><p>目标返回不带数据的完成响应</p></li>
+<li><p>不向请求者返回地址位置的原始值</p></li>
+<li><p>支持8种操作</p></li>
+<li><p>适用于1字节、2字节、4字节或8字节数据大小</p></li>
+</ul>
+</dd>
+<dt>支持的操作：</dt><dd><ol class="arabic simple">
+<li><p>STADD: (TxnData + InitialData)</p></li>
+<li><p>STCLR: (InitialData AND (NOT TxnData))</p></li>
+<li><p>STEOR: (InitialData XOR TxnData)</p></li>
+<li><p>STSET: (InitialData OR TxnData)</p></li>
+<li><p>STSMAX: 如果((有符号INT)TxnData - (有符号INT)InitialData) &gt; 0</p></li>
+<li><p>STSMIN: 如果((有符号INT)TxnData - (有符号INT)InitialData) &lt; 0</p></li>
+<li><p>STUMAX: 如果((无符号INT)TxnData - (无符号INT)InitialData) &gt; 0</p></li>
+<li><p>STUMIN: 如果((无符号INT)TxnData - (无符号INT)InitialData) &lt; 0</p></li>
+</ol>
+</dd>
+</dl>
+<p>初始状态：任何状态
+最终状态：I</p>
+</div></blockquote>
+<p><strong>AtomicLoad（原子加载）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>发送单个数据值、地址和要执行的原子操作</p></li>
+<li><p>目标使用原子事务中提供的数据值对指定地址位置执行所需操作</p></li>
+<li><p>目标返回带数据的完成响应</p></li>
+<li><p>数据值是地址位置的原始值</p></li>
+<li><p>支持8种操作</p></li>
+<li><p>适用于1字节、2字节、4字节或8字节数据大小</p></li>
+</ul>
+</dd>
+<dt>支持的操作：</dt><dd><ol class="arabic simple">
+<li><p>LDADD: (TxnData + InitialData)</p></li>
+<li><p>LDCLR: (InitialData AND (NOT TxnData))</p></li>
+<li><p>LDEOR: (InitialData XOR TxnData)</p></li>
+<li><p>LDSET: (InitialData OR TxnData)</p></li>
+<li><p>LDSMAX: 如果((有符号INT)TxnData - (有符号INT)InitialData) &gt; 0</p></li>
+<li><p>LDSMIN: 如果((有符号INT)TxnData - (有符号INT)InitialData) &lt; 0</p></li>
+<li><p>LDUMAX: 如果((无符号INT)TxnData - (无符号INT)InitialData) &gt; 0</p></li>
+<li><p>LDUMIN: 如果((无符号INT)TxnData - (无符号INT)InitialData) &lt; 0</p></li>
+</ol>
+</dd>
+</dl>
+<p>初始状态：任何状态
+最终状态：I</p>
+</div></blockquote>
+<p><strong>AtomicSwap（原子交换）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>发送单个数据值（交换值）连同要操作的地址</p></li>
+<li><p>目标将地址位置的值与事务中提供的数据值交换</p></li>
+<li><p>目标返回带数据的完成响应</p></li>
+<li><p>数据值是地址位置的原始值</p></li>
+<li><p>支持1种操作</p></li>
+<li><p>适用于1字节、2字节、4字节或8字节数据大小</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：任何状态
+最终状态：I</p>
+</div></blockquote>
+<p><strong>AtomicCompare（原子比较）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>特性：</dt><dd><ul class="simple">
+<li><p>发送两个数据值（比较值和交换值）连同要操作的地址</p></li>
+<li><p>目标将地址位置的值与比较值比较：
+* 如果值匹配，目标将交换值写入地址位置
+* 如果值不匹配，目标不将交换值写入地址位置</p></li>
+<li><p>目标返回带数据的完成响应</p></li>
+<li><p>数据值是地址位置的原始值</p></li>
+<li><p>支持1种操作</p></li>
+<li><p>适用于2字节、4字节、8字节、16字节或32字节数据大小</p></li>
+</ul>
+</dd>
+</dl>
+<p>初始状态：任何状态
+最终状态：I</p>
+</div></blockquote>
+<p><strong>3.5.3 原子事务的共同特性</strong></p>
+<ol class="arabic simple">
+<li><p><strong>数据响应</strong>
+- 必须在完成响应中包含数据（AtomicStore除外）
+- AtomicStore的完成响应不包含数据响应
+- 返回数据时，入站数据大小必须与出站数据大小相同（AtomicCompare除外）
+- AtomicCompare中，入站数据大小必须是出站数据大小的一半
+- 响应数据中的数据值必须是地址位置的原始值
+- 接收的数据不能在请求者处缓存</p></li>
+<li><p><strong>字节使能</strong>
+- 出站数据消息的所有有效数据的BE位必须断言
+- 入站数据的BE位不适用，可以采用任何值</p></li>
+<li><p><strong>缓存状态变化</strong>
+- 请求可以导致系统中其他请求节点的缓存状态变化
+- 对等请求节点缓存状态在请求完成时必须为Invalid</p></li>
+<li><p><strong>数据流</strong>
+- 原子事务不能使用DMT或DWT流</p></li>
+</ol>
+<p><strong>3.5.4 原子操作的本地执行</strong></p>
+<p>如果请求者必须在缓存行的缓存副本上执行原子操作：</p>
+<p><strong>缓存行状态为Unique时：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>可以在本地执行原子操作，无需生成原子事务</p></li>
+</ul>
+</div></blockquote>
+<p><strong>缓存行状态为Shared但非Dirty时：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>选项1：</dt><dd><ul class="simple">
+<li><p>生成ReadUnique、CleanUnique或MakeReadUnique以获取缓存行所有权</p></li>
+<li><p>在本地执行原子操作</p></li>
+</ul>
+</dd>
+<dt>选项2：</dt><dd><ul class="simple">
+<li><p>使本地副本失效</p></li>
+<li><p>向互连发送原子事务</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>缓存行状态为Shared Dirty时：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>选项1：</dt><dd><ul class="simple">
+<li><p>生成ReadUnique、CleanUnique或MakeReadUnique</p></li>
+<li><p>获取缓存行所有权</p></li>
+<li><p>在本地执行操作</p></li>
+</ul>
+</dd>
+<dt>选项2：</dt><dd><ul class="simple">
+<li><p>WriteBack并使本地副本失效</p></li>
+<li><p>随后向互连发送原子事务</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>所有情况下的可选行为：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>请求者被允许（但不要求）发送带有SnoopMe位设置的原子事务</p></li>
+<li><p>以指示互连向请求者发送监听请求以失效（必要时提取缓存副本）</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id18">
+<h3><span class="section-number">4.3.6. </span>6 组合写请求深入分析<a class="headerlink" href="#id18" title="链接到此标题。"></a></h3>
+<p><strong>3.6.1 组合写请求概念</strong></p>
+<p>组合写请求允许将写事务与缓存维护事务（CMO）组合，当两者都针对相同地址时。</p>
+<p><strong>优势：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>避免需要序列化写和CMO/PCMO事务</p></li>
+<li><p>减少事务开销</p></li>
+<li><p>提高性能效率</p></li>
+<li><p>在必须完成写操作才能启动CMO/PCMO事务的点特别有用</p></li>
+</ol>
+</div></blockquote>
+<p><strong>3.6.2 允许的组合</strong></p>
+<p><strong>Request Node到Home Node的组合：</strong></p>
+<table class="docutils align-default" id="id50">
+<caption><span class="caption-text">Request Node到Home Node的组合</span><a class="headerlink" href="#id50" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 22.7%" />
+<col style="width: 22.7%" />
+<col style="width: 22.7%" />
+<col style="width: 22.7%" />
+<col style="width: 9.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>写类型</p></th>
+<th class="head"><p>PCMO（分离持久响应）</p></th>
+<th class="head"><p>非持久CMO（CleanShared）</p></th>
+<th class="head"><p>非持久CMO（CleanInvalid/CleanInvalidPoPA）</p></th>
+<th class="head"><p>非持久CMO（MakeInvalid）</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>WriteNoSnpFull</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>WriteNoSnpPtl</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>WriteNoSnpDef</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>WriteUniqueFull</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>WriteUniquePtl</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>WriteUniqueStashFull</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>WriteUniqueStashPtl</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>WriteBackFull</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>WriteBackPtl</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>WriteCleanFull</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>WriteEvictFull</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Home Node到Subordinate Node的组合：</strong></p>
+<table class="docutils align-default" id="id51">
+<caption><span class="caption-text">Home Node到Subordinate Node的组合</span><a class="headerlink" href="#id51" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 22.7%" />
+<col style="width: 22.7%" />
+<col style="width: 22.7%" />
+<col style="width: 22.7%" />
+<col style="width: 9.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>写类型</p></th>
+<th class="head"><p>PCMO（分离持久响应）</p></th>
+<th class="head"><p>非持久CMO（CleanShared）</p></th>
+<th class="head"><p>非持久CMO（CleanInvalid/CleanInvalidPoPA）</p></th>
+<th class="head"><p>非持久CMO（MakeInvalid）</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>WriteNoSnpFull</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>WriteNoSnpPtl</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>WriteNoSnpDef</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3.6.3 具体组合写请求</strong></p>
+<p><strong>WriteNoSnpFull的组合：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteNoSnpFullCleanInv</p></li>
+<li><p>WriteNoSnpFullCleanSh</p></li>
+<li><p>WriteNoSnpFullCleanShPerSep</p></li>
+<li><p>WriteNoSnpFullCleanInvPoPA</p></li>
+</ul>
+</div></blockquote>
+<p><strong>WriteNoSnpPtl的组合：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteNoSnpPtlCleanInv</p></li>
+<li><p>WriteNoSnpPtlCleanSh</p></li>
+<li><p>WriteNoSnpPtlCleanShPerSep</p></li>
+<li><p>WriteNoSnpPtlCleanInvPoPA</p></li>
+</ul>
+</div></blockquote>
+<p><strong>WriteUniqueFull的组合：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteUniqueFullCleanSh</p></li>
+<li><p>WriteUniqueFullCleanShPerSep</p></li>
+</ul>
+</div></blockquote>
+<p><strong>WriteUniquePtl的组合：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteUniquePtlCleanSh</p></li>
+<li><p>WriteUniquePtlCleanShPerSep</p></li>
+</ul>
+</div></blockquote>
+<p><strong>WriteBackFull的组合：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteBackFullCleanInv</p></li>
+<li><p>WriteBackFullCleanSh</p></li>
+<li><p>WriteBackFullCleanShPerSep</p></li>
+<li><p>WriteBackFullCleanInvPoPA</p></li>
+</ul>
+</div></blockquote>
+<p><strong>WriteCleanFull的组合：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>WriteCleanFullCleanSh</p></li>
+<li><p>WriteCleanFullCleanShPerSep</p></li>
+</ul>
+</div></blockquote>
+<p><strong>3.6.4 组合写请求的特性</strong></p>
+<ol class="arabic simple">
+<li><p><strong>适用性</strong>
+- 允许用于CopyBack和Immediate写
+- WriteNoSnp(Excl)不允许与CMO组合
+- TagOp设置为Match不允许在Write*CMO中使用</p></li>
+<li><p><strong>Home行为</strong>
+- Home接收来自请求节点的组合写请求时，被允许向Subordinate节点转发
+- 如果写和CMO/PCMO都需要发送到下游
+- Home也被允许对这样的写请求使用DWT
+- 如果写是Immediate写且ExpCompAck设置为0</p></li>
+<li><p><strong>分离处理</strong>
+- 组合写请求的接收者被允许分离写和CMO请求并分别处理
+- 在这种情况下，CMO请求必须排序在写之后
+- 一旦请求被分离，完成者被允许在写和CMO事务之间插入对相同地址的请求</p></li>
+<li><p><strong>字段值</strong>
+- 组合请求中的Size字段值对应于写请求中的数据大小
+- CMO始终在64字节粒度上
+- 组合写请求中的MemAttr和SnpAttr字段值对应于写请求的内存属性
+- 当写和CMO事务被分离时，写事务继承原始组合请求的MemAttr和SnpAttr值
+- 分离的CMO事务的SnpAttr和Cacheable位必须设置为最广泛</p></li>
+</ol>
+<p><strong>3.6.5 使用场景示例</strong></p>
+<ol class="arabic simple">
+<li><p><strong>WriteBack与CleanShared/CleanSharedPersist组合</strong>
+- 支持在由CMO清理时将缓存行转换为Invalid的请求节点
+- 无论CMO类型如何</p></li>
+<li><p><strong>WriteUnique与CleanShared组合</strong>
+- 当CleanSharedPersist目标已知不支持持久化事务时
+- CleanSharedPersist请求需要由请求者转换为CleanShared</p></li>
+</ol>
+</section>
+</section>
+<section id="id19">
+<h2><span class="section-number">4.4. </span>监听请求详解<a class="headerlink" href="#id19" title="链接到此标题。"></a></h2>
+<section id="id20">
+<h3><span class="section-number">4.4.1. </span>1 监听请求概述<a class="headerlink" href="#id20" title="链接到此标题。"></a></h3>
+<p><strong>生成时机：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>响应来自请求节点的请求</p></li>
+<li><p>由于内部触发，如缓存或监听过滤器维护操作</p></li>
+</ol>
+</div></blockquote>
+<p><strong>操作目标：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>SnpDVMOp之外的所有Snoop事务在RN-F的缓存数据上操作</p></li>
+<li><p>SnpDVMOp事务在目标节点执行DVM维护操作</p></li>
+</ol>
+</div></blockquote>
+<p><strong>选择标准：</strong>
+Home对监听的选择基于多个标准：</p>
+<ol class="arabic simple">
+<li><p><strong>请求要求的预期或允许的最终缓存状态</strong>
+- 在请求者和被监听节点处</p></li>
+<li><p><strong>避免丢失被监听缓存中存在的任何脏标签</strong></p></li>
+<li><p><a href="#id21"><span class="problematic" id="id22">**</span></a>用等效的转发监听替换非转发监听**（如果存在）</p></li>
+<li><p><strong>转发监听仅允许发送到一个RN-F</strong></p></li>
+<li><p><strong>填充监听仅允许发送到一个RN-F</strong></p></li>
+<li><p><strong>允许（但不要求）对非监听地址位置进行监听</strong></p></li>
+</ol>
+</section>
+<section id="id23">
+<h3><span class="section-number">4.4.2. </span>2 监听请求类型详解<a class="headerlink" href="#id23" title="链接到此标题。"></a></h3>
+<p><strong>4.2.1 SnpOnceFwd / SnpOnce（一次性转发监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：获取缓存行的最新副本，最好不更改被监听者处的缓存行状态
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>非失效监听</p></li>
+<li><p>可以转发数据</p></li>
+<li><p>用于ReadOnce请求</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.2 SnpStashUnique（填充唯一监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：建议被监听者获取缓存行的唯一状态副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>期望在填充目标的缓存处于唯一状态时不发送监听</p></li>
+<li><p>对于WriteUniqueFullStash和WriteUniquePtlStash：
+* 仅当被监听者没有缓存行副本时，才允许向填充目标发送监听</p></li>
+<li><p>被监听者不得在监听响应中返回数据</p></li>
+<li><p>允许监听响应包括Data Pull</p></li>
+<li><p>监听响应中的Data Pull请求被视为ReadUnique</p></li>
+<li><p>不得更改被监听者处的缓存行状态</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.3 SnpStashShared（填充共享监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：建议被监听者获取缓存行的共享状态副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>期望在目标处缓存缓存行时不发送监听</p></li>
+<li><p>被监听者不得在监听响应中返回数据</p></li>
+<li><p>允许监听响应包括Data Pull</p></li>
+<li><p>监听响应中的Data Pull请求被视为ReadNotSharedDirty</p></li>
+<li><p>不得更改被监听者处的缓存行状态</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.4 SnpCleanFwd / SnpClean（清理转发监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：获取清洁状态的缓存行副本，同时将任何缓存副本保留在共享状态
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>必须不将缓存行留在唯一状态</p></li>
+<li><p>非失效监听</p></li>
+<li><p>可以转发数据</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.5 SnpNotSharedDirtyFwd / SnpNotSharedDirty（非共享脏转发监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：获取共享清洁状态的缓存行副本，同时将任何缓存副本保留在共享状态
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>必须不将缓存行留在唯一状态</p></li>
+<li><p>非失效监听</p></li>
+<li><p>可以转发数据</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.6 SnpSharedFwd / SnpShared（共享转发监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：获取共享状态的缓存行副本，同时将任何缓存副本保留在共享状态
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>必须不将缓存行留在唯一状态</p></li>
+<li><p>非失效监听</p></li>
+<li><p>可以转发数据</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.7 SnpUniqueFwd / SnpUnique（唯一转发监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：获取唯一状态的缓存行副本，同时使任何缓存副本失效
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>必须将缓存行更改为Invalid状态</p></li>
+<li><p>失效监听</p></li>
+<li><p>可以转发数据</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.8 SnpPreferUniqueFwd / SnpPreferUnique（首选唯一转发监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：获取唯一状态的缓存行副本，同时使任何缓存副本失效
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Home预期使用SnpPreferUniqueFwd或SnpPreferUnique响应ReadPreferUnique</p></li>
+<li><p>被监听者的行为取决于是否正在执行独占序列</p></li>
+<li><p>失效监听</p></li>
+<li><p>可以转发数据</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.9 SnpUniqueStash（唯一填充监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：使被监听者处的缓存副本失效，并建议被监听者获取缓存行的唯一状态副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>允许监听响应包括DataPull</p></li>
+<li><p>监听响应中的Data Pull请求被视为ReadUnique</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.10 SnpCleanShared（清理共享监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：移除被监听者处的任何脏缓存行副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>必须不将缓存行留在脏状态</p></li>
+<li><p>非失效监听</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.11 SnpCleanInvalid（清理失效监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：使被监听者处的缓存行失效并获取任何脏副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>也可以由互连在没有对应请求的情况下生成</p></li>
+<li><p>必须将缓存行更改为Invalid状态</p></li>
+<li><p>失效监听</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.12 SnpMakeInvalid（使失效监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：使被监听者处的缓存行失效并丢弃任何脏副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>不得在监听响应中返回数据，脏数据被丢弃</p></li>
+<li><p>必须将缓存行更改为Invalid状态</p></li>
+<li><p>失效监听</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.13 SnpMakeInvalidStash（使失效填充监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：使缓存行的副本失效，并建议被监听者获取缓存行的唯一状态副本
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>被监听者不得在监听响应中返回数据，脏数据必须被丢弃</p></li>
+<li><p>允许监听响应包括DataPull</p></li>
+<li><p>监听响应中的Data Pull请求被视为ReadUnique</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.14 SnpQuery（查询监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：探测请求节点处缓存行的状态
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Home可以在没有来自请求者的对应请求的情况下发送SnpQuery监听</p></li>
+<li><p>监听响应必须包括目标被监听者处缓存行的精确状态</p></li>
+<li><p>被监听者不得在监听响应中返回数据</p></li>
+<li><p>SnpQuery监听不得更改被监听者处的缓存行状态</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4.2.15 SnpDVMOp（DVM操作监听）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：在互连处生成，由DVMOp请求启动
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>单个DVMOp请求生成两个监听请求</p></li>
+<li><p>为两个监听请求返回单个监听响应</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="id24">
+<h3><span class="section-number">4.4.3. </span>3 监听请求选择策略<a class="headerlink" href="#id24" title="链接到此标题。"></a></h3>
+<p><strong>4.3.1 监听数量</strong></p>
+<p>Home节点可以：
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>向多个RN-F发送非转发监听，包括向所有RN-F</p></li>
+<li><p>仅允许向一个RN-F发送转发监听</p></li>
+</ol>
+</div></blockquote>
+<p><strong>失效监听要求：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在失效的情况下，失效监听必须至少发送到所有其他缓存副本</p></li>
+</ul>
+</div></blockquote>
+<p><strong>非失效监听要求：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>被允许（但不要求）向所有有缓存副本的RN-F发送监听</p></li>
+<li><p>必须能够获取脏行副本</p></li>
+<li><p>对于唯一脏缓存行状态，Home节点必须向有唯一脏缓存副本的RN-F发送监听</p></li>
+</ul>
+</div></blockquote>
+<p><strong>带填充提示的写事务：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>对于WriteUniqueFullStash，对非填充目标节点的预期监听是SnpMakeInvalid</p></li>
+<li><p>对于WriteUniquePtlStash，对非填充目标节点的预期监听是SnpCleanInvalid</p></li>
+</ul>
+</div></blockquote>
+<p><strong>监听过滤器或目录：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>可以在互连中包含以支持监听过滤</p></li>
+</ul>
+</div></blockquote>
+<p><strong>4.3.2 监听类型选择</strong></p>
+<p>基于内部偏好和实现约束，Home节点可能偏好预期监听之一或用其他监听替换预期监听。</p>
+<p><strong>预期监听对应表：</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34.0%" />
+<col style="width: 33.0%" />
+<col style="width: 33.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>请求类别</p></th>
+<th class="head"><p>请求</p></th>
+<th class="head"><p>预期监听</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>ReadNoSnp</p></td>
+<td><p>None或SnpOnceFwd</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read</p></td>
+<td><p>ReadNoSnpSep</p></td>
+<td><p>n/a</p></td>
+</tr>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>ReadOnce</p></td>
+<td><p>SnpOnceFwd</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read</p></td>
+<td><p>ReadOnceCleanInvalid</p></td>
+<td><p>SnpUnique或SnpOnceFwd</p></td>
+</tr>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>ReadOnceMakeInvalid</p></td>
+<td><p>SnpUnique、SnpUniqueFwd或SnpOnceFwd</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read</p></td>
+<td><p>ReadClean</p></td>
+<td><p>SnpCleanFwd</p></td>
+</tr>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>ReadNotSharedDirty</p></td>
+<td><p>SnpNotSharedDirtyFwd</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read</p></td>
+<td><p>ReadShared</p></td>
+<td><p>SnpSharedFwd</p></td>
+</tr>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>ReadUnique</p></td>
+<td><p>SnpUniqueFwd</p></td>
+</tr>
+<tr class="row-odd"><td><p>Read</p></td>
+<td><p>ReadPreferUnique</p></td>
+<td><p>SnpPreferUniqueFwd</p></td>
+</tr>
+<tr class="row-even"><td><p>Read</p></td>
+<td><p>MakeReadUnique</p></td>
+<td><p>SnpCleanInvalid或SnpUniqueFwd</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless</p></td>
+<td><p>CleanUnique</p></td>
+<td><p>SnpCleanInvalid</p></td>
+</tr>
+<tr class="row-even"><td><p>Dataless</p></td>
+<td><p>MakeUnique</p></td>
+<td><p>SnpMakeInvalid</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless</p></td>
+<td><p>Evict</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p>Dataless</p></td>
+<td><p>CleanShared</p></td>
+<td><p>SnpCleanShared</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless</p></td>
+<td><p>CleanSharedPersist</p></td>
+<td><p>SnpCleanShared</p></td>
+</tr>
+<tr class="row-even"><td><p>Dataless</p></td>
+<td><p>CleanSharedPersistSep</p></td>
+<td><p>SnpCleanShared</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless</p></td>
+<td><p>CleanInvalid</p></td>
+<td><p>SnpCleanInvalid</p></td>
+</tr>
+<tr class="row-even"><td><p>Dataless</p></td>
+<td><p>CleanInvalidPoPA</p></td>
+<td><p>SnpCleanInvalid</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless</p></td>
+<td><p>MakeInvalid</p></td>
+<td><p>SnpMakeInvalid</p></td>
+</tr>
+<tr class="row-even"><td><p>Dataless-stash</p></td>
+<td><p>StashOnceUnique</p></td>
+<td><p>SnpStashUnique</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless-stash</p></td>
+<td><p>StashOnceSepUnique</p></td>
+<td><p>SnpStashUnique</p></td>
+</tr>
+<tr class="row-even"><td><p>Dataless-stash</p></td>
+<td><p>StashOnceShared</p></td>
+<td><p>SnpStashShared</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless-stash</p></td>
+<td><p>StashOnceSepShared</p></td>
+<td><p>SnpStashShared</p></td>
+</tr>
+<tr class="row-even"><td><p>Write</p></td>
+<td><p>WriteNoSnp</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write</p></td>
+<td><p>WriteNoSnpDef</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p>Write</p></td>
+<td><p>WriteUniqueFull</p></td>
+<td><p>SnpMakeInvalid</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write</p></td>
+<td><p>WriteUniquePtl</p></td>
+<td><p>SnpCleanInvalid或SnpUnique</p></td>
+</tr>
+<tr class="row-even"><td><p>Write</p></td>
+<td><p>WriteUniqueZero</p></td>
+<td><p>SnpMakeInvalid</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write-stash</p></td>
+<td><p>WriteUniqueFullStash</p></td>
+<td><p>SnpMakeInvalidStash</p></td>
+</tr>
+<tr class="row-even"><td><p>Write-stash</p></td>
+<td><p>WriteUniquePtlStash</p></td>
+<td><p>SnpUniqueStash或SnpMakeInvalidStash</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write-CopyBack</p></td>
+<td><p>WriteBack</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p>Write-CopyBack</p></td>
+<td><p>WriteClean</p></td>
+<td><p>n/a</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write-CopyBack</p></td>
+<td><p>WriteEvictFull</p></td>
+<td><p>n/a</p></td>
+</tr>
+<tr class="row-even"><td><p>Write-CopyBack</p></td>
+<td><p>WriteEvictOrEvict</p></td>
+<td><p>n/a</p></td>
+</tr>
+<tr class="row-odd"><td><p>Atomic</p></td>
+<td><p>AtomicStore</p></td>
+<td><p>SnpUnique</p></td>
+</tr>
+<tr class="row-even"><td><p>Atomic</p></td>
+<td><p>AtomicLoad</p></td>
+<td><p>SnpUnique</p></td>
+</tr>
+<tr class="row-odd"><td><p>Atomic</p></td>
+<td><p>AtomicSwap</p></td>
+<td><p>SnpUnique</p></td>
+</tr>
+<tr class="row-even"><td><p>Atomic</p></td>
+<td><p>AtomicCompare</p></td>
+<td><p>SnpUnique</p></td>
+</tr>
+<tr class="row-odd"><td><p>Others</p></td>
+<td><p>DVMOp</p></td>
+<td><p>SnpDVMOp</p></td>
+</tr>
+<tr class="row-even"><td><p>Others</p></td>
+<td><p>PCrdReturn</p></td>
+<td><p>n/a</p></td>
+</tr>
+<tr class="row-odd"><td><p>Others</p></td>
+<td><p>PrefetchTgt</p></td>
+<td><p>n/a</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>4.3.3 互连行为</strong></p>
+<p><strong>监听过滤器/目录支持：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>互连支持监听过滤器或目录以跟踪RN-F缓存中存在的缓存行状态</p></li>
+<li><p>跟踪可以详细到知道每个RN-F有缓存行副本</p></li>
+<li><p>也可以非特定到知道缓存行存在于RN-F缓存之一</p></li>
+<li><p>这种跟踪允许互连过滤对RN-F的不必要监听</p></li>
+</ol>
+</div></blockquote>
+<p><strong>过滤示例：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>监听过滤器指示缓存行不在任何RN-F缓存中：
+- 互连不发送监听请求</p></li>
+<li><p>RN-F缓存中的缓存行已处于所需状态：
+- 例如：接收的请求是ReadShared且所有缓存行副本都处于SC状态
+- 互连不发送监听请求</p></li>
+</ol>
+</div></blockquote>
+<p><strong>SnpMakeInvalid使用限制：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>互连在响应以下请求时不得使用SnpMakeInvalid监听请求：</dt><dd><ul class="simple">
+<li><p>WriteUniqueFull</p></li>
+<li><p>WriteUniqueFullStash</p></li>
+<li><p>MakeUnique</p></li>
+<li><p>MakeInvalid</p></li>
+</ul>
+</dd>
+<dt>除非：</dt><dd><ul class="simple">
+<li><p>事务TagOp值为Update</p></li>
+<li><p>互连可以确定被监听者不持有脏标签</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>SnpMakeInvalid用于MakeReadUnique：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>互连在响应MakeReadUnique时不得使用SnpMakeInvalid监听请求，除非互连可以确定：</dt><dd><ul class="simple">
+<li><p>请求者仍有缓存行副本且被监听者没有脏标签</p></li>
+<li><p>请求者已丢失缓存行副本且被监听者没有缓存行的脏副本</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>自发监听：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>允许互连在没有来自请求节点的对应请求的情况下自发生成监听请求</p></li>
+<li><p>例如：互连可以发送SnpUnique或SnpCleanInvalid请求，作为来自监听过滤器或互连缓存的向后失效的结果</p></li>
+</ul>
+</div></blockquote>
+<p><strong>监听请求选择示例：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>对于WriteUniquePtl请求：</dt><dd><ul class="simple">
+<li><p>可以发送SnpCleanInvalid或SnpUnique监听请求</p></li>
+<li><p>两者都使缓存行失效</p></li>
+<li><p>如果缓存行为脏，则响应中返回数据</p></li>
+<li><p>接收到所有监听响应后，将写数据与监听响应中接收的任何脏数据合并写入内存</p></li>
+<li><p>唯一区别是SnpUnique可以从UniqueClean（UC）状态返回数据，但SnpCleanInvalid不能</p></li>
+<li><p>使用SnpUnique可能导致不必要的数据传输</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>监听替换：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>互连被允许：</p>
+<ol class="arabic simple">
+<li><p>ReadNotSharedDirty、ReadShared和ReadClean：
+- 使用SnpNotSharedDirty或SnpShared或SnpClean</p></li>
+<li><p>ReadShared：
+- 使用SnpNotSharedDirtyFwd或SnpSharedFwd或SnpCleanFwd</p></li>
+<li><p>ReadNotSharedDirty和ReadClean：
+- 使用SnpNotSharedDirtyFwd或SnpCleanFwd</p></li>
+<li><p>ReadOnce事务：
+- 使用任何非转发、非失效监听类型</p></li>
+<li><p>ReadOnceCleanInvalid和ReadOnceMakeInvalid：
+- 使用任何非转发监听类型，除了SnpMakeInvalid</p></li>
+<li><p>ReadOnce和ReadOnceCleanInvalid：
+- 使用转发监听类型SnpOnceFwd</p></li>
+<li><p>ReadOnceMakeInvalid：
+- 使用转发监听类型SnpUniqueFwd或SnpOnceFwd</p></li>
+<li><p>WriteUniqueFullStash和WriteUniquePtlStash：
+- 如果目标请求节点没有缓存行，向目标请求节点发送SnpStashUnique或SnpMakeInvalidStash</p></li>
+<li><p>替换任何失效监听请求为SnpUnique或SnpCleanInvalid请求</p></li>
+<li><p>用对应的非转发类型替换转发监听
+- 接收者被允许将转发指示视为提示
+- 以协议兼容方式以对应的非转发版本响应监听
+- 无论是否使用MTE都允许
+- 转发监听不得用于小于64B的请求</p></li>
+<li><p>MakeInvalid和WriteUniqueZero的SnpMakeInvalid使用：
+- 仅当Home知道被监听者没有脏标签时才允许</p></li>
+</ol>
+</div></blockquote>
+</section>
+</section>
+<section id="id25">
+<h2><span class="section-number">4.5. </span>响应类型详解<a class="headerlink" href="#id25" title="链接到此标题。"></a></h2>
+<section id="id26">
+<h3><span class="section-number">4.5.1. </span>1 响应分类<a class="headerlink" href="#id26" title="链接到此标题。"></a></h3>
+<p>每个请求可以生成一个或多个响应。某些响应也可以包括数据。</p>
+<p>响应分类：
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>完成响应（B4.5.1）</p></li>
+<li><p>WriteData响应（B4.5.2）</p></li>
+<li><p>监听响应（B4.5.3）</p></li>
+<li><p>其他响应（B4.5.4）</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="id27">
+<h3><span class="section-number">4.5.2. </span>2 完成响应详解<a class="headerlink" href="#id27" title="链接到此标题。"></a></h3>
+<p><strong>5.2.1 完成响应基本概念</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：
+  - 所有事务（PCrdReturn和PrefetchTgt除外）都需要完成响应
+  - 通常是完成者发送的最后一条消息，以结束请求事务
+  - 请求者仍可以发送CompAck响应以结束事务
+
+保证：
+  - 完成保证请求已到达PoS或PoC
+  - 在那里它将与系统中任何请求者对相同地址的请求进行排序
+</pre></div>
+</div>
+<p><strong>5.2.2 读和原子事务完成</strong></p>
+<p><strong>响应形式：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>单个响应形式
+- 在RDAT通道上使用CompData操作码的响应</p></li>
+<li><p>两个分离响应形式
+- 一个在RSP通道上使用RespSepData操作码
+- 另一个在RDAT通道上使用DataSepResp操作码</p></li>
+</ol>
+</div></blockquote>
+<p><strong>响应包含的Resp字段：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Cache state（缓存状态）
+- 最终允许的缓存行在请求者处的状态
+- 对于所有读（ReadNoSnp和ReadOnce除外）</p></li>
+<li><p>Pass Dirty（传递脏）
+- 指示更新内存的责任是否传递给请求者
+- Pass Dirty位的断言在响应名称中由_PD表示</p></li>
+</ol>
+</div></blockquote>
+<p><strong>允许的读事务完成和Resp字段编码：</strong></p>
+<table class="docutils align-default" id="id52">
+<caption><span class="caption-text">允许的读事务完成和Resp字段编码</span><a class="headerlink" href="#id52" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 26.1%" />
+<col style="width: 13.0%" />
+<col style="width: 26.1%" />
+<col style="width: 34.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>最终缓存行状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CompData_I</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td><p>指示不能保持一致性缓存行副本</p></td>
+</tr>
+<tr class="row-odd"><td><p>RespSepData_I</p></td>
+<td><p>0b000</p></td>
+<td><p>不适用</p></td>
+<td><p>缓存状态必须从DataSepResp响应确定</p></td>
+</tr>
+<tr class="row-even"><td><p>CompData_UC</p></td>
+<td><p>0b010</p></td>
+<td><p>UC, UCE, SC或I（响应中的缓存状态适用时）</p></td>
+<td><p>此响应也允许用于ReadNoSnp和ReadOnce事务，但缓存行不一致</p></td>
+</tr>
+<tr class="row-odd"><td><p>DataSepResp_UC</p></td>
+<td><p>0b010</p></td>
+<td><p>UC, UCE, SC或I</p></td>
+<td><p>数据响应</p></td>
+</tr>
+<tr class="row-even"><td><p>RespSepData_UC</p></td>
+<td><p>0b010</p></td>
+<td><p>UC, UCE, SC或I</p></td>
+<td><p>完成响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>CompData_SC</p></td>
+<td><p>0b001</p></td>
+<td><p>SC或I</p></td>
+<td><p>脏缓存行的责任不被传递</p></td>
+</tr>
+<tr class="row-even"><td><p>DataSepResp_SC</p></td>
+<td><p>0b001</p></td>
+<td><p>SC或I</p></td>
+<td><p>数据响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>RespSepData_SC</p></td>
+<td><p>0b001</p></td>
+<td><p>SC或I</p></td>
+<td><p>完成响应</p></td>
+</tr>
+<tr class="row-even"><td><p>CompData_UD_PD</p></td>
+<td><p>0b110</p></td>
+<td><p>UD或SD</p></td>
+<td><p>脏缓存行的责任被传递</p></td>
+</tr>
+<tr class="row-odd"><td><p>DataSepResp_UD_PD</p></td>
+<td><p>0b110</p></td>
+<td><p>UD或SD</p></td>
+<td><p>数据响应</p></td>
+</tr>
+<tr class="row-even"><td><p>RespSepData_UD_PD</p></td>
+<td><p>0b110</p></td>
+<td><p>UD或SD</p></td>
+<td><p>完成响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>CompData_SD_PD</p></td>
+<td><p>0b111</p></td>
+<td><p>SD</p></td>
+<td><p>脏缓存行的责任被传递</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用分离Comp和Data响应时：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>RespSepData也包括Resp字段，包含Cache state和Pass Dirty指示</p></li>
+<li><p>RespSepData中的Resp字段值必须是不适用并设置为0，或者与相应的DataSepResp相同</p></li>
+</ul>
+</div></blockquote>
+<p><strong>5.2.3 无数据事务完成</strong></p>
+<p><strong>响应形式：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在CRSP通道上发送</p></li>
+<li><p>使用Comp、CompPersist、CompCMO或CompStashDone操作码</p></li>
+</ul>
+</div></blockquote>
+<p><strong>CompCMO响应：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>组合写事务中CMO和PCMO的完成消息</p></li>
+<li><p>CompCMO必须仅用于组合写事务</p></li>
+<li><p>CompCMO可以与Persist响应组合为CompPersist操作码</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Comp响应包含的Resp字段：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Cache state（缓存状态）
+- 最终允许的缓存行在请求者处的状态
+- 对于CMO事务，缓存状态字段值被忽略，缓存状态保持不变</p></li>
+</ol>
+</div></blockquote>
+<p><strong>允许的无数据事务完成和Resp字段编码：</strong></p>
+<table class="docutils align-default" id="id53">
+<caption><span class="caption-text">允许的无数据事务完成和Resp字段编码</span><a class="headerlink" href="#id53" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 21.1%" />
+<col style="width: 15.8%" />
+<col style="width: 42.1%" />
+<col style="width: 21.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>最终缓存行状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Comp_I</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Comp_UC</p></td>
+<td><p>0b010</p></td>
+<td><p>UD, UC, UCE, SC或I</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Comp_SC</p></td>
+<td><p>0b001</p></td>
+<td><p>SC或I</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Comp_UD_PD</p></td>
+<td><p>0b110</p></td>
+<td><p>UD或SD</p></td>
+<td><p>脏缓存行的责任被传递</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>5.2.4 写和原子事务完成</strong></p>
+<p><strong>响应形式：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在CRSP通道上发送</p></li>
+<li><p>使用Comp或CompDBIDResp操作码</p></li>
+</ul>
+</div></blockquote>
+<p><strong>响应特性：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>不使用写事务完成传达缓存状态信息或脏缓存行责任</p></li>
+<li><p>Comp或CompDBIDResp响应的Resp字段必须设置为0
+- WriteNoSnpDef事务除外</p></li>
+<li><p>所有缓存状态信息和脏缓存行责任都与WriteData通信</p></li>
+</ul>
+</div></blockquote>
+<p><strong>允许的写事务完成响应：</strong></p>
+<p>1. <strong>Comp</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：完成响应与DBIDResp或DBIDRespOrd响应分离时使用</p>
+</div></blockquote>
+<p>2. <strong>CompDBIDResp</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：完成响应与DBIDResp或DBIDRespOrd响应组合时使用
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>所有CopyBack请求必须使用CompDBIDResp完成响应</p></li>
+<li><p>Immediate写和AtomicStore可以：
+* 分别发送Comp和DBIDResp或DBIDRespOrd响应
+* 如果两者都准备好发送给请求者，可以机会性地组合两个响应并发送CompDBIDResp</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>5.2.5 WriteNoSnpDef的特殊处理</strong></p>
+<p><strong>允许的Resp和RespErr字段值组合：</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>RespErr[1:0]</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>响应</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>00</p></td>
+<td><p>000</p></td>
+<td><p>OK/Successful</p></td>
+<td><p>完成者支持WriteNoSnpDef事务且可延迟写成功</p></td>
+</tr>
+<tr class="row-odd"><td><p>00</p></td>
+<td><p>001</p></td>
+<td><p>OK/Unsupported</p></td>
+<td><p>完成者不支持WriteNoSnpDef事务。请求者必须完成事务流。完成者不得更新内存</p></td>
+</tr>
+<tr class="row-even"><td><p>00</p></td>
+<td><p>010</p></td>
+<td><p>OK/Defer</p></td>
+<td><p>完成者支持WriteNoSnpDef事务。事务此时无法服务且不成功。内存位置不更新</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>000</p></td>
+<td><p>DERR</p></td>
+<td><p>数据错误</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>000</p></td>
+<td><p>NDERR</p></td>
+<td><p>非数据错误</p></td>
+</tr>
+<tr class="row-odd"><td><p>其他</p></td>
+<td><p>保留</p></td>
+<td><p>保留</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>HN-F作为目标Home节点：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>HN-F被允许（但不预期）成为WriteNoSnpDef请求的目标Home节点</p></li>
+<li><p>接收到意外WriteNoSnpDef请求的HN-F不得将WriteNoSnpDef请求转发到SN-F</p></li>
+<li><p>HN-F必须返回OK/Unsupported响应</p></li>
+</ul>
+</div></blockquote>
+<p><strong>不支持可延迟写的Subordinate：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>如果Home节点检测到可延迟写针对不支持可延迟写的Subordinate</p></li>
+<li><p>事务不得传播</p></li>
+<li><p>Home预期发送OK/Unsupported响应</p></li>
+<li><p>Home被允许发送NDERR响应而不是OK/Unsupported响应</p></li>
+</ul>
+</div></blockquote>
+<p><strong>5.2.6 其他事务完成</strong></p>
+<p><strong>DVM事务完成：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>始终使用Resp字段设置为0的Comp响应</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="writedata">
+<h3><span class="section-number">4.5.3. </span>3 WriteData响应详解<a class="headerlink" href="#writedata" title="链接到此标题。"></a></h3>
+<p><strong>基本概念：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>定义：WriteData响应是写请求和DVMOp事务的一部分
+流程：</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>请求者在接收到缓冲区可用以接受数据的保证后发送WriteData给完成者</p></li>
+<li><p>缓冲区可用性通过从完成者发送的DBIDResp或DBIDRespOrd响应发出信号</p></li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+<p><strong>响应操作码：</strong></p>
+<p>1. <strong>CopyBackWriteData（CBWrData）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：用于WriteBack、WriteClean、WriteEvictFull和WriteEvictOrEvict，以及CopyBack组合写事务
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>将一致数据从请求者的缓存传输到互连</p></li>
+<li><p>包括在发送WriteData响应之前缓存行状态的指示</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p>2. <strong>NonCopyBackWriteData（NCBWrData）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：用于WriteUnique和WriteNoSnp、WriteNoSnpDef，以及组合Immediate写事务，也用于DVMOp事务
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>响应中的缓存状态必须为I</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p>3. <strong>NonCopyBackWriteDataCompAck（NCBWrDataCompAck）</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：用于Immediate写和组合写事务
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>组合NonCopyBackWriteData和CompAck</p></li>
+<li><p>响应中的缓存状态必须为I</p></li>
+<li><p>指示事务已完成</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p>4. <strong>WriteDataCancel</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：通知完成者在写数据发送之前写请求被取消
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>请求节点可以在WriteNoSnpPtl、WriteUniquePtl、WriteUniquePtlStash和相应组合写事务中发送WriteDataCancel而不是NonCopyBackWriteData</p></li>
+<li><p>Home节点可以在WriteNoSnpFull、WriteNoSnpPtl和相应组合写事务中向Subordinate节点发送WriteDataCancel而不是NonCopyBackWriteData</p></li>
+<li><p>请求节点或Home节点可以在WriteNoSnpDef事务中发送WriteDataCancel而不是NonCopyBackWriteData，如果在发送NonCopyBackWriteData之前看到：
+* 到达的Comp响应
+* 到达的CompDBIDResp响应</p></li>
+<li><p>必不得用于对设备内存的写请求（WriteNoSnpDef事务期间除外）</p></li>
+<li><p>所有最初预期传输的数据包必须发送</p></li>
+<li><p>WriteDataCancel消息中的BE字段值必须设置为零</p></li>
+<li><p>响应中的缓存状态必须为I</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>响应包含的Resp字段：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Cache state（缓存状态）
+- 指示在发送WriteData响应之前缓存行的状态
+- 此状态可以与发送原始事务请求时的缓存行状态不同
+- 如果在发送原始事务请求之后但在发送相应WriteData响应之前接收到对相同地址的监听请求</p></li>
+<li><p>Pass Dirty（传递脏）
+- 指示更新内存的责任是否由请求者传递
+- Pass Dirty位的断言在响应名称中由_PD表示</p></li>
+</ol>
+</div></blockquote>
+<p><strong>允许的WriteData响应、操作码和Resp字段编码：</strong></p>
+<table class="docutils align-default" id="id54">
+<caption><span class="caption-text">允许的WriteData响应、操作码和Resp字段编码</span><a class="headerlink" href="#id54" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 22.2%" />
+<col style="width: 11.1%" />
+<col style="width: 11.1%" />
+<col style="width: 25.9%" />
+<col style="width: 29.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>DAT操作码</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>发送数据时的缓存行状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CopyBackWriteData_I</p></td>
+<td><p>0x2</p></td>
+<td><p>0b000</p></td>
+<td><p>不精确且必须被忽略</p></td>
+<td><p>指示CopyBack请求已被取消。响应中的数据必须为0且所有BE必须取消断言</p></td>
+</tr>
+<tr class="row-odd"><td><p>CopyBackWriteData_UC</p></td>
+<td><p>0x2</p></td>
+<td><p>0b010</p></td>
+<td><p>UC</p></td>
+<td><p>CopyBack请求对应的数据</p></td>
+</tr>
+<tr class="row-even"><td><p>CopyBackWriteData_SC</p></td>
+<td><p>0x2</p></td>
+<td><p>0b001</p></td>
+<td><p>SC</p></td>
+<td><p>CopyBack请求对应的数据</p></td>
+</tr>
+<tr class="row-odd"><td><p>CopyBackWriteData_UD_PD</p></td>
+<td><p>0x2</p></td>
+<td><p>0b110</p></td>
+<td><p>UD或UDP</p></td>
+<td><p>CopyBack请求对应的数据。更新内存的责任被传递</p></td>
+</tr>
+<tr class="row-even"><td><p>CopyBackWriteData_SD_PD</p></td>
+<td><p>0x2</p></td>
+<td><p>0b111</p></td>
+<td><p>SD</p></td>
+<td><p>CopyBack请求对应的数据。更新内存的责任被传递</p></td>
+</tr>
+<tr class="row-odd"><td><p>NonCopyBackWriteData</p></td>
+<td><p>0x3</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td><p>Immediate写请求对应的数据</p></td>
+</tr>
+<tr class="row-even"><td><p>NonCopyBackWriteDataCompAck</p></td>
+<td><p>0xC</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td><p>Immediate写请求对应的数据和组合CompAck以指示事务已完成</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteDataCancel</p></td>
+<td><p>0x7</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td><p>指示Immediate写请求已被取消。响应中的数据必须为0且所有BE必须取消断言</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>缓存状态确定：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>写事务完成后请求者处的缓存行状态不从WriteData响应中的缓存状态信息确定</p></li>
+<li><p>可以通过事务的操作码确定事务完成后缓存行是否保持有效：
+* WriteBack或WriteEvictFull事务必须处于I状态
+* WriteClean事务可以保持分配并处于清洁状态</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id28">
+<h3><span class="section-number">4.5.4. </span>4 监听响应详解<a class="headerlink" href="#id28" title="链接到此标题。"></a></h3>
+<p><strong>5.4.1 监听响应形式</strong></p>
+<p><strong>1. 不带数据的监听响应</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：当不需要数据传输时使用
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在SRSP通道上发送</p></li>
+<li><p>使用SnpResp操作码</p></li>
+<li><p>对于填充监听，可以包括DataPull请求</p></li>
+<li><p>始终用于对SnpDVMOp事务的响应</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>2. 不带数据到Home和DCT的监听响应</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：当被监听者向请求者发送数据且不需要向Home传输数据时使用
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在SRSP通道上发送</p></li>
+<li><p>使用SnpRespFwded操作码</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>3. 带数据的监听响应</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：当完整缓存行数据传输到Home时使用
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在WDAT通道上发送</p></li>
+<li><p>使用SnpRespData操作码</p></li>
+<li><p>对于填充监听，可以包括DataPull请求</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>4. 带部分数据的监听响应</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：当部分缓存行数据传输到Home时使用
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在WDAT通道上发送</p></li>
+<li><p>使用SnpRespDataPtl操作码</p></li>
+<li><p>对于填充监听，可以包括DataPull请求</p></li>
+<li><p>当监听请求和缓存行状态的组合为以下情况时发送：
+* 任何SnpMakeInvalid之外的监听请求，且缓存行状态为UDP</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>5. 带数据到Home和DCT的监听响应</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>用途：当被监听者向请求者发送数据且也需要向Home传输数据时使用
+特性：</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>在DAT通道上发送</p></li>
+<li><p>使用SnpRespDataFwded操作码</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+<p><strong>5.4.2 监听响应包含的字段</strong></p>
+<p><strong>Resp字段：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Cache state（缓存状态）
+- 发送监听响应后被监听节点处缓存行的最终状态</p></li>
+<li><p>Pass Dirty（传递脏）
+- 指示更新内存的责任是否传递给请求者或互连
+- Pass Dirty必须仅对带数据的监听响应断言
+- Pass Dirty位的断言在响应名称中由_PD表示</p></li>
+</ol>
+</div></blockquote>
+<p><strong>FwdState字段：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>适用于带DCT的监听响应</p></li>
+<li><p>指示发送给请求者的CompData响应中的缓存状态和传递脏值</p></li>
+</ul>
+</div></blockquote>
+<p><strong>信息充分性：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>监听响应属性传达足够的信息以供互连确定：</dt><dd><ol class="arabic simple">
+<li><p>对初始请求者的适当响应</p></li>
+<li><p>数据是否必须写回内存</p></li>
+</ol>
+</dd>
+</dl>
+<p>监听响应属性也足以支持互连中的监听过滤器或目录维护</p>
+</div></blockquote>
+<p><strong>重要区别：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>监听响应缓存状态信息提供发送监听响应后缓存行的状态。这与以下不同：</p>
+<ol class="arabic simple">
+<li><p>WriteData响应：
+- 缓存状态信息提供写数据时缓存行的状态</p></li>
+<li><p>读数据响应：
+- 缓存状态信息指示事务完成后缓存行的允许状态</p></li>
+</ol>
+</div></blockquote>
+<p><strong>5.4.3 允许的非转发类型不带数据的监听响应</strong></p>
+<table class="docutils align-default" id="id55">
+<caption><span class="caption-text">允许的非转发类型不带数据的监听响应</span><a class="headerlink" href="#id55" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 35.3%" />
+<col style="width: 23.5%" />
+<col style="width: 17.6%" />
+<col style="width: 23.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>RSP操作码</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>缓存行状态</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SnpResp_I</p></td>
+<td><p>0x1</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_SC</p></td>
+<td><p>0x1</p></td>
+<td><p>0b001</p></td>
+<td><p>SC或I</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_UC</p></td>
+<td><p>0x1</p></td>
+<td><p>0b010</p></td>
+<td><p>UC, UCE, SC或I</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_UD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b010</p></td>
+<td><p>UD</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_SD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b011</p></td>
+<td><p>SD</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>5.4.4 允许的转发类型不带数据的监听响应</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 14.0%" />
+<col style="width: 14.0%" />
+<col style="width: 14.0%" />
+<col style="width: 14.0%" />
+<col style="width: 14.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>RSP操作码</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>FwdState[2:0]</p></th>
+<th class="head"><p>被监听者处的缓存行状态</p></th>
+<th class="head"><p>转发状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SnpResp_I_Fwded_I</p></td>
+<td><p>0x9</p></td>
+<td><p>0b000</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td><p>I</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_I_Fwded_SC</p></td>
+<td><p>0x9</p></td>
+<td><p>0b000</p></td>
+<td><p>0b001</p></td>
+<td><p>I</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_I_Fwded_UC</p></td>
+<td><p>0x9</p></td>
+<td><p>0b000</p></td>
+<td><p>0b010</p></td>
+<td><p>I</p></td>
+<td><p>UC</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_I_Fwded_UD_PD</p></td>
+<td><p>0x9</p></td>
+<td><p>0b000</p></td>
+<td><p>0b110</p></td>
+<td><p>I</p></td>
+<td><p>UD</p></td>
+<td><p>更新内存的责任被传递</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_I_Fwded_SD_PD</p></td>
+<td><p>0x9</p></td>
+<td><p>0b000</p></td>
+<td><p>0b111</p></td>
+<td><p>I</p></td>
+<td><p>SD</p></td>
+<td><p>更新内存的责任被传递</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_SC_Fwded_I</p></td>
+<td><p>0x9</p></td>
+<td><p>0b001</p></td>
+<td><p>0b000</p></td>
+<td><p>SC</p></td>
+<td><p>I</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_SC_Fwded_SC</p></td>
+<td><p>0x9</p></td>
+<td><p>0b001</p></td>
+<td><p>0b001</p></td>
+<td><p>SC</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_SC_Fwded_SD_PD</p></td>
+<td><p>0x9</p></td>
+<td><p>0b001</p></td>
+<td><p>0b111</p></td>
+<td><p>SC</p></td>
+<td><p>SD</p></td>
+<td><p>更新内存的责任被传递</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_UC_Fwded_I</p></td>
+<td><p>0x9</p></td>
+<td><p>0b010</p></td>
+<td><p>0b000</p></td>
+<td><p>UC或UD</p></td>
+<td><p>I</p></td>
+<td><p>用于UC和UD的单个编码</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_UD_Fwded_I</p></td>
+<td><p>0x9</p></td>
+<td><p>0b010</p></td>
+<td><p>0b000</p></td>
+<td><p>UC或UD</p></td>
+<td><p>I</p></td>
+<td><p>用于UC和UD的单个编码</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpResp_SD_Fwded_I</p></td>
+<td><p>0x9</p></td>
+<td><p>0b011</p></td>
+<td><p>0b000</p></td>
+<td><p>SD</p></td>
+<td><p>I</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpResp_SD_Fwded_SC</p></td>
+<td><p>0x9</p></td>
+<td><p>0b011</p></td>
+<td><p>0b001</p></td>
+<td><p>SD</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>允许的非转发类型带数据的监听响应：</strong></p>
+<table class="docutils align-default" id="id56">
+<caption><span class="caption-text">允许的非转发类型带数据的监听响应</span><a class="headerlink" href="#id56" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 30.4%" />
+<col style="width: 13.0%" />
+<col style="width: 13.0%" />
+<col style="width: 17.4%" />
+<col style="width: 26.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>DAT操作码</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>缓存行状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SnpRespData_I</p></td>
+<td><p>0x1</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_UC</p></td>
+<td><p>0x1</p></td>
+<td><p>0b010</p></td>
+<td><p>UC或UD</p></td>
+<td><p>用于UC和UD的单个编码</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_UD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b010</p></td>
+<td><p>UC或UD</p></td>
+<td><p>用于UC和UD的单个编码</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_SC</p></td>
+<td><p>0x1</p></td>
+<td><p>0b001</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_SD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b011</p></td>
+<td><p>SD</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_I_PD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b100</p></td>
+<td><p>I</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_UC_PD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b110</p></td>
+<td><p>UC</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_SC_PD</p></td>
+<td><p>0x1</p></td>
+<td><p>0b101</p></td>
+<td><p>SC</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespDataPtl_I_PD</p></td>
+<td><p>0x5</p></td>
+<td><p>0b100</p></td>
+<td><p>I</p></td>
+<td><p>部分数据。更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespDataPtl_UD</p></td>
+<td><p>0x5</p></td>
+<td><p>0b010</p></td>
+<td><p>UDP</p></td>
+<td><p>部分数据</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>5.4.6 允许的转发类型带数据的监听响应</strong></p>
+<table class="docutils align-default" id="id57">
+<caption><span class="caption-text">允许的转发类型带数据的监听响应</span><a class="headerlink" href="#id57" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 25.8%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 25.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>RSP操作码</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>FwdState[2:0]</p></th>
+<th class="head"><p>缓存行状态</p></th>
+<th class="head"><p>转发状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SnpRespData_I_Fwded_SC</p></td>
+<td><p>0x6</p></td>
+<td><p>0b000</p></td>
+<td><p>0b001</p></td>
+<td><p>I</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_I_Fwded_SD_PD</p></td>
+<td><p>0x6</p></td>
+<td><p>0b000</p></td>
+<td><p>0b111</p></td>
+<td><p>I</p></td>
+<td><p>SD</p></td>
+<td><p>更新内存的责任被传递给请求者</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_SC_Fwded_SC</p></td>
+<td><p>0x6</p></td>
+<td><p>0b001</p></td>
+<td><p>0b001</p></td>
+<td><p>SC</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_SC_Fwded_SD_PD</p></td>
+<td><p>0x6</p></td>
+<td><p>0b001</p></td>
+<td><p>0b111</p></td>
+<td><p>SC</p></td>
+<td><p>SD</p></td>
+<td><p>更新内存的责任被传递给请求者</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_SD_Fwded_SC</p></td>
+<td><p>0x6</p></td>
+<td><p>0b011</p></td>
+<td><p>0b001</p></td>
+<td><p>SD</p></td>
+<td><p>SC</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_I_PD_Fwded_I</p></td>
+<td><p>0x6</p></td>
+<td><p>0b100</p></td>
+<td><p>0b000</p></td>
+<td><p>I</p></td>
+<td><p>I</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_I_PD_Fwded_SC</p></td>
+<td><p>0x6</p></td>
+<td><p>0b100</p></td>
+<td><p>0b001</p></td>
+<td><p>I</p></td>
+<td><p>SC</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-odd"><td><p>SnpRespData_SC_PD_Fwded_I</p></td>
+<td><p>0x6</p></td>
+<td><p>0b101</p></td>
+<td><p>0b000</p></td>
+<td><p>SC</p></td>
+<td><p>I</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+<tr class="row-even"><td><p>SnpRespData_SC_PD_Fwded_SC</p></td>
+<td><p>0x6</p></td>
+<td><p>0b101</p></td>
+<td><p>0b001</p></td>
+<td><p>SC</p></td>
+<td><p>SC</p></td>
+<td><p>更新内存的责任被传递给Home</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>5.4.7 带Data Pull的监听响应</strong></p>
+<p>在响应填充监听时，被监听者可以发送与监听响应组合的Read请求（SnpResp_X_Read），通过设置DataPull位。</p>
+<p><strong>允许的带Data Pull的监听响应：</strong></p>
+<p><strong>对于SnpUniqueStash：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SnpResp_I_Read</p></li>
+<li><p>SnpRespData_I_Read</p></li>
+<li><p>SnpRespData_I_PD_Read</p></li>
+<li><p>SnpRespDataPtl_I_PD_Read</p></li>
+</ul>
+</div></blockquote>
+<p><strong>对于SnpMakeInvalidStash：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SnpResp_I_Read</p></li>
+</ul>
+</div></blockquote>
+<p><strong>对于SnpStashUnique：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SnpResp_I_Read</p></li>
+<li><p>SnpResp_UC_Read</p></li>
+<li><p>SnpResp_SC_Read</p></li>
+<li><p>SnpResp_SD_Read</p></li>
+</ul>
+</div></blockquote>
+<p><strong>对于SnpStashShared：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SnpResp_I_Read</p></li>
+<li><p>SnpResp_UC_Read</p></li>
+</ul>
+</div></blockquote>
+<p><strong>5.4.8 错误处理</strong></p>
+<p><strong>缓存行状态合法性：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>带数据的监听响应关联的缓存行状态必须是合法值</p></li>
+<li><p>即使RespErr字段指示有数据错误（DERR）</p></li>
+<li><p>带数据的监听响应不允许有NDERR</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id29">
+<h3><span class="section-number">4.5.5. </span>5 其他响应详解<a class="headerlink" href="#id29" title="链接到此标题。"></a></h3>
+<p><strong>5.5.1 CompAck（完成确认）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：请求者在接收到完成响应后发送
+适用：
+  - Read、Dataless、WriteNoSnp、WriteUnique和CopyBack写事务
+特性：
+  - RespErr字段适用且必须设置为0
+  - 对于Immediate写事务，CompAck响应中的Resp值不适用且必须设置为0
+  - 对于CopyBack写事务，CompAck响应中的Resp值适用
+</pre></div>
+</div>
+<p><strong>CopyBack写事务的允许CompAck响应：</strong></p>
+<table class="docutils align-default" id="id58">
+<caption><span class="caption-text">CopyBack写事务的允许CompAck响应</span><a class="headerlink" href="#id58" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 12.1%" />
+<col style="width: 12.1%" />
+<col style="width: 9.1%" />
+<col style="width: 18.2%" />
+<col style="width: 24.2%" />
+<col style="width: 24.2%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>RSP操作码</p></th>
+<th class="head"><p>Resp[2:0]</p></th>
+<th class="head"><p>发送响应时的缓存行状态</p></th>
+<th class="head"><p>Home处有缓存行隐藏副本时的操作</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CompAck_I</p></td>
+<td><p>0x2</p></td>
+<td><p>0b000</p></td>
+<td><p>不精确且必须被忽略</p></td>
+<td><p>不得尚未暴露</p></td>
+<td><p>指示CopyBack请求已被取消</p></td>
+</tr>
+<tr class="row-odd"><td><p>CompAck_UC</p></td>
+<td><p>0x2</p></td>
+<td><p>0b010</p></td>
+<td><p>UC</p></td>
+<td><p>期望（但不要求）暴露，除非其他地方仍存在唯一副本</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>CompAck_SC</p></td>
+<td><p>0x2</p></td>
+<td><p>0b001</p></td>
+<td><p>SC</p></td>
+<td><p>期望（但不要求）暴露</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>CompAck_UD_PD</p></td>
+<td><p>0x2</p></td>
+<td><p>0b110</p></td>
+<td><p>UD</p></td>
+<td><p>期望（但不要求）暴露，除非其他地方仍存在唯一副本</p></td>
+<td><p>更新内存的责任被传递</p></td>
+</tr>
+<tr class="row-even"><td><p>CompAck_SD_PD</p></td>
+<td><p>0x2</p></td>
+<td><p>0b111</p></td>
+<td><p>SD</p></td>
+<td><p>期望（但不要求）暴露</p></td>
+<td><p>更新内存的责任被传递</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>5.5.2 RetryAck（重试确认）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：完成者如果由于缺乏适当资源而未接受请求时发送给请求者
+适用：
+  - 任何请求事务（PCrdReturn或PrefetchTgt除外）
+特性：
+  - RespErr字段适用且必须设置为0
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.3 PCrdGrant（协议信贷授予）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：授予协议信贷
+特性：
+  - 使用协议信贷的后续请求保证被目标接受
+  - RespErr字段适用且必须设置为0
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.4 ReadReceipt（读接收）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：对于与来自同一请求者的其他有序请求有排序要求的请求发送
+发送者：Subordinate节点
+目的：指示它已接受读请求且不会发送RetryAck响应
+适用：
+  - ReadNoSnp、ReadNoSnpSep和ReadOnce*请求事务
+特性：
+  - RespErr字段适用且必须设置为0
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.5 DBIDResp（数据缓冲区ID响应）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：向请求者发出信号，表示资源可用于接受WriteData响应
+特性：
+  - DBIDResp响应还指示完成者提供某些事务排序保证
+  - 适用于Write、组合写、DVMOp和原子请求事务
+  - 响应允许从Home节点到请求节点和从Subordinate节点到Home节点和请求节点
+  - RespErr字段适用且必须设置为0
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.6 DBIDRespOrd（有序数据缓冲区ID响应）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：向请求者发出信号，表示资源可用于接受WriteData响应
+特性：
+  - DBIDRespOrd响应还指示完成者提供某些事务排序保证
+  - 适用于Write、组合写和原子请求事务
+  - DBIDRespOrd不允许用于DVM事务
+  - 响应仅允许从Home节点到请求节点
+  - RespErr字段适用且必须设置为0
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.7 Persist（持久化）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：完成者为CleanSharedPersistSep事务发送，指示之前写入同一内存位置的任何数据已被持久化
+特性：
+  - RespErr字段适用
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.8 StashDone（填充完成）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：完成者为StashOnceSep发送，指示请求在完成者处的排序
+特性：
+  - RespErr字段适用
+  - Resp字段不适用且必须设置为0
+</pre></div>
+</div>
+<p><strong>5.5.9 TagMatch（标签匹配）</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>用途：完成者为带有TagOp为Match的写事务发送，以指示Tag Match操作的完成
+特性：
+  - RespErr字段适用
+  - Resp字段适用
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id30">
+<h2><span class="section-number">4.6. </span>缓存状态转换详解<a class="headerlink" href="#id30" title="链接到此标题。"></a></h2>
+<section id="id31">
+<h3><span class="section-number">4.6.1. </span>1 静默缓存状态转换<a class="headerlink" href="#id31" title="链接到此标题。"></a></h3>
+<p><strong>6.1.1 静默转换概念</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>定义：缓存可以由于内部事件而改变状态，无需通知系统其余部分
+</pre></div>
+</div>
+<p><strong>6.1.2 合法的静默缓存状态转换</strong></p>
+<p><strong>表B4.35：合法的静默缓存状态转换及如何使其非静默</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>RN-F操作</p></th>
+<th class="head"><p>当前RN-F状态</p></th>
+<th class="head"><p>下一RN-F状态</p></th>
+<th class="head"><p>可用于使操作非静默的事务</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>缓存驱逐</p></td>
+<td><p>UC</p></td>
+<td><p>I</p></td>
+<td><p>Evict、WriteEvictFull或WriteEvictOrEvict</p></td>
+</tr>
+<tr class="row-odd"><td><p>缓存驱逐</p></td>
+<td><p>UCE</p></td>
+<td><p>I</p></td>
+<td><p>Evict</p></td>
+</tr>
+<tr class="row-even"><td><p>缓存驱逐</p></td>
+<td><p>SC</p></td>
+<td><p>I</p></td>
+<td><p>Evict或WriteEvictOrEvict</p></td>
+</tr>
+<tr class="row-odd"><td><p>本地共享</p></td>
+<td><p>UC</p></td>
+<td><p>SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>本地共享</p></td>
+<td><p>UD</p></td>
+<td><p>SD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>缓存失效</p></td>
+<td><p>UD</p></td>
+<td><p>I</p></td>
+<td><p>Evict</p></td>
+</tr>
+<tr class="row-even"><td><p>缓存失效</p></td>
+<td><p>UDP</p></td>
+<td><p>I</p></td>
+<td><p>Evict</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>RN-F操作的本地共享说明：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>描述：RN-F将唯一缓存行指定为共享，实际上忽略了缓存行对RN-F仍保持唯一的事实
+示例：当RN-F包含多个内部代理且缓存行在它们之间变为共享时</p>
+</div></blockquote>
+<p><strong>6.1.3 静默转换的规则</strong></p>
+<p><strong>转换时机：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>缓存驱逐和本地共享转换：
+- 可以在任何点发生
+- 由实现定义</p></li>
+<li><p>存储和缓存失效转换：
+- 只能作为故意操作的结果发生
+- 对于核心，由执行特定程序指令引起</p></li>
+</ol>
+</div></blockquote>
+<p><strong>转换约束：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>UC到UCE的缓存状态转换不被允许</p></li>
+<li><p>静默转换序列也可以发生</p></li>
+<li><p>导致缓存行处于UD、UDP或SC状态的任何静默转换可以进一步进行静默转换</p></li>
+</ul>
+</div></blockquote>
+<p><strong>6.1.4 内部RN-F存储导致的合法静默缓存状态转换</strong></p>
+<p><strong>表B4.36：内部RN-F存储导致的合法静默缓存状态转换</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>RN-F操作</p></th>
+<th class="head"><p>当前RN-F状态</p></th>
+<th class="head"><p>下一RN-F状态</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>存储的结果</p></td>
+<td><p>UC</p></td>
+<td><p>UD</p></td>
+<td><p>完整或部分缓存行存储</p></td>
+</tr>
+<tr class="row-odd"><td><p>存储的结果</p></td>
+<td><p>UCE</p></td>
+<td><p>UDP</p></td>
+<td><p>部分缓存行存储</p></td>
+</tr>
+<tr class="row-even"><td><p>存储的结果</p></td>
+<td><p>UD</p></td>
+<td><p>UD</p></td>
+<td><p>完整缓存行存储</p></td>
+</tr>
+<tr class="row-odd"><td><p>存储的结果</p></td>
+<td><p>UDP</p></td>
+<td><p>UD</p></td>
+<td><p>填充缓存行的存储</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>说明：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>静默转换序列也可以发生
+任何导致缓存行处于UD、UDP或SC状态的静默转换可以进一步进行静默转换</p>
+</div></blockquote>
+</section>
+<section id="id32">
+<h3><span class="section-number">4.6.2. </span>2 请求者的缓存状态转换<a class="headerlink" href="#id32" title="链接到此标题。"></a></h3>
+<p><strong>6.2.1 读请求事务</strong></p>
+<p><strong>表B4.37：读请求事务的请求者缓存状态转换</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>请求类型</p></th>
+<th class="head"><p>初始预期状态</p></th>
+<th class="head"><p>初始允许状态</p></th>
+<th class="head"><p>最终状态</p></th>
+<th class="head"><p>Comp响应</p></th>
+<th class="head"><p>分离响应</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ReadNoSnp</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>CompData_UC, CompData_I</p></td>
+<td><p>RespSepData + DataSepResp_UC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadOnce</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>CompData_UC, CompData_I</p></td>
+<td><p>RespSepData + DataSepResp_UC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadOnceCleanInvalid</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>CompData_UC, CompData_I</p></td>
+<td><p>RespSepData + DataSepResp_UC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadOnceMakeInvalid</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>CompData_UD_PD, CompData_UC, CompData_I</p></td>
+<td><p>RespSepData + DataSepResp_UC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadClean (TagOp=Transfer)</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadClean (TagOp=Transfer)</p></td>
+<td><p>UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadClean (TagOp=Transfer)</p></td>
+<td><p>UCE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadClean (TagOp=Transfer)</p></td>
+<td><p>UD, UDP</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadClean (TagOp=Transfer)</p></td>
+<td><p>SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadClean (TagOp=Transfer)</p></td>
+<td><p>SD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SD</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadClean (TagOp!=Transfer)</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadClean (TagOp!=Transfer)</p></td>
+<td><p>UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadClean (TagOp!=Transfer)</p></td>
+<td><p>UCE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadNotSharedDirty</p></td>
+<td><p>I, UCE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadNotSharedDirty</p></td>
+<td><p>UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadNotSharedDirty</p></td>
+<td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UD_PD</p></td>
+<td><p>RespSepData + DataSepResp_UD_PD</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadShared</p></td>
+<td><p>I, UCE</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadShared</p></td>
+<td><p>UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadShared</p></td>
+<td><p>SD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SD</p></td>
+<td><p>CompData_SD_PD</p></td>
+<td><p>RespSepData + DataSepResp_UD_PD</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadUnique</p></td>
+<td><p>I, SC</p></td>
+<td><p>UC, UCE</p></td>
+<td><p>UC</p></td>
+<td><p>CompData_UC</p></td>
+<td><p>RespSepData + DataSepResp_UC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadUnique</p></td>
+<td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UD_PD</p></td>
+<td><p>RespSepData + DataSepResp_UD_PD</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadUnique</p></td>
+<td><p>SD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UC</p></td>
+<td><p>RespSepData + DataSepResp_UC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadPreferUnique (TagOp=Transfer)</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadPreferUnique (TagOp=Transfer)</p></td>
+<td><p>UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadPreferUnique (TagOp=Transfer)</p></td>
+<td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UD_PD</p></td>
+<td><p>RespSepData + DataSepResp_UD_PD</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadPreferUnique (TagOp=Transfer)</p></td>
+<td><p>UD, UDP</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadPreferUnique (TagOp=Transfer)</p></td>
+<td><p>SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadPreferUnique (TagOp=Transfer)</p></td>
+<td><p>SD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SD</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadPreferUnique (TagOp!=Transfer)</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadPreferUnique (TagOp!=Transfer)</p></td>
+<td><p>UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadPreferUnique (TagOp!=Transfer)</p></td>
+<td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UD_PD</p></td>
+<td><p>RespSepData + DataSepResp_UD_PD</p></td>
+</tr>
+<tr class="row-odd"><td><p>ReadPreferUnique (TagOp!=Transfer)</p></td>
+<td><p>SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-even"><td><p>ReadPreferUnique (TagOp!=Transfer)</p></td>
+<td><p>SD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SD</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>RespSepData + DataSepResp_SC</p></td>
+</tr>
+<tr class="row-odd"><td><p>MakeReadUnique</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>见表B4.40和B4.41</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意事项：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>对于ReadNotSharedDirty和ReadShared事务，初始状态为UCE的请求者不得在请求未完成时将缓存行升级到UDP或UD</p></li>
+<li><p>初始状态为UC的请求者接收到CompData_SC或DataSepResp_SC响应时必须保持在UC状态
+同样，使用监听过滤器跟踪请求者处缓存状态的Home不得根据对请求者的响应中的状态降级监听过滤器中的缓存行状态</p></li>
+<li><p>初始状态为UD的请求者接收到CompData_SC或DataSepResp_SC响应时必须保持在UD状态
+同样，使用监听过滤器跟踪请求者处缓存状态的Home不得根据对请求者的响应中的状态降级监听过滤器中的缓存行状态</p></li>
+<li><p>初始状态为SD的请求者接收到CompData_SC或DataSepResp_SC响应时必须保持在SD状态
+同样，使用监听过滤器跟踪请求者处缓存状态的Home不得根据对请求者的响应中的状态降级监听过滤器中的缓存行状态</p></li>
+<li><p>如果缓存状态为UD或SD，必须丢弃从内存接收的数据；如果缓存状态为UDP，则必须合并
+如果缓存状态为SC或UC，从内存接收的数据必须与缓存数据相同</p></li>
+</ol>
+</div></blockquote>
+<p><strong>6.2.2 MakeReadUnique事务</strong></p>
+<p><strong>6.2.2.1 允许的响应</strong></p>
+<p><strong>表B4.38：MakeReadUnique事务中的允许响应</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34.0%" />
+<col style="width: 33.0%" />
+<col style="width: 33.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>接收的响应</p></th>
+<th class="head"><p>缓存行状态</p></th>
+<th class="head"><p>操作</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Comp_UC</p></td>
+<td><p>可以是清洁或脏</p></td>
+<td><p>请求者保留缓存行的副本。所有其他缓存副本已被失效</p></td>
+</tr>
+<tr class="row-odd"><td><p>Comp_UD_PD</p></td>
+<td><p>必须变为脏</p></td>
+<td><p>请求者保留缓存行的副本。别处持有的脏副本已被失效</p></td>
+</tr>
+<tr class="row-even"><td><p>CompData_UC</p></td>
+<td><p>清洁副本被给予请求者</p></td>
+<td><p>请求者在事务进行期间丢失了缓存行。给出组合数据和完成响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>CompData_UD_PD</p></td>
+<td><p>脏副本被给予请求者</p></td>
+<td><p>请求者在事务进行期间丢失了缓存行。给出组合数据和完成响应</p></td>
+</tr>
+<tr class="row-even"><td><p>RespSepData, DataSepResp_UC</p></td>
+<td><p>清洁副本被给予请求者</p></td>
+<td><p>请求者在事务进行期间丢失了缓存行。给出分离数据和完成响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>RespSepData, DataSepResp_UD_PD</p></td>
+<td><p>脏副本被给予请求者</p></td>
+<td><p>请求者在事务进行期间丢失了缓存行。由Home给出分离数据和完成响应</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>表B4.39：MakeReadUnique(Excl)事务中的额外允许响应</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>接收的响应</p></th>
+<th class="head"><p>全局独占检查</p></th>
+<th class="head"><p>共享缓存副本</p></th>
+<th class="head"><p>缓存行的副本</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Comp_SC</p></td>
+<td><p>失败</p></td>
+<td><p>存在于另一个缓存</p></td>
+<td><p>由请求者保留</p></td>
+</tr>
+<tr class="row-odd"><td><p>CompData_SC</p></td>
+<td><p>失败</p></td>
+<td><p>存在于另一个缓存</p></td>
+<td><p>可能由请求者丢失</p></td>
+</tr>
+<tr class="row-even"><td><p>RespSepData, DataSepResp_SC</p></td>
+<td><p>失败</p></td>
+<td><p>存在于另一个缓存</p></td>
+<td><p>可能由请求者丢失</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键特性：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>无数据响应（Comp_UD_PD）：
+- 指示请求者被传递脏缓存行责任
+- 当请求者持有共享清洁副本且另一个代理持有共享脏副本时可能发生
+- Home使共享脏副本失效（例如使用SnpMakeInvalid事务）
+- 随后将脏缓存行责任传递给发出MakeReadUnique事务的请求者</p></li>
+<li><p>SC状态的响应：
+- 仅在对独占版本的MakeReadUnique的响应中允许
+- 当Home确定独占存储失败但监听过滤器或对请求者的SnpQuery监听响应指示请求者仍持有缓存行副本，而系统中存在另一个共享副本时，发送Comp_SC</p></li>
+</ol>
+</div></blockquote>
+<p><strong>6.2.2.2 预期监听</strong></p>
+<p><strong>Home使用监听使被监听者处的缓存行失效的用法：</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>对于非独占MakeReadUnique，或通过独占检查的独占MakeReadUnique：
+
+Home预期使用SnpCleanInvalid监听：
+  - Home被允许使用SnpUnique而不是SnpCleanInvalid
+  - 如果Home确定请求者已丢失缓存行的缓存副本，Home被允许使用SnpUniqueFwd
+  - 如果Home尚未使发出MakeReadUnique的请求者失效，它也被允许使用SnpMakeInvalid
+  - 来自SD副本的SnpResp_I响应可以用于隐式传递脏责任
+</pre></div>
+</div>
+<p><strong>6.2.2.3 缓存行状态转换</strong></p>
+<p><strong>最终状态确定因素：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>MakeReadUnique事务后缓存行的最终状态取决于接收到事务响应之前缓存行的状态</p></li>
+<li><p>这可能与发出事务时缓存行的状态不同</p></li>
+</ul>
+</div></blockquote>
+<p><strong>缓存行保留规则：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>对于MakeReadUnique，请求者必须保留缓存行的副本，除非接收到失效监听</p>
+</div></blockquote>
+<p><strong>失效监听类型：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>失效监听包括：</dt><dd><ul class="simple">
+<li><p>SnpUnique</p></li>
+<li><p>SnpUniqueFwd</p></li>
+<li><p>SnpCleanInvalid</p></li>
+<li><p>SnpMakeInvalid</p></li>
+<li><p>SnpUniqueStash</p></li>
+<li><p>SnpMakeInvalidStash</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>非失效监听处理：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>请求者被允许将SnpPreferUnique和SnpPreferUniqueFwd视为失效或非失效</p></li>
+<li><p>Home可以通过检查监听响应来确定被监听者如何处理这些监听</p></li>
+<li><p>所有其他监听都是非失效的，请求者需要保留缓存行的副本</p></li>
+</ul>
+</div></blockquote>
+<p><strong>精确监听过滤器的影响：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>如果Home没有精确的SF（监听过滤器），或SF不精确，且Home不能确定请求者在事务完成时仍有缓存行副本：</dt><dd><ul class="simple">
+<li><p>Home必须假设缓存行在请求者处丢失</p></li>
+<li><p>在响应中提供数据</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>SD状态下的数据响应处理：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><dl class="simple">
+<dt>请求者接收到带数据的响应时，如果仍保持行在SD状态：</dt><dd><ul class="simple">
+<li><p>必须使用自己的缓存行副本，而不是响应返回的副本</p></li>
+</ul>
+</dd>
+</dl>
+<p>说明：这意味着没有监听过滤器或监听过滤器不精确
+在这种情况下，响应返回的数据可能是陈旧的</p>
+<dl class="simple">
+<dt>如果请求者知道没有监听过滤器：</dt><dd><ul class="simple">
+<li><p>可以使用CleanUnique事务而不是MakeReadUnique</p></li>
+<li><p>以避免在缓存行未在任何其他代理处缓存时不必要的内存读取</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>6.2.2.4 精确和不精确监听过滤器的处理</strong></p>
+<p><strong>表B4.40：MakeReadUnique请求的请求者缓存状态转换（非Excl和Excl）</strong></p>
+<table class="docutils align-default" id="id59">
+<caption><span class="caption-text">MakeReadUnique请求的请求者缓存状态转换（非Excl和Excl）</span><a class="headerlink" href="#id59" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 9.7%" />
+<col style="width: 12.9%" />
+<col style="width: 12.9%" />
+<col style="width: 25.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>初始状态</p></th>
+<th class="head"><p>响应时的状态</p></th>
+<th class="head"><p>Home发送失效监听</p></th>
+<th class="head"><p>最终状态</p></th>
+<th class="head"><p>Comp响应</p></th>
+<th class="head"><p>精确监听过滤器</p></th>
+<th class="head"><p>不精确或不存在监听过滤器</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SD</p></td>
+<td><p>SD</p></td>
+<td><p>否</p></td>
+<td><p>UD</p></td>
+<td><p>Comp_UC</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SD</p></td>
+<td><p>SD</p></td>
+<td><p>否</p></td>
+<td><p>UD</p></td>
+<td><p>CompData_UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+<td><p>返回的数据可能是陈旧的</p></td>
+</tr>
+<tr class="row-even"><td><p>SD</p></td>
+<td><p>SD</p></td>
+<td><p>否</p></td>
+<td><p>UD</p></td>
+<td><p>RespSepData, DataSepResp_UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SC, SD</p></td>
+<td><p>SC</p></td>
+<td><p>否</p></td>
+<td><p>UC</p></td>
+<td><p>Comp_UC</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>SC, SD</p></td>
+<td><p>SC</p></td>
+<td><p>否</p></td>
+<td><p>UC</p></td>
+<td><p>CompData_UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>SC, SD</p></td>
+<td><p>SC</p></td>
+<td><p>否</p></td>
+<td><p>UC</p></td>
+<td><p>RespSepData, DataSepResp_UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>Comp_UD_PD</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UD_PD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+<td><p>响应中的数据与请求者副本相同</p></td>
+</tr>
+<tr class="row-even"><td><p>UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>RespSepData, DataSepResp_UD_PD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>I</p></td>
+<td><p>是</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>CompData_UC</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td><p>由于失效监听，行丢失</p></td>
+</tr>
+<tr class="row-even"><td><p>I</p></td>
+<td><p>是</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>RespSepData, DataSepResp_UC</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>I</p></td>
+<td><p>是</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>CompData_UD_PD</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>I</p></td>
+<td><p>是</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD</p></td>
+<td><p>RespSepData, DataSepResp_UD_PD</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>I, UC, UD</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>不允许</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>表格键：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>Y = 允许
+- = 不允许</p>
+</div></blockquote>
+<p><strong>表B4.41：MakeReadUnique请求的请求者额外缓存状态转换（Excl）</strong></p>
+<table class="docutils align-default" id="id60">
+<caption><span class="caption-text">MakeReadUnique请求的请求者额外缓存状态转换（Excl）</span><a class="headerlink" href="#id60" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 12.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+<col style="width: 12.0%" />
+<col style="width: 12.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>初始状态</p></th>
+<th class="head"><p>响应时的状态</p></th>
+<th class="head"><p>Home发送失效监听时的状态</p></th>
+<th class="head"><p>最终状态</p></th>
+<th class="head"><p>Comp响应</p></th>
+<th class="head"><p>精确监听过滤器</p></th>
+<th class="head"><p>不精确或不存在监听过滤器</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SC, SD</p></td>
+<td><p>SC</p></td>
+<td><p>否</p></td>
+<td><p>SC</p></td>
+<td><p>Comp_SC</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>SC, SD</p></td>
+<td><p>SC</p></td>
+<td><p>否</p></td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p>SC, SD</p></td>
+<td><p>SC</p></td>
+<td><p>否</p></td>
+<td><p>SC</p></td>
+<td><p>RespSepData, DataSepResp_SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p>I</p></td>
+<td><p>是</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>CompData_SC</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-even"><td><p>I</p></td>
+<td><p>是</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>RespSepData, DataSepResp_SC</p></td>
+<td><p>Y</p></td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p>SD</p></td>
+<td><p>SD</p></td>
+<td><p>否</p></td>
+<td><p>SD</p></td>
+<td><p>Comp_SC</p></td>
+<td><p>Y</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>SD</p></td>
+<td><p>SD</p></td>
+<td><p>否</p></td>
+<td><p>SD</p></td>
+<td><p>CompData_SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+</tr>
+<tr class="row-odd"><td><p>SD</p></td>
+<td><p>SD</p></td>
+<td><p>否</p></td>
+<td><p>SD</p></td>
+<td><p>RespSepData, DataSepResp_SC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Y</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>6.2.3 无数据请求事务</strong></p>
+<p><strong>表B4.42：无数据请求事务的请求者缓存状态转换</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>请求类型</p></th>
+<th class="head"><p>初始预期状态</p></th>
+<th class="head"><p>初始允许状态</p></th>
+<th class="head"><p>最终状态</p></th>
+<th class="head"><p>Comp响应</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CleanUnique</p></td>
+<td><p>I</p></td>
+<td><p>UC, UCE</p></td>
+<td><p>UCE</p></td>
+<td><p>Comp_UC</p></td>
+</tr>
+<tr class="row-odd"><td><p>CleanUnique</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SC</p></td>
+<td><p>UC</p></td>
+<td><p>Comp_UC</p></td>
+</tr>
+<tr class="row-even"><td><p>CleanUnique</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>SD</p></td>
+<td><p>UD</p></td>
+<td><p>Comp_UC</p></td>
+</tr>
+<tr class="row-odd"><td><p>MakeUnique</p></td>
+<td><p>I, SC, SD</p></td>
+<td><p>UC, UCE</p></td>
+<td><p>UD</p></td>
+<td><p>Comp_UC</p></td>
+</tr>
+<tr class="row-even"><td><p>Evict</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp_I</p></td>
+</tr>
+<tr class="row-odd"><td><p>StashOnceUnique</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp</p></td>
+</tr>
+<tr class="row-even"><td><p>StashOnceSepUnique</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp + StashDone或CompStashDone</p></td>
+</tr>
+<tr class="row-odd"><td><p>StashOnceShared</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp</p></td>
+</tr>
+<tr class="row-even"><td><p>StashOnceSepShared</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp + StashDone或CompStashDone</p></td>
+</tr>
+<tr class="row-odd"><td><p>CleanShared, CleanSharedPersist</p></td>
+<td><p>I, SC, UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>无变化</p></td>
+<td><p>Comp_UC</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Comp_SC</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Comp_I</p></td>
+</tr>
+<tr class="row-even"><td><p>CleanSharedPersistSep</p></td>
+<td><p>I, SC, UC</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>无变化</p></td>
+<td><p>Comp_UC + Persist或CompPersist_UC</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Comp_SC + Persist或CompPersist_SC</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Comp_I + Persist或CompPersist_I</p></td>
+</tr>
+<tr class="row-odd"><td><p>CleanInvalid</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp_I</p></td>
+</tr>
+<tr class="row-even"><td><p>CleanInvalidPoPA</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp_I</p></td>
+</tr>
+<tr class="row-odd"><td><p>MakeInvalid</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>Comp_I</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>事务前的状态转换：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>在CleanInvalid、CleanInvalidPoPA、MakeInvalid或Evict事务之前，允许缓存状态为UC、UCE或SC
+然而，要求在发出事务之前缓存状态转换到I状态
+因此，表中显示I状态为唯一的初始状态</p>
+</div></blockquote>
+<p><strong>6.2.4 写请求事务</strong></p>
+<p><strong>表B4.43：写请求事务的请求者缓存状态转换</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 17.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>请求类型</p></th>
+<th class="head"><p>初始预期状态</p></th>
+<th class="head"><p>初始允许状态</p></th>
+<th class="head"><p>最终状态</p></th>
+<th class="head"><p>WriteData响应</p></th>
+<th class="head"><p>组合或分离的完成和DBIDResp响应</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>WriteNoSnpPtl</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteNoSnpFull</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-even"><td><p>WriteNoSnpDef</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteNoSnpZero</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-even"><td><p>WriteUniquePtl</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteUniqueFull</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-even"><td><p>WriteUniqueZero</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteUniquePtlStash</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-even"><td><p>WriteUniqueFullStash</p></td>
+<td><p>I</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>NonCopyBackWriteData</p></td>
+<td><p>Comp或CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteBackPtl</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>I</p></td>
+<td><p>CopyBackWriteData_UD_PD</p></td>
+<td><p>CompDBIDResp</p></td>
+</tr>
+<tr class="row-even"><td><p>WriteBackFull</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD, SD</p></td>
+<td><p>I</p></td>
+<td><p>CopyBackWriteData_UD_PD或CopyBackWriteData_SD_PD</p></td>
+<td><p>CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteCleanFull</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UD, SD</p></td>
+<td><p>UC或SC</p></td>
+<td><p>CopyBackWriteData_UD_PD或CopyBackWriteData_SD_PD</p></td>
+<td><p>CompDBIDResp</p></td>
+</tr>
+<tr class="row-even"><td><p>WriteEvictFull</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC</p></td>
+<td><p>I</p></td>
+<td><p>CopyBackWriteData_UC</p></td>
+<td><p>CompDBIDResp</p></td>
+</tr>
+<tr class="row-odd"><td><p>WriteEvictOrEvict</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UC或SC</p></td>
+<td><p>I</p></td>
+<td><p>CopyBackWriteData_UC或WriteDataCancel</p></td>
+<td><p>CompDBIDResp</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>组合写请求：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><p>组合写请求未在表中列出
+参见B4.2.4组合写请求</p>
+</div></blockquote>
+</section>
+<section id="id33">
+<h3><span class="section-number">4.6.3. </span>3 被监听者的缓存状态转换<a class="headerlink" href="#id33" title="链接到此标题。"></a></h3>
+<p><strong>6.3.1 非转发和非填充监听事务</strong></p>
+<p><strong>6.3.2 填充监听事务</strong></p>
+<p><strong>6.3.3 转发监听事务</strong></p>
+<p><strong>详细的状态转换规则和条件需要根据具体的监听请求类型和当前缓存状态进行分析。</strong></p>
+</section>
+</section>
+<section id="id34">
+<h2><span class="section-number">4.7. </span>危险条件处理<a class="headerlink" href="#id34" title="链接到此标题。"></a></h2>
+<section id="id35">
+<h3><span class="section-number">4.7.1. </span>1 危险条件概述<a class="headerlink" href="#id35" title="链接到此标题。"></a></h3>
+<p>危险条件是指可能导致不一致或数据损坏的并发访问场景。CHI协议定义了多种危险条件及其处理机制。</p>
+<p><strong>7.1.1 危险条件的类型</strong></p>
+<ol class="arabic simple">
+<li><p><strong>请求节点处的危险条件</strong></p></li>
+<li><p><strong>互连（ICN(HN-F)）节点处的危险条件</strong></p></li>
+</ol>
+</section>
+<section id="id36">
+<h3><span class="section-number">4.7.2. </span>2 请求节点处的危险条件<a class="headerlink" href="#id36" title="链接到此标题。"></a></h3>
+<p><strong>7.2.1 危险条件场景</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 同时的读写访问
+2. 缓存行状态转换期间的访问
+3. 监听请求与本地操作的冲突
+4. 原子操作的并发访问
+</pre></div>
+</div>
+<p><strong>7.2.2 处理机制</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 监听请求的优先级
+2. 缓存行状态锁定
+3. 事务序列化
+4. 重试机制
+</pre></div>
+</div>
+</section>
+<section id="id37">
+<h3><span class="section-number">4.7.3. </span>3 互连节点处的危险条件<a class="headerlink" href="#id37" title="链接到此标题。"></a></h3>
+<p><strong>7.3.1 危险条件场景</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 多个请求同时到达
+2. 监听响应的竞争条件
+3. 数据传输的同步问题
+4. 目录状态的一致性
+</pre></div>
+</div>
+<p><strong>7.3.2 处理机制</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 请求排序
+2. 监听过滤器的使用
+3. 事务仲裁
+4. 状态机管理
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id38">
+<h2><span class="section-number">4.8. </span>一致性协议实际应用<a class="headerlink" href="#id38" title="链接到此标题。"></a></h2>
+<section id="id39">
+<h3><span class="section-number">4.8.1. </span>1 读操作的一致性流程<a class="headerlink" href="#id39" title="链接到此标题。"></a></h3>
+<p><strong>8.1.1 基本读操作流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送读请求到Home节点
+步骤2：Home节点检查缓存行状态
+步骤3：Home节点根据状态决定是否需要监听
+步骤4：Home节点发送适当的监听请求（如果需要）
+步骤5：被监听节点返回监听响应
+步骤6：Home节点从内存或被监听节点获取数据
+步骤7：Home节点向请求节点发送完成响应和数据
+步骤8：请求节点更新缓存行状态
+</pre></div>
+</div>
+<p><strong>8.1.2 不同读请求类型的具体流程</strong></p>
+<p><strong>ReadShared流程：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>请求节点发送ReadShared请求</p></li>
+<li><p>Home检查缓存行状态</p></li>
+<li><p>如果有脏副本，发送SnpSharedFwd监听</p></li>
+<li><p>如果有清洁副本，发送SnpShared监听或不发送监听</p></li>
+<li><p>被监听节点返回数据（如果有）</p></li>
+<li><p>Home向请求节点发送SC状态的数据</p></li>
+<li><p>请求节点缓存行转换为SC状态</p></li>
+</ol>
+</div></blockquote>
+<p><strong>ReadUnique流程：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>请求节点发送ReadUnique请求</p></li>
+<li><p>Home检查缓存行状态</p></li>
+<li><p>发送SnpUniqueFwd监听以使其他副本失效</p></li>
+<li><p>被监听节点返回数据（如果有）</p></li>
+<li><p>Home向请求节点发送UC或UD状态的数据</p></li>
+<li><p>请求节点缓存行转换为UC或UD状态</p></li>
+<li><p>请求者获得对缓存行的唯一所有权</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="id40">
+<h3><span class="section-number">4.8.2. </span>2 写操作的一致性流程<a class="headerlink" href="#id40" title="链接到此标题。"></a></h3>
+<p><strong>8.2.1 立即写操作流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送写请求到Home节点
+步骤2：Home节点检查是否需要监听
+步骤3：Home节点发送监听请求（如果需要）
+步骤4：被监听节点返回监听响应和数据（如果有）
+步骤5：Home节点向请求节点发送DBIDResp
+步骤6：请求节点发送WriteData
+步骤7：Home节点合并数据并写入内存
+步骤8：Home节点向请求节点发送完成响应
+</pre></div>
+</div>
+<p><strong>8.2.2 CopyBack写操作流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送WriteBack请求
+步骤2：Home节点向请求节点发送DBIDResp
+步骤3：请求节点发送WriteData（包含缓存行状态信息）
+步骤4：Home节点将数据写入内存
+步骤5：Home节点向请求节点发送完成响应
+步骤6：请求节点使缓存行失效
+</pre></div>
+</div>
+</section>
+<section id="id41">
+<h3><span class="section-number">4.8.3. </span>3 原子操作的一致性流程<a class="headerlink" href="#id41" title="链接到此标题。"></a></h3>
+<p><strong>8.3.1 原子操作执行流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送原子请求到Home节点
+步骤2：Home节点发送SnpUnique监听使其他副本失效
+步骤3：Home节点向Subordinate节点转发原子请求
+步骤4：Subordinate节点执行原子操作
+步骤5：Subordinate节点返回原始值（如果是Load类型）
+步骤6：Home节点向请求节点发送完成响应
+步骤7：请求节点接收结果
+</pre></div>
+</div>
+<p><strong>8.3.2 原子操作的本地执行</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>如果请求者有缓存行的唯一副本：
+  - 可以在本地执行原子操作
+  - 无需生成原子事务
+
+如果请求者有共享副本：
+  - 获取唯一所有权后本地执行
+  - 或使本地副本失效后发送原子事务
+</pre></div>
+</div>
+</section>
+<section id="id42">
+<h3><span class="section-number">4.8.4. </span>4 缓存维护操作流程<a class="headerlink" href="#id42" title="链接到此标题。"></a></h3>
+<p><strong>8.4.1 CleanShared流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送CleanShared请求
+步骤2：Home节点发送SnpCleanShared监听
+步骤3：被监听节点如果持有脏副本，写回内存
+步骤4：被监听节点转换为SC或I状态
+步骤5：Home节点向请求节点发送完成响应
+步骤6：所有缓存副本转换为非脏状态
+</pre></div>
+</div>
+<p><strong>8.4.2 CleanInvalid流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送CleanInvalid请求
+步骤2：Home节点发送SnpCleanInvalid监听
+步骤3：被监听节点如果持有脏副本，写回内存
+步骤4：被监听节点转换为I状态
+步骤5：Home节点向请求节点发送完成响应
+步骤6：所有缓存副本被失效
+</pre></div>
+</div>
+<p><strong>8.4.3 持久化CMO流程</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>步骤1：请求节点发送CleanSharedPersist请求
+步骤2：Home节点发送SnpCleanShared监听
+步骤3：被监听节点如果持有脏副本，写回到持久化点
+步骤4：被监听节点转换为SC或I状态
+步骤5：Home节点向请求节点发送完成响应
+步骤6：Home节点向请求节点发送Persist响应
+步骤7：数据被持久化到持久化点
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id43">
+<h2><span class="section-number">4.9. </span>性能优化和设计考虑<a class="headerlink" href="#id43" title="链接到此标题。"></a></h2>
+<section id="id44">
+<h3><span class="section-number">4.9.1. </span>1 缓存一致性的性能优化<a class="headerlink" href="#id44" title="链接到此标题。"></a></h3>
+<p><strong>9.1.1 监听过滤器的使用</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>优势：
+  - 减少不必要的监听请求
+  - 降低网络带宽消耗
+  - 减少缓存干扰
+
+实现方式：
+  - 基于目录的监听过滤器
+  - 基于位图的监听过滤器
+  - 精确和不精确的监听过滤器
+</pre></div>
+</div>
+<p><strong>9.1.2 数据转发机制</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>转发监听：
+  - 直接从被监听者转发数据到请求者
+  - 减少延迟
+  - 降低Home节点的负载
+
+转发条件：
+  - 被监听者有有效的数据副本
+  - Home节点确定转发是安全的
+  - 请求者需要数据
+</pre></div>
+</div>
+<p><strong>9.1.3 缓存行状态的优化</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>部分脏状态（UDP）：
+  - 支持部分写入
+  - 减少数据传输
+  - 需要与内存数据合并
+
+空缓存行（UCE）：
+  - 提前获取写入权限
+  - 节省系统带宽
+  - 适用于写入密集型操作
+</pre></div>
+</div>
+<p><strong>9.1.4 事务组合</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>组合写和CMO：
+  - 减少事务数量
+  - 提高吞吐量
+  - 简化排序要求
+
+分离响应：
+  - 支持流水线操作
+  - 提高并发性
+  - 需要额外的排序保证
+</pre></div>
+</div>
+</section>
+<section id="id45">
+<h3><span class="section-number">4.9.2. </span>2 一致性协议的设计考虑<a class="headerlink" href="#id45" title="链接到此标题。"></a></h3>
+<p><strong>9.2.1 可扩展性</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 支持多种拓扑结构
+   - Crossbar
+   - Ring
+   - Mesh
+   - 混合拓扑
+
+2. 支持多种节点类型
+   - RN-F, RN-D, RN-I
+   - HN-F, HN-I
+   - SN-F, SN-I
+   - MN
+
+3. 支持多种缓存模型
+   - MESI
+   - MOESI
+   - 自定义状态
+</pre></div>
+</div>
+<p><strong>9.2.2 可靠性</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 错误检测和报告
+   - 数据错误（DERR）
+   - 非数据错误（NDERR）
+   - 错误传播
+
+2. 事务重试机制
+   - 资源不足时重试
+   - 协议信贷管理
+   - 死锁避免
+
+3. 数据完整性
+   - 数据校验
+   - 数据中毒
+   - 数据一致性保证
+</pre></div>
+</div>
+<p><strong>9.2.3 功耗管理</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 电源门控
+   - 组件激活和停用
+   - 时钟门控
+   - Flit级时钟门控
+
+2. 协议活动指示
+   - TXSACTIVE信号
+   - RXSACTIVE信号
+   - LINKACTIVE信号
+
+3. 低功耗信号
+   - 链路层低功耗模式
+   - 动态电压频率调整
+</pre></div>
+</div>
+<p><strong>9.2.4 安全性</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. TrustZone支持
+   - 事务级别的安全隔离
+   - 安全和非安全事务
+   - 物理地址空间（PAS）
+
+2. 领域管理扩展（RME）
+   - 多领域支持
+   - 领域隔离
+   - 内存加密上下文
+
+3. 内存标记扩展（MTE）
+   - 内存标签检查
+   - 标签一致性
+   - 标签操作
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id46">
+<h2><span class="section-number">4.10. </span>总结<a class="headerlink" href="#id46" title="链接到此标题。"></a></h2>
+<section id="id47">
+<h3><span class="section-number">4.10.1. </span>1 一致性协议的核心价值<a class="headerlink" href="#id47" title="链接到此标题。"></a></h3>
+<p>AMBA CHI一致性协议提供了一套完整、高效、可扩展的缓存一致性解决方案：</p>
+<p><strong>核心优势：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>完整的一致性保证
+- 确保所有代理对内存的一致视图
+- 支持多核、多处理器系统
+- 维护内存访问的全局顺序</p></li>
+<li><p>高性能优化
+- 支持数据转发
+- 支持监听过滤器
+- 支持部分缓存行状态
+- 支持事务组合</p></li>
+<li><p>灵活的架构
+- 支持多种缓存模型
+- 支持多种拓扑结构
+- 支持多种节点类型
+- 可配置的参数和属性</p></li>
+<li><p>可靠性保证
+- 错误检测和报告
+- 事务重试机制
+- 数据完整性保证</p></li>
+<li><p>现代化特性
+- 支持原子操作
+- 支持缓存维护操作
+- 支持持久化
+- 支持内存标记
+- 支持领域管理</p></li>
+</ol>
+</div></blockquote>
+<p><strong>10.2 关键设计原则</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 分层架构
+   - 协议层：事务级通信
+   - 网络层：数据包路由
+   - 链路层：流控制
+
+2. 写使无效机制
+   - 确保写入时使其他副本失效
+   - 维护缓存一致性
+
+3. 状态机管理
+   - 七态缓存模型
+   - 明确的状态转换规则
+   - 静默和显式转换
+
+4. 协议信贷机制
+   - 防止资源耗尽
+   - 支持流控制
+   - 提高吞吐量
+
+5. 排序保证
+   - 点串行化（PoS）
+   - 点一致性（PoC）
+   - 事务排序规则
+</pre></div>
+</div>
+<p><strong>10.3 实际应用指导</strong></p>
+<p><strong>系统设计考虑：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>选择合适的拓扑结构</p></li>
+<li><p>配置监听过滤器</p></li>
+<li><p>选择缓存模型</p></li>
+<li><p>配置节点类型</p></li>
+<li><p>设置协议参数</p></li>
+</ol>
+</div></blockquote>
+<p><strong>性能优化建议：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>使用监听过滤器减少监听</p></li>
+<li><p>利用数据转发减少延迟</p></li>
+<li><p>使用事务组合提高吞吐量</p></li>
+<li><p>配置适当的缓存大小</p></li>
+<li><p>优化数据通路宽度</p></li>
+</ol>
+</div></blockquote>
+<p><strong>可靠性保障：</strong>
+.. code-block:: text</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>实现错误检测机制</p></li>
+<li><p>配置重试策略</p></li>
+<li><p>监控协议状态</p></li>
+<li><p>实现恢复机制</p></li>
+<li><p>测试一致性保证</p></li>
+</ol>
+</div></blockquote>
+<p><strong>10.4 未来发展方向</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1. 更高的一致性性能
+2. 更低的功耗
+3. 更强的安全性
+4. 更好的可扩展性
+5. 更智能的缓存管理
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id48">
+<h2><span class="section-number">4.11. </span>参考文献<a class="headerlink" href="#id48" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p>AMBA® CHI Architecture Specification (ARM IHI 0050G)</p></li>
+<li><p>AMBA® AXI Protocol Specification (ARM IHI 0022)</p></li>
+<li><p>Arm® Architecture Reference Manual for A-profile Architecture (ARM DDI 0487)</p></li>
+<li><p>Arm® Architecture Reference Manual Supplement, The Realm Management Extension (RME), for Armv9-A (ARM DDI 0615)</p></li>
+</ol>
+</section>
+<section id="id49">
+<h2><span class="section-number">4.12. </span>文档版本信息<a class="headerlink" href="#id49" title="链接到此标题。"></a></h2>
+<p>文档版本：1.0
+创建日期：2026年3月28日
+基于规范：AMBA CHI Architecture Specification Issue G
+作者：iFlow CLI
+版权说明：本文档基于ARM AMBA CHI Architecture Specification进行分析和总结，原始规范的版权归Arm Limited或其关联公司所有。</p>
+<hr class="docutils" />
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="amba_chi_architecture_spec.html" class="btn btn-neutral float-left" title="3. AMBA CHI Architecture Specification 结构梳理" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="amba_chi_architecture_coherency_codebuddy.html" class="btn btn-neutral float-right" title="5. AMBA CHI 一致性协议深度分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

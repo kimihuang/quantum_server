@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>57. systemd 日志说明（带注释版） &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="58. QEMU Linux Ramdump Parser (ramparse) 调试指南" href="../ramparse_qemu_debugging.html" />
+    <link rel="prev" title="53. CodeBuddy CLI 用户问题处理流程与高效使用指南" href="../codebuddy_cli_usage_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">57. </span>systemd 日志说明（带注释版）</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/systemd/systemd_log_annotated.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="systemd">
+<h1><span class="section-number">57. </span>systemd 日志说明（带注释版）<a class="headerlink" href="#systemd" title="链接到此标题。"></a></h1>
+<p>本文档记录了 systemd 在 QEMU ARM64 虚拟机上的启动日志，包含详细的阶段划分和功能注释。</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">系统初始化阶段</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>设置内核<span class="w"> </span>printk<span class="w"> </span>设备日志输出模式为<span class="w"> </span><span class="s1">&#39;on&#39;</span>（允许所有消息输出）
+<span class="go">systemd[1]: Setting &#39;/proc/sys/kernel/printk_devkmsg&#39; to &#39;on&#39;</span>
+
+<span class="gp"># </span>系统时间早于构建时间，调整时钟
+<span class="go">systemd[1]: System time before build time, advancing clock.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">虚拟化检测阶段</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>检测是否运行在虚拟化环境中（用于优化系统行为）
+<span class="go">systemd[1]: No virtualization found in DMI vendor table.</span>
+<span class="go">systemd[1]: Unable to read /sys/firmware/dmi/entries/0-0/raw, using virtualization information found in DMI vendor table, ignoring: No such file or directory</span>
+
+<span class="gp"># </span>检测<span class="w"> </span>User<span class="w"> </span>Mode<span class="w"> </span>Linux<span class="w"> </span><span class="o">(</span>UML<span class="o">)</span><span class="w"> </span>虚拟化
+<span class="go">systemd[1]: UML virtualization not found in /proc/cpuinfo.</span>
+
+<span class="gp"># </span>检测<span class="w"> </span>XEN<span class="w"> </span>虚拟化
+<span class="go">systemd[1]: Virtualization XEN not found, /proc/xen does not exist</span>
+
+<span class="gp"># </span>检测<span class="w"> </span>CPUID<span class="w"> </span>级别的虚拟化特征
+<span class="go">systemd[1]: No virtualization found in CPUID</span>
+
+<span class="gp"># </span>检测到<span class="w"> </span>QEMU<span class="w"> </span>虚拟化（通过<span class="w"> </span>fw-cfg<span class="w"> </span>设备树节点识别）
+<span class="go">systemd[1]: Virtualization QEMU: &quot;fw-cfg&quot; present in /proc/device-tree/fw-cfg@9020000</span>
+<span class="go">systemd[1]: Found VM virtualization qemu</span>
+
+<span class="gp"># </span>检测<span class="w"> </span>virtio<span class="w"> </span>设备（virtio<span class="w"> </span>是<span class="w"> </span>QEMU/KVM<span class="w"> </span>的半虚拟化<span class="w"> </span>I/O<span class="w"> </span>设备接口）
+<span class="gp"># </span>以下失败是正常的，因为<span class="w"> </span>QEMU<span class="w"> </span>虚拟机可能没有启用这些<span class="w"> </span>virtio<span class="w"> </span>设备
+<span class="go">systemd[1]: Failed to determine whether host has virtio-rng device, ignoring: No such file or directory</span>
+<span class="go">systemd[1]: Failed to determine whether host has virtio-console device, ignoring: No such file or directory</span>
+<span class="go">systemd[1]: Failed to determine whether host has virtio-vsock device, ignoring: No such file or directory</span>
+<span class="go">systemd[1]: Failed to determine whether host has virtiofs device, ignoring: No such file or directory</span>
+<span class="go">systemd[1]: Failed to determine whether host has virtio-pci device, ignoring: No such file or directory</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">内核模块加载阶段</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>加载<span class="w"> </span>libkmod<span class="w"> </span>库（用于内核模块管理的动态链接库）
+<span class="go">systemd[1]: Loaded &#39;libkmod.so.2&#39; via dlopen()</span>
+
+<span class="gp"># </span>尝试加载<span class="w"> </span>QEMU<span class="w"> </span>固件配置模块（失败是正常的，因为模块不存在或不需要）
+<span class="go">systemd[1]: Loading module: qemu_fw_cfg</span>
+<span class="go">systemd[1]: Failed to find module &#39;qemu_fw_cfg&#39;</span>
+
+<span class="gp"># </span>尝试加载<span class="w"> </span>DMI<span class="w"> </span><span class="o">(</span>Desktop<span class="w"> </span>Management<span class="w"> </span>Interface<span class="o">)</span><span class="w"> </span>sysfs<span class="w"> </span>模块
+<span class="gp"># </span>模块已内建在内核中，无需加载
+<span class="go">systemd[1]: Loading module: dmi-sysfs</span>
+<span class="go">systemd[1]: Module &#39;dmi_sysfs&#39; is built in</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">文件系统挂载阶段</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>挂载<span class="w"> </span>/dev/shm<span class="w"> </span><span class="o">(</span>POSIX<span class="w"> </span>共享内存<span class="o">)</span>
+<span class="gp"># </span><span class="nv">mode</span><span class="o">=</span><span class="m">01777</span>:<span class="w"> </span>允许所有用户读写执行（粘滞位）
+<span class="go">systemd[1]: Mounting tmpfs to /dev/shm of type tmpfs with options mode=01777.</span>
+<span class="go">systemd[1]: Mounting tmpfs (tmpfs) on /dev/shm (MS_NOSUID|MS_NODEV|MS_STRICTATIME &quot;mode=01777&quot;)...</span>
+
+<span class="gp"># </span>挂载<span class="w"> </span>/dev/pts<span class="w"> </span><span class="o">(</span>伪终端<span class="w"> </span>slave<span class="w"> </span>端<span class="o">)</span>
+<span class="gp"># </span><span class="nv">mode</span><span class="o">=</span><span class="m">0620</span>,gid<span class="o">=</span><span class="m">5</span>:<span class="w"> </span>属主读写，组只读（gid<span class="o">=</span><span class="m">5</span><span class="w"> </span>是<span class="w"> </span>tty<span class="w"> </span>组）
+<span class="go">systemd[1]: Mounting devpts to /dev/pts of type devpts with options mode=0620,gid=5.</span>
+<span class="go">systemd[1]: Mounting devpts (devpts) on /dev/pts (MS_NOSUID|MS_NOEXEC &quot;mode=0620,gid=5&quot;)...</span>
+
+<span class="gp"># </span>挂载<span class="w"> </span>/run<span class="w"> </span><span class="o">(</span>运行时数据目录<span class="o">)</span>
+<span class="gp"># </span><span class="nv">size</span><span class="o">=</span><span class="m">20</span>%:<span class="w"> </span>最大占内存的<span class="w"> </span><span class="m">20</span>%；nr_inodes<span class="o">=</span>800k:<span class="w"> </span>最多<span class="w"> </span><span class="m">80</span><span class="w"> </span>万个<span class="w"> </span>inode
+<span class="go">systemd[1]: Mounting tmpfs to /run of type tmpfs with options mode=0755,size=20%,nr_inodes=800k.</span>
+<span class="go">systemd[1]: Mounting tmpfs (tmpfs) on /run (MS_NOSUID|MS_NODEV|MS_STRICTATIME &quot;mode=0755,size=20%,nr_inodes=800k&quot;)...</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>cgroup<span class="w"> </span><span class="o">(</span>控制组<span class="o">)</span><span class="w"> </span><span class="nv">挂载阶段</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>cgroup2<span class="w"> </span>是<span class="w"> </span>Linux<span class="w"> </span>内核的资源管理机制（v2<span class="w"> </span>版本）
+<span class="go">systemd[1]: No filesystem is currently mounted on /sys/fs/cgroup.</span>
+
+<span class="gp"># </span>挂载<span class="w"> </span>cgroup2
+<span class="gp"># </span>nsdelegate:<span class="w"> </span>委托<span class="w"> </span>cgroup<span class="w"> </span>命名空间管理权
+<span class="gp"># </span>memory_recursiveprot:<span class="w"> </span>内存保护递归应用到子<span class="w"> </span>cgroup
+<span class="go">systemd[1]: Mounting cgroup2 to /sys/fs/cgroup of type cgroup2 with options nsdelegate,memory_recursiveprot.</span>
+<span class="go">systemd[1]: Mounting cgroup2 (cgroup2) on /sys/fs/cgroup (MS_NOSUID|MS_NODEV|MS_NOEXEC &quot;nsdelegate,memory_recursiveprot&quot;)...</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">其他文件系统挂载</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>pstore:<span class="w"> </span>内核<span class="w"> </span>panic<span class="w"> </span>日志存储（用于保存崩溃前的内核日志）
+<span class="go">systemd[1]: Mounting pstore to /sys/fs/pstore of type pstore with options n/a.</span>
+<span class="go">systemd[1]: Mounting pstore (pstore) on /sys/fs/pstore (MS_NOSUID|MS_NODEV|MS_NOEXEC &quot;&quot;)...</span>
+
+<span class="gp"># </span>BPF<span class="w"> </span><span class="o">(</span>Berkeley<span class="w"> </span>Packet<span class="w"> </span>Filter<span class="o">)</span><span class="w"> </span>文件系统挂载（用于网络过滤、性能监控等）
+<span class="gp"># </span>失败是正常的，因为内核可能不支持或未启用<span class="w"> </span>BPF
+<span class="go">systemd[1]: Mounting bpf to /sys/fs/bpf of type bpf with options mode=0700.</span>
+<span class="go">systemd[1]: Mounting bpf (type bpf) on /sys/fs/bpf (MS_NOSUID|MS_NODEV|MS_NOEXEC &quot;mode=0700&quot;)...</span>
+<span class="go">systemd[1]: Failed to mount bpf (type bpf) on /sys/fs/bpf (MS_NOSUID|MS_NODEV|MS_NOEXEC &quot;mode=0700&quot;): No such file or directory</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>systemd<span class="w"> </span><span class="nv">信息摘要</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>确认使用<span class="w"> </span>cgroup2<span class="w"> </span>统一层次结构
+<span class="go">systemd[1]: Found cgroup2 on /sys/fs/cgroup/, full unified hierarchy</span>
+
+<span class="gp"># </span><span class="nv">ProtectSystem</span><span class="o">=</span>auto<span class="w"> </span>检测：不在<span class="w"> </span>initrd<span class="w"> </span>中运行，跳过保护设置
+<span class="go">systemd[1]: ProtectSystem=auto selected, but not running in an initrd, skipping.</span>
+
+<span class="gp"># </span>systemd<span class="w"> </span>版本和编译特性
+<span class="gp"># </span>+<span class="w"> </span>表示启用，-<span class="w"> </span>表示禁用
+<span class="gp"># </span>例如：+KMOD<span class="w"> </span>表示支持内核模块加载，-PAM<span class="w"> </span>表示不支持<span class="w"> </span>PAM<span class="w"> </span>认证
+<span class="go">systemd[1]: systemd 256.7 running in system mode (-PAM -AUDIT -SELINUX -APPARMOR -IMA -SMACK -SECCOMP -GCRYPT -GNUTLS -OPENSSL -ACL +BLKID -CURL -ELFUTILS -FIDO2 -IDN2 -IDN -IPTC +KMOD -LIBCRYPTSETUP -LIBCRYPTSETUP_PLUGINS -LIBFDISK -PCRE2 -PWQUALITY -P11KIT -QRENCODE -TPM2 -BZIP2 -LZ4 -XZ -ZLIB -ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP -SYSVINIT -LIBARCHIVE)</span>
+
+<span class="gp"># </span>系统环境信息
+<span class="go">systemd[1]: Detected virtualization qemu.</span>
+<span class="go">systemd[1]: No confidential virtualization detection on this architecture</span>
+<span class="go">systemd[1]: Detected architecture arm64.</span>
+
+<span class="gp"># </span>检测到已初始化的系统（非首次启动）
+<span class="go">systemd[1]: Detected initialized system, this is not first boot.</span>
+
+<span class="gp"># </span>内核版本检查
+<span class="go">systemd[1]: Kernel version 6.1.0, our baseline is 4.15</span>
+
+<span class="gp"># </span>凭证管理（用于传递机密信息到<span class="w"> </span>systemd）
+<span class="go">systemd[1]: No credentials passed via fw_cfg.</span>
+<span class="go">systemd[1]: No credentials passed from initrd.</span>
+<span class="go">systemd[1]: Acquired 0 regular credentials, 0 untrusted credentials.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">欢迎信息</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">Welcome to Buildroot 2025.02-rc1!</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">网络配置阶段</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>设置主机名
+<span class="go">systemd[1]: Hostname set to &lt;buildroot&gt;.</span>
+
+<span class="gp"># </span>配置回环接口（本地网络）
+<span class="go">systemd[1]: Successfully added address 127.0.0.1 to loopback interface</span>
+<span class="go">systemd[1]: Successfully added address ::1 to loopback interface</span>
+<span class="go">systemd[1]: Successfully brought loopback interface up</span>
+
+<span class="gp"># </span>网络内核参数调优
+<span class="go">systemd[1]: Setting &#39;/proc/sys/net/unix/max_dgram_qlen&#39; to &#39;512&#39;</span>
+<span class="go">systemd[1]: Setting &#39;/proc/sys/fs/file-max&#39; to &#39;9223372036854775807&#39;</span>
+<span class="go">systemd[1]: Setting &#39;/proc/sys/fs/nr_open&#39; to &#39;2147483640&#39;</span>
+<span class="go">systemd[1]: Couldn&#39;t write fs.nr_open as 2147483640, halving it.</span>
+<span class="go">systemd[1]: Setting &#39;/proc/sys/fs/nr_open&#39; to &#39;1073741816&#39;</span>
+<span class="go">systemd[1]: Successfully bumped fs.nr_open to 1073741816</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>cgroup<span class="w"> </span><span class="nv">控制器检测</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">systemd[1]: Found cgroup2 on /sys/fs/cgroup/, full unified hierarchy</span>
+<span class="go">systemd[1]: Unified cgroup hierarchy is located at /sys/fs/cgroup.</span>
+
+<span class="gp"># </span>检测各种<span class="w"> </span>cgroup<span class="w"> </span>控制器支持情况
+<span class="gp"># </span>BPF<span class="w"> </span>相关控制器需要内核支持，当前环境不支持是正常的
+<span class="go">systemd[1]: bpf-firewall: Can&#39;t load kernel CGROUP SKB BPF program, BPF firewalling is not supported: Function not implemented</span>
+<span class="go">systemd[1]: Can&#39;t load kernel CGROUP DEVICE BPF program, BPF device control is not supported: Function not implemented</span>
+
+<span class="gp"># </span>检测各个<span class="w"> </span>cgroup<span class="w"> </span>控制器是否支持
+<span class="gp"># </span>yes<span class="w"> </span>表示支持，no<span class="w"> </span>表示不支持（当前内核配置可能禁用了）
+<span class="go">systemd[1]: Controller &#39;cpu&#39; supported: yes</span>
+<span class="go">systemd[1]: Controller &#39;cpuacct&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;cpuset&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;io&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;blkio&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;memory&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;devices&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;pids&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;bpf-firewall&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;bpf-devices&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;bpf-foreign&#39; supported: yes</span>
+<span class="go">systemd[1]: Controller &#39;bpf-socket-bind&#39; supported: no</span>
+<span class="go">systemd[1]: Controller &#39;bpf-restrict-network-interfaces&#39; supported: no</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">系统启动任务</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>设置定时器取消标志
+<span class="go">systemd[1]: Set up TFD_TIMER_CANCEL_ON_SET timerfd.</span>
+
+<span class="gp"># </span>尝试建立内存压力事件源（需要内核支持，失败是正常的）
+<span class="go">systemd[1]: Failed to establish memory pressure event source, ignoring: Operation not supported</span>
+
+<span class="gp"># </span>使用<span class="w"> </span>systemd-executor<span class="w"> </span>二进制文件
+<span class="go">systemd[1]: Using systemd-executor binary from &#39;/usr/lib/systemd/systemd-executor&#39;.</span>
+
+<span class="gp"># </span>启用状态输出（显示启动过程的<span class="w"> </span><span class="o">[</span>OK<span class="o">]</span><span class="w"> </span>/<span class="w"> </span><span class="o">[</span>FAILED<span class="o">]</span><span class="w"> </span>标志）
+<span class="go">systemd[1]: Enabling (yes) showing of status (command line).</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>生成器（Generators）启动<span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>生成器用于动态创建<span class="w"> </span>systemd<span class="w"> </span>单元文件
+<span class="go">systemd[1]: Successfully forked off &#39;(sd-gens)&#39; as PID 50.</span>
+<span class="gp gp-VirtualEnv">(sd-gens)</span><span class="go">[50]: Successfully forked off &#39;(sd-exec-strv)&#39; as PID 51.</span>
+
+<span class="gp"># </span>启动各种生成器
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-debug-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 52.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-fstab-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 53.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-getty-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 54.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-gpt-auto-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 55.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-run-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 56.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-ssh-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 57.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-system-update-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 58.</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: About to execute /usr/lib/systemd/system-generators/systemd-tpm2-generator (null)</span>
+<span class="gp gp-VirtualEnv">(sd-exec-[51]: Successfully forked off &#39;(direxec)</span><span class="go">&#39; as PID 59.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">生成器执行结果</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>解析<span class="w"> </span>/etc/fstab（文件系统挂载配置）
+<span class="go">systemd-fstab-generator[53]: Parsing /etc/fstab...</span>
+
+<span class="gp"># </span>自动为串口终端添加<span class="w"> </span>getty（登录提示）
+<span class="go">systemd-getty-generator[54]: Automatically adding serial getty for /dev/ttyAMA0.</span>
+
+<span class="gp"># </span>GPT<span class="w"> </span>自动分区检测（rootfs<span class="w"> </span>不是块设备，跳过）
+<span class="go">systemd-gpt-auto-generator[55]: Neither root nor /usr/ file system are on a (single) block device.</span>
+<span class="go">systemd-gpt-auto-generator[55]: Skipping automatic GPT dissection logic, root file system not backed by a (single) whole block device.</span>
+
+<span class="gp"># </span>SSH<span class="w"> </span>生成器（sshd<span class="w"> </span>未安装，禁用）
+<span class="go">systemd-ssh-generator[57]: Disabling SSH generator logic, since sshd is not installed.</span>
+
+<span class="gp"># </span>TPM2<span class="w"> </span>生成器（固件报告无<span class="w"> </span>TPM2）
+<span class="go">systemd-tpm2-generator[59]: Not generating tpm2.target synchronization point, as firmware reports no TPM2 present.</span>
+
+<span class="gp"># </span>从<span class="w"> </span>fstab<span class="w"> </span>生成挂载单元
+<span class="go">systemd-fstab-generator[53]: Found entry what=/dev/root where=/ type=auto makefs=no growfs=no pcrfs=no noauto=no nofail=no</span>
+
+<span class="gp"># </span>所有生成器成功完成
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-fstab-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-gpt-auto-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-getty-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-system-update-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-tpm2-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-run-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-ssh-generator succeeded.</span>
+<span class="go">(sd-exec-[51]: /usr/lib/systemd/system-generators/systemd-debug-generator succeeded.</span>
+
+<span class="gp"># </span>生成器进程完成
+<span class="gp gp-VirtualEnv">(sd-gens)</span><span class="go">[50]: (sd-exec-strv) succeeded.</span>
+<span class="go">systemd[1]: (sd-gens) succeeded.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">单元文件加载</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>查找单元文件（按优先级从高到低）
+<span class="go">systemd[1]: Looking for unit files in (higher priority first):</span>
+<span class="go">systemd[1]:      /etc/systemd/system.control</span>
+<span class="go">systemd[1]:      /run/systemd/system.control</span>
+<span class="go">systemd[1]:      /run/systemd/transient</span>
+<span class="go">systemd[1]:      /run/systemd/generator.early</span>
+<span class="go">systemd[1]:      /etc/systemd/system</span>
+<span class="go">systemd[1]:      /etc/systemd/system.attached</span>
+<span class="go">systemd[1]:      /run/systemd/system</span>
+<span class="go">systemd[1]:      /run/systemd/system.attached</span>
+<span class="go">systemd[1]:      /run/systemd/generator</span>
+<span class="go">systemd[1]:      /usr/local/lib/systemd/system</span>
+<span class="go">systemd[1]:      /usr/lib/systemd/system</span>
+<span class="go">systemd[1]:      /run/systemd/generator.late</span>
+
+<span class="gp"># </span>修改时间已更改，需要更新缓存
+<span class="go">systemd[1]: Modification times have changed, need to update cache.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">单元文件解析</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>解析各种单元文件（.service,<span class="w"> </span>.target,<span class="w"> </span>.mount,<span class="w"> </span>.socket<span class="w"> </span>等）
+<span class="gp"># </span>以下显示正在解析的单元文件
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>journal<span class="w"> </span><span class="nv">日志服务启动</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>多条<span class="w"> </span><span class="s2">&quot;Found cgroup2&quot;</span><span class="w"> </span>消息表示各进程都正确使用了<span class="w"> </span>cgroup
+<span class="gp"># </span><span class="s2">&quot;Kernel keyring not supported&quot;</span><span class="w"> </span>消息表示内核不支持密钥环（正常）
+<span class="gp"># </span>多个<span class="w"> </span><span class="s2">&quot;Credential search path&quot;</span><span class="w"> </span>表示查找机密存储路径
+
+<span class="go">systemd-journald[66]: systemd-journald running as PID 66 for system.</span>
+<span class="go">systemd-journald[66]: Sent READY=1 notification.</span>
+<span class="go">systemd-journald[66]: Sent WATCHDOG=1 notification.</span>
+
+<span class="gp"># </span>journald<span class="w"> </span>配置完成
+<span class="go">systemd-journald[66]: Journal effective settings seal=no keyed_hash=yes compress=NONE compress_threshold_bytes=512B</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>系统目标（Targets）启动<span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>目标（Target）是<span class="w"> </span>systemd<span class="w"> </span>的同步点，表示一组相关服务的完成状态
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Finished<span class="w"> </span>Generate<span class="w"> </span>network<span class="w"> </span>units<span class="w"> </span>from<span class="w"> </span>Kernel<span class="w"> </span><span class="nb">command</span><span class="w"> </span>line.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Preparation<span class="w"> </span><span class="k">for</span><span class="w"> </span>Network.
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Path<span class="w"> </span>Units.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Remote<span class="w"> </span>File<span class="w"> </span>Systems.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Slice<span class="w"> </span>Units.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Swaps.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>套接字（Sockets）监听<span class="w"> </span><span class="o">==========</span>
+<span class="go">[  OK  ] Listening on Credential Encryption/Decryption.</span>
+<span class="go">[  OK  ] Listening on Journal Socket (/dev/log).</span>
+<span class="go">[  OK  ] Listening on Journal Sockets.</span>
+<span class="go">[  OK  ] Listening on Network Service Netlink Socket.</span>
+<span class="go">[  OK  ] Listening on udev Control Socket.</span>
+<span class="go">[  OK  ] Listening on udev Kernel Socket.</span>
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Slice<span class="w"> </span>Units.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Socket<span class="w"> </span>Units.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Basic<span class="w"> </span>System.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">挂载临时文件系统</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>挂载<span class="w"> </span>/tmp<span class="w"> </span><span class="o">(</span>临时目录）
+<span class="gp gp-VirtualEnv">(mount)</span><span class="go">[62]: tmp.mount: Kernel keyring not supported, ignoring.</span>
+<span class="gp gp-VirtualEnv">(mount)</span><span class="go">[62]: tmp.mount: Executing: /usr/bin/mount tmpfs /tmp -t tmpfs -o mode=1777,strictatime,nosuid,nodev,size=50%,nr_inodes=1m</span>
+
+<span class="gp"># </span>加载内核模块
+<span class="gp"># </span>configfs:<span class="w"> </span>配置文件系统（用于内核配置项）
+<span class="gp"># </span>efi_pstore:<span class="w"> </span>EFI<span class="w"> </span>固件<span class="w"> </span>panic<span class="w"> </span>存储接口
+<span class="gp"># </span>fuse:<span class="w"> </span>用户空间文件系统（支持多种文件系统）
+<span class="gp gp-VirtualEnv">(modprobe)</span><span class="go">[63]: modprobe@configfs.service: Kernel keyring not supported, ignoring.</span>
+<span class="gp gp-VirtualEnv">(modprobe)</span><span class="go">[63]: modprobe@configfs.service: Executing: /sbin/modprobe -abq configfs</span>
+<span class="gp gp-VirtualEnv">(mount)</span><span class="go">[62]: Found cgroup2 on /sys/fs/cgroup/, full unified hierarchy</span>
+<span class="gp gp-VirtualEnv">(modprobe)</span><span class="go">[63]: Found cgroup2 on /sys/fs/cgroup/, full unified hierarchy</span>
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Finished<span class="w"> </span>Load<span class="w"> </span>Kernel<span class="w"> </span>Module<span class="w"> </span>fuse.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">设备节点创建和规则加载</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>创建<span class="w"> </span>/dev<span class="w"> </span>下的静态设备节点
+<span class="go">[  OK  ] Started Create Static Device Nodes in /dev gracefully.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">系统目标完成</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">[  OK  ] Reached target Preparation for Network.</span>
+<span class="go">[  OK  ] Started Forward Password Requests to Console Directory Watch.</span>
+<span class="go">[  OK  ] Started Forward Password Requests to Wall Directory Watch.</span>
+
+<span class="gp"># </span>等待串口设备就绪
+<span class="go">Expecting device /dev/ttyAMA0...</span>
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Path<span class="w"> </span>Units.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Remote<span class="w"> </span>File<span class="w"> </span>Systems.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Slice<span class="w"> </span>Units.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Swaps.
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Local<span class="w"> </span>File<span class="w"> </span>Systems.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Preparation<span class="w"> </span><span class="k">for</span><span class="w"> </span>Local<span class="w"> </span>File<span class="w"> </span>Systems.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">虚拟控制台设置</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Finished<span class="w"> </span>Virtual<span class="w"> </span>Console<span class="w"> </span>Setup.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">网络相关服务</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">[  FAILED] Failed to start Network Name Resolution.</span>
+<span class="gp"># </span>systemd-resolved<span class="w"> </span>是<span class="w"> </span>DNS<span class="w"> </span>解析服务
+<span class="gp"># </span>失败原因可能是没有网络配置或依赖缺失
+<span class="go">See &#39;systemctl status systemd-resolved.service&#39; for details.</span>
+
+<span class="gp"># </span>多次尝试启动<span class="w"> </span>Network<span class="w"> </span>Name<span class="w"> </span>Resolution（失败）
+<span class="go">systemd[1]: nss-lookup.target: Trying to enqueue job nss-lookup.target/start/fail</span>
+<span class="go">[  FAILED] Failed to start Network Name Resolution.</span>
+<span class="go">See &#39;systemctl status systemd-resolved.service&#39; for details.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">网络配置</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">[  OK  ] Started Network Configuration.</span>
+<span class="go">[  OK  ] Finished Coldplug All udev Devices.</span>
+
+<span class="gp"># </span>网络时间同步
+<span class="go">[  OK  ] Started Network Time Synchronization.</span>
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>System<span class="w"> </span>Time<span class="w"> </span>Set.
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Finished<span class="w"> </span>Enable<span class="w"> </span>Persistent<span class="w"> </span>Storage<span class="w"> </span><span class="k">in</span><span class="w"> </span>systemd-networkd.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">设备事件</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>检测到各种设备（tty,<span class="w"> </span>虚拟网络接口等）
+<span class="go">systemd[1]: dev-ram0.device: Changed dead -&gt; plugged</span>
+<span class="go">systemd[1]: dev-ttyAMA0.device: Job 73 dev-ttyAMA0.device/start finished, result=done</span>
+<span class="go">[  OK  ] Found device /dev/ttyAMA0.</span>
+<span class="go">systemd[1]: sys-subsystem-net-devices-sit0.device: Changed dead -&gt; plugged</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">系统完成</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">[  OK  ] Reached target System Initialization.</span>
+<span class="go">[  OK  ] Started Daily Cleanup of Temporary Directories.</span>
+<span class="go">[  OK  ] Reached target Timer Units.</span>
+
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Listening<span class="w"> </span>on<span class="w"> </span>D-Bus<span class="w"> </span>System<span class="w"> </span>Message<span class="w"> </span>Bus<span class="w"> </span>Socket.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Listening<span class="w"> </span>on<span class="w"> </span>Hostname<span class="w"> </span>Service<span class="w"> </span>Socket.
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Socket<span class="w"> </span>Units.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span>D-Bus<span class="w"> </span><span class="nv">和系统服务</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Basic<span class="w"> </span>System.
+
+<span class="gp"># </span>启动<span class="w"> </span>D-Bus（桌面总线和系统消息总线）
+<span class="go">Starting D-Bus System Message Bus...</span>
+
+<span class="gp"># </span>串口<span class="w"> </span>getty<span class="w"> </span>登录服务启动
+<span class="go">[  OK  ] Started Serial Getty on ttyAMA0.</span>
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Login<span class="w"> </span>Prompts.
+
+<span class="gp"># </span>D-Bus<span class="w"> </span>启动完成
+<span class="go">[  OK  ] Started D-Bus System Message Bus.</span>
+<span class="gp"># </span><span class="o">[</span><span class="w">  </span>OK<span class="w">  </span><span class="o">]</span><span class="w"> </span>Reached<span class="w"> </span>target<span class="w"> </span>Multi-User<span class="w"> </span>System.
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">网络状态</span><span class="w"> </span><span class="o">==========</span>
+<span class="gp"># </span>即使<span class="w"> </span>Network<span class="w"> </span>Name<span class="w"> </span>Resolution<span class="w"> </span>失败，网络目标仍可达
+<span class="go">[  OK  ] Reached target Network.</span>
+<span class="go">[  OK  ] Reached target Host and Network Name Lookups.</span>
+
+<span class="gp"># </span><span class="o">==========</span><span class="w"> </span><span class="nv">登录提示</span><span class="w"> </span><span class="o">==========</span>
+<span class="go">Welcome to Buildroot</span>
+<span class="go">buildroot login: root (automatic login)</span>
+
+<span class="gp"># </span>说明：
+<span class="gp"># </span>-<span class="w"> </span>automatic<span class="w"> </span>login<span class="w"> </span>表示自动登录为<span class="w"> </span>root<span class="w"> </span>用户（无需密码）
+<span class="gp"># </span>-<span class="w"> </span>这是在配置文件中设置的调试功能
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../codebuddy_cli_usage_guide.html" class="btn btn-neutral float-left" title="53. CodeBuddy CLI 用户问题处理流程与高效使用指南" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../ramparse_qemu_debugging.html" class="btn btn-neutral float-right" title="58. QEMU Linux Ramdump Parser (ramparse) 调试指南" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+  [GROUP PRE_TEST] group_math init resources...
+    [MODULE PRE_TEST] init adder context
+      [CASE PRE_TEST] setup operand buffer
+      [CASE POST_TEST] cleanup operand buffer
+    [MODULE POST_TEST] destroy adder context
+    [MODULE PRE_TEST] init subtractor context
+    [MODULE POST_TEST] destroy subtractor context
+    [MODULE PRE_TEST] init multiplier context
+    [MODULE POST_TEST] destroy multiplier context
+  [GROUP POST_TEST] group_math release resources...
+  [GROUP PRE_TEST] group_string init buffer pool...
+    [MODULE PRE_TEST] init concat buffer
+    [MODULE POST_TEST] destroy concat buffer
+    [MODULE PRE_TEST] init copy buffers
+    [MODULE POST_TEST] destroy copy buffers
+  [GROUP POST_TEST] group_string release buffer pool...
+  [GROUP PRE_TEST] group_i2c: init I2C bus controller...
+  [GROUP POST_TEST] group_i2c: reset I2C bus controller...
+  [GROUP PRE_TEST] group_timer: init timer IP...
+    [MODULE PRE_TEST] reset timer registers
+    [MODULE POST_TEST] stop & cleanup timer
+    [MODULE PRE_TEST] init interrupt controller
+    [MODULE POST_TEST] cleanup interrupt controller
+  [GROUP POST_TEST] group_timer: reset timer IP...
+
+===========================================
+  SUMMARY
+===========================================
+  PASS: 26  |  FAIL: 1  |  ERROR: 0  |  SKIP: 0

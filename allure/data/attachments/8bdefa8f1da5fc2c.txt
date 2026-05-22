@@ -1,0 +1,8 @@
+Unloading DMA-BUF demo modules...
+rmmod: ERROR: Module unloading is not supported
+  [FAIL] demo_importer
+rmmod: ERROR: Module unloading is not supported
+  [FAIL] demo_exporter
+rmmod: ERROR: Module unloading is not supported
+  [FAIL] demo_heap
+DMA-BUF demo modules unloaded.

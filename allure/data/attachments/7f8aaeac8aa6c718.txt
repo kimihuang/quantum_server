@@ -1,0 +1,42 @@
+  group_math
+    module_add               (4 cases)
+      test_1_plus_1
+      test_neg_add
+      test_zero_add
+      test_large_add
+    module_sub               (3 cases)
+      test_5_minus_3
+      test_neg_minus_neg
+      test_zero_minus_zero
+    module_mul               (3 cases)
+      test_2_times_3
+      test_neg_times_neg
+      test_overflow
+  group_string
+    module_concat            (3 cases)
+      test_basic_concat
+      test_empty_concat
+      test_concat_null_term
+    module_len               (3 cases)
+      test_ascii_len
+      test_empty_len
+      test_space_len
+    module_copy              (3 cases)
+      test_strcpy_basic
+      test_strncpy_exact
+      test_memcpy
+  group_i2c
+    module_i2c_transfer      (4 cases)
+      test_i2c_write_byte
+      test_i2c_read_byte
+      test_i2c_multi_byte_transfer
+      test_i2c_invalid_addr
+  group_timer
+    module_timer_basic       (2 cases)
+      test_timer_single_shot
+      test_timer_stop
+    module_timer_interrupt   (2 cases)
+      test_timer_periodic
+      test_timer_periodic_overflow
+
+  Total: 4 groups, 9 modules, 27 cases

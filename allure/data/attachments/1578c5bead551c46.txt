@@ -1,0 +1,6 @@
+main    : capacity=262144 count=0 wp=0 rp=0
+radio   : capacity=65536 count=0 wp=0 rp=0
+events  : capacity=262144 count=0 wp=0 rp=0
+system  : capacity=65536 count=0 wp=0 rp=0
+crash   : capacity=1048576 count=0 wp=0 rp=0
+kernel  : capacity=65536 count=0 wp=

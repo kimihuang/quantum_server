@@ -1,0 +1,2542 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>QEMU + GDB 远程调试实战指南 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#qemu-gdb" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              QEMU + GDB 远程调试实战指南
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../arm_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  arm技术文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../api_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API参考
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../quantumdocs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  项目文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../allure/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  测试报告
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arm技术文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../api_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quantumdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    项目文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../allure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、调试环境架构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、调试环境架构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 关键文件路径
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 调试通路启动步骤
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gdb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、GDB 远程连接验证
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、GDB 远程连接验证">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-gdbserver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 连接 gdbserver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 验证连接成功
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、断点调试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、断点调试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 函数断点（带源码信息）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 多断点管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 条件断点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 断点操作
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、执行控制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四、执行控制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-continue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 continue — 继续到下一个断点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-stepi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 stepi — 汇编级单步进入
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-finish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 finish — 执行到函数返回
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 执行控制命令汇总
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、调用栈分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五、调用栈分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-backtrace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 backtrace（带源码信息）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 栈帧信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 完整调用栈（从断言失败处）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、寄存器检查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="六、寄存器检查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 查看关键寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-arm64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 ARM64 寄存器对照
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、反汇编分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="七、反汇编分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 反汇编 main 函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-cv_option_parse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 反汇编 cv_option_parse 函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 当前位置反汇编
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、内存检查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="八、内存检查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-g_framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 查看全局变量 g_framework
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 查看特定字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 x 命令格式速查
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、共享库信息
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="九、共享库信息">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 查看已加载的共享库
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 设置共享库搜索路径
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十、QEMU 控制台输出
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十一、源码级调试实战
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="十一、源码级调试实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 1：源码级单步跟踪
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-test_overflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 2：调试 test_overflow 失败
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 3：step 进入测试函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 4：观察点 + 修改变量
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gdb_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十二、GDB 批处理模式调试
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十三、常见问题与解决
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="十三、常见问题与解决">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-cannot-insert-breakpoint-cannot-access-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q1: Cannot insert breakpoint / Cannot access memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2-optimized-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q2: 变量显示 &lt;optimized out&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-g_framework-has-unknown-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q3: g_framework has unknown type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-gdbserver-child-exited-with-status-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q4: gdbserver 报 "Child exited with status 1"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5-static-run_single_case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q5: static 函数无法设断点（如 run_single_case）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        十四、调试脚本模板
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="十四、调试脚本模板">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#141-gdb-gdbinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 自动化 GDB 初始化脚本 (.gdbinit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#142" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 远程调试一键脚本
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录：调试命令速查表
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="qemu-gdb">QEMU + GDB 远程调试实战指南<a class="headerlink" href="#qemu-gdb" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>基于 cv_test 嵌入式测试框架，在 QEMU (aarch64) + gdbserver 环境下的远程调试全流程演示。
+环境：Host x86_64 ↔ QEMU aarch64 (gdbserver :1234)</p>
+</blockquote>
+<hr />
+<h2 id="_1">一、调试环境架构<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│  Host (x86_64)                                          │
+│                                                         │
+│  aarch64-none-linux-gnu-gdb ──TCP :1234──┐             │
+│       + cv_test (带符号 aarch64)          │             │
+│       + sysroot (目标根文件系统)            │             │
+│                                          │             │
+└──────────────────────────────────────────┼─────────────┘
+                                           │
+                                    QEMU user-mode NAT
+                                    hostfwd=tcp::1234-:1234
+                                           │
+┌──────────────────────────────────────────┼─────────────┐
+│  QEMU (aarch64)                          │             │
+│                                          ▼             │
+│  gdbserver :1234 /bin/cv_test                          │
+│       (监听 1234 端口，等待 GDB 连接)                    │
+│                                                         │
+│  /mnt/host_shared  ←→  9p virtio 共享目录               │
+└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="11">1.1 关键文件路径<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QEMU 启动脚本</td>
+<td><code>src/packages/qemu_sample_env/qemu_gdb_debug.sh</code></td>
+</tr>
+<tr>
+<td>gdbserver 启动脚本</td>
+<td><code>out/quantum_qemu_debug/qemu_host_shared/start_gdbserver.sh</code></td>
+</tr>
+<tr>
+<td>GDB 连接脚本</td>
+<td><code>src/packages/qemu_sample_env/gdb.sh</code></td>
+</tr>
+<tr>
+<td>aarch64 调试符号文件</td>
+<td><code>out/quantum_qemu_debug/build/cv-framework-1.0/cv_test</code></td>
+</tr>
+<tr>
+<td>目标 sysroot</td>
+<td><code>out/quantum_qemu_debug/target/</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="12">1.2 调试通路启动步骤<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Step 1: 启动 QEMU（screen 会话，端口转发 1234）</span>
+bash<span class="w"> </span>qemu_gdb_debug.sh
+
+<span class="c1"># Step 2: 在 QEMU 内启动 gdbserver（通过 screen 发送命令）</span>
+screen<span class="w"> </span>-S<span class="w"> </span>qemu_debug<span class="w"> </span>-X<span class="w"> </span>stuff<span class="w"> </span><span class="s1">&#39;/mnt/host_shared/start_gdbserver.sh\n&#39;</span>
+
+<span class="c1"># Step 3: Host 端连接 GDB</span>
+aarch64-none-linux-gnu-gdb<span class="w"> </span>cv_test<span class="w">   </span><span class="c1"># 使用 aarch64 版本的 cv_test</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>sysroot<span class="w"> </span>/path/to/target
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>target<span class="w"> </span>remote<span class="w"> </span>localhost:1234
+</code></pre></div>
+<blockquote>
+<p><strong>注意</strong>：<code>gdb.sh</code> 默认指向 x86_64 的 cv_test，远程调试时应使用 aarch64 版本：
+<code>out/quantum_qemu_debug/build/cv-framework-1.0/cv_test</code>（带 debug_info，not stripped）</p>
+</blockquote>
+<hr />
+<h2 id="gdb">二、GDB 远程连接验证<a class="headerlink" href="#gdb" title="Permanent link">&para;</a></h2>
+<h3 id="21-gdbserver">2.1 连接 gdbserver<a class="headerlink" href="#21-gdbserver" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) set sysroot /home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/target
+(gdb) target remote localhost:1234
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>0x0000007f8727d480 in _start ()
+  from /home/lion/.../target/lib/ld-linux-aarch64.so.1
+</code></pre></div></p>
+<p>程序停在动态链接器 <code>_start</code> 中，等待进一步指令。</p>
+<h3 id="22">2.2 验证连接成功<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) info program
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>Last stopped for thread 1 (Thread 137.137).
+    `cv_test&#39;, file type elf64-little.
+    Entry point: 0x22a0
+    0x0000000000000318 - 0x0000000000000334 is .interp
+    0x0000000000002000 - 0x000000000000201b is .init
+    0x00000000000022a0 - 0x0000000000007470 is .text
+    0x0000000000008000 - 0x0000000000009660 is .rodata
+    ...
+Program stopped at 0x7f8727d480.
+It stopped with signal SIGTRAP, Trace/breakpoint trap.
+</code></pre></div></p>
+<hr />
+<h2 id="_2">三、断点调试<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 函数断点（带源码信息）<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break main
+Breakpoint 1 at 0x5581d33600: file src/cv_main.c, line 11.
+
+(gdb) continue
+Breakpoint 1, main (argc=1, argv=0x7ffc695be8) at src/cv_main.c:11
+11  {
+</code></pre></div>
+<blockquote>
+<p>添加 <code>-g</code> 后，断点信息包含源文件名和行号，<code>continue</code> 后停在源码行。</p>
+</blockquote>
+<h3 id="32">3.2 多断点管理<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_option_parse
+Breakpoint 2 at 0x5581d359f0: file src/cv_option.c, line 87.
+
+(gdb) break cv_run
+Breakpoint 3 at 0x5581d34ee0: file src/cv_runner.c, line 227.
+
+(gdb) break cv_summary
+Breakpoint 4 at 0x5581d34d10: file src/cv_test.c, line 325.
+
+(gdb) break test_1_plus_1
+Breakpoint 5 at 0x5581d35d60: file tests/test_math.c, line 46.
+
+(gdb) info breakpoints
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000005581d33600 in main at src/cv_main.c:11
+2       breakpoint     keep y   0x0000005581d359f0 in cv_option_parse at src/cv_option.c:87
+3       breakpoint     keep y   0x0000005581d34ee0 in cv_run at src/cv_runner.c:227
+4       breakpoint     keep y   0x0000005581d34d10 in cv_summary at src/cv_test.c:325
+5       breakpoint     keep y   0x0000005581d35d60 in test_1_plus_1 at tests/test_math.c:46
+</code></pre></div>
+<h3 id="33">3.3 条件断点<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_run if opts != 0
+</code></pre></div>
+<h3 id="34">3.4 断点操作<a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) enable 1          # 启用断点 1
+(gdb) disable 2         # 禁用断点 2
+(gdb) delete 3          # 删除断点 3
+(gdb) delete            # 删除所有断点
+(gdb) ignore 1 100      # 忽略断点 1 共 100 次
+</code></pre></div>
+<hr />
+<h2 id="_3">四、执行控制<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h3 id="41-continue">4.1 continue — 继续到下一个断点<a class="headerlink" href="#41-continue" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_option_parse
+(gdb) continue
+Breakpoint 2, 0x00000055947c99f0 in cv_option_parse ()
+</code></pre></div>
+<h3 id="42-stepi">4.2 stepi — 汇编级单步进入<a class="headerlink" href="#42-stepi" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break main
+(gdb) continue
+Breakpoint 1, 0x00000055947c7600 in main ()
+
+(gdb) stepi 5
+0x00000055947c7614 in main ()
+</code></pre></div>
+<p><strong>查看 stepi 后的寄存器变化：</strong></p>
+<div class="highlight"><pre><span></span><code>(gdb) info registers x19 x20 x29 x30 sp pc
+x19            0x7ff35eb578        549543916920
+x20            0x1                 1
+x29            0x7ff35eb3e0        549543916512
+x30            0x7f870db26c        547726668396
+sp             0x7ff35eb3e0        0x7ff35eb3e0
+pc             0x55947c7614        0x55947c7614 &lt;main+20&gt;
+</code></pre></div>
+<p><strong>查看下一条将要执行的指令：</strong></p>
+<div class="highlight"><pre><span></span><code>(gdb) x/5i $pc
+=&gt; 0x55947c7614 &lt;main+20&gt;:  sub  sp, sp, #0x350
+   0x55947c7618 &lt;main+24&gt;:  mov  x19, sp
+   0x55947c761c &lt;main+28&gt;:  ldr  x4, [x3]
+   0x55947c7620 &lt;main+32&gt;:  str  x4, [sp, #840]
+   0x55947c7624 &lt;main+36&gt;:  mov  x4, #0x0
+</code></pre></div>
+<h3 id="43-finish">4.3 finish — 执行到函数返回<a class="headerlink" href="#43-finish" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_option_parse
+(gdb) continue
+(gdb) finish     # 执行到 cv_option_parse 返回
+</code></pre></div>
+<h3 id="44">4.4 执行控制命令汇总<a class="headerlink" href="#44" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>缩写</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>continue</code></td>
+<td><code>c</code></td>
+<td>继续执行到下一个断点</td>
+</tr>
+<tr>
+<td><code>stepi [N]</code></td>
+<td><code>si</code></td>
+<td>汇编级单步进入（N 条指令）</td>
+</tr>
+<tr>
+<td><code>nexti [N]</code></td>
+<td><code>ni</code></td>
+<td>汇编级单步跳过（N 条指令）</td>
+</tr>
+<tr>
+<td><code>step [N]</code></td>
+<td><code>s</code></td>
+<td>源码级单步进入（已支持）</td>
+</tr>
+<tr>
+<td><code>next [N]</code></td>
+<td><code>n</code></td>
+<td>源码级单步跳过（已支持）</td>
+</tr>
+<tr>
+<td><code>finish</code></td>
+<td><code>fin</code></td>
+<td>执行到当前函数返回</td>
+</tr>
+<tr>
+<td><code>until [line]</code></td>
+<td><code>u</code></td>
+<td>执行到指定行号（跳出循环）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>说明</strong>：CMakeLists.txt 已添加 <code>-g -fno-omit-frame-pointer</code>，源码级 <code>step</code>/<code>next</code>/<code>list</code> 均可正常使用。
+注意 <code>-O2</code> 优化可能导致部分局部变量被优化掉（显示 <code>&lt;optimized out&gt;</code>），此时可改用 <code>stepi</code> 或在
+CMakeLists.txt 中临时将优化级别改为 <code>-Og</code> 以获得最佳调试体验。</p>
+</blockquote>
+<hr />
+<h2 id="_4">五、调用栈分析<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="51-backtrace">5.1 backtrace（带源码信息）<a class="headerlink" href="#51-backtrace" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_run
+(gdb) continue
+(gdb) bt
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>#0  cv_run (opts=opts@entry=0x7fe67a7fe0) at src/cv_runner.c:227
+#1  0x0000005581d33658 in main (argc=&lt;optimized out&gt;, argv=&lt;optimized out&gt;) at src/cv_main.c:30
+</code></pre></div></p>
+<h3 id="52">5.2 栈帧信息<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break main
+(gdb) continue
+(gdb) info frame
+(gdb) info args
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>Stack level 0, frame at 0x7ffc6953e0:
+ pc = 0x5556895600 in main; saved pc = 0x7fba6b6f1c
+ Arglist at 0x7ffc6953e0, args: argc=1, argv=0x7ffc695be8
+</code></pre></div></p>
+<h3 id="53">5.3 完整调用栈（从断言失败处）<a class="headerlink" href="#53" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_test_current_case_fail
+(gdb) continue
+(gdb) bt
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>#0  cv_test_current_case_fail (file=..., line=142, msg=...) at src/cv_test.c:35
+#1  0x0000005586ecceb8 in test_overflow (data=&lt;optimized out&gt;) at tests/test_math.c:142
+#2  0x0000005586ecc0a8 in run_single_case (opts=0x7fe67a7fe0, c=0x5586ed5840) at src/cv_runner.c:65
+#3  run_single_module (opts=0x7fe67a7fe0, m=0x5586ed4660) at src/cv_runner.c:123
+#4  run_single_group (opts=0x7fe67a7fe0, g=0x5586ed42a0) at src/cv_runner.c:176
+#5  cv_run_round (opts=0x7fe67a7fe0) at src/cv_runner.c:213
+#6  cv_run (opts=opts@entry=0x7fe67a7fe0) at src/cv_runner.c:260
+#7  0x0000005586eca658 in main (argc=&lt;optimized out&gt;, argv=&lt;optimized out&gt;) at src/cv_main.c:30
+</code></pre></div></p>
+<p>可以看到完整的源码级调用链：<code>main → cv_run → cv_run_round → run_single_group → run_single_module → run_single_case → test_overflow → cv_test_current_case_fail</code></p>
+<hr />
+<h2 id="_5">六、寄存器检查<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="61">6.1 查看关键寄存器<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) info registers x0 x1 x29 x30 sp pc cpsr
+</code></pre></div>
+<p><strong>在 main 入口处的输出：</strong>
+<div class="highlight"><pre><span></span><code>x0             0x1                 1          # argc = 1
+x1             0x7ff35eb578        549543916920  # argv 指针
+x29            0x7ff35eb400        549543916544  # 帧指针 (FP)
+x30            0x7f870db26c        547726668396  # 链接寄存器 (LR)
+sp             0x7ff35eb400        0x7ff35eb400  # 栈指针
+pc             0x55947c7600        0x55947c7600 &lt;main&gt;  # 程序计数器
+cpsr           0x80000000          [ EL=0 BTYPE=0 N ]  # 状态寄存器
+</code></pre></div></p>
+<h3 id="62-arm64">6.2 ARM64 寄存器对照<a class="headerlink" href="#62-arm64" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>用途</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x0</code>-<code>x7</code></td>
+<td>参数/返回值</td>
+<td>函数调用参数和返回值</td>
+</tr>
+<tr>
+<td><code>x8</code></td>
+<td>间接结果</td>
+<td>返回大结构体时指向内存</td>
+</tr>
+<tr>
+<td><code>x9</code>-<code>x15</code></td>
+<td>临时寄存器</td>
+<td>调用者保存</td>
+</tr>
+<tr>
+<td><code>x16</code>-<code>x17</code></td>
+<td>IP0/IP1</td>
+<td>链接器/PLT 临时使用</td>
+</tr>
+<tr>
+<td><code>x18</code></td>
+<td>平台寄存器</td>
+<td>平台特定用途</td>
+</tr>
+<tr>
+<td><code>x19</code>-<code>x28</code></td>
+<td>被调用者保存</td>
+<td>函数需保存恢复</td>
+</tr>
+<tr>
+<td><code>x29</code> (FP)</td>
+<td>帧指针</td>
+<td>指向当前栈帧</td>
+</tr>
+<tr>
+<td><code>x30</code> (LR)</td>
+<td>链接寄存器</td>
+<td>函数返回地址</td>
+</tr>
+<tr>
+<td><code>sp</code></td>
+<td>栈指针</td>
+<td>当前栈顶</td>
+</tr>
+<tr>
+<td><code>pc</code></td>
+<td>程序计数器</td>
+<td>当前执行地址</td>
+</tr>
+<tr>
+<td><code>cpsr</code></td>
+<td>状态寄存器</td>
+<td>条件标志 + EL 等</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_6">七、反汇编分析<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h3 id="71-main">7.1 反汇编 main 函数<a class="headerlink" href="#71-main" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) disassemble main
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code><span class="nf">Dump</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">assembler</span><span class="w"> </span><span class="no">code</span><span class="w"> </span><span class="no">for</span><span class="w"> </span><span class="no">function</span><span class="w"> </span><span class="no">main</span><span class="p">:</span>
+<span class="err">=&gt;</span><span class="w"> </span><span class="err">0</span><span class="nf">x00000055947c7600</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">0</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">adrp</span><span class="w"> </span><span class="no">x3</span><span class="p">,</span><span class="w"> </span><span class="mi">0x55947cf000</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7604</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">4</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">ldr</span><span class="w">  </span><span class="no">x3</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">x3</span><span class="p">,</span><span class="w"> </span><span class="mi">#4064</span><span class="p">]</span><span class="w">         </span><span class="c1"># 加载 stack canary</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7608</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">8</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">stp</span><span class="w">  </span><span class="no">x29</span><span class="p">,</span><span class="w"> </span><span class="no">x30</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#-32</span><span class="p">]!</span><span class="w">   </span><span class="c1"># 保存 FP/LR，分配 32 字节栈帧</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c760c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">12</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x29</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span><span class="w">                  </span><span class="c1"># 设置帧指针</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7610</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">16</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">stp</span><span class="w">  </span><span class="no">x19</span><span class="p">,</span><span class="w"> </span><span class="no">x20</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#16</span><span class="p">]</span><span class="w">     </span><span class="c1"># 保存被调用者保存寄存器</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7614</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">20</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">sub</span><span class="w">  </span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x350</span><span class="w">           </span><span class="c1"># 分配 0x350=848 字节局部变量 (cv_test_opts_t)</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7618</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">24</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x19</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span><span class="w">                  </span><span class="c1"># x19 = &amp;opts</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c761c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">28</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">ldr</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">x3</span><span class="p">]</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7620</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">32</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">str</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#840</span><span class="p">]</span><span class="w">           </span><span class="c1"># 保存 stack canary</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7624</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">36</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x0</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7628</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">40</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x2</span><span class="p">,</span><span class="w"> </span><span class="no">x19</span><span class="w">                  </span><span class="c1"># arg3 = &amp;opts</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c762c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">44</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">bl</span><span class="w">   </span><span class="mh">0x55947c99f0</span> <span class="p">&lt;</span><span class="no">cv_option_parse</span><span class="p">&gt;</span><span class="w">  </span><span class="c1"># 调用 cv_option_parse(argc, argv, &amp;opts)</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7630</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">48</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">cmn</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x2</span><span class="w">                 </span><span class="c1"># 检查返回值 == -2 (--help)</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7634</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">52</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">b.eq</span><span class="w"> </span><span class="mh">0x55947c76a4</span> <span class="p">&lt;</span><span class="no">main</span><span class="p">+</span><span class="mi">164</span><span class="p">&gt;</span><span class="w">  </span><span class="c1"># 若 --help 则跳转</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7638</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">56</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">w20</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x1</span><span class="w">                </span><span class="c1"># 默认返回值 1</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c763c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">60</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">cbnz</span><span class="w"> </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x55947c7664</span> <span class="p">&lt;</span><span class="no">main</span><span class="p">+</span><span class="mi">100</span><span class="p">&gt;</span><span class="w">  </span><span class="c1"># 解析错误则跳转</span>
+<span class="w">   </span><span class="na">...</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7648</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">72</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="no">x19</span><span class="w">                  </span><span class="c1"># arg1 = &amp;opts</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c764c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">76</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">bl</span><span class="w">   </span><span class="mh">0x55947c8a30</span> <span class="p">&lt;</span><span class="no">cv_apply_filters</span><span class="p">&gt;</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7650</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">80</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="no">x19</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7654</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">84</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">bl</span><span class="w">   </span><span class="mh">0x55947c8ee0</span> <span class="p">&lt;</span><span class="no">cv_run</span><span class="p">&gt;</span><span class="w">    </span><span class="c1"># 调用 cv_run(&amp;opts)</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7658</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">88</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">w20</span><span class="p">,</span><span class="w"> </span><span class="no">w0</span><span class="w">                  </span><span class="c1"># 保存返回值</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c765c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">92</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="no">x19</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7660</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">96</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">bl</span><span class="w">   </span><span class="mh">0x55947c9ca0</span> <span class="p">&lt;</span><span class="no">cv_option_free</span><span class="p">&gt;</span>
+<span class="w">   </span><span class="na">...</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7680</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">128</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="no">add</span><span class="w">  </span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x350</span><span class="w">           </span><span class="c1"># 释放局部变量</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7684</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">132</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="no">mov</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="no">w20</span><span class="w">                  </span><span class="c1"># 返回值</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7688</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">136</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="no">ldp</span><span class="w">  </span><span class="no">x19</span><span class="p">,</span><span class="w"> </span><span class="no">x20</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#16</span><span class="p">]</span><span class="w">     </span><span class="c1"># 恢复保存的寄存器</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c768c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">140</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="no">ldp</span><span class="w">  </span><span class="no">x29</span><span class="p">,</span><span class="w"> </span><span class="no">x30</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">],</span><span class="w"> </span><span class="mi">#32</span><span class="w">      </span><span class="c1"># 恢复 FP/LR，释放栈帧</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x00000055947c7690</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">144</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="no">ret</span><span class="w">                            </span><span class="c1"># 返回</span>
+<span class="nf">End</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">assembler</span><span class="w"> </span><span class="no">dump.</span>
+</code></pre></div></p>
+<h3 id="72-cv_option_parse">7.2 反汇编 cv_option_parse 函数<a class="headerlink" href="#72-cv_option_parse" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) disassemble cv_option_parse
+</code></pre></div>
+<p><strong>关键片段（getopt_long 循环）：</strong>
+<div class="highlight"><pre><span></span><code><span class="w">   </span><span class="c1"># 循环开始</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a70</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">128</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="no">x24</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a74</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">132</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x3</span><span class="p">,</span><span class="w"> </span><span class="no">x22</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a78</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">136</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x2</span><span class="p">,</span><span class="w"> </span><span class="no">x21</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a7c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">140</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x20</span><span class="w">         </span><span class="c1"># argv</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a80</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">144</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="no">w23</span><span class="w">          </span><span class="c1"># argc</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a84</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">148</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">bl</span><span class="w">   </span><span class="no">getopt_long@plt</span><span class="w">  </span><span class="c1"># 调用 getopt_long()</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a88</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">152</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">cmn</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x1</span><span class="w">         </span><span class="c1"># 返回值 == -1?</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a8c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">156</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">b.eq</span><span class="w"> </span><span class="mi">0x55947c9b40</span><span class="w">     </span><span class="c1"># 若 -1 跳出循环</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a90</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">160</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">sub</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x43</span><span class="w">    </span><span class="c1"># switch 选项判断</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a94</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">164</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">cmp</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x33</span><span class="w">        </span><span class="c1"># 范围检查</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c9a98</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">168</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">b.ls</span><span class="w"> </span><span class="mi">0x55947c9b04</span><span class="w">     </span><span class="c1"># 跳转到跳转表</span>
+</code></pre></div></p>
+<h3 id="73">7.3 当前位置反汇编<a class="headerlink" href="#73" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) x/10i $pc
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code><span class="err">=&gt;</span><span class="w"> </span><span class="err">0</span><span class="nf">x55947c7614</span><span class="w"> </span><span class="err">&lt;</span><span class="no">main</span><span class="err">+</span><span class="mi">20</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">sub</span><span class="w">  </span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x350</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c7618</span><span class="w"> </span><span class="err">&lt;</span><span class="no">main</span><span class="err">+</span><span class="mi">24</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x19</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c761c</span><span class="w"> </span><span class="err">&lt;</span><span class="no">main</span><span class="err">+</span><span class="mi">28</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">ldr</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">x3</span><span class="p">]</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c7620</span><span class="w"> </span><span class="err">&lt;</span><span class="no">main</span><span class="err">+</span><span class="mi">32</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">str</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#840</span><span class="p">]</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x55947c7624</span><span class="w"> </span><span class="err">&lt;</span><span class="no">main</span><span class="err">+</span><span class="mi">36</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">mov</span><span class="w">  </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">x0</span>
+</code></pre></div></p>
+<hr />
+<h2 id="_7">八、内存检查<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<h3 id="81-g_framework">8.1 查看全局变量 g_framework<a class="headerlink" href="#81-g_framework" title="Permanent link">&para;</a></h3>
+<p><code>g_framework</code> 是 cv_test_framework_t 类型的全局单例。添加 <code>-g</code> 后，可直接用 <code>print</code> 查看完整结构体：</p>
+<p><strong>运行测试前（cv_run 入口处）：</strong></p>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_run
+(gdb) continue
+(gdb) print g_framework
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>$1 = {
+  group_list = {
+    next = 0x555689f2f0,
+    prev = 0x555689f4d0
+  },
+  group_count = 4,
+  total_pass = 0,
+  total_fail = 0,
+  total_skip = 0,
+  total_error = 0,
+  total_run = 0
+}
+</code></pre></div></p>
+<p>解读：<code>group_count = 4</code>（group_math, group_string, group_i2c, group_timer），所有计数为 0。</p>
+<p><strong>运行测试后（cv_summary 入口处）：</strong></p>
+<div class="highlight"><pre><span></span><code>(gdb) break cv_summary
+(gdb) continue
+(gdb) print g_framework
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>$7 = {
+  group_list = {
+    next = 0x5581d3d2f0,
+    prev = 0x5581d3d4d0
+  },
+  group_count = 4,
+  total_pass = 26,
+  total_fail = 1,
+  total_skip = 0,
+  total_error = 0,
+  total_run = 27
+}
+</code></pre></div></p>
+<p><strong>打印单个字段：</strong></p>
+<div class="highlight"><pre><span></span><code>(gdb) print g_framework.group_count
+$6 = 4
+
+(gdb) print g_framework.total_pass
+$7 = 26
+
+(gdb) print g_framework.total_fail
+$8 = 1
+</code></pre></div>
+<h3 id="82">8.2 查看特定字段<a class="headerlink" href="#82" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># 十进制查看 group_count（偏移 +16）
+(gdb) x/dw ((char*)&amp;g_framework)+16
+0x55947d0020 &lt;g_framework+16&gt;:   4
+
+# 十六进制查看 long_options 数组
+(gdb) x/20xh &amp;long_options
+0x55947d0038 &lt;long_options&gt;:  0x5ab8  0x0000  0x0000  0x0000  0x0001  0x0000  0x0000  0x0000
+0x55947d0048 &lt;long_options+16&gt;: 0x0000  0x0000  0x0000  0x0000  0x0067  0x0000  0x0000  0x0000
+</code></pre></div>
+<h3 id="83-x">8.3 x 命令格式速查<a class="headerlink" href="#83-x" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>x/NFU addr
+  N - 重复次数
+  F - 格式: x(十六进制) d(十进制) t(二进制) o(八进制) u(无符号) f(浮点) i(指令) s(字符串) a(地址)
+  U - 单位: b(1字节) h(2字节) w(4字节) g(8字节)
+</code></pre></div>
+<p><strong>常用示例：</strong></p>
+<div class="highlight"><pre><span></span><code>x/16xw 0x400800       # 16 个 4 字节十六进制
+x/20i $pc              # 20 条指令反汇编
+x/s (char*)ptr         # 字符串
+x/10hg &amp;float_array    # 10 个 2 字节十六进制
+</code></pre></div>
+<hr />
+<h2 id="_8">九、共享库信息<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<h3 id="91">9.1 查看已加载的共享库<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) info sharedlibrary
+</code></pre></div>
+<p><strong>输出：</strong>
+<div class="highlight"><pre><span></span><code>From                To                  Syms Read   Shared Object Library
+0x7f87263e40        0x7f8727f634        Yes (*)     .../target/lib/ld-linux-aarch64.so.1
+(*): Shared library is missing debugging information.
+</code></pre></div></p>
+<h3 id="92">9.2 设置共享库搜索路径<a class="headerlink" href="#92" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) set sysroot /path/to/target/rootfs
+(gdb) set solib-search-path /path/to/target/libs
+(gdb) sharedlibrary          # 加载所有共享库符号
+</code></pre></div>
+<hr />
+<h2 id="qemu">十、QEMU 控制台输出<a class="headerlink" href="#qemu" title="Permanent link">&para;</a></h2>
+<p>程序运行后在 QEMU 控制台上的输出：</p>
+<div class="highlight"><pre><span></span><code>===========================================
+  CV Test Framework v1.0
+===========================================
+[GROUP] group_math
+  [GROUP PRE_TEST] group_math init resources...
+  [MODULE] module_add
+    [MODULE PRE_TEST] init adder context
+      [PASS] test_1_plus_1
+      [PASS] test_neg_add
+      [PASS] test_zero_add
+      [PASS] test_large_add
+    [MODULE POST_TEST] destroy adder context
+  [MODULE] module_sub
+      [PASS] test_5_minus_3
+      [PASS] test_neg_minus_neg
+      [PASS] test_zero_minus_zero
+  [MODULE] module_mul
+      [PASS] test_2_times_3
+      [PASS] test_neg_times_neg
+      [FAIL] test_overflow           ← 故意设置的失败用例
+  [GROUP POST_TEST] group_math release resources...
+[GROUP] group_string
+  ...
+[GROUP] group_i2c
+  ...
+[GROUP] group_timer
+  ...
+
+===========================================
+  SUMMARY
+===========================================
+  PASS: 26  |  FAIL: 1  |  ERROR: 0  |  SKIP: 0
+</code></pre></div>
+<p>程序退出码为 1（因 test_overflow 失败），gdbserver 输出 <code>Child exited with status 1</code>。</p>
+<hr />
+<h2 id="_9">十一、源码级调试实战<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<h3 id="1">场景 1：源码级单步跟踪<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># 1. 连接并在 main 设断点
+(gdb) break main
+Breakpoint 1 at 0x5581d33600: file src/cv_main.c, line 11.
+
+(gdb) continue
+Breakpoint 1, main (argc=1, argv=0x7ffc695be8) at src/cv_main.c:11
+11  {
+
+# 2. 源码级 list — 查看当前源码
+(gdb) list
+6   #include &lt;stdio.h&gt;
+7   #include &lt;stdlib.h&gt;
+8   #include &lt;string.h&gt;
+9   
+10  int main(int argc, char *argv[])
+11  {
+12      cv_test_opts_t opts;
+13  
+14      /* 1. Parse command line */
+15      int parse_ret = cv_option_parse(argc, argv, &amp;opts);
+
+# 3. 源码级 step — 单步进入 cv_option_parse
+(gdb) step
+cv_option_parse (argc=1, argv=0x7ffc695be8, opts=opts@entry=0x7ffc695700)
+    at src/cv_option.c:87
+87  {
+
+# 4. 继续单步
+(gdb) step
+88      memset(opts, 0, sizeof(*opts));
+(gdb) step
+89      opts-&gt;color = -1;  /* auto-detect */
+(gdb) step
+90      opts-&gt;repeat_count = 1;
+
+# 5. finish — 执行到函数返回
+(gdb) finish
+Run till exit from #0  cv_option_parse (argc=1, argv=0x7ffc695be8,
+    opts=opts@entry=0x7ffc695700) at src/cv_option.c:88
+main (argc=&lt;optimized out&gt;, argv=&lt;optimized out&gt;) at src/cv_main.c:15
+15      int parse_ret = cv_option_parse(argc, argv, &amp;opts);
+
+# 6. 打印结构体变量
+(gdb) print opts
+$2 = {
+  groups = {0x0 &lt;repeats 32 times&gt;},
+  group_count = 0,
+  modules = {0x0 &lt;repeats 32 times&gt;},
+  module_count = 0,
+  cases = {0x0 &lt;repeats 32 times&gt;},
+  case_count = 0,
+  filter = 0x0,
+  repeat_count = 1,
+  fail_fast = 0,
+  timeout_sec = 0,
+  shuffle = 0,
+  verbose = 0,
+  silent = 0,
+  list_only = 0,
+  list_detail = 0,
+  color = -1
+}
+
+(gdb) print opts.repeat_count
+$3 = 1
+(gdb) print opts.verbose
+$4 = 0
+</code></pre></div>
+<h3 id="2-test_overflow">场景 2：调试 test_overflow 失败<a class="headerlink" href="#2-test_overflow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># 1. 在断言失败函数设断点
+(gdb) break cv_test_current_case_fail
+Breakpoint 1 at 0x5581d344b0: file src/cv_test.c, line 35.
+
+(gdb) break main
+(gdb) continue
+# 程序先停在 main，继续运行
+
+(gdb) continue
+# 断言失败处暂停
+
+# 2. 查看完整调用栈（带源码行号）
+(gdb) bt
+#0  cv_test_current_case_fail (file=0x5581d37d70 &quot;.../tests/test_math.c&quot;,
+    line=142, msg=0x7fe67a7e28 &quot;result != 0 (2147483648 vs 0)&quot;)
+    at src/cv_test.c:35
+#1  0x0000005581d35eb8 in test_overflow (data=&lt;optimized out&gt;)
+    at tests/test_math.c:142
+#2  0x0000005581d350a8 in run_single_case (opts=0x7fe67a7fe0, c=0x5581d3e840)
+    at src/cv_runner.c:65
+#3  run_single_module (opts=0x7fe67a7fe0, m=0x5581d3d660) at src/cv_runner.c:123
+#4  run_single_group (opts=0x7fe67a7fe0, g=0x5581d3d2a0) at src/cv_runner.c:176
+#5  cv_run_round (opts=0x7fe67a7fe0) at src/cv_runner.c:213
+#6  cv_run (opts=opts@entry=0x7fe67a7fe0) at src/cv_runner.c:260
+#7  0x0000005581d33658 in main (...) at src/cv_main.c:30
+
+# 3. 查看失败的 case 信息
+(gdb) print *g_current_case
+$3 = {
+  name = &quot;test_overflow&quot;, &#39;\000&#39; &lt;repeats 50 times&gt;,
+  func = 0x5581d35e50 &lt;test_overflow&gt;,
+  pre_test = 0x0,
+  post_test = 0x0,
+  case_node = {next = 0x5581d3d6a0, prev = 0x5581d3e718},
+  result = CV_RESULT_UNINIT,
+  errmsg = &#39;\000&#39; &lt;repeats 255 times&gt;,
+  enabled = 1,
+  data = 0x0
+}
+
+# 4. 查看断言失败的详细信息
+(gdb) print file
+$4 = 0x5581d37d70 &quot;.../tests/test_math.c&quot;
+(gdb) print line
+$5 = 142
+(gdb) print msg
+$6 = 0x7fe67a7e28 &quot;result != 0 (2147483648 vs 0)&quot;
+
+# 5. 切换栈帧查看断言源码
+(gdb) frame 1
+#1  0x0000005581d35eb8 in test_overflow (data=&lt;optimized out&gt;)
+    at tests/test_math.c:142
+142     CV_ASSERT_EQ(result, 0);
+
+(gdb) list
+137 
+138 /* Intentional failure for demonstration */
+139 TEST_CASE(module_mul, test_overflow)
+140 {
+141     long result = (long)INT_MAX + 1;
+142     CV_ASSERT_EQ(result, 0);
+143 }
+
+# 6. 分析：INT_MAX=2147483647, result=2147483648, 0 != 2147483648, 断言失败
+</code></pre></div>
+<h3 id="3step">场景 3：step 进入测试函数<a class="headerlink" href="#3step" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># 在测试用例函数设断点
+(gdb) break test_1_plus_1
+Breakpoint 5 at 0x5581d35d60: file tests/test_math.c, line 46.
+
+(gdb) continue
+Breakpoint 5, test_1_plus_1 (data=0x0) at tests/test_math.c:46
+46      CV_ASSERT(add_result == 2);
+
+(gdb) bt
+#0  test_1_plus_1 (data=0x0) at tests/test_math.c:46
+#1  0x0000005581d350a8 in run_single_case (opts=0x7fe67a7fe0, c=0x5581d3dac0)
+    at src/cv_runner.c:65
+#2  run_single_module (opts=0x7fe67a7fe0, m=0x5581d3d520) at src/cv_runner.c:123
+#3  run_single_group (opts=0x7fe67a7fe0, g=0x5581d3d2a0) at src/cv_runner.c:176
+#4  cv_run_round (opts=0x7fe67a7fe0) at src/cv_runner.c:213
+#5  cv_run (opts=opts@entry=0x7fe67a7fe0) at src/cv_runner.c:260
+#6  0x0000005581d33658 in main (...) at src/cv_main.c:30
+
+(gdb) list
+41  MODULE_POST_TEST(module_add, add_post);
+42  
+43  TEST_CASE(module_add, test_1_plus_1)
+44  {
+45      add_result = 1 + 1;
+46      CV_ASSERT(add_result == 2);
+47  }
+</code></pre></div>
+<h3 id="4">场景 4：观察点 + 修改变量<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># 在全局变量设观察点（值变化时暂停）
+(gdb) watch g_framework.total_fail
+Hardware watchpoint 3: g_framework.total_fail
+
+(gdb) info breakpoints
+Num     Type           Disp Enb Address            What
+3       hw watchpoint  keep y                      g_framework.total_fail
+
+# 修改变量值（调试技巧）
+# 注意：-O2 优化后局部变量可能被优化掉，无法修改
+# 全局变量和通过指针可访问的变量通常可以修改
+(gdb) print g_framework.total_fail
+$1 = 1
+(gdb) set variable g_framework.total_fail = 0
+(gdb) print g_framework.total_fail
+$2 = 0
+</code></pre></div>
+<hr />
+<h2 id="gdb_1">十二、GDB 批处理模式调试<a class="headerlink" href="#gdb_1" title="Permanent link">&para;</a></h2>
+<p>适用于自动化测试或 CI 环境中一次性收集调试信息：</p>
+<div class="highlight"><pre><span></span><code>/home/lion/.../aarch64-none-linux-gnu-gdb<span class="w"> </span>-batch<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;set pagination off&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;set sysroot /path/to/target&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;target remote localhost:1234&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;break main&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;continue&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;bt&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;info registers&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;disassemble main&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;x/8xg &amp;g_framework&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;disconnect&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;quit&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/path/to/cv_test
+</code></pre></div>
+<hr />
+<h2 id="_10">十三、常见问题与解决<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
+<h3 id="q1-cannot-insert-breakpoint-cannot-access-memory">Q1: <code>Cannot insert breakpoint</code> / <code>Cannot access memory</code><a class="headerlink" href="#q1-cannot-insert-breakpoint-cannot-access-memory" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：断点地址在程序尚未加载的区域（如 gdbserver 刚启动时程序还在动态链接器中）。</p>
+<p><strong>解决</strong>：先 <code>break main</code>，再 <code>continue</code>，让动态链接器完成加载后再设断点。</p>
+<h3 id="q2-optimized-out">Q2: 变量显示 <code>&lt;optimized out&gt;</code><a class="headerlink" href="#q2-optimized-out" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：<code>-O2</code> 优化将局部变量分配到寄存器或直接消除，GDB 无法跟踪。</p>
+<p><strong>解决</strong>：
+- 使用 <code>info registers</code> 查看寄存器中的值
+- 使用 <code>disassemble /m</code> 从汇编推断变量位置
+- 在 CMakeLists.txt 中将 <code>-O2</code> 改为 <code>-Og</code>（专为调试优化的级别）</p>
+<h3 id="q3-g_framework-has-unknown-type">Q3: <code>g_framework</code> has unknown type<a class="headerlink" href="#q3-g_framework-has-unknown-type" title="Permanent link">&para;</a></h3>
+<p><strong>已解决</strong>：添加 <code>-g</code> 后，DWARF 包含完整类型信息，<code>print g_framework</code> 直接输出结构体内容，无需手动 cast。</p>
+<h3 id="q4-gdbserver-child-exited-with-status-1">Q4: gdbserver 报 "Child exited with status 1"<a class="headerlink" href="#q4-gdbserver-child-exited-with-status-1" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：目标程序正常退出，返回码非 0（测试用例失败）。</p>
+<p><strong>解决</strong>：在程序退出前设断点（如 <code>break cv_run</code>），或在 QEMU 内重新启动 gdbserver。</p>
+<h3 id="q5-static-run_single_case">Q5: static 函数无法设断点（如 <code>run_single_case</code>）<a class="headerlink" href="#q5-static-run_single_case" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：static 函数可能被编译器内联或符号未导出。</p>
+<p><strong>解决</strong>：使用地址断点 <code>break *0xADDRESS</code>，或通过 <code>info files</code> / <code>nm</code> 查找函数地址。</p>
+<hr />
+<h2 id="_11">十四、调试脚本模板<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
+<h3 id="141-gdb-gdbinit">14.1 自动化 GDB 初始化脚本 (.gdbinit)<a class="headerlink" href="#141-gdb-gdbinit" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code># .gdbinit - cv_test 远程调试配置
+set architecture aarch64
+set sysroot /home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/target
+set solib-search-path /home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/target/lib:/home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/target/usr/lib
+set print pretty on
+set pagination off
+set confirm off
+
+# 便捷命令：连接远程
+define rconn
+  target remote localhost:1234
+end
+document rconn
+  Connect to remote gdbserver on localhost:1234
+end
+
+# 便捷命令：查看 g_framework
+define fw
+  x/8xg &amp;g_framework
+end
+document fw
+  Print g_framework global variable
+end
+
+# 便捷命令：查看当前 case
+define curcase
+  print g_current_case
+end
+document curcase
+  Print current running test case
+end
+</code></pre></div>
+<h3 id="142">14.2 远程调试一键脚本<a class="headerlink" href="#142" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="nv">GDB</span><span class="o">=</span>/home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/host/bin/aarch64-none-linux-gnu-gdb
+<span class="nv">BINARY</span><span class="o">=</span>/home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/build/cv-framework-1.0/cv_test
+<span class="nv">SYSROOT</span><span class="o">=</span>/home/lion/workdir/sourcecode/quantum_main/out/quantum_qemu_debug/target
+
+<span class="nv">$GDB</span><span class="w"> </span>-ex<span class="w"> </span><span class="s2">&quot;set sysroot </span><span class="nv">$SYSROOT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-ex<span class="w"> </span><span class="s2">&quot;target remote localhost:1234&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">$BINARY</span>
+</code></pre></div>
+<hr />
+<h2 id="_12">附录：调试命令速查表<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>连接远程</td>
+<td><code>target remote localhost:1234</code></td>
+</tr>
+<tr>
+<td>设函数断点</td>
+<td><code>break main</code> / <code>break cv_run</code></td>
+</tr>
+<tr>
+<td>设地址断点</td>
+<td><code>break *0x55947c7600</code></td>
+</tr>
+<tr>
+<td>条件断点</td>
+<td><code>break cv_run if opts != 0</code></td>
+</tr>
+<tr>
+<td>继续执行</td>
+<td><code>continue</code></td>
+</tr>
+<tr>
+<td>汇编级单步</td>
+<td><code>stepi</code> / <code>nexti</code></td>
+</tr>
+<tr>
+<td>源码级单步</td>
+<td><code>step</code> / <code>next</code>（已支持，<code>-g</code> 已启用）</td>
+</tr>
+<tr>
+<td>执行到返回</td>
+<td><code>finish</code></td>
+</tr>
+<tr>
+<td>查看调用栈</td>
+<td><code>bt</code> / <code>bt full</code></td>
+</tr>
+<tr>
+<td>查看寄存器</td>
+<td><code>info registers</code> / <code>info registers x0 x1</code></td>
+</tr>
+<tr>
+<td>反汇编</td>
+<td><code>disassemble main</code> / <code>x/20i $pc</code></td>
+</tr>
+<tr>
+<td>查看内存</td>
+<td><code>x/16xw addr</code> / <code>x/8xg &amp;g_framework</code></td>
+</tr>
+<tr>
+<td>查看共享库</td>
+<td><code>info sharedlibrary</code></td>
+</tr>
+<tr>
+<td>查看断点</td>
+<td><code>info breakpoints</code></td>
+</tr>
+<tr>
+<td>删除断点</td>
+<td><code>delete N</code> / <code>delete</code></td>
+</tr>
+<tr>
+<td>断开连接</td>
+<td><code>disconnect</code></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

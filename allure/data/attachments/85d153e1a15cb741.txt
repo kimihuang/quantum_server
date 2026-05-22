@@ -1,0 +1,8 @@
+rootfs / rootfs rw,size=219672k,nr_inodes=54918 0 0
+devtmpfs /dev devtmpfs rw,relatime,size=219672k,nr_inodes=54918,mode=755 0 0
+proc /proc proc rw,relatime 0 0
+devpts /dev/pts devpts rw,relatime,gid=5,mode=620,ptmxmode=666 0 0
+tmpfs /dev/shm tmpfs rw,relatime 0 0
+tmpfs /tmp tmpfs rw,relatime 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,relatime,mode=755 0 0
+sysfs /sys sysfs rw,relatime 0 0

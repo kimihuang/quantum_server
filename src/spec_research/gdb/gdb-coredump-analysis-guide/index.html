@@ -1,0 +1,2194 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>QEMU + GDB Core Dump 分析实战指南 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#qemu-gdb-core-dump" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              QEMU + GDB Core Dump 分析实战指南
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../arm_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  arm技术文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../api_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API参考
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../quantumdocs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  项目文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../allure/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  测试报告
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arm技术文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../api_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quantumdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    项目文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../allure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#core-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一、Core Dump 基础
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、Core Dump 基础">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-core-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 什么是 Core Dump
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-core-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Core Dump 分析的价值
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        二、环境配置
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、环境配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-qemu-core-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 目标端（QEMU 内）启用 Core Dump
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-core_pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 core_pattern 说明
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Host 端准备
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-crash_test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 crash_test 程序
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-dump_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        三、Core Dump 生成与拷贝
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、Core Dump 生成与拷贝">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 运行崩溃程序
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-core-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 拷贝 Core 文件到 Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 退出码与信号对照
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-dump_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        四、Core Dump 分析实战
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="四、Core Dump 分析实战">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-sigsegv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 1：空指针解引用 (SIGSEGV)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="场景 1：空指针解引用 (SIGSEGV)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gdb-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        启动 GDB 加载 core
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        调用栈分析
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        信号详细信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        寄存器检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        反汇编崩溃函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-sigsegv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 3：非法地址访问 (SIGSEGV)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4abort-sigabrt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 4：abort() (SIGABRT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5use-after-free-double-free-sigabrt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 5：Use-After-Free + Double-Free (SIGABRT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-sigsegv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        场景 6：栈溢出 (SIGSEGV)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-dump_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        五、Core Dump 分析标准流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="五、Core Dump 分析标准流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 快速三步法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 详细分析流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        六、信号与故障地址速查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="六、信号与故障地址速查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-sigsegv-11-si_code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 SIGSEGV (信号 11) 的 si_code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-si_addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 si_addr（故障地址）解读
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 常见崩溃模式识别
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gdb-core-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        七、GDB 批处理分析 Core Dump
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-dump_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        八、嵌入式 Core Dump 最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="八、嵌入式 Core Dump 最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 编译选项
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 目标端配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Core 文件收集流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Core 文件精简（存储受限设备）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        九、常见问题
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="九、常见问题">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-warning-cant-open-file-pathlibso-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q1: "warning: Can't open file /path/lib.so" 加载 core 时
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q2: 调用栈显示 ?? () 无符号信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q3: Core 文件为空或未生成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-bt-full-optimized-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q4: bt full 中变量显示 &lt;optimized out&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Q5: 如何区分空指针和非法地址？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-dump_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录：Core Dump 分析命令速查
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="qemu-gdb-core-dump">QEMU + GDB Core Dump 分析实战指南<a class="headerlink" href="#qemu-gdb-core-dump" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>基于 crash_test 程序，在 QEMU (aarch64) 嵌入式 Linux 环境下生成并分析 core dump 的全流程演示。
+环境：Host x86_64 (交叉 GDB) ↔ QEMU aarch64 (目标程序崩溃生成 core)</p>
+</blockquote>
+<hr />
+<h2 id="core-dump">一、Core Dump 基础<a class="headerlink" href="#core-dump" title="Permanent link">&para;</a></h2>
+<h3 id="11-core-dump">1.1 什么是 Core Dump<a class="headerlink" href="#11-core-dump" title="Permanent link">&para;</a></h3>
+<p>Core dump（核心转储）是程序崩溃时操作系统保存的进程内存映像，包含：</p>
+<ul>
+<li>崩溃瞬间的寄存器状态</li>
+<li>栈内存（调用栈、局部变量）</li>
+<li>堆内存（动态分配的数据）</li>
+<li>共享库映射信息</li>
+</ul>
+<h3 id="12-core-dump">1.2 Core Dump 分析的价值<a class="headerlink" href="#12-core-dump" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>线上崩溃</td>
+<td>事后分析崩溃根因，无需复现</td>
+</tr>
+<tr>
+<td>间歇性 bug</td>
+<td>捕获崩溃现场，定位竞态/时序问题</td>
+</tr>
+<tr>
+<td>嵌入式设备</td>
+<td>现场抓取 core，离线分析</td>
+</tr>
+<tr>
+<td>SIGSEGV/SIGABRT</td>
+<td>精确到源码行的崩溃定位</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_1">二、环境配置<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h3 id="21-qemu-core-dump">2.1 目标端（QEMU 内）启用 Core Dump<a class="headerlink" href="#21-qemu-core-dump" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 允许生成任意大小的 core 文件</span>
+<span class="nb">ulimit</span><span class="w"> </span>-c<span class="w"> </span>unlimited
+
+<span class="c1"># 查看 core 文件生成模式</span>
+cat<span class="w"> </span>/proc/sys/kernel/core_pattern
+<span class="c1"># 输出: core  (表示在当前目录生成名为 &quot;core&quot; 的文件)</span>
+
+<span class="c1"># 创建 core 存放目录</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/cores
+<span class="nb">cd</span><span class="w"> </span>/tmp/cores
+</code></pre></div>
+<h3 id="22-core_pattern">2.2 core_pattern 说明<a class="headerlink" href="#22-core_pattern" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 默认: 当前目录生成 &quot;core&quot;</span>
+core
+
+<span class="c1"># 带格式（推荐生产环境使用）</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;/var/core/core.%e.%p.%t&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/proc/sys/kernel/core_pattern
+<span class="c1"># %e - 程序名</span>
+<span class="c1"># %p - PID</span>
+<span class="c1"># %t - Unix 时间戳</span>
+<span class="c1"># %s - 触发信号</span>
+</code></pre></div>
+<h3 id="23-host">2.3 Host 端准备<a class="headerlink" href="#23-host" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 交叉 GDB</span>
+<span class="nv">GDB</span><span class="o">=</span>/path/to/aarch64-none-linux-gnu-gdb
+
+<span class="c1"># 带调试符号的二进制文件（-g -O0 编译）</span>
+<span class="nv">BINARY</span><span class="o">=</span>/path/to/build/crash-test-1.0/crash_test
+
+<span class="c1"># 目标 sysroot</span>
+<span class="nv">SYSROOT</span><span class="o">=</span>/path/to/target
+
+<span class="c1"># Core 文件（从 QEMU 拷贝到 host）</span>
+<span class="nv">CORE</span><span class="o">=</span>/path/to/core_null_deref
+</code></pre></div>
+<h3 id="24-crash_test">2.4 crash_test 程序<a class="headerlink" href="#24-crash_test" title="Permanent link">&para;</a></h3>
+<p><code>crash_test</code> 包含 8 种崩溃场景，使用 <code>-g -O0</code> 编译以获得最佳调试体验：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>参数</th>
+<th>崩溃类型</th>
+<th>信号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>crash_test 1</code></td>
+<td>空指针解引用</td>
+<td>SIGSEGV</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>crash_test 2</code></td>
+<td>缓冲区越界写入</td>
+<td>SIGSEGV</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>crash_test 3</code></td>
+<td>非法地址访问</td>
+<td>SIGSEGV</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>crash_test 4</code></td>
+<td>abort()</td>
+<td>SIGABRT</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>crash_test 5</code></td>
+<td>Use-After-Free + double-free</td>
+<td>SIGABRT</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>crash_test 6</code></td>
+<td>栈溢出</td>
+<td>SIGSEGV</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>crash_test 7</code></td>
+<td>整数除零</td>
+<td>SIGFPE</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>crash_test 8</code></td>
+<td>自定义信号处理 + crash</td>
+<td>SIGSEGV</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="core-dump_1">三、Core Dump 生成与拷贝<a class="headerlink" href="#core-dump_1" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 运行崩溃程序<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 QEMU 内</span>
+<span class="nb">cd</span><span class="w"> </span>/tmp/cores
+rm<span class="w"> </span>-f<span class="w"> </span>core<span class="w">                  </span><span class="c1"># 清除旧 core 文件</span>
+crash_test<span class="w"> </span><span class="m">1</span><span class="w">                </span><span class="c1"># 运行场景1: 空指针解引用</span>
+<span class="c1"># 输出: Segmentation fault (core dumped)</span>
+<span class="c1"># 退出码: 139 (128 + 11 = SIGSEGV)</span>
+</code></pre></div>
+<h3 id="32-core-host">3.2 拷贝 Core 文件到 Host<a class="headerlink" href="#32-core-host" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 在 QEMU 内: 拷贝到 9p 共享目录</span>
+cp<span class="w"> </span>/tmp/cores/core<span class="w"> </span>/mnt/host_shared/core_null_deref
+</code></pre></div>
+<h3 id="33">3.3 退出码与信号对照<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>退出码</th>
+<th>信号</th>
+<th>信号编号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>139</td>
+<td>SIGSEGV</td>
+<td>11</td>
+</tr>
+<tr>
+<td>134</td>
+<td>SIGABRT</td>
+<td>6</td>
+</tr>
+<tr>
+<td>136</td>
+<td>SIGFPE</td>
+<td>8</td>
+</tr>
+<tr>
+<td>135</td>
+<td>SIGBUS</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="core-dump_2">四、Core Dump 分析实战<a class="headerlink" href="#core-dump_2" title="Permanent link">&para;</a></h2>
+<h3 id="1-sigsegv">场景 1：空指针解引用 (SIGSEGV)<a class="headerlink" href="#1-sigsegv" title="Permanent link">&para;</a></h3>
+<h4 id="gdb-core">启动 GDB 加载 core<a class="headerlink" href="#gdb-core" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>aarch64-none-linux-gnu-gdb<span class="w"> </span>crash_test<span class="w"> </span>core_null_deref
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>(gdb) set sysroot /path/to/target
+(gdb) core-file core_null_deref
+[New LWP 127]
+Core was generated by `crash_test 1&#39;.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  0x0000005575083a30 in crash_null_deref () at crash_test.c:14
+14      int val = *ptr;  /* SIGSEGV */
+</code></pre></div>
+<blockquote>
+<p>GDB 直接定位到崩溃源码行：<code>crash_test.c:14</code></p>
+</blockquote>
+<h4 id="_2">调用栈分析<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>(gdb) bt full
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>#0  0x0000005575083a30 in crash_null_deref () at crash_test.c:14
+        ptr = 0x0                ← ptr 是 NULL!
+        val = 127
+#1  0x0000005575083d9c in main (argc=2, argv=0x7fc295f6b8) at crash_test.c:98
+        scenario = 1
+</code></pre></div>
+<p><strong>结论</strong>：<code>ptr = 0x0</code>（空指针），解引用 <code>*ptr</code> 导致 SIGSEGV。</p>
+<h4 id="_3">信号详细信息<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>(gdb) print $_siginfo
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>$1 = {
+  si_signo = 11,           ← SIGSEGV
+  si_code = 1,             ← SEGV_MAPERR (地址未映射)
+  _sifields = {
+    _sigfault = {
+      si_addr = 0x0        ← 故障地址: NULL (0x0)
+    }
+  }
+}
+</code></pre></div>
+<p><strong>解读</strong>：
+- <code>si_signo = 11</code> → SIGSEGV
+- <code>si_code = 1</code> → <code>SEGV_MAPERR</code>，表示访问的地址没有映射到任何内存区域
+- <code>si_addr = 0x0</code> → 故障地址是 NULL，确认是空指针解引用</p>
+<h4 id="_4">寄存器检查<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>(gdb) info registers x0 x1 x29 x30 sp pc
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>x0             0x0                 0         ← x0=0, 正是 NULL ptr 的值
+x29            0x7fc295f4f0        ...       ← 帧指针
+x30            0x5575083a2c        ...       ← 返回地址
+sp             0x7fc295f4f0        ...
+pc             0x5575083a30        &lt;crash_null_deref+28&gt;  ← 崩溃指令
+</code></pre></div>
+<h4 id="_5">反汇编崩溃函数<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>(gdb) disassemble /m crash_null_deref
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">11</span><span class="w">  </span><span class="err">{</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a14</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">0</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">stp</span><span class="w">  </span><span class="no">x29</span><span class="p">,</span><span class="w"> </span><span class="no">x30</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#-32</span><span class="p">]!</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a18</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">4</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">mov</span><span class="w">  </span><span class="no">x29</span><span class="p">,</span><span class="w"> </span><span class="no">sp</span>
+
+<span class="err">12</span><span class="w">      </span><span class="nf">int</span><span class="w"> </span><span class="p">*</span><span class="no">ptr</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="no">NULL</span><span class="c1">;</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a1c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">8</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">str</span><span class="w">  </span><span class="no">xzr</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#24</span><span class="p">]</span><span class="w">         </span><span class="err">←</span><span class="w"> </span><span class="no">ptr</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="no">NULL</span><span class="w"> </span><span class="p">(</span><span class="no">xzr</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="no">zero</span><span class="w"> </span><span class="no">register</span><span class="p">)</span>
+
+<span class="err">13</span><span class="w">      </span><span class="nf">printf</span><span class="p">(</span><span class="err">&quot;</span><span class="p">[</span><span class="err">场景</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="err">空指针解引用</span><span class="p">:</span><span class="w"> </span><span class="p">*</span><span class="no">NULL</span><span class="w"> </span><span class="no">...</span><span class="err">\</span><span class="no">n</span><span class="err">&quot;</span><span class="p">)</span><span class="c1">;</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a20</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">12</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">adrp</span><span class="w"> </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="mi">0x5575083000</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a24</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">16</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">add</span><span class="w">  </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="mi">#0</span><span class="no">xea0</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a28</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">20</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">bl</span><span class="w">   </span><span class="no">puts@plt</span>
+
+<span class="err">14</span><span class="w">      </span><span class="nf">int</span><span class="w"> </span><span class="no">val</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">*</span><span class="no">ptr</span><span class="c1">;  /* SIGSEGV */</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a2c</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">24</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">ldr</span><span class="w">  </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#24</span><span class="p">]</span><span class="w">          </span><span class="err">←</span><span class="w"> </span><span class="err">加载</span><span class="w"> </span><span class="no">ptr</span><span class="w"> </span><span class="err">值到</span><span class="w"> </span><span class="no">x0</span><span class="w"> </span><span class="p">(</span><span class="err">=</span><span class="mi">0x0</span><span class="p">)</span>
+<span class="err">=&gt;</span><span class="w"> </span><span class="err">0</span><span class="nf">x5575083a30</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">28</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">ldr</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">x0</span><span class="p">]</span><span class="w">               </span><span class="err">←</span><span class="w"> </span><span class="err">从地址</span><span class="w"> </span><span class="mi">0x0</span><span class="w"> </span><span class="err">加载</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="no">SIGSEGV</span><span class="p">!</span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x5575083a34</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">32</span><span class="err">&gt;</span><span class="p">:</span><span class="w">  </span><span class="no">str</span><span class="w">  </span><span class="no">w0</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">sp</span><span class="p">,</span><span class="w"> </span><span class="mi">#20</span><span class="p">]</span>
+</code></pre></div>
+<hr />
+<h3 id="3-sigsegv">场景 3：非法地址访问 (SIGSEGV)<a class="headerlink" href="#3-sigsegv" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) core-file core_invalid_addr
+[New LWP 138]
+Core was generated by `crash_test 3&#39;.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  0x000000558b6daad4 in crash_invalid_addr () at crash_test.c:31
+31      *ptr = 42;  /* SIGSEGV: 写入未映射地址 */
+
+(gdb) bt full
+#0  crash_invalid_addr () at crash_test.c:31
+        ptr = 0xdeadbeef         ← 指向非法地址
+#1  main (argc=2, argv=0x7fc023aba8) at crash_test.c:100
+        scenario = 3
+
+(gdb) print $_siginfo._sifields._sigfault.si_addr
+$1 = (void *) 0xdeadbeef         ← 故障地址确认是 0xDEADBEEF
+</code></pre></div>
+<p><strong>分析</strong>：<code>ptr = 0xdeadbeef</code>，向未映射地址写入 42 导致 SIGSEGV。<code>si_addr</code> 确认故障地址。</p>
+<hr />
+<h3 id="4abort-sigabrt">场景 4：abort() (SIGABRT)<a class="headerlink" href="#4abort-sigabrt" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) core-file core_abort
+[New LWP 132]
+Core was generated by `crash_test 4&#39;.
+Program terminated with signal SIGABRT, Aborted.
+#0  0x0000007fb63d2800 in ?? () from libc.so.6
+
+(gdb) bt full
+#0  0x0000007fb63d2800 in ?? () from libc.so.6       ← 内核信号处理
+#1  raise () from libc.so.6
+#2  abort () from libc.so.6                          ← abort() 调用 raise(SIGABRT)
+#3  crash_abort () at crash_test.c:38                ← 用户代码: abort()
+#4  main (argc=2, argv=0x7ff962f838) at crash_test.c:101
+        scenario = 4
+
+(gdb) print $_siginfo.si_signo
+$1 = 6                ← SIGABRT
+
+(gdb) print $_siginfo.si_code
+$2 = -6               ← SI_TKILL (由 tkill/sendtid 发送)
+</code></pre></div>
+<p><strong>分析</strong>：<code>abort()</code> → <code>raise(SIGABRT)</code> → 内核信号处理。用户代码在 frame 3，切换栈帧查看源码：</p>
+<div class="highlight"><pre><span></span><code>(gdb) frame 3
+#3  crash_abort () at crash_test.c:38
+38      abort();
+
+(gdb) list
+34  /* ====== 场景4: abort (SIGABRT) ====== */
+35  static void crash_abort(void)
+36  {
+37      printf(&quot;[场景4] 调用 abort() ...\n&quot;);
+38      abort();
+39  }
+</code></pre></div>
+<hr />
+<h3 id="5use-after-free-double-free-sigabrt">场景 5：Use-After-Free + Double-Free (SIGABRT)<a class="headerlink" href="#5use-after-free-double-free-sigabrt" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) core-file core_uaf_doublefree
+[New LWP 135]
+Core was generated by `crash_test 5&#39;.
+Program terminated with signal SIGABRT, Aborted.
+
+(gdb) bt full
+#0  ?? () from libc.so.6
+#1  raise () from libc.so.6
+#2  abort () from libc.so.6
+#3  ?? () from libc.so.6              ← malloc 内部检测逻辑
+#4  ?? () from libc.so.6
+#5  ?? () from libc.so.6
+#6  free () from libc.so.6            ← 崩溃在 free() 中
+#7  crash_use_after_free () at crash_test.c:50
+        ptr = 0x55768162b0            ← 已被释放的指针
+#8  main (argc=2, argv=0x7fd75deef8) at crash_test.c:102
+        scenario = 5
+
+(gdb) frame 7
+#7  crash_use_after_free () at crash_test.c:50
+50      free(ptr);                    ← 第二次 free(ptr) → double-free!
+</code></pre></div>
+<p><strong>分析</strong>：glibc 的 tcache 机制检测到 double-free，调用 <code>abort()</code> 终止程序。调用栈中 <code>free()</code> → glibc 内部检测 → <code>abort()</code> 是典型的 double-free 崩溃模式。</p>
+<p><strong>QEMU 侧运行输出印证</strong>：
+<div class="highlight"><pre><span></span><code>[场景5] Use-After-Free: 访问已释放内存 ...
+  已释放 ptr=0x55768162b0, 现在读取 *ptr = 89614358   ← UAF: 读取到脏数据
+free(): double free detected in tcache 2               ← glibc 检测到 double-free
+Aborted (core dumped)
+</code></pre></div></p>
+<hr />
+<h3 id="6-sigsegv">场景 6：栈溢出 (SIGSEGV)<a class="headerlink" href="#6-sigsegv" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>(gdb) core-file core_stack_overflow
+[New LWP 141]
+Core was generated by `crash_test 6&#39;.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  0x0000007fb8c47210 in ?? () from libc.so.6
+
+(gdb) bt 30
+#0  ?? () from libc.so.6                            ← 崩溃在 printf 内部
+#1  ?? () from libc.so.6
+#2  printf () from libc.so.6                        ← printf 需要栈空间，栈已耗尽
+#3  crash_stack_overflow (depth=2022) at crash_test.c:59
+#4  crash_stack_overflow (depth=2021) at crash_test.c:60
+#5  crash_stack_overflow (depth=2020) at crash_test.c:60
+...
+#29 crash_stack_overflow (depth=1996) at crash_test.c:60
+</code></pre></div>
+<p><strong>分析</strong>：
+- 递归调用 <code>crash_stack_overflow</code> 2022 层，每层分配 4096 字节，栈空间耗尽
+- 崩溃发生在 <code>printf()</code> 中（printf 需要栈缓冲区，但栈已满）
+- 识别特征：调用栈中大量重复的同一函数 + <code>depth</code> 参数递增</p>
+<hr />
+<h2 id="core-dump_3">五、Core Dump 分析标准流程<a class="headerlink" href="#core-dump_3" title="Permanent link">&para;</a></h2>
+<h3 id="51">5.1 快速三步法<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Step 1: 加载 core → 确认信号和崩溃位置
+Step 2: bt full → 查看完整调用栈和变量
+Step 3: print $_siginfo → 确认故障地址
+</code></pre></div>
+<h3 id="52">5.2 详细分析流程<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>1. 加载 core dump
+   (gdb) set sysroot /path/to/target
+   (gdb) core-file core_file
+
+2. 确认崩溃信号
+   (gdb) info program          # 崩溃信号
+   (gdb) print $_siginfo       # 信号详情
+
+3. 查看调用栈
+   (gdb) bt                    # 调用栈
+   (gdb) bt full               # 调用栈 + 所有局部变量
+
+4. 分析崩溃帧
+   (gdb) frame 0               # 切换到崩溃帧
+   (gdb) list                  # 查看源码
+   (gdb) info locals           # 局部变量
+   (gdb) info args             # 函数参数
+
+5. 检查关键变量
+   (gdb) print ptr             # 指针值
+   (gdb) print *ptr            # 解引用（如果是有效地址）
+   (gdb) print $_siginfo._sifields._sigfault.si_addr  # 故障地址
+
+6. 寄存器检查
+   (gdb) info registers        # 所有寄存器
+   (gdb) info registers x0 x30 pc sp  # 关键寄存器
+
+7. 反汇编确认
+   (gdb) disassemble /m        # 混合源码和汇编
+</code></pre></div>
+<hr />
+<h2 id="_6">六、信号与故障地址速查<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h3 id="61-sigsegv-11-si_code">6.1 SIGSEGV (信号 11) 的 si_code<a class="headerlink" href="#61-sigsegv-11-si_code" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>si_code</th>
+<th>宏名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>SEGV_MAPERR</td>
+<td>地址未映射（空指针、非法地址）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SEGV_ACCERR</td>
+<td>权限不足（写只读内存等）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-si_addr">6.2 si_addr（故障地址）解读<a class="headerlink" href="#62-si_addr" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>si_addr 值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0</code></td>
+<td>空指针解引用</td>
+</tr>
+<tr>
+<td><code>0xDEADBEEF</code> 等</td>
+<td>野指针/未初始化指针</td>
+</tr>
+<tr>
+<td>栈附近地址</td>
+<td>可能栈溢出</td>
+</tr>
+<tr>
+<td>堆附近地址</td>
+<td>可能堆越界/UAF</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63">6.3 常见崩溃模式识别<a class="headerlink" href="#63" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>调用栈特征</th>
+<th>崩溃类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>崩溃在用户代码，ptr=NULL</td>
+<td>空指针解引用</td>
+</tr>
+<tr>
+<td>崩溃在 free()，之前有 free 同一指针</td>
+<td>double-free</td>
+</tr>
+<tr>
+<td>崩溃在 printf/memcpy，栈上大量递归帧</td>
+<td>栈溢出</td>
+</tr>
+<tr>
+<td>崩溃在用户代码，si_addr 为野地址</td>
+<td>非法地址访问</td>
+</tr>
+<tr>
+<td>崩溃在 abort()，调用链有 malloc/free</td>
+<td>堆损坏/双重释放</td>
+</tr>
+<tr>
+<td>崩溃在 abort()，用户代码直接调用</td>
+<td>断言失败/主动 abort</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="gdb-core-dump">七、GDB 批处理分析 Core Dump<a class="headerlink" href="#gdb-core-dump" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>aarch64-none-linux-gnu-gdb<span class="w"> </span>-batch<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;set pagination off&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;set print pretty on&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;set sysroot /path/to/target&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;core-file /path/to/core_file&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;echo === Signal ===\n&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;print \$_siginfo.si_signo&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;print \$_siginfo._sifields._sigfault.si_addr&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;echo === Backtrace ===\n&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;bt full&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;echo === Registers ===\n&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;info registers x0 x1 x29 x30 sp pc&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;echo === Disassembly ===\n&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;frame 0&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;disassemble /m&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-ex<span class="w"> </span><span class="s2">&quot;quit&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/path/to/crash_test
+</code></pre></div>
+<hr />
+<h2 id="core-dump_4">八、嵌入式 Core Dump 最佳实践<a class="headerlink" href="#core-dump_4" title="Permanent link">&para;</a></h2>
+<h3 id="81">8.1 编译选项<a class="headerlink" href="#81" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c"># CMakeLists.txt 推荐配置</span>
+<span class="nb">add_compile_options</span><span class="p">(</span><span class="s">-g</span><span class="w"> </span><span class="s">-O0</span><span class="w"> </span><span class="s">-fno-omit-frame-pointer</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>-g</code>：生成 DWARF 调试信息</li>
+<li><code>-O0</code>：不优化，变量不被优化掉</li>
+<li><code>-fno-omit-frame-pointer</code>：保留帧指针，确保调用栈可回溯</li>
+</ul>
+<h3 id="82">8.2 目标端配置<a class="headerlink" href="#82" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># /etc/profile 或 init 脚本</span>
+<span class="nb">ulimit</span><span class="w"> </span>-c<span class="w"> </span>unlimited
+
+<span class="c1"># 自定义 core 文件名（包含程序名和PID）</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;/var/core/core.%e.%p.%t&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>/proc/sys/kernel/core_pattern
+
+<span class="c1"># 确保 core 目录存在且有写权限</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>/var/core<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span><span class="m">1777</span><span class="w"> </span>/var/core
+</code></pre></div>
+<h3 id="83-core">8.3 Core 文件收集流程<a class="headerlink" href="#83-core" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>1. 嵌入式设备崩溃 → 生成 core 文件
+2. 通过 9p/SCP/TFTP 拷贝到开发主机
+3. 使用交叉 GDB 加载分析
+</code></pre></div>
+<h3 id="84-core">8.4 Core 文件精简（存储受限设备）<a class="headerlink" href="#84-core" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 仅保存必要的内存区域（减小 core 文件大小）</span>
+<span class="nb">echo</span><span class="w"> </span>0x3f<span class="w"> </span>&gt;<span class="w"> </span>/proc/self/coredump_filter
+<span class="c1"># bit 0: 匿名私有内存 (必须)</span>
+<span class="c1"># bit 1: 匿名共享内存</span>
+<span class="c1"># bit 2: 文件映射私有内存</span>
+<span class="c1"># bit 3: 文件映射共享内存</span>
+<span class="c1"># bit 4: ELF 头</span>
+<span class="c1"># bit 5: 大页私有内存</span>
+</code></pre></div>
+<hr />
+<h2 id="_7">九、常见问题<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<h3 id="q1-warning-cant-open-file-pathlibso-core">Q1: "warning: Can't open file /path/lib.so" 加载 core 时<a class="headerlink" href="#q1-warning-cant-open-file-pathlibso-core" title="Permanent link">&para;</a></h3>
+<p><strong>解决</strong>：设置 sysroot
+<div class="highlight"><pre><span></span><code>(gdb) set sysroot /path/to/target/rootfs
+</code></pre></div></p>
+<h3 id="q2">Q2: 调用栈显示 <code>?? ()</code> 无符号信息<a class="headerlink" href="#q2" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：
+- 共享库缺少调试符号（stripped）
+- 使用了错误的 binary（如 x86_64 而非 aarch64）</p>
+<p><strong>解决</strong>：确保使用正确的带符号 aarch64 binary</p>
+<h3 id="q3-core">Q3: Core 文件为空或未生成<a class="headerlink" href="#q3-core" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：
+- <code>ulimit -c</code> 限制为 0
+- <code>core_pattern</code> 管道到其他程序（如 apport）
+- 磁盘空间不足</p>
+<p><strong>解决</strong>：
+<div class="highlight"><pre><span></span><code><span class="nb">ulimit</span><span class="w"> </span>-c<span class="w"> </span>unlimited
+cat<span class="w"> </span>/proc/sys/kernel/core_pattern<span class="w">   </span><span class="c1"># 检查设置</span>
+df<span class="w"> </span>-h<span class="w">                               </span><span class="c1"># 检查磁盘空间</span>
+</code></pre></div></p>
+<h3 id="q4-bt-full-optimized-out">Q4: <code>bt full</code> 中变量显示 <code>&lt;optimized out&gt;</code><a class="headerlink" href="#q4-bt-full-optimized-out" title="Permanent link">&para;</a></h3>
+<p><strong>原因</strong>：编译时开启了优化（<code>-O1</code>/<code>-O2</code>）</p>
+<p><strong>解决</strong>：使用 <code>-O0 -g -fno-omit-frame-pointer</code> 重新编译</p>
+<h3 id="q5">Q5: 如何区分空指针和非法地址？<a class="headerlink" href="#q5" title="Permanent link">&para;</a></h3>
+<p>查看 <code>$_siginfo._sifields._sigfault.si_addr</code>：
+- <code>si_addr = 0x0</code> → 空指针解引用
+- <code>si_addr = 0xdeadbeef</code> 等非零非法值 → 野指针/未初始化指针</p>
+<hr />
+<h2 id="core-dump_5">附录：Core Dump 分析命令速查<a class="headerlink" href="#core-dump_5" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>命令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>加载</td>
+<td><code>core-file /path/to/core</code></td>
+<td>加载 core dump</td>
+</tr>
+<tr>
+<td>信号</td>
+<td><code>print $_siginfo</code></td>
+<td>崩溃信号和故障地址</td>
+</tr>
+<tr>
+<td>调用栈</td>
+<td><code>bt full</code></td>
+<td>完整调用栈 + 变量</td>
+</tr>
+<tr>
+<td>栈帧</td>
+<td><code>frame N</code> / <code>up</code> / <code>down</code></td>
+<td>切换栈帧</td>
+</tr>
+<tr>
+<td>变量</td>
+<td><code>info locals</code> / <code>print var</code></td>
+<td>查看变量</td>
+</tr>
+<tr>
+<td>源码</td>
+<td><code>list</code></td>
+<td>查看崩溃源码</td>
+</tr>
+<tr>
+<td>反汇编</td>
+<td><code>disassemble /m func</code></td>
+<td>混合源码和汇编</td>
+</tr>
+<tr>
+<td>寄存器</td>
+<td><code>info registers</code></td>
+<td>崩溃时寄存器</td>
+</tr>
+<tr>
+<td>故障地址</td>
+<td><code>print $_siginfo._sifields._sigfault.si_addr</code></td>
+<td>SIGSEGV 故障地址</td>
+</tr>
+<tr>
+<td>内存</td>
+<td><code>x/16xw addr</code></td>
+<td>查看内存内容</td>
+</tr>
+<tr>
+<td>批处理</td>
+<td><code>gdb -batch -ex "bt full" ...</code></td>
+<td>自动化分析</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

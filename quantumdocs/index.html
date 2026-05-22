@@ -1,0 +1,624 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quantum documentation &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="1. reStructuredText 语法参考手册" href="rst_format.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">quantum documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quantum-documentation">
+<h1>quantum documentation<a class="headerlink" href="#quantum-documentation" title="链接到此标题。"></a></h1>
+<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
+documentation for details.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id1">1.1. 段落与文本格式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id11">1.2. 列表与引用块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id20">1.3. 代码块与字面块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id23">1.4. 表格</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id27">1.5. 章节标题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id28">1.6. 超链接</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id35">1.7. 图片</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id38">1.8. 脚注与引用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#roles">1.9. 角色（Roles）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#directives">1.10. 指令（Directives）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id50">1.11. 替换</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id53">1.12. 注释</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#html">1.13. HTML 元数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id54">1.14. 包含其他文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id55">1.15. 常见问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id59">1.16. 参考文献</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rst_format.html#id63">1.17. 版本信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id2">2.1. 模块架构框图</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id3">2.2. 模块协作关系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id5">2.3. 关键流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id6">2.4. 数据/控制流关键路径</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id10">2.5. 重要知识点深入讲解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id15">2.6. 关键寄存器速查表</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu_arch.html#id16">2.7. 附录：章节与原文位置映射</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html#id2">3.1. 文档基本信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html#id3">3.2. 文档总体结构</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id2">4.1. 一致性协议整体概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id6">4.2. 缓存状态模型深度解析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id12">4.3. 请求类型详解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id19">4.4. 监听请求详解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id25">4.5. 响应类型详解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id30">4.6. 缓存状态转换详解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id34">4.7. 危险条件处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id38">4.8. 一致性协议实际应用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id43">4.9. 性能优化和设计考虑</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id46">4.10. 总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id48">4.11. 参考文献</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html#id49">4.12. 文档版本信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#id2">5.1. 一致性协议总览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#id5">5.2. 缓存行状态详解</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#id27">5.3. 请求类型深度分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#snoop">5.4. Snoop 请求类型深度分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#id47">5.5. 响应类型深度分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#requester">5.6. Requester 端缓存状态转换</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#snoopee">5.7. Snoopee 端缓存状态转换</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#rettosrc-data-pull">5.8. RetToSrc 与 Data Pull 规则</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#donotgotosd">5.9. DoNotGoToSD 规则</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#id60">5.10. 多拷贝原子性与排序</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#hazard-conditions">5.11. Hazard Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html#id62">5.12. 协议设计总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#smmu-stage-1-stage-2">6.1. SMMU Stage 1 和 Stage 2 转换有什么区别</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#smmu-ste-cd">6.2. SMMU STE 和 CD 的数据结构是怎样的</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#ste-stream-table-entry-64">6.3. STE (Stream Table Entry) — 64 字节</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#cd-context-descriptor-64">6.4. CD (Context Descriptor) — 64 字节</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#id53">6.5. 配置查找与翻译流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#id58">6.6. SMMU 在虚拟化里的用法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#stage-2-only-passthrough">6.7. 用法一：Stage 2 Only — 设备直通（Passthrough）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#nested-stage-1-stage-2-hypervisor-smmu">6.8. 用法二：Nested（Stage 1 + Stage 2）— Hypervisor 仿真 SMMU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#stage-1-only-os">6.9. 用法三：Stage 1 Only — 裸金属 OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#hypervisor-stage-1">6.10. 用法四：Hypervisor 自用 Stage 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#full-bypass">6.11. 用法五：Full Bypass — 不翻译</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#id71">6.12. 总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#smmu-tlb-tlb">6.13. SMMU 的 TLB 和 TLB 维护机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#tlb">6.14. TLB 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#id74">6.15. TLB 标签体系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#id75">6.16. TLB 维护机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#ats-tlb">6.17. ATS 与 TLB 的关系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#id76">6.18. 总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#smmu-event-queue">6.19. SMMU 的故障处理和 Event Queue 机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#fault-models">6.20. 故障模型（Fault Models）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#event-queue">6.21. Event Queue 机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#smmu-ats-pri">6.22. SMMU 的 ATS 和 PRI 机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#ats-address-translation-service">6.23. ATS（Address Translation Service）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#pri-page-request-interface">6.24. PRI（Page Request Interface）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/smmu_arch.html#ats-pri">6.25. ATS + PRI 使用模型总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html#mmu-600ae">7.1. MMU-600AE 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html#tbu-translation-buffer-unit">7.2. TBU（Translation Buffer Unit）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html#tcu-translation-control-unit">7.3. TCU（Translation Control Unit）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html#tcu-tbu">7.4. TCU 与 TBU 的交互</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html#qos-ras">7.5. QoS 与 RAS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html#id63">7.6. 关键约束和限制</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#id2">8.1. 什么需要维护一致性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#id3">8.2. 硬件自动维护一致性的机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#id8">8.3. 软件维护一致性的机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#id15">8.4. 软件不能做什么</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#prefetch">8.5. Prefetch 与一致性的交互</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#id17">8.6. 一致性维护的典型流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html#id19">8.7. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#ras">9.1. RAS 架构总览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#id8">9.2. 安全机制分类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#pmu">9.3. PMU 事件体系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#id20">9.4. TCU 实现定义事件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#id23">9.5. TBU 实现定义事件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#id25">9.6. 如何使用 PMU 事件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#id33">9.7. 错误注入</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html#id40">9.8. 关键差异对比</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="smmu_code_analysis.html#id1">10.1. 1. 驱动功能概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smmu_code_analysis.html#id2">10.2. 2. 核心数据结构及其关系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smmu_code_analysis.html#id7">10.3. 3. 初始化/注册流程 (从入口到硬件可用)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smmu_code_analysis.html#id12">10.4. 4. 操作函数集（回调表）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smmu_code_analysis.html#id14">10.5. 5. 中断处理流程</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#id1">11.1. 1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#id3">11.2. 2. 完整调用链</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#id6">11.3. 3. 数据结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#id8">11.4. 4. 执行阶段</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#api">11.5. 5. 关键内核 API 调用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#id12">11.6. 6. 组件交互图</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_analysis.html#id14">11.7. 7. 关键文件索引</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#id1">12.1. 1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#id3">12.2. 2. 完整调用链</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#id6">12.3. 3. 数据结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#id8">12.4. 4. 执行阶段</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#api">12.5. 5. 关键内核 API 调用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#id12">12.6. 6. 组件交互图</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html#id14">12.7. 7. 关键文件索引</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-1-0-introduction">13.1. 引言 (Chapter 1.0 Introduction)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-2-0-protocol-layer">13.2. 协议层 (Chapter 2.0 Protocol Layer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-3-0-die-to-die-adapter">13.3. 裸芯间适配器 (Chapter 3.0 Die-to-Die Adapter)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-4-0-logical-physical-layer">13.4. 逻辑物理层 (Chapter 4.0 Logical Physical Layer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-5-0-electrical-layer">13.5. 电气层 (Chapter 5.0 Electrical Layer)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#ucie-3d-chapter-6-0">13.6. UCIe-3D (Chapter 6.0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-7-0-sideband">13.7. 边带 (Chapter 7.0 Sideband)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-8-0-system-architecture">13.8. 系统架构 (Chapter 8.0 System Architecture)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-9-0-configuration-and-parameters">13.9. 配置和参数 (Chapter 9.0 Configuration and Parameters)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-10-0-interface-definitions">13.10. 接口定义 (Chapter 10.0 Interface Definitions)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#chapter-11-0-compliance">13.11. 合规性 (Chapter 11.0 Compliance)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#id136">13.12. 附录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#id137">13.13. 术语表</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html#id138">13.14. 修订历史</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id2">14.1. 引言</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id5">14.2. 事务层规范</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id17">14.3. 数据链路层规范</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id24">14.4. 物理层逻辑块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id29">14.5. 电源管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id36">14.6. 系统架构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id45">14.7. 软件初始化和配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id52">14.8. 电气子块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#i-o-sr-iov">14.9. 单根 I/O 虚拟化（SR-IOV）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#ats">14.10. 地址翻译服务（ATS）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id70">14.11. 附录概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html#id71">14.12. 文档统计信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#ats">15.1. 地址翻译服务（ATS）架构概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#id6">15.2. 翻译请求协议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#id23">15.3. ATS 失效机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#pri">15.4. 页面请求接口（PRI）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#pasid-id">15.5. PASID（进程地址空间 ID）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#msi-msi-x">15.6. MSI/MSI-X 中断机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#id54">15.7. ATS 配置寄存器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html#id70">15.8. 系统架构交互说明</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#cxl">16.1. CXL 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id3">16.2. CXL 事务层</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id14">16.3. CXL 链路层</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#cxl-arb-mux">16.4. CXL ARB/MUX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id21">16.5. CXL 物理层</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id24">16.6. CXL 交换</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id26">16.7. 控制与状态寄存器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id34">16.8. 复位与初始化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id38">16.9. 电源管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id40">16.10. 安全性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id43">16.11. 可靠性与可用性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id45">16.12. 性能监控</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cxl/CXL_Spec.html#id47">16.13. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#lpddr5">17.1. LPDDR5 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id5">17.2. 信号引脚定义</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#bank">17.3. Bank 架构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#wck">17.4. WCK 时钟架构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id9">17.5. 初始化与训练</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id15">17.6. 状态机</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id18">17.7. 命令系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id21">17.8. 读写操作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id22">17.9. 刷新机制</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id24">17.10. 电源管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#odt">17.11. 端接（ODT）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#mode-register">17.12. 模式寄存器（Mode Register）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id31">17.13. 特殊功能</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#ac-dc">17.14. AC/DC 规范</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id40">17.15. 封装与引脚</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id42">17.16. 关键时序参数汇总</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id43">17.17. 命令时序约束</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id45">17.18. 多 Rank 操作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5.html#id47">17.19. 术语表</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5_dvfs.html#dvfsc-mode-dvfs-core">18.1. DVFSC Mode (DVFS Core - 核心电压动态调整)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5_dvfs.html#dvfsq-mode-dvfs-vddq-i-o">18.2. DVFSQ Mode (DVFS VDDQ - I/O电压动态调整)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5_dvfs.html#frequency-set-point-fsp">18.3. Frequency Set Point (FSP - 频率设定点)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5_dvfs.html#dvfs">18.4. DVFS模式总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5_dvfs.html#id11">18.5. DVFS优势</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lpddr5_dvfs.html#id12">18.6. 参考文档</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install_rst.html#id1">19.1. 环境要求</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_rst.html#id2">19.2. 安装步骤</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_rst.html#id3">19.3. 使用方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_rst.html#id4">19.4. 文档结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_rst.html#id5">19.5. 更多信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tmux_usage.html#id1">20.1. 基本概念</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmux_usage.html#id2">20.2. 常用命令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmux_usage.html#id6">20.3. 常用配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmux_usage.html#id7">20.4. 更多信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#python-3">21.1. Python 3 内置服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#python-2">21.2. Python 2 内置服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#flask-api">21.3. 使用 Flask 搭建简单 API 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#fastapi-api">21.4. 使用 FastAPI 搭建高性能 API 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#id2">21.5. 使用场景</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#id3">21.6. 注意事项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_server.html#id4">21.7. 更多信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id1">22.1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#labgrid">22.2. 安装 Labgrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id3">22.3. Labgrid 配置文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#python">22.4. Python 测试脚本常见问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id7">22.5. 完整的配置示例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id8">22.6. 测试脚本框架</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id9">22.7. 运行测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id10">22.8. 调试技巧</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id11">22.9. 最佳实践</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_for_qemu.html#id12">22.10. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#id1">23.1. 环境搭建</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#id2">23.2. 测试时间优化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#id7">23.3. 多文件测试组织</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#linux">23.4. 查看 Linux 启动日志</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#id8">23.5. 测试报告生成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#qmp-monitor">23.6. QMP Monitor 测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labgrid_qemu_practice.html#id9">23.7. 经验总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id2">24.1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#ttyd">24.2. 安装 ttyd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id3">24.3. 验证安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id4">24.4. 配置 ttyd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id8">24.5. 启动 ttyd 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id10">24.6. 防火墙配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id11">24.7. 访问方式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id14">24.8. 外网访问</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id23">24.9. 服务管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id24">24.10. 故障排除</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id28">24.11. 安全建议</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ttyd_setup.html#id29">24.12. 完整配置脚本</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id1">25.1. 环境信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id2">25.2. 问题背景</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id3">25.3. 解决方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#macos">25.4. macOS 端配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#ubuntu">25.5. 连接 Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id5">25.6. 故障排查</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id7">25.7. 替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id8">25.8. 持久性说明</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id9">25.9. 注意事项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html#id10">25.10. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="opendataloader_pdf_usage.html#id1">26.1. 环境信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opendataloader_pdf_usage.html#id2">26.2. 安装过程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opendataloader_pdf_usage.html#convert">26.3. convert 函数签名</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opendataloader_pdf_usage.html#pdf-convert-py">26.4. pdf_convert.py 封装脚本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="opendataloader_pdf_usage.html#id3">26.5. 踩坑记录</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html#id1">27.1. 任务概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html#id2">27.2. 用户问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html#id3">27.3. 执行过程中的问题及解决方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html#id4">27.4. 解决方案总结</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html#id5">27.5. 最终成果</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id1">28.1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id2">28.2. 环境准备</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#linux">28.3. 启动方式一：直接启动 Linux 内核</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#u-boot-linux">28.4. 启动方式二：通过 U-Boot 启动 Linux 内核</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id5">28.5. 当前状态</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id6">28.6. 文件结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id7">28.7. 内核命令行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id8">28.8. 尝试的解决方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html#id9">28.9. 结论</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="buildroot_autologin_troubleshooting.html#id1">29.1. 背景</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildroot_autologin_troubleshooting.html#id2">29.2. 问题分析过程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildroot_autologin_troubleshooting.html#id4">29.3. 最终解决方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="buildroot_autologin_troubleshooting.html#id5">29.4. 关键经验总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id1">30.1. 背景</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id2">30.2. 前置条件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id3">30.3. 改动清单</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#buildroot-skeleton-systemd">30.4. 步骤一：切换 Buildroot skeleton 为 systemd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id4">30.5. 步骤二：修改内核命令行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id5">30.6. 步骤三：配置内核选项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#rootfs-overlay">30.7. 步骤四：配置 rootfs-overlay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#cpu-qemu">30.8. 步骤五：确保工具链 CPU 目标与 QEMU 匹配</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id6">30.9. 步骤六：构建</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#id11">30.10. 问题排查手册</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#systemd-busybox-init">30.11. systemd 与 BusyBox init 的关键差异</a></li>
+<li class="toctree-l2"><a class="reference internal" href="systemd_enable.html#systemd">30.12. 新环境使能 systemd 检查清单</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id7">37.1. 6.1 指定文件路径</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id8">37.2. 6.2 指定分析深度</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id9">37.3. 6.3 提供已知上下文</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id10">37.4. 6.4 要求结构化输出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id11">37.5. 6.5 指定输出语言和格式</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id2">54.1. 1.1 整体流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#token">54.2. 1.2 Token 消耗组成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id9">54.3. 1.3 自动摘要机制</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id11">55.1. 2.1 精简输入 — 减少每轮 token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id12">55.2. 2.2 提供精确路径 — 减少工具搜索轮次</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id13">55.3. 2.3 提供关键上下文 — 减少推测性工具调用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#history-token">55.4. 2.4 控制对话深度 — 减少 history token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#api">55.5. 2.5 善用工具并行 — 减少 API 轮次</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#codebuddy-md-memory-md">55.6. 2.6 精简 CODEBUDDY.md 和 MEMORY.md</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id14">55.7. 2.7 限定工具使用范围 — 避免过度探索</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codebuddy_cli_usage_guide.html#agent">55.8. 2.8 使用 Agent 工具控制上下文</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#modulenotfounderror-no-module-named-utils-anomalies">61.1. 问题 1: ModuleNotFoundError: No module named 'utils.anomalies'</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#modulenotfounderror-no-module-named-prettytable">61.2. 问题 2: ModuleNotFoundError: No module named 'prettytable'</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#aarch64-gdb">61.3. 问题 3: aarch64 gdb 缺少共享库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#could-not-find-hardware-board-def-py">61.4. 问题 4: Could not find hardware — 缺少 board_def.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#gdb-linux-banner-has-unknown-type">61.5. 问题 5: gdb 报错 'linux_banner' has unknown type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#linux-banner-in-dumps-elf-core-dump">61.6. 问题 6: Linux banner in Dumps = 垃圾数据 — ELF core dump 格式问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#phys-offset-kimage-voffset">61.7. 问题 7: phys_offset 动态检测与 kimage_voffset 计算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#set-available-cores-field-offset-none">61.8. 问题 8: set_available_cores 中 field_offset 返回 None</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#could-not-get-saved-configuration-config-ikconfig">61.9. 问题 9: Could not get saved configuration — 缺少 CONFIG_IKCONFIG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#dwarf">61.10. 问题 10: 大部分子解析器因缺少 DWARF 调试信息而失败</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#schedinfo-per-cpu-offset-none">61.11. 问题 11: Schedinfo — per_cpu_offset 返回 None</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#dumptasks-struct-sched-info-config-sched-info">61.12. 问题 12: DumpTasks — struct sched_info 为空 (CONFIG_SCHED_INFO 未开启)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#dumpprocessmemory-is-thread-info-in-task">61.13. 问题 13: DumpProcessMemory — is_thread_info_in_task 检测失败</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ramparse_qemu_debugging.html#slabinfo-5-x-struct">61.14. 问题 14: Slabinfo — 缺少内核配置 + 内核 5.x+ struct 变更</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="rst_format.html" class="btn btn-neutral float-right" title="1. reStructuredText 语法参考手册" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

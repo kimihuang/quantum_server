@@ -1,0 +1,1 @@
+$$CPU_TEST_0001 -v -c "cat /proc/cpuinfo | head -3" -p "processor" -t 3000^^

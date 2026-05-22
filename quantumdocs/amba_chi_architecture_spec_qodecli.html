@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AMBA CHI 架构规范概览 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">AMBA CHI 架构规范概览</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/amba_chi_architecture_spec_qodecli.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="amba-chi">
+<h1>AMBA CHI 架构规范概览<a class="headerlink" href="#amba-chi" title="链接到此标题。"></a></h1>
+<p>本文档基于 <strong>AMBA CHI Architecture Specification (IHI0050 Issue G)</strong> 分析概览，
+参考文档：docs/pdf/arm/IHI0050G_amba_chi_architecture_spec.md。</p>
+</section>
+<section id="id2">
+<h1>文档基本信息<a class="headerlink" href="#id2" title="链接到此标题。"></a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>属性</p></th>
+<th class="head"><p>值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>文档编号</p></td>
+<td><p>IHI0050</p></td>
+</tr>
+<tr class="row-odd"><td><p>版本</p></td>
+<td><p>Issue G</p></td>
+</tr>
+<tr class="row-even"><td><p>发布日期</p></td>
+<td><p>2024年3月</p></td>
+</tr>
+<tr class="row-odd"><td><p>适用范围</p></td>
+<td><p>AMBA Coherent Hub Interface (CHI) 架构规范</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h1>架构概述<a class="headerlink" href="#id3" title="链接到此标题。"></a></h1>
+<p>CHI (Coherent Hub Interface) 是 ARM AMBA 总线家族中的**一致性互连协议**，
+用于实现多核处理器系统中的硬件一致性缓存。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：Chapter B1 Introduction</p>
+</div>
+<section id="id4">
+<h2>1 核心特性<a class="headerlink" href="#id4" title="链接到此标题。"></a></h2>
+<p>CHI 架构的主要特性包括：</p>
+<ul class="simple">
+<li><p><strong>硬件一致性</strong>：支持多核处理器间的硬件缓存一致性，无需软件干预</p></li>
+<li><p><strong>高性能扩展</strong>：适用于高性能计算和服务器级 SoC</p></li>
+<li><p><strong>拓扑无关</strong>：支持 Crossbar、Ring、Mesh 等多种拓扑结构</p></li>
+<li><p><strong>丰富的事务类型</strong>：支持读写、原子操作、缓存预取等</p></li>
+<li><p><strong>端到端 QoS</strong>：支持服务质量控制</p></li>
+<li><p><strong>低功耗设计</strong>：支持链路级时钟门控和组件激活/去激活</p></li>
+</ul>
+<table class="docutils align-default" id="id20">
+<caption><span class="caption-text">CHI 关键特性列表</span><a class="headerlink" href="#id20" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>特性类别</p></th>
+<th class="head"><p>具体内容</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>一致性支持</p></td>
+<td><p>硬件维护缓存一致性，支持 Write-Invalidate 协议</p></td>
+</tr>
+<tr class="row-odd"><td><p>事务类型</p></td>
+<td><p>丰富的事务类型，支持原子操作、独占访问</p></td>
+</tr>
+<tr class="row-even"><td><p>数据移动</p></td>
+<td><p>高效的数据放置和移动，Stash 机制</p></td>
+</tr>
+<tr class="row-odd"><td><p>虚拟内存</p></td>
+<td><p>DVM (Distributed Virtual Memory) 操作支持</p></td>
+</tr>
+<tr class="row-even"><td><p>安全性</p></td>
+<td><p>ARM TrustZone 事务级安全支持，MTE 内存标记扩展</p></td>
+</tr>
+<tr class="row-odd"><td><p>可靠性</p></td>
+<td><p>错误报告和传播，Data Poisoning 机制</p></td>
+</tr>
+<tr class="row-even"><td><p>电源管理</p></td>
+<td><p>链路级门控，组件激活/去激活序列</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id5">
+<h1>架构分层<a class="headerlink" href="#id5" title="链接到此标题。"></a></h1>
+<p>CHI 协议分为三个层次，每层负责不同的功能：</p>
+<table class="docutils align-default" id="id21">
+<caption><span class="caption-text">CHI 架构层次</span><a class="headerlink" href="#id21" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>层次</p></th>
+<th class="head"><p>通信粒度</p></th>
+<th class="head"><p>主要功能</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Protocol (协议层)</p></td>
+<td><p>Transaction (事务)</p></td>
+<td><p>生成和处理请求/响应；定义缓存状态转换；定义事务流；管理协议级流控</p></td>
+</tr>
+<tr class="row-odd"><td><p>Network (网络层)</p></td>
+<td><p>Packet (包)</p></td>
+<td><p>协议消息打包；确定源/目标节点 ID 用于路由</p></td>
+</tr>
+<tr class="row-even"><td><p>Link (链路层)</p></td>
+<td><p>Flit (流控单元)</p></td>
+<td><p>提供流控制；管理链路通道，确保无死锁交换</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.1.3 Architecture layers</p>
+</div>
+</section>
+<section id="id6">
+<h1>组件类型<a class="headerlink" href="#id6" title="链接到此标题。"></a></h1>
+<p>CHI 协议定义了多种节点类型，按功能分类：</p>
+<section id="request-node-rn">
+<h2>1 Request Node (RN) - 请求节点<a class="headerlink" href="#request-node-rn" title="链接到此标题。"></a></h2>
+<p>请求节点生成协议事务（读/写）发送到互连。</p>
+<table class="docutils align-default" id="id22">
+<caption><span class="caption-text">Request Node 类型</span><a class="headerlink" href="#id22" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 85.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>类型</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RN-F</p></td>
+<td><p>Fully Coherent Request Node：包含硬件一致性缓存；可生成所有协议事务；支持所有 Snoop 事务</p></td>
+</tr>
+<tr class="row-odd"><td><p>RN-D</p></td>
+<td><p>IO Coherent Request Node with DVM：无硬件一致性缓存；接收 DVM 事务；生成部分协议事务</p></td>
+</tr>
+<tr class="row-even"><td><p>RN-I</p></td>
+<td><p>IO Coherent Request Node：无硬件一致性缓存；不接收 DVM 事务；无需 Snoop 功能</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="home-node-hn">
+<h2>2 Home Node (HN) - 归节点<a class="headerlink" href="#home-node-hn" title="链接到此标题。"></a></h2>
+<p>位于互连内部，接收来自 RN 的协议事务。</p>
+<table class="docutils align-default" id="id23">
+<caption><span class="caption-text">Home Node 类型</span><a class="headerlink" href="#id23" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 85.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>类型</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>HN-F</p></td>
+<td><p>Fully Coherent Home Node：接收除 DVMOp 外的所有请求；包含 PoC (Point of Coherence)；可作为 PoS (Point of Serialization)；可选包含目录或 Snoop 过滤器</p></td>
+</tr>
+<tr class="row-odd"><td><p>HN-I</p></td>
+<td><p>Non-coherent Home Node：处理有限的协议事务子集；不包含 PoC；用于 IO 子系统</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="subordinate-node-sn">
+<h2>3 Subordinate Node (SN) - 从节点<a class="headerlink" href="#subordinate-node-sn" title="链接到此标题。"></a></h2>
+<p>接收来自 HN 的请求，完成操作并返回响应。通常是系统中最下游的代理，
+如内存控制器。</p>
+</section>
+<section id="miscellaneous-node-mn">
+<h2>4 Miscellaneous Node (MN) - 杂项节点<a class="headerlink" href="#miscellaneous-node-mn" title="链接到此标题。"></a></h2>
+<p>位于互连内部，接收来自 RN 的 DVM 消息，完成操作并返回响应。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.6 Component naming</p>
+</div>
+</section>
+</section>
+<section id="id7">
+<h1>拓扑结构<a class="headerlink" href="#id7" title="链接到此标题。"></a></h1>
+<p>CHI 架构本身与拓扑无关，但支持多种优化拓扑：</p>
+<table class="docutils align-default" id="id24">
+<caption><span class="caption-text">拓扑类型对比</span><a class="headerlink" href="#id24" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 35.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>拓扑</p></th>
+<th class="head"><p>特点</p></th>
+<th class="head"><p>适用场景</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Crossbar</p></td>
+<td><p>简单构建；低延迟；天然有序网络</p></td>
+<td><p>节点数较少的小型互连</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ring</p></td>
+<td><p>布线效率与延迟的折中；延迟随节点数线性增加</p></td>
+<td><p>中等规模互连</p></td>
+</tr>
+<tr class="row-even"><td><p>Mesh</p></td>
+<td><p>高带宽；模块化设计；易于扩展</p></td>
+<td><p>大规模互连系统</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.2 Topology</p>
+</div>
+</section>
+<section id="id8">
+<h1>事务分类<a class="headerlink" href="#id8" title="链接到此标题。"></a></h1>
+<p>CHI 协议支持丰富的协议事务类型：</p>
+<table class="docutils align-default" id="id25">
+<caption><span class="caption-text">事务分类</span><a class="headerlink" href="#id25" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 82.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>分类</p></th>
+<th class="head"><p>支持的事务</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Read (读)</p></td>
+<td><p>ReadNoSnp, ReadOnce*, ReadClean, ReadNotSharedDirty, ReadShared, ReadUnique, ReadPreferUnique, MakeReadUnique</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dataless (无数据)</p></td>
+<td><p>CleanUnique, MakeUnique, Evict, StashOnce*, CleanShared, CleanSharedPersist*, CleanInvalid, MakeInvalid</p></td>
+</tr>
+<tr class="row-even"><td><p>Write (写)</p></td>
+<td><p>WriteNoSnp*, WriteUnique*, WriteBack*, WriteCleanFull, WriteEvictFull</p></td>
+</tr>
+<tr class="row-odd"><td><p>Combined Write</p></td>
+<td><p>WriteNoSnp*CleanInv, WriteNoSnp*CleanSh, WriteUnique*CleanSh, WriteBack*CleanInv 等</p></td>
+</tr>
+<tr class="row-even"><td><p>Atomic (原子)</p></td>
+<td><p>AtomicStore, AtomicLoad, AtomicSwap, AtomicCompare</p></td>
+</tr>
+<tr class="row-odd"><td><p>Other (其他)</p></td>
+<td><p>DVMOp, PrefetchTgt, PCrdReturn</p></td>
+</tr>
+<tr class="row-even"><td><p>Snoop (监听)</p></td>
+<td><p>SnpOnce, SnpStash*, SnpClean*, SnpUnique*, SnpMakeInvalid 等</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.4 Transaction classification</p>
+</div>
+</section>
+<section id="id9">
+<h1>一致性模型<a class="headerlink" href="#id9" title="链接到此标题。"></a></h1>
+<section id="id10">
+<h2>1 一致性定义<a class="headerlink" href="#id10" title="链接到此标题。"></a></h2>
+<p>硬件一致性使系统组件能够共享内存，无需软件缓存维护操作。</p>
+<p><strong>一致性要求</strong>：如果两个组件写入同一内存位置，所有组件必须以相同顺序观察到这些写入。</p>
+</section>
+<section id="id11">
+<h2>2 一致性机制<a class="headerlink" href="#id11" title="链接到此标题。"></a></h2>
+<p>CHI 使用 <strong>Write-Invalidate 协议</strong>：</p>
+<ul class="simple">
+<li><p>当写入共享缓存行时，必须先使所有其他副本失效</p></li>
+<li><p>协议确保：</p>
+<ul>
+<li><p>若缓存行是唯一副本，可直接修改，无需通知其他组件</p></li>
+<li><p>若缓存行可能存在于其他缓存，必须通过适当事务通知</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id12">
+<h2>3 关键点定义<a class="headerlink" href="#id12" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id26">
+<caption><span class="caption-text">系统关键点</span><a class="headerlink" href="#id26" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 85.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>术语</p></th>
+<th class="head"><p>定义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PoC</p></td>
+<td><p>Point of Coherence（一致性点）：所有代理看到相同内存副本的位置，通常是 HN-F</p></td>
+</tr>
+<tr class="row-odd"><td><p>PoS</p></td>
+<td><p>Point of Serialization（序列化点）：确定不同代理请求顺序的位置</p></td>
+</tr>
+<tr class="row-even"><td><p>PoP</p></td>
+<td><p>Point of Persistence（持久化点）：断电后数据仍保持的位置</p></td>
+</tr>
+<tr class="row-odd"><td><p>PoDP</p></td>
+<td><p>Point of Deep Persistence：电源和备用电池同时故障时数据仍保持的位置</p></td>
+</tr>
+<tr class="row-even"><td><p>PoPA</p></td>
+<td><p>Point of Physical Aliasing：对一个物理地址空间的更新对所有 PAS 可见的位置</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.5 Coherence overview</p>
+</div>
+</section>
+</section>
+<section id="id13">
+<h1>缓存状态模型<a class="headerlink" href="#id13" title="链接到此标题。"></a></h1>
+<p>CHI 定义了七状态缓存模型，基于以下特征组合：</p>
+<section id="id14">
+<h2>1 状态特征<a class="headerlink" href="#id14" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id27">
+<caption><span class="caption-text">缓存状态特征</span><a class="headerlink" href="#id27" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>特征</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Valid/Invalid</p></td>
+<td><p>Valid: 缓存行存在于缓存中；Invalid: 缓存行不存在</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unique/Shared</p></td>
+<td><p>Unique: 仅存在于当前缓存；Shared: 可能存在于多个缓存</p></td>
+</tr>
+<tr class="row-even"><td><p>Clean/Dirty</p></td>
+<td><p>Clean: 不负责更新主存；Dirty: 相对于主存已修改，需负责更新主存</p></td>
+</tr>
+<tr class="row-odd"><td><p>Full/Partial/Empty</p></td>
+<td><p>Full: 所有字节有效；Partial: 部分字节有效；Empty: 无有效字节</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id15">
+<h2>2 缓存状态<a class="headerlink" href="#id15" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id28">
+<caption><span class="caption-text">缓存状态定义</span><a class="headerlink" href="#id28" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 30.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>状态</p></th>
+<th class="head"><p>全称</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>I</p></td>
+<td><p>Invalid</p></td>
+<td><p>无效，缓存行不存在</p></td>
+</tr>
+<tr class="row-odd"><td><p>UC</p></td>
+<td><p>Unique Clean</p></td>
+<td><p>唯一干净，可修改无需通知</p></td>
+</tr>
+<tr class="row-even"><td><p>UCE</p></td>
+<td><p>Unique Clean Empty</p></td>
+<td><p>唯一干净空，无有效数据字节</p></td>
+</tr>
+<tr class="row-odd"><td><p>UD</p></td>
+<td><p>Unique Dirty</p></td>
+<td><p>唯一脏，需负责更新主存</p></td>
+</tr>
+<tr class="row-even"><td><p>UDP</p></td>
+<td><p>Unique Dirty Partial</p></td>
+<td><p>唯一脏部分，仅部分字节有效</p></td>
+</tr>
+<tr class="row-odd"><td><p>SC</p></td>
+<td><p>Shared Clean</p></td>
+<td><p>共享干净，可能存在于其他缓存</p></td>
+</tr>
+<tr class="row-even"><td><p>SD</p></td>
+<td><p>Shared Dirty</p></td>
+<td><p>共享脏，需负责更新主存</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.5.2 Cache state model</p>
+</div>
+</section>
+</section>
+<section id="id16">
+<h1>关键术语<a class="headerlink" href="#id16" title="链接到此标题。"></a></h1>
+<table class="docutils align-default" id="id29">
+<caption><span class="caption-text">关键术语定义</span><a class="headerlink" href="#id29" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>术语</p></th>
+<th class="head"><p>定义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Transaction</p></td>
+<td><p>事务：执行单一操作，如读或写内存</p></td>
+</tr>
+<tr class="row-odd"><td><p>Message</p></td>
+<td><p>消息：协议层概念，两个组件间交换的粒度，如 Request、Data response、Snoop request</p></td>
+</tr>
+<tr class="row-even"><td><p>Packet</p></td>
+<td><p>包：互连端点间传输的粒度，包含路由信息，一个消息可由多个包组成</p></td>
+</tr>
+<tr class="row-odd"><td><p>Flit</p></td>
+<td><p>Flow control unIT：最小流控单元，CHI 中所有包由单个 Flit 组成</p></td>
+</tr>
+<tr class="row-even"><td><p>Phit</p></td>
+<td><p>Physical layer transfer unIT：相邻网络设备间单次传输，CHI 中所有 Flit 由单个 Phit 组成</p></td>
+</tr>
+<tr class="row-odd"><td><p>Protocol Credit</p></td>
+<td><p>协议信用：Completer 保证接受事务的信用</p></td>
+</tr>
+<tr class="row-even"><td><p>L-Credit</p></td>
+<td><p>Link layer Credit：链路层信用，保证 Flit 在链路另一端被接受</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>参考：B1.3 Terminology</p>
+</div>
+</section>
+<section id="id17">
+<h1>协议章节概览<a class="headerlink" href="#id17" title="链接到此标题。"></a></h1>
+<p>规范主体分为以下主要章节：</p>
+<table class="docutils align-default" id="id30">
+<caption><span class="caption-text">规范章节</span><a class="headerlink" href="#id30" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 85.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>章节</p></th>
+<th class="head"><p>内容</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>B1 Introduction</p></td>
+<td><p>架构概述、术语定义、一致性模型</p></td>
+</tr>
+<tr class="row-odd"><td><p>B2 Transactions</p></td>
+<td><p>通道概述、字段定义、事务结构、ID 流、排序规则</p></td>
+</tr>
+<tr class="row-even"><td><p>B3 Network Layer</p></td>
+<td><p>系统地址映射、节点 ID、目标 ID 确定</p></td>
+</tr>
+<tr class="row-odd"><td><p>B4 Coherence Protocol</p></td>
+<td><p>缓存行状态、请求类型、Snoop 类型、响应类型、状态转换</p></td>
+</tr>
+<tr class="row-even"><td><p>B5 Interconnect Protocol Flows</p></td>
+<td><p>各类事务流程示例</p></td>
+</tr>
+<tr class="row-odd"><td><p>B6 Exclusive accesses</p></td>
+<td><p>独占访问机制</p></td>
+</tr>
+<tr class="row-even"><td><p>B7 Cache Stashing</p></td>
+<td><p>缓存预取机制</p></td>
+</tr>
+<tr class="row-odd"><td><p>B8 DVM Operations</p></td>
+<td><p>分布式虚拟内存操作</p></td>
+</tr>
+<tr class="row-even"><td><p>B9 Error Handling</p></td>
+<td><p>错误处理机制</p></td>
+</tr>
+<tr class="row-odd"><td><p>B10 Realm Management Extension</p></td>
+<td><p>领域管理扩展 (RME)</p></td>
+</tr>
+<tr class="row-even"><td><p>B11 System Control</p></td>
+<td><p>QoS、数据源、MPAM、追踪</p></td>
+</tr>
+<tr class="row-odd"><td><p>B12 Memory Tagging</p></td>
+<td><p>内存标记扩展 (MTE)</p></td>
+</tr>
+<tr class="row-even"><td><p>B13-B15 Link Layer</p></td>
+<td><p>链路层、链路握手、系统一致性接口</p></td>
+</tr>
+<tr class="row-odd"><td><p>B16 Properties</p></td>
+<td><p>接口属性、参数、广播信号</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id18">
+<h1>扩展特性<a class="headerlink" href="#id18" title="链接到此标题。"></a></h1>
+<p>CHI 协议支持多种 ARM 扩展：</p>
+<table class="docutils align-default" id="id31">
+<caption><span class="caption-text">支持的扩展</span><a class="headerlink" href="#id31" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>扩展</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MTE</p></td>
+<td><p>Memory Tagging Extension：内存标记扩展，检查内存数据的正确使用</p></td>
+</tr>
+<tr class="row-odd"><td><p>RME</p></td>
+<td><p>Realm Management Extension：领域管理扩展，支持安全隔离</p></td>
+</tr>
+<tr class="row-even"><td><p>MPAM</p></td>
+<td><p>Memory System Resource Partitioning and Monitoring：内存系统资源分区与监控</p></td>
+</tr>
+<tr class="row-odd"><td><p>MEC</p></td>
+<td><p>Memory Encryption Contexts：内存加密上下文</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id19">
+<h1>总结<a class="headerlink" href="#id19" title="链接到此标题。"></a></h1>
+<p>AMBA CHI 是 ARM 高性能 SoC 的核心互连协议，具有以下关键特点：</p>
+<ol class="arabic simple">
+<li><p><strong>分层架构</strong>：Protocol、Network、Link 三层清晰分工</p></li>
+<li><p><strong>组件丰富</strong>：RN-F/RN-D/RN-I、HN-F/HN-I、SN、MN 多种节点类型</p></li>
+<li><p><strong>一致性保证</strong>：基于 Write-Invalidate 的硬件缓存一致性</p></li>
+<li><p><strong>七状态模型</strong>：I/UC/UCE/UD/UDP/SC/SD 状态支持精确的一致性管理</p></li>
+<li><p><strong>灵活拓扑</strong>：支持 Crossbar、Ring、Mesh 等多种拓扑</p></li>
+<li><p><strong>丰富事务</strong>：读、写、原子、DVM 等多种事务类型</p></li>
+<li><p><strong>扩展支持</strong>：MTE、RME、MPAM 等现代安全与性能扩展</p></li>
+</ol>
+<p>本概览文档覆盖了 CHI 架构的核心概念，为深入理解后续章节奠定基础。</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

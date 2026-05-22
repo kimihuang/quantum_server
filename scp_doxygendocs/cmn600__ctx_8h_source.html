@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: scp_firmware/module/cmn600/include/internal/cmn600_ctx.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cmn600__ctx_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">cmn600_ctx.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="cmn600__ctx_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * @file cmn600_ctx.h</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * @brief CMN-600 模块内部上下文结构定义</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> * @details 定义 CMN-600 驱动模块的运行时上下文结构体 cmn600_ctx，</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> *          保存互连拓扑发现结果、节点配置信息和 CCIX 相关状态。</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> *          该头文件仅供模块内部使用，不属于公共接口。</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> * @note 该驱动运行在 SCP (System Control Processor) 固件环境中，</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> *       使用 SCP 框架的内存管理和定时器 API。</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> * @copyright Copyright (c) 2019-2021, Arm Limited and Contributors. All rights reserved.</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> * @license SPDX-License-Identifier: BSD-3-Clause</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#ifndef INTERNAL_CMN600_CTX_H</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#define INTERNAL_CMN600_CTX_H</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;<a class="code" href="cmn600_8h.html">cmn600.h</a>&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;<a class="code" href="mod__cmn600_8h.html">mod_cmn600.h</a>&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;mod_timer.h&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment"></span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment"> * @brief 外部 RN-SAM 节点映射元组</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment"> * @details 用于在运行时记录需要配置 RN-SAM 映射的外部节点。</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment"> *          每个元组包含节点标识符和对应的 RN-SAM 寄存器指针。</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structexternal__rnsam__tuple.html">   33</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structexternal__rnsam__tuple.html">external_rnsam_tuple</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment">    /** @brief 节点标识符，用于匹配外部 RN-SAM 节点 */</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structexternal__rnsam__tuple.html#a8b03fbcbcf2056598f26f9f3e7ea6789">   35</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structexternal__rnsam__tuple.html#a8b03fbcbcf2056598f26f9f3e7ea6789">node_id</a>;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment"></span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="comment">    /** @brief 指向 RN-SAM 寄存器映射区域的指针 */</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structexternal__rnsam__tuple.html#a40b01fbf4a32dc518eeb571ef7cc5186">   38</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__rnsam__reg.html">cmn600_rnsam_reg</a> *<a class="code hl_variable" href="structexternal__rnsam__tuple.html#a40b01fbf4a32dc518eeb571ef7cc5186">node</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>};</div>
+</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment"></span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">/** @def MAX_HNF_COUNT</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment"> * @brief 系统中 HN-F（系统缓存）节点的最大数量 */</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="cmn600__ctx_8h.html#accdca5e4e5e25977d630ce4b6d0c665a">   43</a></span><span class="preprocessor">#define MAX_HNF_COUNT 32</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="comment"></span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="comment">/** @def MAX_RND_COUNT</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment"> * @brief 系统中 RN-D（请求节点设备）节点的最大数量 */</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="cmn600__ctx_8h.html#a60115c33684e95bcf5073d7dc1b8bfdc">   47</a></span><span class="preprocessor">#define MAX_RND_COUNT 32</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment"></span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment">/** @def MAX_RNF_COUNT</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="comment"> * @brief 系统中 RN-F（全一致性请求节点）节点的最大数量 */</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="cmn600__ctx_8h.html#a5c2beb98a59a98ca4be63ca04ed92e32">   51</a></span><span class="preprocessor">#define MAX_RNF_COUNT 32</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="comment"></span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="comment">/** @def MAX_RNI_COUNT</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="comment"> * @brief 系统中 RN-I（I/O 请求节点）节点的最大数量 */</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="cmn600__ctx_8h.html#a28bb767487a658f494c4e169c354a303">   55</a></span><span class="preprocessor">#define MAX_RNI_COUNT 32</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="comment"></span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="comment"> * @brief CMN-600 驱动模块运行时上下文</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment"> * @details 保存 CMN-600 互连拓扑发现结果、各类节点信息、</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment"> *          CCIX 配置状态及模块依赖的 API。该结构体在模块初始化时</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="comment"> *          通过 fwk_mm_calloc 分配，整个模块生命周期内唯一。</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00064" data-start="{" data-end="};">
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html">   64</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__ctx.html">cmn600_ctx</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="comment">    /** @brief 指向模块配置数据的指针，由 fwk 在 init 时传入 */</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a862fe64b8299071a2c7d8b3e5d300473">   66</a></span>    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__config.html">mod_cmn600_config</a> *<a class="code hl_variable" href="structcmn600__ctx.html#a862fe64b8299071a2c7d8b3e5d300473">config</a>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="comment"></span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="comment">    /** @brief 指向根节点（Configuration Manager）寄存器的指针 */</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a5ab8f39b7da52f83bdd2ac05a599a10b">   69</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *<a class="code hl_variable" href="structcmn600__ctx.html#a5ab8f39b7da52f83bdd2ac05a599a10b">root</a>;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="comment"></span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">    /** @brief 系统中 HN-F（系统缓存）节点的数量 */</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#ab44d27c3277929278356f7319b6a6670">   72</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#ab44d27c3277929278356f7319b6a6670">hnf_count</a>;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="comment"></span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="comment">    /** @brief HN-F 节点寄存器偏移量数组，每个元素为对应 HN-F 的寄存器基地址偏移 */</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#abbb90831b32d53f522ce4ea082499843">   75</a></span>    uint32_t <a class="code hl_variable" href="structcmn600__ctx.html#abbb90831b32d53f522ce4ea082499843">hnf_offset</a>[<a class="code hl_define" href="cmn600__ctx_8h.html#accdca5e4e5e25977d630ce4b6d0c665a">MAX_HNF_COUNT</a>];</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="comment"></span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="comment">    /** @brief HN-F 缓存分组描述符数组，用于配置 RN-SAM 的 SYS_CACHE_GRP_HN_NODEID 寄存器 */</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#aaf3a8811f7b51db7dd4a9284e364cf19">   78</a></span>    uint64_t *<a class="code hl_variable" href="structcmn600__ctx.html#aaf3a8811f7b51db7dd4a9284e364cf19">hnf_cache_group</a>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment"></span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment">     * @brief 外部 RN-SAM 节点数量</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="comment">     * @details 外部 RN-SAM 节点位于当前 CMN-600 实例的时钟/电源域之外，</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment">     *          需要在对应电源域上电后通过 PPU 观察者回调进行配置。</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a0940b54abbfcb2f531d694f1c42fabe9">   86</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a0940b54abbfcb2f531d694f1c42fabe9">external_rnsam_count</a>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="comment"></span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="comment">    /** @brief 外部 RN-SAM 节点元组表，包含节点 ID 和寄存器指针 */</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a94a1cda40d191f10d33b9276d0cf80af">   89</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structexternal__rnsam__tuple.html">external_rnsam_tuple</a> *<a class="code hl_variable" href="structcmn600__ctx.html#a94a1cda40d191f10d33b9276d0cf80af">external_rnsam_table</a>;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment"></span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment">     * @brief 内部 RN-SAM 节点数量</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">     * @details 内部 RN-SAM 节点位于当前 CMN-600 实例内，</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="comment">     *          在系统拓扑发现完成后统一配置。</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#acfae577390de19d3896459b7081138a2">   97</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#acfae577390de19d3896459b7081138a2">internal_rnsam_count</a>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="comment"></span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="comment">    /** @brief 内部 RN-SAM 节点寄存器指针数组 */</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a68184aa4110adddf55ebd23cfa45212f">  100</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__rnsam__reg.html">cmn600_rnsam_reg</a> **<a class="code hl_variable" href="structcmn600__ctx.html#a68184aa4110adddf55ebd23cfa45212f">internal_rnsam_table</a>;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="comment"></span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="comment">     * @brief RN-D 节点数量</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">     * @details 驱动保存 RN-D 节点的 LDID 列表，</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">     *          用于 CCIX 配置时建立 LDID 到 RAID 的映射。</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a0575438bb0ca196eb05655347b9bcec5">  108</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a0575438bb0ca196eb05655347b9bcec5">rnd_count</a>;</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment"></span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="comment">    /** @brief RN-D 节点的 LDID 数组 */</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a3b8ee90e810c1ba399b10808b375b4c3">  111</a></span>    uint8_t <a class="code hl_variable" href="structcmn600__ctx.html#a3b8ee90e810c1ba399b10808b375b4c3">rnd_ldid</a>[<a class="code hl_define" href="cmn600__ctx_8h.html#a60115c33684e95bcf5073d7dc1b8bfdc">MAX_RND_COUNT</a>];</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="comment"></span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="comment">     * @brief RN-F 节点数量</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment">     * @details RN-F 节点没有独立的节点类型标识符，</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="comment">     *          其数量通过 RN-SAM 总数减去 RN-D、RN-I 和 CXHA 数量推算。</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a2866d124b36d4e2b563b312922f296ed">  119</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a2866d124b36d4e2b563b312922f296ed">rnf_count</a>;</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="comment"></span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="comment">     * @brief RN-I 节点数量</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="comment">     * @details 驱动保存 RN-I 节点的 LDID 列表，</span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><span class="comment">     *          用于 CCIX 配置时建立 LDID 到 RAID 的映射。</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a8f5f1b75c6f4b6f27711797d7aadfba2">  127</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a8f5f1b75c6f4b6f27711797d7aadfba2">rni_count</a>;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span><span class="comment"></span> </div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span><span class="comment">    /** @brief RN-I 节点的 LDID 数组 */</span></div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a4de2b71a99a4eb9e661e111b0466dfd2">  130</a></span>    uint8_t <a class="code hl_variable" href="structcmn600__ctx.html#a4de2b71a99a4eb9e661e111b0466dfd2">rni_ldid</a>[<a class="code hl_define" href="cmn600__ctx_8h.html#a28bb767487a658f494c4e169c354a303">MAX_RNI_COUNT</a>];</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="comment"></span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span><span class="comment">    /** @brief CCIX Home Agent 的本地 HA ID */</span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a813e8bb5a30c3ea1f4a138da084c9685">  133</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a813e8bb5a30c3ea1f4a138da084c9685">cxg_ha_id</a>;</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="comment"></span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span><span class="comment">    /** @brief CCIX Home Agent 的节点 ID */</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a6a7358a770ba7b4f2f4bcdb077520fff">  136</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a6a7358a770ba7b4f2f4bcdb077520fff">cxg_ha_node_id</a>;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="comment"></span> </div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="comment">    /** @brief CCIX 远端 Home Agent 的 HA ID */</span></div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a6ee026aeadb31b1d235db1f9ec3970fc">  139</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structcmn600__ctx.html#a6ee026aeadb31b1d235db1f9ec3970fc">cxg_ha_id_remote</a>;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="comment"></span> </div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="comment">    /** @brief 当前 RAID (Requesting Agent ID) 分配值，用于 CCIX 配置时递增分配 */</span></div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#ac900b51bdd093a6bd8a331c611fa1ccb">  142</a></span>    uint8_t <a class="code hl_variable" href="structcmn600__ctx.html#ac900b51bdd093a6bd8a331c611fa1ccb">raid_value</a>;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span><span class="comment"></span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span><span class="comment">    /** @brief 指向 CCIX Gateway Requesting Agent 寄存器的指针 */</span></div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a5f34092a559e052c6d29a47fa3dff90d">  145</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cxg__ra__reg.html">cmn600_cxg_ra_reg</a> *<a class="code hl_variable" href="structcmn600__ctx.html#a5f34092a559e052c6d29a47fa3dff90d">cxg_ra_reg</a>;</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="comment"></span> </div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="comment">    /** @brief 指向 CCIX Gateway Home Agent 寄存器的指针 */</span></div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a6b83c15d62818a9115a34966422310bf">  148</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cxg__ha__reg.html">cmn600_cxg_ha_reg</a> *<a class="code hl_variable" href="structcmn600__ctx.html#a6b83c15d62818a9115a34966422310bf">cxg_ha_reg</a>;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="comment"></span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="comment">    /** @brief 指向 CCIX Gateway Link Agent 寄存器的指针 */</span></div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a5f229245a7a9aca739c000e586bfd5df">  151</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcmn600__cxla__reg.html">cmn600_cxla_reg</a> *<a class="code hl_variable" href="structcmn600__ctx.html#a5f229245a7a9aca739c000e586bfd5df">cxla_reg</a>;</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span><span class="comment"></span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="comment">    /** @brief CCIX 主节点配置信息，用于传递给上层固件（如 SCMI） */</span></div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#af4200d136f8774d4fea2ebf481d6eab1">  154</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__host__node__config.html">mod_cmn600_ccix_host_node_config</a> <a class="code hl_variable" href="structcmn600__ctx.html#af4200d136f8774d4fea2ebf481d6eab1">ccix_host_info</a>;</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="comment"></span> </div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="comment">    /** @brief 定时器模块 API 指针，用于 CCIX 链路建立过程中的超时等待 */</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a275bcb705830cedbd7204cd7606c8406">  157</a></span>    <span class="keyword">struct </span>mod_timer_api *<a class="code hl_variable" href="structcmn600__ctx.html#a275bcb705830cedbd7204cd7606c8406">timer_api</a>;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span><span class="comment"></span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="comment">    /** @brief 系统信息指针，包含多芯片模式和 chip ID 等信息 */</span></div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#abe64560a678d2c4646fb518ea1ccaa91">  160</a></span>    <span class="keyword">const</span> <span class="keyword">struct </span>mod_system_info *<a class="code hl_variable" href="structcmn600__ctx.html#abe64560a678d2c4646fb518ea1ccaa91">system_info</a>;</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="comment"></span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="comment">    /** @brief 模块初始化完成标志，防止重复执行发现和配置流程 */</span></div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#a82db205bde26d256607a7c1500d17fd0">  163</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structcmn600__ctx.html#a82db205bde26d256607a7c1500d17fd0">initialized</a>;</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="comment"></span> </div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">    /** @brief 当前芯片的 chip ID，用于多芯片场景下的地址偏移计算 */</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="structcmn600__ctx.html#ad9974485bcc906b1b6f91ee989150904">  166</a></span>    uint8_t <a class="code hl_variable" href="structcmn600__ctx.html#ad9974485bcc906b1b6f91ee989150904">chip_id</a>;</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>};</div>
+</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="comment"></span> </div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="comment"> * @brief 配置 RN-SAM（请求节点系统地址映射）</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="comment"> * @details 根据模块配置中的内存区域映射表，对指定的 RN-SAM 节点</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="comment"> *          进行地址映射配置，包括 IO 区域、系统缓存区域和 CCIX 区域。</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="comment"> * @param[in] rnsam 指向待配置的 RN-SAM 寄存器结构体</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="comment"> * @return 0 成功（FWK_SUCCESS）；负值为错误码</span></div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="comment"> * @retval FWK_E_DATA 内存区域数量超过硬件限制</span></div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="comment"> * @retval FWK_E_DEVICE 不支持的 CMN-600 修订版本</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="comment"> * @pre ctx 必须已初始化，且 cmn600_discovery() 已成功执行</span></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="comment"> * @post RN-SAM 寄存器已配置完成并使能（STATUS 寄存器写入 UNSTALL）</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="keywordtype">int</span> <a class="code hl_function" href="cmn600__ctx_8h.html#a8df77e0501c61e815e25a1042f0337ca">cmn600_setup_sam</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structcmn600__rnsam__reg.html">cmn600_rnsam_reg</a> *rnsam);</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="preprocessor">#endif </span><span class="comment">/* INTERNAL_CMN600_CTX_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="acmn600_8h_html"><div class="ttname"><a href="cmn600_8h.html">cmn600.h</a></div><div class="ttdoc">CMN-600 互连控制器硬件寄存器定义和工具函数声明</div></div>
+<div class="ttc" id="acmn600__ctx_8h_html_a28bb767487a658f494c4e169c354a303"><div class="ttname"><a href="cmn600__ctx_8h.html#a28bb767487a658f494c4e169c354a303">MAX_RNI_COUNT</a></div><div class="ttdeci">#define MAX_RNI_COUNT</div><div class="ttdoc">系统中 RN-I（I/O 请求节点）节点的最大数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00055">cmn600_ctx.h:55</a></div></div>
+<div class="ttc" id="acmn600__ctx_8h_html_a60115c33684e95bcf5073d7dc1b8bfdc"><div class="ttname"><a href="cmn600__ctx_8h.html#a60115c33684e95bcf5073d7dc1b8bfdc">MAX_RND_COUNT</a></div><div class="ttdeci">#define MAX_RND_COUNT</div><div class="ttdoc">系统中 RN-D（请求节点设备）节点的最大数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00047">cmn600_ctx.h:47</a></div></div>
+<div class="ttc" id="acmn600__ctx_8h_html_a8df77e0501c61e815e25a1042f0337ca"><div class="ttname"><a href="cmn600__ctx_8h.html#a8df77e0501c61e815e25a1042f0337ca">cmn600_setup_sam</a></div><div class="ttdeci">int cmn600_setup_sam(struct cmn600_rnsam_reg *rnsam)</div><div class="ttdoc">配置 RN-SAM（请求节点系统地址映射）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8c_source.html#l00472">mod_cmn600.c:472</a></div></div>
+<div class="ttc" id="acmn600__ctx_8h_html_accdca5e4e5e25977d630ce4b6d0c665a"><div class="ttname"><a href="cmn600__ctx_8h.html#accdca5e4e5e25977d630ce4b6d0c665a">MAX_HNF_COUNT</a></div><div class="ttdeci">#define MAX_HNF_COUNT</div><div class="ttdoc">系统中 HN-F（系统缓存）节点的最大数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00043">cmn600_ctx.h:43</a></div></div>
+<div class="ttc" id="amod__cmn600_8h_html"><div class="ttname"><a href="mod__cmn600_8h.html">mod_cmn600.h</a></div><div class="ttdoc">CMN-600 模块公共接口定义</div></div>
+<div class="ttc" id="astructcmn600__cfgm__reg_html"><div class="ttname"><a href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a></div><div class="ttdoc">Configuration Manager (CFGM) 寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600_8h_source.html#l00415">cmn600.h:415</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html"><div class="ttname"><a href="structcmn600__ctx.html">cmn600_ctx</a></div><div class="ttdoc">CMN-600 驱动模块运行时上下文</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00064">cmn600_ctx.h:64</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a0575438bb0ca196eb05655347b9bcec5"><div class="ttname"><a href="structcmn600__ctx.html#a0575438bb0ca196eb05655347b9bcec5">cmn600_ctx::rnd_count</a></div><div class="ttdeci">unsigned int rnd_count</div><div class="ttdoc">RN-D 节点数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00108">cmn600_ctx.h:108</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a0940b54abbfcb2f531d694f1c42fabe9"><div class="ttname"><a href="structcmn600__ctx.html#a0940b54abbfcb2f531d694f1c42fabe9">cmn600_ctx::external_rnsam_count</a></div><div class="ttdeci">unsigned int external_rnsam_count</div><div class="ttdoc">外部 RN-SAM 节点数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00086">cmn600_ctx.h:86</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a275bcb705830cedbd7204cd7606c8406"><div class="ttname"><a href="structcmn600__ctx.html#a275bcb705830cedbd7204cd7606c8406">cmn600_ctx::timer_api</a></div><div class="ttdeci">struct mod_timer_api * timer_api</div><div class="ttdoc">定时器模块 API 指针，用于 CCIX 链路建立过程中的超时等待</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00157">cmn600_ctx.h:157</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a2866d124b36d4e2b563b312922f296ed"><div class="ttname"><a href="structcmn600__ctx.html#a2866d124b36d4e2b563b312922f296ed">cmn600_ctx::rnf_count</a></div><div class="ttdeci">unsigned int rnf_count</div><div class="ttdoc">RN-F 节点数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00119">cmn600_ctx.h:119</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a3b8ee90e810c1ba399b10808b375b4c3"><div class="ttname"><a href="structcmn600__ctx.html#a3b8ee90e810c1ba399b10808b375b4c3">cmn600_ctx::rnd_ldid</a></div><div class="ttdeci">uint8_t rnd_ldid[MAX_RND_COUNT]</div><div class="ttdoc">RN-D 节点的 LDID 数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00111">cmn600_ctx.h:111</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a4de2b71a99a4eb9e661e111b0466dfd2"><div class="ttname"><a href="structcmn600__ctx.html#a4de2b71a99a4eb9e661e111b0466dfd2">cmn600_ctx::rni_ldid</a></div><div class="ttdeci">uint8_t rni_ldid[MAX_RNI_COUNT]</div><div class="ttdoc">RN-I 节点的 LDID 数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00130">cmn600_ctx.h:130</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a5ab8f39b7da52f83bdd2ac05a599a10b"><div class="ttname"><a href="structcmn600__ctx.html#a5ab8f39b7da52f83bdd2ac05a599a10b">cmn600_ctx::root</a></div><div class="ttdeci">struct cmn600_cfgm_reg * root</div><div class="ttdoc">指向根节点（Configuration Manager）寄存器的指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00069">cmn600_ctx.h:69</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a5f229245a7a9aca739c000e586bfd5df"><div class="ttname"><a href="structcmn600__ctx.html#a5f229245a7a9aca739c000e586bfd5df">cmn600_ctx::cxla_reg</a></div><div class="ttdeci">struct cmn600_cxla_reg * cxla_reg</div><div class="ttdoc">指向 CCIX Gateway Link Agent 寄存器的指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00151">cmn600_ctx.h:151</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a5f34092a559e052c6d29a47fa3dff90d"><div class="ttname"><a href="structcmn600__ctx.html#a5f34092a559e052c6d29a47fa3dff90d">cmn600_ctx::cxg_ra_reg</a></div><div class="ttdeci">struct cmn600_cxg_ra_reg * cxg_ra_reg</div><div class="ttdoc">指向 CCIX Gateway Requesting Agent 寄存器的指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00145">cmn600_ctx.h:145</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a68184aa4110adddf55ebd23cfa45212f"><div class="ttname"><a href="structcmn600__ctx.html#a68184aa4110adddf55ebd23cfa45212f">cmn600_ctx::internal_rnsam_table</a></div><div class="ttdeci">struct cmn600_rnsam_reg ** internal_rnsam_table</div><div class="ttdoc">内部 RN-SAM 节点寄存器指针数组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00100">cmn600_ctx.h:100</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a6a7358a770ba7b4f2f4bcdb077520fff"><div class="ttname"><a href="structcmn600__ctx.html#a6a7358a770ba7b4f2f4bcdb077520fff">cmn600_ctx::cxg_ha_node_id</a></div><div class="ttdeci">unsigned int cxg_ha_node_id</div><div class="ttdoc">CCIX Home Agent 的节点 ID</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00136">cmn600_ctx.h:136</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a6b83c15d62818a9115a34966422310bf"><div class="ttname"><a href="structcmn600__ctx.html#a6b83c15d62818a9115a34966422310bf">cmn600_ctx::cxg_ha_reg</a></div><div class="ttdeci">struct cmn600_cxg_ha_reg * cxg_ha_reg</div><div class="ttdoc">指向 CCIX Gateway Home Agent 寄存器的指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00148">cmn600_ctx.h:148</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a6ee026aeadb31b1d235db1f9ec3970fc"><div class="ttname"><a href="structcmn600__ctx.html#a6ee026aeadb31b1d235db1f9ec3970fc">cmn600_ctx::cxg_ha_id_remote</a></div><div class="ttdeci">unsigned int cxg_ha_id_remote</div><div class="ttdoc">CCIX 远端 Home Agent 的 HA ID</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00139">cmn600_ctx.h:139</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a813e8bb5a30c3ea1f4a138da084c9685"><div class="ttname"><a href="structcmn600__ctx.html#a813e8bb5a30c3ea1f4a138da084c9685">cmn600_ctx::cxg_ha_id</a></div><div class="ttdeci">unsigned int cxg_ha_id</div><div class="ttdoc">CCIX Home Agent 的本地 HA ID</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00133">cmn600_ctx.h:133</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a82db205bde26d256607a7c1500d17fd0"><div class="ttname"><a href="structcmn600__ctx.html#a82db205bde26d256607a7c1500d17fd0">cmn600_ctx::initialized</a></div><div class="ttdeci">bool initialized</div><div class="ttdoc">模块初始化完成标志，防止重复执行发现和配置流程</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00163">cmn600_ctx.h:163</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a862fe64b8299071a2c7d8b3e5d300473"><div class="ttname"><a href="structcmn600__ctx.html#a862fe64b8299071a2c7d8b3e5d300473">cmn600_ctx::config</a></div><div class="ttdeci">const struct mod_cmn600_config * config</div><div class="ttdoc">指向模块配置数据的指针，由 fwk 在 init 时传入</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00066">cmn600_ctx.h:66</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a8f5f1b75c6f4b6f27711797d7aadfba2"><div class="ttname"><a href="structcmn600__ctx.html#a8f5f1b75c6f4b6f27711797d7aadfba2">cmn600_ctx::rni_count</a></div><div class="ttdeci">unsigned int rni_count</div><div class="ttdoc">RN-I 节点数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00127">cmn600_ctx.h:127</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_a94a1cda40d191f10d33b9276d0cf80af"><div class="ttname"><a href="structcmn600__ctx.html#a94a1cda40d191f10d33b9276d0cf80af">cmn600_ctx::external_rnsam_table</a></div><div class="ttdeci">struct external_rnsam_tuple * external_rnsam_table</div><div class="ttdoc">外部 RN-SAM 节点元组表，包含节点 ID 和寄存器指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00089">cmn600_ctx.h:89</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_aaf3a8811f7b51db7dd4a9284e364cf19"><div class="ttname"><a href="structcmn600__ctx.html#aaf3a8811f7b51db7dd4a9284e364cf19">cmn600_ctx::hnf_cache_group</a></div><div class="ttdeci">uint64_t * hnf_cache_group</div><div class="ttdoc">HN-F 缓存分组描述符数组，用于配置 RN-SAM 的 SYS_CACHE_GRP_HN_NODEID 寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00078">cmn600_ctx.h:78</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_ab44d27c3277929278356f7319b6a6670"><div class="ttname"><a href="structcmn600__ctx.html#ab44d27c3277929278356f7319b6a6670">cmn600_ctx::hnf_count</a></div><div class="ttdeci">unsigned int hnf_count</div><div class="ttdoc">系统中 HN-F（系统缓存）节点的数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00072">cmn600_ctx.h:72</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_abbb90831b32d53f522ce4ea082499843"><div class="ttname"><a href="structcmn600__ctx.html#abbb90831b32d53f522ce4ea082499843">cmn600_ctx::hnf_offset</a></div><div class="ttdeci">uint32_t hnf_offset[MAX_HNF_COUNT]</div><div class="ttdoc">HN-F 节点寄存器偏移量数组，每个元素为对应 HN-F 的寄存器基地址偏移</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00075">cmn600_ctx.h:75</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_abe64560a678d2c4646fb518ea1ccaa91"><div class="ttname"><a href="structcmn600__ctx.html#abe64560a678d2c4646fb518ea1ccaa91">cmn600_ctx::system_info</a></div><div class="ttdeci">const struct mod_system_info * system_info</div><div class="ttdoc">系统信息指针，包含多芯片模式和 chip ID 等信息</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00160">cmn600_ctx.h:160</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_ac900b51bdd093a6bd8a331c611fa1ccb"><div class="ttname"><a href="structcmn600__ctx.html#ac900b51bdd093a6bd8a331c611fa1ccb">cmn600_ctx::raid_value</a></div><div class="ttdeci">uint8_t raid_value</div><div class="ttdoc">当前 RAID (Requesting Agent ID) 分配值，用于 CCIX 配置时递增分配</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00142">cmn600_ctx.h:142</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_acfae577390de19d3896459b7081138a2"><div class="ttname"><a href="structcmn600__ctx.html#acfae577390de19d3896459b7081138a2">cmn600_ctx::internal_rnsam_count</a></div><div class="ttdeci">unsigned int internal_rnsam_count</div><div class="ttdoc">内部 RN-SAM 节点数量</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00097">cmn600_ctx.h:97</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_ad9974485bcc906b1b6f91ee989150904"><div class="ttname"><a href="structcmn600__ctx.html#ad9974485bcc906b1b6f91ee989150904">cmn600_ctx::chip_id</a></div><div class="ttdeci">uint8_t chip_id</div><div class="ttdoc">当前芯片的 chip ID，用于多芯片场景下的地址偏移计算</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00166">cmn600_ctx.h:166</a></div></div>
+<div class="ttc" id="astructcmn600__ctx_html_af4200d136f8774d4fea2ebf481d6eab1"><div class="ttname"><a href="structcmn600__ctx.html#af4200d136f8774d4fea2ebf481d6eab1">cmn600_ctx::ccix_host_info</a></div><div class="ttdeci">struct mod_cmn600_ccix_host_node_config ccix_host_info</div><div class="ttdoc">CCIX 主节点配置信息，用于传递给上层固件（如 SCMI）</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00154">cmn600_ctx.h:154</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ha__reg_html"><div class="ttname"><a href="structcmn600__cxg__ha__reg.html">cmn600_cxg_ha_reg</a></div><div class="ttdoc">CCIX Gateway Home Agent (CXHA) 寄存器映射</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00121">cmn600_ccix.h:121</a></div></div>
+<div class="ttc" id="astructcmn600__cxg__ra__reg_html"><div class="ttname"><a href="structcmn600__cxg__ra__reg.html">cmn600_cxg_ra_reg</a></div><div class="ttdoc">CCIX Gateway Requesting Agent (CXRA) 寄存器映射</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00188">cmn600_ccix.h:188</a></div></div>
+<div class="ttc" id="astructcmn600__cxla__reg_html"><div class="ttname"><a href="structcmn600__cxla__reg.html">cmn600_cxla_reg</a></div><div class="ttdoc">CCIX Gateway Link Agent (CXLA) 寄存器映射</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ccix_8h_source.html#l00290">cmn600_ccix.h:290</a></div></div>
+<div class="ttc" id="astructcmn600__rnsam__reg_html"><div class="ttname"><a href="structcmn600__rnsam__reg.html">cmn600_rnsam_reg</a></div><div class="ttdoc">RN-SAM（请求节点系统地址映射）寄存器</div><div class="ttdef"><b>Definition</b> <a href="cmn600_8h_source.html#l00136">cmn600.h:136</a></div></div>
+<div class="ttc" id="astructexternal__rnsam__tuple_html"><div class="ttname"><a href="structexternal__rnsam__tuple.html">external_rnsam_tuple</a></div><div class="ttdoc">外部 RN-SAM 节点映射元组</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00033">cmn600_ctx.h:33</a></div></div>
+<div class="ttc" id="astructexternal__rnsam__tuple_html_a40b01fbf4a32dc518eeb571ef7cc5186"><div class="ttname"><a href="structexternal__rnsam__tuple.html#a40b01fbf4a32dc518eeb571ef7cc5186">external_rnsam_tuple::node</a></div><div class="ttdeci">struct cmn600_rnsam_reg * node</div><div class="ttdoc">指向 RN-SAM 寄存器映射区域的指针</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00038">cmn600_ctx.h:38</a></div></div>
+<div class="ttc" id="astructexternal__rnsam__tuple_html_a8b03fbcbcf2056598f26f9f3e7ea6789"><div class="ttname"><a href="structexternal__rnsam__tuple.html#a8b03fbcbcf2056598f26f9f3e7ea6789">external_rnsam_tuple::node_id</a></div><div class="ttdeci">unsigned int node_id</div><div class="ttdoc">节点标识符，用于匹配外部 RN-SAM 节点</div><div class="ttdef"><b>Definition</b> <a href="cmn600__ctx_8h_source.html#l00035">cmn600_ctx.h:35</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html">mod_cmn600_ccix_host_node_config</a></div><div class="ttdoc">CMN-600 主节点 CCIX 配置数据</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00245">mod_cmn600.h:245</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html"><div class="ttname"><a href="structmod__cmn600__config.html">mod_cmn600_config</a></div><div class="ttdoc">CMN-600 模块配置数据</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00121">mod_cmn600.h:121</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_48f311512fb313e8ec1c32eaef206743.html">scp_firmware</a></li><li class="navelem"><a class="el" href="dir_fcc1255ba6bda919d85092c50000c4b5.html">module</a></li><li class="navelem"><a class="el" href="dir_a446bcb378e7d3b34199efec74fac8d3.html">cmn600</a></li><li class="navelem"><a class="el" href="dir_dfaf74a7e0a30d6f2b03404a92276f19.html">include</a></li><li class="navelem"><a class="el" href="dir_34586aada5f6b86c3b06b4faf9f82e08.html">internal</a></li><li class="navelem"><a class="el" href="cmn600__ctx_8h.html">cmn600_ctx.h</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

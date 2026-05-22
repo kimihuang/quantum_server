@@ -1,0 +1,26 @@
+var cmn600_8c =
+[
+    [ "configure_region", "cmn600_8c.html#a71449bb071080b3ad2397e417287826c", null ],
+    [ "get_child_node", "cmn600_8c.html#ae9eda14c74ddd16a5c2c73090def70de", null ],
+    [ "get_child_node_id", "cmn600_8c.html#a456130bb3afbdb65168886ae4e1238d1", null ],
+    [ "get_cmn600_revision", "cmn600_8c.html#a870cbaad75fff8a5be5531eb3d7f3a3e", null ],
+    [ "get_cmn600_revision_name", "cmn600_8c.html#a746f0bf4eae94d042139c8f539f00fb1", null ],
+    [ "get_device_type", "cmn600_8c.html#a8d005a132d95791fc47bc9596776cd1f", null ],
+    [ "get_node_child_count", "cmn600_8c.html#ac036e4559f51086bdd951792aa6ba619", null ],
+    [ "get_node_id", "cmn600_8c.html#a7056eaecbbf48091d3f5db6d844194dd", null ],
+    [ "get_node_logical_id", "cmn600_8c.html#a538611c26aa88c42ecf265c950fbe116", null ],
+    [ "get_node_pos_x", "cmn600_8c.html#a6862ce7cce0a25c6fc7eaebe6e246dc6", null ],
+    [ "get_node_pos_y", "cmn600_8c.html#a762d778d31f551a6a9b88bd3df2fced3", null ],
+    [ "get_node_type", "cmn600_8c.html#a17aaf7ca89307dd25ebe981a0f08ceaf", null ],
+    [ "get_node_type_name", "cmn600_8c.html#a6fba5955aa6ea33e4c659872bf0a8575", null ],
+    [ "get_port_number", "cmn600_8c.html#a501f5d9c6bda74d8d79a47cbba4e6962", null ],
+    [ "get_root_node", "cmn600_8c.html#ad6caa6f4b5c842e4cf8723c7d80795d0", null ],
+    [ "is_cal_mode_supported", "cmn600_8c.html#abc4566e5ee2f7d9eccba03d2501cde07", null ],
+    [ "is_child_external", "cmn600_8c.html#ac093b75a00f5cecb92a1b85e25495cfb", null ],
+    [ "sam_encode_region_size", "cmn600_8c.html#aab7a13ed2e6214e0a57d92c1c7b82662", null ],
+    [ "cmn600_rev_to_name", "cmn600_8c.html#af9240094ab9b33f9561933dfb5c9a859", null ],
+    [ "encoding_bits", "cmn600_8c.html#a4cc608ce7541fc42ea76fa93eb7bd029", null ],
+    [ "mask_bits", "cmn600_8c.html#a4d78a20db2238c4feffb277d91e19dd4", null ],
+    [ "type_to_name", "cmn600_8c.html#a70fb5c82ae019d27227956070035c304", null ],
+    [ "type_to_name_cml", "cmn600_8c.html#a7229490f84cd0e986426101658bb0a8e", null ]
+];

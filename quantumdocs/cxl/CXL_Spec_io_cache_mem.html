@@ -1,0 +1,1523 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CXL 3.0 协议栈深度分析：CXL.io、CXL.cache 与 CXL.mem &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CXL 3.0 协议栈深度分析：CXL.io、CXL.cache 与 CXL.mem</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/cxl/CXL_Spec_io_cache_mem.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cxl-3-0-cxl-iocxl-cache-cxl-mem">
+<h1>CXL 3.0 协议栈深度分析：CXL.io、CXL.cache 与 CXL.mem<a class="headerlink" href="#cxl-3-0-cxl-iocxl-cache-cxl-mem" title="链接到此标题。"></a></h1>
+<p>本文档基于 CXL 3.0 Specification version 0.7 (December 2021) 第 3 章 Transaction Layer 内容，
+深入分析 CXL.io、CXL.cache 和 CXL.mem 三种核心协议的架构、通道定义、事务流程和关键链路。</p>
+<p>参考文档：<code class="docutils literal notranslate"><span class="pre">docs/pdf/CXL/CXL_Spec_3.0_v0.7.pdf.md</span></code></p>
+</section>
+<section id="id2">
+<h1>协议概述与分层架构<a class="headerlink" href="#id2" title="链接到此标题。"></a></h1>
+<section id="cxl">
+<h2>CXL 事务层定位<a class="headerlink" href="#cxl" title="链接到此标题。"></a></h2>
+<p>CXL 事务层位于 Flex Bus 分层架构的顶层，负责定义设备与主机之间的通信协议。Figure 3-1 展示了 CXL.io 事务层在 Flex Bus 分层中的位置 [Section 3.1]_。</p>
+<p><strong>三层协议架构</strong>:</p>
+<ul class="simple">
+<li><p><strong>CXL.io</strong>: 基于 PCIe 的非相干 I/O 协议，用于设备发现、枚举、配置、中断和 DMA 操作</p></li>
+<li><p><strong>CXL.cache</strong>: 相干性协议，使设备缓存与主机内存保持 MESI 相干性</p></li>
+<li><p><strong>CXL.mem</strong>: 内存访问协议，允许主机访问设备附加内存 (HDM)</p></li>
+</ul>
+</section>
+<section id="cxl-3-0-section-3">
+<h2>CXL 3.0 关键增强 [Section 3 引言]_<a class="headerlink" href="#cxl-3-0-section-3" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p><strong>256B Flit 支持</strong>: 与 PCIe 6.0 对齐，消息头尺寸调整以匹配 Flit 结构</p></li>
+<li><p><strong>68B Flit 保持不变</strong>: 支持 2-bit CacheID 用于设备扩展、Back-Invalidation Snoop 和对称内存流</p></li>
+<li><p><strong>CXL.cache 去偏置翻转</strong>: 弃用 &quot;Bias Flip&quot; 流，改用 CXL.mem Back-Invalidation Snoop 通道处理</p></li>
+<li><p><strong>CXL.io 无序 I/O</strong>: 支持直接 Peer-to-peer 访问 HDM</p></li>
+<li><p><strong>CXL.mem 新增通道</strong>: Back-Invalidation Snoop (BISnp) 和对称内存流，支持 Type 2 设备实现包含式 Snoop Filter</p></li>
+</ul>
+</section>
+</section>
+<section id="cxl-io">
+<h1>CXL.io 协议详解<a class="headerlink" href="#cxl-io" title="链接到此标题。"></a></h1>
+<section id="section-3-1">
+<h2>协议特性与端点行为 [Section 3.1]_<a class="headerlink" href="#section-3-1" title="链接到此标题。"></a></h2>
+<p>CXL.io 提供非相干的 load/store 接口用于 I/O 设备。事务类型、包格式、基于信用的流量控制和虚拟通道管理遵循 PCIe 定义。</p>
+<p><strong>CXL.io 端点要求</strong>:</p>
+<ul class="simple">
+<li><p>当链路配置为 RCiEP 模式 (CXL 1.1 模式) 时，必须暴露为 PCIe RCiEP</p></li>
+<li><p>否则暴露为 PCIe Endpoint</p></li>
+<li><p>参与 CXL 协议的端点函数不得生成 INTx 消息</p></li>
+<li><p>MLD 组件的所有 CXL.io 端点函数 (包括非 CXL 函数) 均不允许生成 INTx 消息</p></li>
+</ul>
+</section>
+<section id="pcie-table-3-3">
+<h2>可选但必需的 PCIe 特性 [Table 3-3]_<a class="headerlink" href="#pcie-table-3-3" title="链接到此标题。"></a></h2>
+</section>
+<section id="cxl-vdm-section-3-1-2">
+<h2>CXL 电源管理 VDM 消息格式 [Section 3.1.2]_<a class="headerlink" href="#cxl-vdm-section-3-1-2" title="链接到此标题。"></a></h2>
+<p>CXL 电源管理消息作为 PCIe Vendor Defined Type 0 消息发送，带有 4-DWORD 数据负载。包括 PMREQ、PMRSP 和 PMGO 消息。</p>
+<p><strong>消息特征</strong> [Figure 3-2]_:</p>
+<ul class="simple">
+<li><p>Fmt 和 Type 字段设置为带数据的消息</p></li>
+<li><p>所有消息使用 &quot;Local-Terminate at Receiver&quot; 路由</p></li>
+<li><p>Message Code 设置为 Vendor Defined Type 0</p></li>
+<li><p>Vendor ID 字段设置为 1E98h</p></li>
+<li><p>字节 15 包含 VDM Code，设置为 &quot;CXL PM Message&quot; (68h)</p></li>
+<li><p>4-DWORD 数据负载包含 CXL PM 逻辑操作码和相关信息</p></li>
+</ul>
+<p><strong>数据负载字段定义</strong> [Table 3-1]_:</p>
+</section>
+<section id="pm-section-3-1-2-1">
+<h2>信用和 PM 初始化流程 [Section 3.1.2.1]_<a class="headerlink" href="#pm-section-3-1-2-1" title="链接到此标题。"></a></h2>
+<p>PM 信用和初始化过程是链路本地的。Figure 3-3 展示了使用 PM2IP.CREDIT_RTN 和 PM2IP.AGENT_INFO 消息初始化电源管理协议。</p>
+<p><strong>初始化规则</strong>:</p>
+<ol class="arabic simple">
+<li><p>CXL Upstream Port PMU 必须能够接收和处理 CREDIT_RTN 消息，不依赖于任何其他 PM2IP 消息</p></li>
+<li><p>CREDIT_RTN 消息不使用信用</p></li>
+<li><p>首个 CREDIT_RTN 消息中，NUM_CREDITS 字段表示发起方可以接收的依赖信用的 PM 消息数量</p></li>
+<li><p>后续 CREDIT_RTN 消息中，NUM_CREDITS 字段表示自上次消息以来释放的 PM 信用数量</p></li>
+<li><p>Downstream Port PMU 通过 TARGET_AGENT_ID 字段分配 PM_AGENT_ID 给 Upstream Port PMU</p></li>
+<li><p>Upstream Port PMU 必须等待来自 Downstream Port PMU 的 CREDIT_RTN 消息后才能发起任何 IP2PM 消息</p></li>
+</ol>
+<p><strong>Upstream Port PMU 规则</strong>:</p>
+<ul class="simple">
+<li><p>必须等待接收 PM2IP.CREDIT_RTN 消息后才能发起 IP2PM 消息</p></li>
+<li><p>必须从首个接收的 PM2IP 消息中提取 TARGET_AGENT_ID 并用作其 PM_AGENT_ID</p></li>
+<li><p>必须实现足够资源来接收和处理任何 CREDIT_RTN 消息</p></li>
+<li><p>必须至少实现一个信用来接收 PM2IP 消息</p></li>
+<li><p>必须尽快返回信用以防止阻塞</p></li>
+<li><p>建议扣留信用不超过 10 微秒</p></li>
+</ul>
+</section>
+<section id="section-3-1-5">
+<h2>错误传播 [Section 3.1.5]_<a class="headerlink" href="#section-3-1-5" title="链接到此标题。"></a></h2>
+<p>CXL.cache 和 CXL.mem 错误由设备检测后，通过 CXL.io 流量向上游传播。这些错误记录在 PCIe AER 寄存器中作为可纠正和不可纠正的内部错误。</p>
+</section>
+<section id="ats-section-3-1-6">
+<h2>ATS 上的内存类型指示 [Section 3.1.6]_<a class="headerlink" href="#ats-section-3-1-6" title="链接到此标题。"></a></h2>
+<p>某些内存区域的请求只能通过 CXL.io 发出，不能使用 CXL.cache。主机通过 ATS 完成消息中的 Issue-on-CXL.io 位向设备指示这些区域。</p>
+<p><strong>ATS 请求格式</strong> [Figure 3-5]_:</p>
+<ul class="simple">
+<li><p>64-bit: DWORD3, Byte 3, Bit 3</p></li>
+<li><p>32-bit: DWORD2, Byte 3, Bit 3</p></li>
+<li><p>0: 表示请求由不支持内存类型指示的函数发起</p></li>
+<li><p>1: 表示请求由支持内存类型指示的函数发起 (所有 CXL 设备函数必须设置此位)</p></li>
+</ul>
+<p><strong>ATS 翻译完成数据条目</strong> [Figure 3-6]_:</p>
+<ul class="simple">
+<li><p>DWORD1, Byte 2, Bit 1:</p></li>
+<li><p>0: 页面请求可在所有 CXL 协议上发出</p></li>
+<li><p>1: 函数只能在 CXL.io 上发出页面请求，使用 CXL.cache 协议属于违规</p></li>
+</ul>
+</section>
+</section>
+<section id="cxl-cache">
+<h1>CXL.cache 协议详解<a class="headerlink" href="#cxl-cache" title="链接到此标题。"></a></h1>
+<section id="section-3-2-1">
+<h2>通道架构概览 [Section 3.2.1]_<a class="headerlink" href="#section-3-2-1" title="链接到此标题。"></a></h2>
+<p>CXL.cache 协议定义了设备与主机之间的大量请求、响应和数据传输交互。接口由每个方向的三个通道组成：Request、Response 和 Data。</p>
+<p><strong>六个独立通道</strong> [Figure 3-7]_:</p>
+<p><strong>Device to Host (D2H) 方向</strong>:</p>
+<ul class="simple">
+<li><p><strong>D2H Request</strong>: 携带设备到主机的新请求，主要访问内存</p></li>
+<li><p><strong>D2H Response</strong>: 携带所有设备到主机的响应</p></li>
+<li><p><strong>D2H Data</strong>: 携带所有设备和字节使能到主机</p></li>
+</ul>
+<p><strong>Host to Device (H2D) 方向</strong>:</p>
+<ul class="simple">
+<li><p><strong>H2D Request</strong>: 携带主机到设备的请求 (snoop)</p></li>
+<li><p><strong>H2D Response</strong>: 携带排序消息和写数据拉取</p></li>
+<li><p><strong>H2D Data</strong>: 传递设备读请求的数据</p></li>
+</ul>
+<p>通道特性:</p>
+<ul class="simple">
+<li><p>独立通道允许不同类型的消息使用专用线路，实现解耦和更高的有效吞吐量</p></li>
+<li><p>D2H Request 可以被反压而不影响其他通道</p></li>
+<li><p>D2H Data 必须取得进展，否则可能导致死锁</p></li>
+<li><p>H2D Requests 可能因设备资源不足而被反压，但必须在无需 D2H Requests 进展的情况下释放资源</p></li>
+</ul>
+</section>
+<section id="section-3-2-2-2">
+<h2>通道信用机制 [Section 3.2.2.2]_<a class="headerlink" href="#section-3-2-2-2" title="链接到此标题。"></a></h2>
+<p>每个通道必须使用信用发送任何消息并从接收方收集信用返回。接收方在处理消息后返回信用。</p>
+<p><strong>通道信用表</strong> [Table 3-4]_:</p>
+</section>
+<section id="section-3-2-3">
+<h2>通道线描述 [Section 3.2.3]_<a class="headerlink" href="#section-3-2-3" title="链接到此标题。"></a></h2>
+<section id="d2h-request-table-3-5">
+<h3>D2H Request 字段 [Table 3-5]_<a class="headerlink" href="#d2h-request-table-3-5" title="链接到此标题。"></a></h3>
+<p><strong>Non Temporal 编码</strong> [Table 3-6]_:</p>
+</section>
+<section id="d2h-response-table-3-7">
+<h3>D2H Response 字段 [Table 3-7]_<a class="headerlink" href="#d2h-response-table-3-7" title="链接到此标题。"></a></h3>
+</section>
+<section id="d2h-data-header-table-3-8">
+<h3>D2H Data Header 字段 [Table 3-8]_<a class="headerlink" href="#d2h-data-header-table-3-8" title="链接到此标题。"></a></h3>
+<p><strong>Byte Enable</strong> [Section 3.2.3.3.1]_:</p>
+<ul class="simple">
+<li><p>68B Flit 模式：不作为 flit 的一部分发送，而是作为数据块单独发送 (见 Section 4.2.2)</p></li>
+<li><p>256B Flit 模式：BEP 位包含在消息头中，指示末尾包含 BE 槽</p></li>
+<li><p>Byte Enable 字段 64 位宽，指示哪些字节对包含的数据有效</p></li>
+</ul>
+</section>
+<section id="h2d-request-table-3-9">
+<h3>H2D Request 字段 [Table 3-9]_<a class="headerlink" href="#h2d-request-table-3-9" title="链接到此标题。"></a></h3>
+</section>
+<section id="h2d-response-table-3-10">
+<h3>H2D Response 字段 [Table 3-10]_<a class="headerlink" href="#h2d-response-table-3-10" title="链接到此标题。"></a></h3>
+<p><strong>RSP_PRE 编码</strong> [Table 3-11]_:</p>
+<p><strong>缓存状态编码</strong> [Table 3-12]_:</p>
+</section>
+<section id="h2d-data-header-table-3-13">
+<h3>H2D Data Header 字段 [Table 3-13]_<a class="headerlink" href="#h2d-data-header-table-3-13" title="链接到此标题。"></a></h3>
+</section>
+</section>
+<section id="section-3-2-4-2">
+<h2>设备到主机请求语义 [Section 3.2.4.2]_<a class="headerlink" href="#section-3-2-4-2" title="链接到此标题。"></a></h2>
+<p>四种语义分类:</p>
+<ol class="arabic simple">
+<li><p><strong>CXL.cache Read</strong>: 完整缓存行读取</p></li>
+<li><p><strong>CXL.cache Read0</strong>: 无数据传输的读取</p></li>
+<li><p><strong>CXL.cache Read0/Write</strong>: 读零写语义</p></li>
+<li><p><strong>CXL.cache Write</strong>: 写入语义</p></li>
+</ol>
+<section id="cxl-cache-read-figure-3-8">
+<h3>CXL.cache Read 行为 [Figure 3-8]_<a class="headerlink" href="#cxl-cache-read-figure-3-8" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span>                           <span class="n">Host</span>
+<span class="o">------</span>                           <span class="o">----</span>
+<span class="n">D2H</span> <span class="n">Read</span> <span class="n">Request</span> <span class="n">Message</span>  <span class="o">---&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">Response</span> <span class="p">(</span><span class="n">GO</span><span class="p">)</span> <span class="n">Message</span> <span class="p">(</span><span class="n">RdCurr</span> <span class="n">不存在</span><span class="p">)</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">Data</span> <span class="n">Message</span> <span class="p">(</span><span class="mi">32</span> <span class="n">B</span><span class="p">)</span>
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">Data</span> <span class="n">Message</span> <span class="p">(</span><span class="mi">32</span> <span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>特性</strong>:</p>
+<ul class="simple">
+<li><p>必须有 D2H request 信用并在 D2H CXL.cache request 通道发送请求消息</p></li>
+<li><p>需要零个或一个响应 (GO) 消息和总计 64 字节数据消息</p></li>
+<li><p>响应和数据消息都针对初始 D2H 请求包的 CQID 字段指向的设备追踪条目</p></li>
+<li><p>设备条目必须保持活动直到收到所有主机消息</p></li>
+<li><p>设备必须有保留数据缓冲区以在发送请求后立即接收全部 64 字节数据</p></li>
+<li><p>收到响应和数据消息后，事务可视为完成并释放条目</p></li>
+</ul>
+</section>
+<section id="cxl-cache-read0-figure-3-9">
+<h3>CXL.cache Read0 行为 [Figure 3-9]_<a class="headerlink" href="#cxl-cache-read0-figure-3-9" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span>                           <span class="n">Host</span>
+<span class="o">------</span>                           <span class="o">----</span>
+<span class="n">D2H</span> <span class="n">Read0</span> <span class="n">Request</span> <span class="n">Message</span>  <span class="o">---&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">Response</span> <span class="p">(</span><span class="n">GO</span><span class="p">)</span> <span class="n">Message</span>
+</pre></div>
+</div>
+<p><strong>特性</strong>:</p>
+<ul class="simple">
+<li><p>必须有 D2H request 信用并发送消息</p></li>
+<li><p>接收响应消息但无数据消息</p></li>
+<li><p>收到 GO 消息后可视为完成</p></li>
+<li><p>大多数特殊周期 (如 CLFlush) 和其他杂项请求属于此类</p></li>
+</ul>
+</section>
+<section id="cxl-cache-write-figure-3-10-3-11-3-12">
+<h3>CXL.cache Write 行为 [Figure 3-10, 3-11, 3-12]_<a class="headerlink" href="#cxl-cache-write-figure-3-10-3-11-3-12" title="链接到此标题。"></a></h3>
+<p><strong>Posted 语义</strong> (Figure 3-10):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span>                           <span class="n">Host</span>
+<span class="o">------</span>                           <span class="o">----</span>
+<span class="n">D2H</span> <span class="n">Write</span> <span class="n">Request</span> <span class="n">Message</span>  <span class="o">---&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">GO</span><span class="o">+</span><span class="n">WritePull</span> <span class="n">combined</span> <span class="n">Message</span>
+
+<span class="n">D2H</span> <span class="n">Data</span> <span class="n">Message</span>  <span class="o">------------&gt;</span>
+<span class="n">D2H</span> <span class="n">Data</span> <span class="n">Message</span>  <span class="o">------------&gt;</span>
+
+<span class="n">DONE</span>
+</pre></div>
+</div>
+<p><strong>Non-posted 语义</strong> (Figure 3-11):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span>                           <span class="n">Host</span>
+<span class="o">------</span>                           <span class="o">----</span>
+<span class="n">D2H</span> <span class="n">Write</span> <span class="n">Request</span> <span class="n">Message</span>  <span class="o">---&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">Write</span> <span class="n">Pull</span> <span class="n">Message</span>
+
+<span class="n">D2H</span> <span class="n">Data</span> <span class="n">Message</span>  <span class="o">------------&gt;</span>
+<span class="n">D2H</span> <span class="n">Data</span> <span class="n">Message</span>  <span class="o">------------&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">Go</span> <span class="n">Message</span>
+
+<span class="n">DONE</span>
+</pre></div>
+</div>
+<p><strong>弱序写 FastGO/ExtCmp</strong> (Figure 3-12):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span>                           <span class="n">Host</span>
+<span class="o">------</span>                           <span class="o">----</span>
+<span class="n">D2H</span> <span class="n">Write</span> <span class="n">Request</span> <span class="n">Message</span>  <span class="o">---&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">combined</span> <span class="n">FastGO</span> <span class="ow">and</span> <span class="n">Write</span> <span class="n">Pull</span> <span class="n">Message</span>
+
+<span class="n">D2H</span> <span class="n">Data</span> <span class="n">Message</span>  <span class="o">------------&gt;</span>
+<span class="n">D2H</span> <span class="n">Data</span> <span class="n">Message</span>  <span class="o">------------&gt;</span>
+
+<span class="o">&lt;---</span>  <span class="n">H2D</span> <span class="n">ExtCmp</span> <span class="n">Message</span>
+
+<span class="n">DONE</span>
+</pre></div>
+</div>
+<p><strong>Write 语义特性</strong>:</p>
+<ul class="simple">
+<li><p>必须有 D2H request 信用</p></li>
+<li><p>主机接收到请求后，必须发送两个分离或一个合并的 GO-I 和 WritePull 消息</p></li>
+<li><p>GO 消息绝不能在 WritePull 之前到达，但可以同时到达</p></li>
+<li><p>收到 GO-I 后，从内存排序和缓存相干性角度认为存储完成</p></li>
+<li><p>WritePull 触发设备发送总计恰好 64 字节的数据消息</p></li>
+<li><p>收到 GO-I 并发送所需数据消息后，设备认为事务完成</p></li>
+</ul>
+</section>
+</section>
+<section id="cxl-cache-table-3-14">
+<h2>CXL.cache 操作码汇总 [Table 3-14]_<a class="headerlink" href="#cxl-cache-table-3-14" title="链接到此标题。"></a></h2>
+</section>
+<section id="d2h-h2d-table-3-15-3-16">
+<h2>D2H 请求支持的 H2D 响应 [Table 3-15, 3-16]_<a class="headerlink" href="#d2h-h2d-table-3-15-3-16" title="链接到此标题。"></a></h2>
+<p><strong>针对非设备附加内存</strong> [Table 3-15]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>D2H
+Request</p></th>
+<th class="head"><p>Write
+Pull</p></th>
+<th class="head"><p><a href="#id13"><span class="problematic" id="id14">GO_</span></a>
+WritePull</p></th>
+<th class="head"><p>ExtCmp</p></th>
+<th class="head"><p><a href="#id15"><span class="problematic" id="id16">GO_WritePull_</span></a>
+Drop</p></th>
+<th class="head"><p><a href="#id17"><span class="problematic" id="id18">FastGO_</span></a>
+WritePull</p></th>
+<th class="head"><p><a href="#id19"><span class="problematic" id="id20">GO_ERR_</span></a>
+WritePull</p></th>
+<th class="head"><p>GO-
+Err</p></th>
+<th class="head"><p>GO-I</p></th>
+<th class="head"><p>GO-S</p></th>
+<th class="head"><p>GO-E</p></th>
+<th class="head"><p>GO-M</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CLFlush</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>RdShared</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>RdAny</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-odd"><td><p>ItoMWr</p></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>WrCur</p></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>CacheFlushe</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>RdCurr</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>RdOwn</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>RdOwnNoData</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>CleanEvict</p></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>DirtyEvict</p></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>CleanEvicNo</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>WOWrInv</p></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>WOWrInvF</p></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>WrInv</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>针对设备附加内存</strong> [Table 3-16]_:</p>
+<p>对于 BISnp 支持的设备，host bias 的相干性解析在 CXL.mem协议上单独进行。启用 BISnp 时，对此地址区域在 CXL.cache 上唯一支持的命令是 ItoMWr、WrCur、WrInv 和 CacheFlushed。</p>
+</section>
+<section id="table-3-17">
+<h2>设备到主机响应编码 [Table 3-17]_<a class="headerlink" href="#table-3-17" title="链接到此标题。"></a></h2>
+</section>
+<section id="section-3-2-4-4">
+<h2>主机到设备请求 [Section 3.2.4.4]_<a class="headerlink" href="#section-3-2-4-4" title="链接到此标题。"></a></h2>
+<p><strong>Snoop 请求类型</strong> [Table 3-18]_:</p>
+<p><strong>SnpData</strong>:</p>
+<ul class="simple">
+<li><p>主机发起的 snoop 请求，期望请求方以 Shared 或 Exclusive 状态缓存</p></li>
+<li><p>设备必须无效化或将所有缓存行降级到 Shared 状态</p></li>
+<li><p>如果持有脏数据必须返回给主机</p></li>
+</ul>
+<p><strong>SnpInv</strong>:</p>
+<ul class="simple">
+<li><p>主机发起的 snoop 请求，期望请求方获得所有权和 Exclusive 状态</p></li>
+<li><p>设备必须无效化所有缓存行</p></li>
+<li><p>如果持有脏数据必须返回给主机</p></li>
+</ul>
+<p><strong>SnpCur</strong>:</p>
+<ul class="simple">
+<li><p>获取行的当前版本但不要求改变任何缓存状态</p></li>
+<li><p>仅代表 RdCurr 请求发送</p></li>
+<li><p>如果持有 Modified 状态数据必须返回给主机</p></li>
+<li><p>缓存状态可以在设备和主机中保持不变</p></li>
+</ul>
+</section>
+<section id="section-3-2-4-5">
+<h2>主机到设备响应 [Section 3.2.4.5]_<a class="headerlink" href="#section-3-2-4-5" title="链接到此标题。"></a></h2>
+<p><strong>H2D Response 操作码编码</strong> [Table 3-19]_:</p>
+</section>
+<section id="section-3-2-5">
+<h2>缓存行为和限制 [Section 3.2.5]_<a class="headerlink" href="#section-3-2-5" title="链接到此标题。"></a></h2>
+<p><strong>Buried Cache State 规则</strong> [Section 3.2.5.14]:</p>
+<p>Buried Cache state 指设备发起 CXL.cache 协议新请求时，设备相干引擎 (DCOH) 中注册的缓存行状态。</p>
+<ul class="simple">
+<li><p>设备不得为处于 Modified、Exclusive 或 Shared 状态的缓存行发起 Read</p></li>
+<li><p>设备不得为处于 Modified 或 Exclusive 状态的缓存行发起 RdOwnNoData</p></li>
+<li><p>设备不得为处于 Modified、Exclusive 或 Shared 状态的缓存行发起 Read0-Write</p></li>
+<li><p>所有 <a href="#id3"><span class="problematic" id="id4">*</span></a>Evict 操作码必须遵守适用用例</p></li>
+<li><p>CacheFlushed 操作码不针对特定缓存行，设备在任何缓存行处于 Modified、Exclusive 或 Shared 状态时不得发出</p></li>
+</ul>
+<p><strong>允许的 Opcode 每 Buried Cache State</strong> [Table 3-20]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Opcodes</p></th>
+<th class="head"><p>Semantic</p></th>
+<th class="head"><p>Modified</p></th>
+<th class="head"><p>Exclusiv
+e</p></th>
+<th class="head"><p>Shared</p></th>
+<th class="head"><p>Invalid</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RdCurr</p></td>
+<td><p>Read</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-odd"><td><p>RdOwn</p></td>
+<td><p>Read</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>RdShared</p></td>
+<td><p>Read</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-odd"><td><p>RdAny</p></td>
+<td><p>Read</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>RdOwnNoData</p></td>
+<td><p>Read0</p></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-odd"><td><p>ItoMWr</p></td>
+<td><p>Read0-Write</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>WrCur</p></td>
+<td><p>Read0-Write</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-odd"><td><p>CLFlush</p></td>
+<td><p>Read0</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>CleanEvict</p></td>
+<td><p>Write</p></td>
+<td></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>DirtyEvict</p></td>
+<td><p>Write</p></td>
+<td><p>X</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>CleanEvictNoData</p></td>
+<td><p>Write</p></td>
+<td></td>
+<td><p>X</p></td>
+<td><p>X</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>WOWrInv</p></td>
+<td><p>Write</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>WOWrInvF</p></td>
+<td><p>Write</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-odd"><td><p>WrInv</p></td>
+<td><p>Write</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+<tr class="row-even"><td><p>CacheFlushed</p></td>
+<td><p>Read0</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>一般假设</strong> [Section 3.2.5.13]:</p>
+<ol class="arabic simple">
+<li><p>主机不会保留设备交付的 CXL.cache 请求的顺序，设备必须维护请求顺序</p></li>
+<li><p>主机选择的顺序对读取和写入有不同的传达方式</p></li>
+<li><p>设备可以缓存所有权并在内部排序写入</p></li>
+<li><p>对于设备读取，主机用 GO 消息传达缓存行所有权</p></li>
+<li><p>主机不得为已发送数据响应但未发送 GO 的地址发送 snoop</p></li>
+<li><p>除 Evict 外的写请求永远不会用标记为 Bogus 的数据响应 WritePulls</p></li>
+<li><p>主机不得向同一设备请求发送两个缓存行数据响应</p></li>
+<li><p>对于给定事务，H2D 数据传输必须在连续包中以自然顺序进行</p></li>
+<li><p>缓存行的 D2H 数据传输必须在连续包中进行，按自然块顺序</p></li>
+<li><p>设备 snoop 响应不得依赖于任何其他通道或请求</p></li>
+<li><p>主机在收集先前 snoop 的所有响应和数据前不得发送第二个 snoop 请求</p></li>
+<li><p>H2D Response 和 H2D Data 消息必须在不需任何其他事务进展的情况下排出</p></li>
+<li><p>主机不得返回 GO-M 给实际上相对于内存未修改的数据</p></li>
+<li><p>主机不得将未修改的数据写回内存</p></li>
+<li><p>除 WOWrInv 和 WOWrInvF 外，所有其他写入都是强序的</p></li>
+</ol>
+</section>
+</section>
+<section id="cxl-mem">
+<h1>CXL.mem协议详解<a class="headerlink" href="#cxl-mem" title="链接到此标题。"></a></h1>
+<section id="section-3-3-1">
+<h2>协议概述 [Section 3.3.1]_<a class="headerlink" href="#section-3-3-1" title="链接到此标题。"></a></h2>
+<p>CXL 内存协议 (CXL.mem) 是 CPU 和内存之间的事务接口。协议可用于多种不同的内存附加选项，包括内存控制器位于主机 CPU 内、加速器设备内或内存缓冲芯片中。</p>
+<p><strong>主从架构</strong>:</p>
+<ul class="simple">
+<li><p><strong>CXL.mem Master</strong>: 负责发起 CXL.mem 请求 (如读取、写入等) 的代理 (CPU 相干引擎)</p></li>
+<li><p><strong>CXL.mem Subordinate</strong>: 负责响应 CXL.mem 请求 (如数据、完成等) 的代理 (内存设备)</p></li>
+</ul>
+<p><strong>事务方向</strong>:</p>
+<ul class="simple">
+<li><p><strong>M2S (Master to Subordinate)</strong>: 主机到设备的请求</p></li>
+<li><p><strong>S2M (Subordinate to Master)</strong>: 设备到主机的响应</p></li>
+</ul>
+<p><strong>M2S 消息类别</strong>:</p>
+<ul class="simple">
+<li><p><strong>Request without data (Req)</strong>: 无数据请求</p></li>
+<li><p><strong>Request with Data (RwD)</strong>: 带数据请求</p></li>
+<li><p><strong>Back-Invalidation Response (BIRsp)</strong>: 反向无效响应</p></li>
+</ul>
+<p><strong>S2M 消息类别</strong>:</p>
+<ul class="simple">
+<li><p><strong>Response without data (NDR)</strong>: 无数据响应</p></li>
+<li><p><strong>Response with data (DRS)</strong>: 带数据响应</p></li>
+<li><p><strong>Back-Invalidation Snoop (BISnp)</strong>: 反向无效 Snoop</p></li>
+</ul>
+</section>
+<section id="section-3-3-2">
+<h2>通道架构 [Section 3.3.2]_<a class="headerlink" href="#section-3-3-2" title="链接到此标题。"></a></h2>
+<p><strong>设备接口的 6 个通道</strong> [Figure 3-15]_:</p>
+<p><strong>M2S 方向 (主机到设备)</strong>:</p>
+<ul class="simple">
+<li><p><strong>M2S Req</strong>: 请求无数据</p></li>
+<li><p><strong>M2S RwD</strong>: 请求带数据</p></li>
+<li><p><strong>M2S BIRsp</strong>: Back-Invalidation 响应</p></li>
+</ul>
+<p><strong>S2M 方向 (设备到主机)</strong>:</p>
+<ul class="simple">
+<li><p><strong>S2M NDR</strong>: 响应无数据</p></li>
+<li><p><strong>S2M DRS</strong>: 响应带数据</p></li>
+<li><p><strong>S2M BISnp</strong>: Back-Invalidation Snoop</p></li>
+</ul>
+<p><strong>Type 2 设备支持</strong>:</p>
+<ul class="simple">
+<li><p>Type 2 设备必须支持 BI* 通道 (S2M BISnp 或 M2S BIRsp)，这是 CXL 3.0 引入的</p></li>
+<li><p>CXL 3.0 之前设计的 Type 2 设备不会有 BI* 通道</p></li>
+<li><p>支持直接 peer-to-peer 访问 HDM 的 Type 3 设备将支持 BI* 通道</p></li>
+</ul>
+<p><strong>通道独立性</strong>:</p>
+<p>一般而言，CXL.mem 通道独立工作以确保维持进展。通道间的具体排序允许和要求详见 Section 3.4 和 Section 3.5。在通道内没有排序规则，但例外情况见 Section 3.3.11。</p>
+</section>
+<section id="section-2-5">
+<h2>设备缩放 [Section 2.5]_<a class="headerlink" href="#section-2-5" title="链接到此标题。"></a></h2>
+<p>CXL 支持在 VH 下连接最多 16 个 Type 1 和/或 Type 2 设备。为支持此缩放，Type 2 设备需要使用 CXL.mem协议中的 BISnp 通道来管理 HDM 区域的相干性。</p>
+<p>CXL 3.0 中引入的 BISnp 通道替代了使用 CXL.cache 协议管理设备 HDM 区域的相干性。使用 CXL.cache 进行 HDM 相干性管理的 Type 2 设备限制为每个主机桥一个设备。</p>
+</section>
+</section>
+<section id="fabric-section-7-7">
+<h1>Fabric 架构 [Section 7.7]_<a class="headerlink" href="#fabric-section-7-7" title="链接到此标题。"></a></h1>
+<section id="fabric">
+<h2>Fabric 概述<a class="headerlink" href="#fabric" title="链接到此标题。"></a></h2>
+<p>CXL 3.0 添加了新功能以从节点扩展到机架级互连。主要变更领域包括 [Section 7.7]_:</p>
+<ul class="simple">
+<li><p>使用 Port Based Routing 和 12 位端口标识符扩展 CXL fabric 规模</p></li>
+<li><p>Fabric RAS 扩展用于错误遏制和报告</p></li>
+<li><p>Fabric Management - 允许管理系统管理 CXL 互连</p></li>
+<li><p>安全 - 允许多个 EP 之间安全通道的扩展</p></li>
+<li><p>Hot Plug/Remove 支持 - 允许资源的动态管理</p></li>
+<li><p>Host-to-Host 通信 - 允许主机之间更低延迟的通信</p></li>
+<li><p>Device to Device 通信 - 更低延迟的设备到设备通信</p></li>
+</ul>
+<p><strong>Fabric 规模</strong>:</p>
+<ul class="simple">
+<li><p>支持跨越 4096 个 CXL/PCIe 端口的 fabric</p></li>
+<li><p>使用 12 位源端口标识符 (SPID) 和 12 位目标端口标识符 (DPID)</p></li>
+</ul>
+</section>
+<section id="fabric-figure-7-24">
+<h2>高层 Fabric 图 [Figure 7-24]_<a class="headerlink" href="#fabric-figure-7-24" title="链接到此标题。"></a></h2>
+<p>Fabric 包含以下组件:</p>
+<ul class="simple">
+<li><p><strong>n 个 Switch Edge Ports (SEPx)</strong>: 每个边缘端口可连接到 CXL Root Port (RP) 或 CXL/PCIe 设备 (Dev)</p></li>
+<li><p><strong>Fabric Manager (FM)</strong>: 通过管理网络连接到 CXL Fabric 和所有端点</p></li>
+<li><p><strong>管理网络</strong>: 可以是简单的 2 线接口 (如 SMBus、I2C、I3C 或 SPI) 或复杂的以太网</p></li>
+</ul>
+<p><strong>系统域</strong>:</p>
+<ul class="simple">
+<li><p>同一系统域内的 Root Ports 可以与附加的 CXL 设备保持相干性</p></li>
+<li><p>不同系统域的 Root Ports 不要求硬件相干性</p></li>
+<li><p>MLD 和 GFAM 设备可以支持跨多个系统域的硬件管理缓存相干性</p></li>
+<li><p>不支持域内或跨域的设备到设备硬件缓存相干性</p></li>
+</ul>
+</section>
+<section id="fabric-section-7-7-2">
+<h2>Fabric 地址空间 [Section 7.7.2]_<a class="headerlink" href="#fabric-section-7-7-2" title="链接到此标题。"></a></h2>
+<p>Fabric 地址空间用于与 GFAM 设备和跨域通信相关的 CXL.mem 和无序 I/O 请求。</p>
+<p><strong>主机物理地址视图</strong> [Figure 7-29]_:</p>
+<p>主机参与 fabric 地址空间必须在其物理地址空间内为 Fabric 地址空间分配连续地址范围。Fabric 地址范围由 Fabric base (FBase) 和 Fabric limit (FLimit) 定义。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span> <span class="n">Physical</span> <span class="n">Address</span> <span class="n">View</span><span class="p">:</span>
+
+<span class="o">-</span> <span class="n">ASI</span> <span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">HPA</span><span class="p">[</span><span class="mi">51</span><span class="p">:</span><span class="mi">36</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">FBase</span><span class="p">[</span><span class="mi">51</span><span class="p">:</span><span class="mi">36</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">HPA</span><span class="p">[</span><span class="mi">51</span><span class="p">:</span><span class="mi">36</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">FLimit</span><span class="p">[</span><span class="mi">51</span><span class="p">:</span><span class="mi">36</span><span class="p">])</span>
+<span class="o">-</span> <span class="n">Fabric</span> <span class="n">地址空间划分为</span> <span class="n">FSegNum</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="n">指定的段</span>
+<span class="o">-</span> <span class="n">每段大小为</span> <span class="mi">2</span><span class="o">^</span><span class="n">n</span> <span class="n">字节</span>
+<span class="o">-</span> <span class="n">每段映射到一个目标端口</span> <span class="n">ID</span>
+<span class="o">-</span> <span class="n">Fabric</span> <span class="n">空间可在主机物理地址空间内的任何段大小边界的倍数上对齐</span>
+</pre></div>
+</div>
+<p><strong>Fabric 段大小表</strong> [Table 7-54]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>FSegSz[2:0]</p></th>
+<th class="head"><p>Fabric Segment
+Size</p></th>
+<th class="head"><p>DstID Ptr</p></th>
+<th class="head"><p>Number of
+Segments
+(FSegNum[11:0])</p></th>
+<th class="head"><p>Maximum Fabric
+Addressable Space</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>000b</p></td>
+<td><p>64 GB</p></td>
+<td><p>HPA[47:36]</p></td>
+<td><p>&lt;=4096</p></td>
+<td><p>256 TB</p></td>
+</tr>
+<tr class="row-odd"><td><p>001b</p></td>
+<td><p>128 GB</p></td>
+<td><p>HPA[48:37]</p></td>
+<td><p>&lt;=4096</p></td>
+<td><p>512 TB</p></td>
+</tr>
+<tr class="row-even"><td><p>010b</p></td>
+<td><p>256 GB</p></td>
+<td><p>HPA[49:38]</p></td>
+<td><p>&lt;=4096</p></td>
+<td><p>1 PB</p></td>
+</tr>
+<tr class="row-odd"><td><p>011b</p></td>
+<td><p>512 GB</p></td>
+<td><p>HPA[50:39]</p></td>
+<td><p>&lt;=4096</p></td>
+<td><p>2 PB</p></td>
+</tr>
+<tr class="row-even"><td><p>100b</p></td>
+<td><p>1 TB</p></td>
+<td><p>HPA[51:40]</p></td>
+<td><p>&lt;=4095</p></td>
+<td><p>4 PB - 1 TB</p></td>
+</tr>
+<tr class="row-odd"><td><p>101b</p></td>
+<td><p>2 TB</p></td>
+<td><p>HPA[51:41]</p></td>
+<td><p>&lt;=2047</p></td>
+<td><p>4 PB - 2 TB</p></td>
+</tr>
+<tr class="row-even"><td><p>110b</p></td>
+<td><p>4 TB</p></td>
+<td><p>HPA[51:42]</p></td>
+<td><p>&lt;=1023</p></td>
+<td><p>4 PB - 4 TB</p></td>
+</tr>
+<tr class="row-odd"><td><p>111b</p></td>
+<td><p>8 TB</p></td>
+<td><p>HPA[51:43]</p></td>
+<td><p>&lt;=511</p></td>
+<td><p>4 PB - 8 TB</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="figure-7-30">
+<h2>交换机入口地址解码 [Figure 7-30]_<a class="headerlink" href="#figure-7-30" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ASI(G) = (HPA[51:36] &gt;= FabricBase[51:36]) &amp; (HPA[51:36] &lt;= FabricLimit[51:36]);
+
+GlblAddrLkupIdx[11:0] = HPA[51:36] &gt;&gt; n
+n = 0,1,2...7
+
+最大段大小 = 8 TB
+最小段大小 = 64 GB
+
+IntLvMask[7:0]:
+00 – Disabled
+01 - Two way
+03 - Four way
+07 - Eight way
+0F – 16 way
+1F – 32 way
+3F – 64 way
+7F – 128 way
+FF – 256 way
+</pre></div>
+</div>
+<p><strong>优化查找</strong>:</p>
+<p>当交错禁用或启用优化查找时:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EffDpidLkupIdx</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">GlblAddrLkupIdx</span><span class="p">[</span><span class="mi">11</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span>
+                        <span class="p">((</span><span class="n">GlblAddrLkupIdx</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">IntLvMask</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">0</span><span class="p">])</span> <span class="o">|</span>
+                         <span class="p">(</span><span class="n">HPA</span><span class="p">[</span><span class="mi">19</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">IntLvMask</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">0</span><span class="p">]))}</span>
+</pre></div>
+</div>
+</section>
+<section id="gfam-section-7-7-3">
+<h2>GFAM 访问保护 [Section 7.7.3]_<a class="headerlink" href="#gfam-section-7-7-3" title="链接到此标题。"></a></h2>
+<p><strong>三级保护层次</strong> [Figure 7-32]_:</p>
+<ol class="arabic simple">
+<li><p><strong>第一级</strong>: 主机或请求设备的页表</p></li>
+<li><p><strong>第二级</strong>: 交换机入口端口，编程 Fabric 路由的位置</p></li>
+<li><p><strong>第三级</strong>: 目标设备本身的细粒度保护</p></li>
+</ol>
+<p><strong>GFAM 设备保护机制</strong> [Figure 7-33]_:</p>
+<p>GFAM 设备的地址空间划分为内存地址范围块，每块分配一个 Group ID (GrpID)。</p>
+<p><strong>表结构</strong>:</p>
+<ul class="simple">
+<li><p><strong>Group Table RAM (GTR)</strong>: 划分整个 GFAM 设备地址空间为 64 MB 或更大的等幂二次大小块</p></li>
+<li><p><strong>Group Table CAM (GTC)</strong>: 用于定义各种大小的自然对齐幂二次地址范围并分配 GrpID (可选)</p></li>
+<li><p><strong>SPID Access Table (SAT)</strong>: 使用请求 SPID 索引产生向量，识别 SPID 允许访问哪些内存组 (GrpAccVec)</p></li>
+<li><p><strong>Group Attributes Table (GAT)</strong>: GrpID 索引提供组属性，如是否使用硬件管理或软件管理缓存相干性</p></li>
+</ul>
+<p><strong>访问流程</strong>:</p>
+<ol class="arabic simple">
+<li><p>请求地址经过掩码和移位形成 GTR 索引，产生 GrpID</p></li>
+<li><p>GTC 命中优先于 GTR 查找</p></li>
+<li><p>并行地，请求 SPID 索引 SAT 产生 GrpAccVec</p></li>
+<li><p>GrpID 用于选择 GrpAccVec 位确定是否允许访问</p></li>
+<li><p>GrpID 还可索引 GAT 提供组属性</p></li>
+</ol>
+</section>
+<section id="pbr-hbr-section-7-7-4">
+<h2>PBR 交换机对 HBR 交换机的支持 [Section 7.7.4]_<a class="headerlink" href="#pbr-hbr-section-7-7-4" title="链接到此标题。"></a></h2>
+<p><strong>两种交换机类型</strong>:</p>
+<ul class="simple">
+<li><p><strong>HBR (Hierarchy Based Routing)</strong>: 使用 4 位 LD-ID 和 CacheID</p></li>
+<li><p><strong>PBR (Port Based Routing)</strong>: 使用 12 位 SPID 和 DPID</p></li>
+</ul>
+<p><strong>消息转换</strong>:</p>
+<p>PBR 交换机将来自 HBR 主机、设备和交换机的消息转换为 PBR 消息格式以便在 Fabric 上路由。</p>
+<p><strong>CXL.io 转换</strong> [Section 7.7.4.1.1]:</p>
+<ul class="simple">
+<li><p><strong>入口 (上游) 端口</strong>:
+- 交换机将 TLP 映射到 CXL.io 消息 (仅 PCIe 设备)
+- 交换机添加 CXL.io 前缀到消息
+- 前缀包含 12 位 SPID 和 12 位 DPID</p></li>
+<li><p><strong>出口 (下游) 端口</strong>:
+- 交换机从消息中删除 TLP 前缀
+- 交换机将 CXL.io 消息映射到 PCIe TLP (仅 PCIe 设备)</p></li>
+</ul>
+<p><strong>CXL.cache 转换</strong> [Section 7.7.4.1.2]:</p>
+<p><strong>D2H Req</strong>:</p>
+<ul class="simple">
+<li><p><strong>入口 (下游) 端口</strong>:
+- 交换机添加 12 位 SPID 字段
+- 交换机添加 12 位 DPID 字段 (基于 VCS 绑定)
+- 交换机从消息中删除 4 位 CacheID 字段</p></li>
+<li><p><strong>出口 (上游) 端口</strong>:
+- 交换机将 12 位 SPID 映射到 4 位 CacheID 字段并添加到消息
+- 交换机从消息中删除 12 位 SPID 和 12 位 DPID 字段</p></li>
+</ul>
+<p><strong>CXL.mem 转换</strong> [Section 7.7.4.1.3]:</p>
+<p><strong>M2S Req 和 M2S RwD 消息</strong>:</p>
+<ul class="simple">
+<li><p><strong>入口 (上游) 端口</strong>:
+- 交换机添加 12 位 SPID 字段 (FM 分配的值)
+- 交换机添加 12 位 DPID 字段 (基于 HDM 解码器)
+- 交换机从消息中删除 4 位 LD-ID 字段</p></li>
+<li><p><strong>出口 (下游) 端口</strong>:
+- 对于 SLD 设备，交换机插入值为 0 的 4 位 LD-ID 字段</p></li>
+</ul>
+</section>
+</section>
+<section id="fabric-section-7-6">
+<h1>Fabric 管理应用编程接口 [Section 7.6]_<a class="headerlink" href="#fabric-section-7-6" title="链接到此标题。"></a></h1>
+<section id="fabric-manager">
+<h2>Fabric Manager 模型<a class="headerlink" href="#fabric-manager" title="链接到此标题。"></a></h2>
+<p><strong>Fabric Manager (FM)</strong>: 外部逻辑进程，使用 FM API 命令集查询和配置系统的运行状态 [Section 7.6.1]_。</p>
+<p><strong>FM 形式</strong>:</p>
+<ul class="simple">
+<li><p>运行在主机上的软件</p></li>
+<li><p>运行在 BMC 上的嵌入式软件</p></li>
+<li><p>运行在另一个 CXL 设备或 CXL 交换机上的嵌入式固件</p></li>
+<li><p>CXL 设备内部的状态机</p></li>
+</ul>
+<p><strong>CCI (Component Command Interface)</strong>:</p>
+<p>FM 通过 CCI 发送命令，CCI 通过设备的邮箱寄存器或 MCTP 兼容接口暴露 [Section 7.6.2]_。</p>
+<p><strong>示例 Fabric 管理模型</strong> [Figure 7-18]_:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">VCS</span> <span class="mi">0</span>        <span class="n">VCS</span> <span class="mi">1</span>
+<span class="n">Virtual</span> <span class="n">to</span> <span class="n">Physical</span> <span class="n">Binding</span>
+
+<span class="n">BMC</span> <span class="p">(</span><span class="n">MCTP</span> <span class="n">EP</span><span class="p">)</span>
+<span class="o">|</span>
+<span class="o">+--</span> <span class="n">PCIe</span> <span class="ow">or</span> <span class="n">CXL</span> <span class="n">Device</span>
+<span class="o">|</span>
+<span class="o">+--</span> <span class="n">Type</span> <span class="mi">3</span> <span class="n">Pooled</span> <span class="n">Device</span> <span class="p">(</span><span class="n">PPB</span><span class="p">,</span> <span class="n">LD</span> <span class="n">FFFF</span><span class="p">,</span> <span class="n">LD</span> <span class="mi">0</span><span class="p">,</span> <span class="n">LD</span> <span class="mi">1</span><span class="p">)</span>
+<span class="o">|</span>
+<span class="o">+--</span> <span class="n">CXL</span> <span class="n">Switch</span> <span class="p">(</span><span class="n">vPPB</span><span class="p">,</span> <span class="n">PHY</span> <span class="n">PORT</span><span class="p">)</span>
+    <span class="o">|</span>
+    <span class="o">+--</span> <span class="n">Type</span> <span class="mi">3</span> <span class="n">Pooled</span> <span class="n">MLD</span> <span class="p">(</span><span class="n">LD</span> <span class="n">FFFF</span><span class="p">,</span> <span class="n">LD</span> <span class="mi">0</span><span class="p">,</span> <span class="n">LD</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">Fabric</span> <span class="n">Manager</span> <span class="p">(</span><span class="n">FM</span> <span class="n">API</span> <span class="n">Support</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>连接示例</strong>:</p>
+<ul class="simple">
+<li><p>FM 通过任何 MCTP 兼容互连直接连接到 CXL 设备可直接发布 FM 命令</p></li>
+<li><p>FM 直接连接到 CXL 交换机可使用交换机隧道传输 FM 命令到直接附加的 MLD 组件</p></li>
+<li><p>FM 可嵌入 CXL 设备内部</p></li>
+</ul>
+</section>
+<section id="cci-section-7-6-3">
+<h2>CCI 消息格式和传输协议 [Section 7.6.3]_<a class="headerlink" href="#cci-section-7-6-3" title="链接到此标题。"></a></h2>
+<p><strong>CCI 消息体</strong> [Figure 7-19]_:</p>
+</section>
+<section id="fm-api-section-7-6-7">
+<h2>FM API 命令集 [Section 7.6.7]_<a class="headerlink" href="#fm-api-section-7-6-7" title="链接到此标题。"></a></h2>
+<p><strong>命令集要求</strong> [Table 7-15]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command Set Name</p></th>
+<th class="head"><p>Switch FM API
+Requirement</p></th>
+<th class="head"><p>MLD FM API
+Requirement</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Physical Switch
+(Section 7.6.7.2)</p></td>
+<td><p>M (强制)</p></td>
+<td><p>P (禁止)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Virtual Switch
+(Section 7.6.7.3)</p></td>
+<td><p>O (可选)</p></td>
+<td><p>P (禁止)</p></td>
+</tr>
+<tr class="row-even"><td><p>MLD Port
+(Section 7.6.7.4)</p></td>
+<td><p>O (可选)</p></td>
+<td><p>P (禁止)</p></td>
+</tr>
+<tr class="row-odd"><td><p>MLD Component
+(Section 7.6.7.5)</p></td>
+<td><p>P (禁止)</p></td>
+<td><p>M (强制)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="physical-switch-section-7-6-7-2">
+<h2>Physical Switch 命令集 [Section 7.6.7.2]_<a class="headerlink" href="#physical-switch-section-7-6-7-2" title="链接到此标题。"></a></h2>
+<p><strong>必需命令</strong> [Table 7-16]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command Set Name</p></th>
+<th class="head"><p>Requirem
+ent</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Identify Switch Device</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-odd"><td><p>Get Physical Port State</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-even"><td><p>Physical Port Control</p></td>
+<td><p>O</p></td>
+</tr>
+<tr class="row-odd"><td><p>Send PPB CXL.io Configuration
+Request</p></td>
+<td><p>O</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Identify Switch Device (Opcode 5100h)</strong> [Section 7.6.7.2.1]:</p>
+<p>检索 CXL 交换机的能力和容量信息。</p>
+<p><strong>响应负载</strong> [Table 7-17]_:</p>
+</section>
+<section id="virtual-switch-section-7-6-7-3">
+<h2>Virtual Switch 命令集 [Section 7.6.7.3]_<a class="headerlink" href="#virtual-switch-section-7-6-7-3" title="链接到此标题。"></a></h2>
+<p><strong>必需命令</strong> [Table 7-24]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command Set Name</p></th>
+<th class="head"><p>Requirem
+ent</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Get Virtual CXL Switch Info</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bind vPPB</p></td>
+<td><p>O</p></td>
+</tr>
+<tr class="row-even"><td><p>Unbind vPPB</p></td>
+<td><p>O</p></td>
+</tr>
+<tr class="row-odd"><td><p>Generate AER Event</p></td>
+<td><p>O</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bind vPPB (Opcode 5201h)</strong> [Section 7.6.7.3.2]:</p>
+<p>在指定的 vPPB 上执行绑定操作。所有绑定操作作为后台命令执行。</p>
+<p><strong>请求负载</strong> [Table 7-28]_:</p>
+</section>
+<section id="mld-port-section-7-6-7-4">
+<h2>MLD Port 命令集 [Section 7.6.7.4]_<a class="headerlink" href="#mld-port-section-7-6-7-4" title="链接到此标题。"></a></h2>
+<p><strong>必需命令</strong> [Table 7-31]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command Set Name</p></th>
+<th class="head"><p>Switche
+s</p></th>
+<th class="head"><p>MLDs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Tunnel Management Command</p></td>
+<td><p>M</p></td>
+<td><p>O</p></td>
+</tr>
+<tr class="row-odd"><td><p>Send LD CXL.io Configuration
+Request</p></td>
+<td><p>M</p></td>
+<td><p>P</p></td>
+</tr>
+<tr class="row-even"><td><p>Send LD CXL.io Memory Request</p></td>
+<td><p>M</p></td>
+<td><p>P</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tunnel Management Command (Opcode 5300h)</strong> [Section 7.6.7.4.1]:</p>
+<p>将提供的命令隧道传输到指定端口上 MLD 的 LD FFFFh。</p>
+<p><strong>请求负载</strong> [Table 7-32]_:</p>
+</section>
+<section id="mld-component-section-7-6-7-5">
+<h2>MLD Component 命令集 [Section 7.6.7.5]_<a class="headerlink" href="#mld-component-section-7-6-7-5" title="链接到此标题。"></a></h2>
+<p><strong>必需命令</strong> [Table 7-38]_:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command Set Name</p></th>
+<th class="head"><p>Requirem
+ent</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Get LD Info</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-odd"><td><p>Get LD Allocations</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-even"><td><p>Set LD Allocations</p></td>
+<td><p>O</p></td>
+</tr>
+<tr class="row-odd"><td><p>Get QoS Control</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-even"><td><p>Set QoS Control</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-odd"><td><p>Get QoS Allocated BW</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-even"><td><p>Set QoS Allocated BW</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-odd"><td><p>Get QoS BW Limit</p></td>
+<td><p>M</p></td>
+</tr>
+<tr class="row-even"><td><p>Set QoS BW Limit</p></td>
+<td><p>M</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Get LD Info (Opcode 5400h)</strong> [Section 7.6.7.5.1]:</p>
+<p>检索 MLD 的配置信息。</p>
+<p><strong>响应负载</strong> [Table 7-39]_:</p>
+</section>
+<section id="fabric-section-7-6-8">
+<h2>Fabric 管理事件记录 [Section 7.6.8]_<a class="headerlink" href="#fabric-section-7-6-8" title="链接到此标题。"></a></h2>
+<p><strong>Physical Switch 事件记录</strong> [Table 7-51]:</p>
+<p>事件类型:
+- 00h = Link State Change
+- 01h = Slot Status Register Updated</p>
+<p><strong>Virtual CXL Switch 事件记录</strong> [Table 7-52]:</p>
+<p>事件类型:
+- 00h = Binding Change
+- 01h = Secondary Bus Reset
+- 02h = Link Control Register Updated
+- 03h = Slot Control Register Updated</p>
+<p><strong>MLD Port 事件记录</strong> [Table 7-53]:</p>
+<p>事件类型:
+- 00h = Error Correctable Message Received
+- 01h = Error Non-Fatal Message Received
+- 02h = Error Fatal Message Received</p>
+</section>
+</section>
+<section id="id5">
+<h1>关键链路流程总结<a class="headerlink" href="#id5" title="链接到此标题。"></a></h1>
+<section id="id6">
+<h2>CXL.io 关键流程<a class="headerlink" href="#id6" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>电源管理初始化</strong>:
+- 使用 CREDIT_RTN 和 AGENT_INFO 消息建立信用
+- Downstream Port 分配 PM_AGENT_ID 给 Upstream Port
+- Upstream Port 必须等待 CREDIT_RTN 后才能发起 IP2PM 消息</p></li>
+<li><p><strong>错误传播</strong>:
+- CXL.cache 和 CXL.mem 错误通过 CXL.io 向上传播
+- 记录在 PCIe AER 寄存器中</p></li>
+<li><p><strong>ATS 内存类型指示</strong>:
+- 主机通过 Issue-on-CXL.io 位指示某些页面只能在 CXL.io 上访问
+- 设备违反此限制使用 CXL.cache 属于违规</p></li>
+</ol>
+</section>
+<section id="id7">
+<h2>CXL.cache 关键流程<a class="headerlink" href="#id7" title="链接到此标题。"></a></h2>
+<ol class="arabic">
+<li><p><strong>Read 事务流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Device --D2H Read Request--&gt; Host
+Device &lt;--H2D Response (GO)-- Host (可选，RdCurr 不存在)
+Device &lt;--H2D Data (32B x2)- Host
+</pre></div>
+</div>
+</li>
+<li><p><strong>Write 事务流程</strong> (Posted):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span> <span class="o">--</span><span class="n">D2H</span> <span class="n">Write</span> <span class="n">Request</span><span class="o">--&gt;</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">&lt;--</span><span class="n">H2D</span> <span class="n">GO</span><span class="o">+</span><span class="n">WritePull</span><span class="o">-----</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">--</span><span class="n">D2H</span> <span class="n">Data</span> <span class="p">(</span><span class="mi">64</span><span class="n">B</span><span class="p">)</span><span class="o">-----&gt;</span> <span class="n">Host</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Write 事务流程</strong> (Non-posted):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span> <span class="o">--</span><span class="n">D2H</span> <span class="n">Write</span> <span class="n">Request</span><span class="o">--&gt;</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">&lt;--</span><span class="n">H2D</span> <span class="n">Write</span> <span class="n">Pull</span><span class="o">-----</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">--</span><span class="n">D2H</span> <span class="n">Data</span> <span class="p">(</span><span class="mi">64</span><span class="n">B</span><span class="p">)</span><span class="o">-----&gt;</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">&lt;--</span><span class="n">H2D</span> <span class="n">GO</span><span class="o">-------------</span> <span class="n">Host</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Snoop 事务流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span> <span class="o">--</span><span class="n">H2D</span> <span class="n">Snoop</span> <span class="n">Request</span><span class="o">--&gt;</span> <span class="n">Device</span>
+<span class="n">Host</span> <span class="o">&lt;--</span><span class="n">D2H</span> <span class="n">Response</span> <span class="p">(</span><span class="n">Rsp</span><span class="o">-</span><span class="n">X</span><span class="p">)</span><span class="o">-</span> <span class="n">Device</span>
+<span class="n">Host</span> <span class="o">&lt;--</span><span class="n">D2H</span> <span class="n">Data</span> <span class="p">(</span><span class="n">如果需要</span><span class="p">)</span><span class="o">--</span> <span class="n">Device</span> <span class="p">(</span><span class="n">如果</span> <span class="n">Rsp</span><span class="o">*</span><span class="n">Fwd</span><span class="o">*</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Evict 事务流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Device</span> <span class="o">--</span><span class="n">D2H</span> <span class="n">Evict</span> <span class="n">Request</span><span class="o">--&gt;</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">&lt;--</span><span class="n">H2D</span> <span class="n">GO</span><span class="o">-</span><span class="n">WritePull</span><span class="o">-----</span> <span class="n">Host</span>
+<span class="n">Device</span> <span class="o">--</span><span class="n">D2H</span> <span class="n">Data</span> <span class="p">(</span><span class="mi">64</span><span class="n">B</span><span class="p">)</span><span class="o">-----&gt;</span> <span class="n">Host</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>重要限制</strong>:</p>
+<ul class="simple">
+<li><p>多个 Evict 到同一缓存行不允许</p></li>
+<li><p>多个写请求到同一缓存行允许，但建议设备每次只发出一个 outstanding Write 请求</p></li>
+<li><p>主机在收到先前 snoop 的所有响应和数据前不得发送第二个 snoop</p></li>
+<li><p>设备必须维护请求顺序，因为主机可以自由重排序</p></li>
+</ul>
+</section>
+<section id="id8">
+<h2>CXL.mem 关键流程<a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>M2S 请求流程</strong>:
+- Req: 无数据请求 (如内存读取)
+- RwD: 带数据请求 (如内存写入)
+- BIRsp: 对 BISnp 的响应</p></li>
+<li><p><strong>S2M 响应流程</strong>:
+- NDR: 无数据响应 (如完成确认)
+- DRS: 带数据响应 (如读取数据)
+- BISnp: 反向无效 Snoop (CXL 3.0 新增)</p></li>
+<li><p><strong>BISnp 支持</strong>:
+- Type 2 设备必须支持 BISnp 通道
+- 允许 Type 2 设备实现包含式 Snoop Filter
+- 支持直接 peer-to-peer 访问 HDM</p></li>
+</ol>
+</section>
+<section id="id9">
+<h2>Fabric 关键流程<a class="headerlink" href="#id9" title="链接到此标题。"></a></h2>
+<ol class="arabic">
+<li><p><strong>地址解码流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>HPA[51:36] -&gt; 比较 FBase/FLimit -&gt; 确定是否为 Fabric 地址
+-&gt; GlblAddrLkupIdx = HPA[51:36] &gt;&gt; n
+-&gt; 查表获取 DPID 和 IntLvMask
+-&gt; 如果交错启用，二次查找获取 EffDPID
+</pre></div>
+</div>
+</li>
+<li><p><strong>GFAM 访问保护流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">请求地址</span> <span class="o">-&gt;</span> <span class="n">GTR</span><span class="o">/</span><span class="n">GTC</span> <span class="n">查找</span> <span class="o">-&gt;</span> <span class="n">获取</span> <span class="n">GrpID</span>
+<span class="n">请求</span> <span class="n">SPID</span> <span class="o">-&gt;</span> <span class="n">SAT</span> <span class="n">查找</span> <span class="o">-&gt;</span> <span class="n">获取</span> <span class="n">GrpAccVec</span>
+<span class="n">GrpID</span> <span class="n">选择</span> <span class="n">GrpAccVec</span> <span class="n">位</span> <span class="o">-&gt;</span> <span class="n">确定是否允许访问</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>PBR 消息转换</strong>:
+- HBR 到 PBR: 添加 12 位 SPID/DPID，删除 4 位 CacheID/LD-ID
+- PBR 到 HBR: 映射 SPID 到 CacheID，删除 SPID/DPID，添加 LD-ID</p></li>
+<li><p><strong>Fabric 绑定/解绑</strong>:
+- FM 发布 Bind vPPB 命令指定物理端口、VCS ID 和 vPPB 索引
+- 交换机通知 FM 绑定完成通过生成 Virtual CXL Switch Event Record
+- FM 发布 Unbind vPPB 命令指定 VCS ID 和 vPPB 索引
+- 交换机发起 Managed Hot-Remove 或 Surprise Hot-Remove</p></li>
+</ol>
+</section>
+</section>
+<section id="id10">
+<h1>参考文献<a class="headerlink" href="#id10" title="链接到此标题。"></a></h1>
+</section>
+<section id="id11">
+<h1>表格索引<a class="headerlink" href="#id11" title="链接到此标题。"></a></h1>
+<ul class="simple">
+<li><p>Table 3-1: CXL Power Management Messages - Data Payload Field Definitions</p></li>
+<li><p>Table 3-3: Optional PCIe Features Required for CXL</p></li>
+<li><p>Table 3-4: CXL.cache Channel Crediting</p></li>
+<li><p>Table 3-5: CXL.cache - D2H Request Fields</p></li>
+<li><p>Table 3-6: Non Temporal Encodings</p></li>
+<li><p>Table 3-7: CXL.cache - D2H Response Fields</p></li>
+<li><p>Table 3-8: CXL.cache - D2H Data Header Fields</p></li>
+<li><p>Table 3-9: CXL.cache - H2D Request Fields</p></li>
+<li><p>Table 3-10: CXL.cache - H2D Response Fields</p></li>
+<li><p>Table 3-11: RSP_PRE Encodings</p></li>
+<li><p>Table 3-12: Cache State Encoding for H2D Response</p></li>
+<li><p>Table 3-13: CXL.cache - H2D Data Header Fields</p></li>
+<li><p>Table 3-14: CXL.cache - Device to Host Requests</p></li>
+<li><p>Table 3-15: D2H Request (Targeting Non Device-Attached Memory) Supported H2D Responses</p></li>
+<li><p>Table 3-16: D2H Request (Targeting Device-Attached Memory) Supported Responses</p></li>
+<li><p>Table 3-17: D2H Response Encodings</p></li>
+<li><p>Table 3-18: CXL.cache - Mapping of Host to Device Requests and Responses</p></li>
+<li><p>Table 3-19: H2D Response Opcode Encodings</p></li>
+<li><p>Table 3-20: Allowed Opcodes per Buried Cache State</p></li>
+<li><p>Table 7-15: FM API Command Sets</p></li>
+<li><p>Table 7-16: Physical Switch Command Set Requirements</p></li>
+<li><p>Table 7-17: Identify Switch Device Response Payload</p></li>
+<li><p>Table 7-24: Virtual Switch Command Set Requirements</p></li>
+<li><p>Table 7-28: Bind vPPB Request Payload</p></li>
+<li><p>Table 7-31: MLD Port Command Set Requirements</p></li>
+<li><p>Table 7-32: Tunnel Management Command Request Payload</p></li>
+<li><p>Table 7-38: MLD Component Command Set Requirements</p></li>
+<li><p>Table 7-39: Get LD Info Response Payload</p></li>
+<li><p>Table 7-54: Fabric Segment Size Table</p></li>
+</ul>
+</section>
+<section id="id12">
+<h1>图形索引<a class="headerlink" href="#id12" title="链接到此标题。"></a></h1>
+<ul class="simple">
+<li><p>Figure 3-1: Flex Bus Layers - CXL.io Transaction Layer Highlighted</p></li>
+<li><p>Figure 3-2: CXL Power Management Messages Packet Format</p></li>
+<li><p>Figure 3-3: Power Management Credits and Initialization</p></li>
+<li><p>Figure 3-5: ATS 64-bit Request with CXL Indication</p></li>
+<li><p>Figure 3-6: ATS Translation Completion Data Entry with CXL Indication</p></li>
+<li><p>Figure 3-7: CXL.cache Channels</p></li>
+<li><p>Figure 3-8: CXL.cache Read Behavior</p></li>
+<li><p>Figure 3-9: CXL.cache Read0 Behavior</p></li>
+<li><p>Figure 3-10: CXL.cache Device to Host Write Behavior</p></li>
+<li><p>Figure 3-11: CXL.cache WrInv Transaction</p></li>
+<li><p>Figure 3-12: WOWrInv/F with FastGO/ExtCmp</p></li>
+<li><p>Figure 3-14: CXL.cache Snoop Behavior</p></li>
+<li><p>Figure 3-15: CXL.mem Channels for Devices</p></li>
+<li><p>Figure 7-18: Example of Fabric Management Model</p></li>
+<li><p>Figure 7-19: CCI Message Body</p></li>
+<li><p>Figure 7-24: High-level CXL Fabric Diagram</p></li>
+<li><p>Figure 7-29: Host Physical Address Map Example with Global Memory</p></li>
+<li><p>Figure 7-30: Switch Ingress Address Decode Flow</p></li>
+<li><p>Figure 7-32: Address Protection Flow</p></li>
+<li><p>Figure 7-33: Address Protection at the GFAM Device</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

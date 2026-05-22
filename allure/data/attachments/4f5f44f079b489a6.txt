@@ -1,0 +1,1 @@
+$$SEQ_TEST_0003 -v -c "echo third" -p "third" -t 3000^^

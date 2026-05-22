@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>29. Buildroot 自动登录配置排障记录 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="30. 使能 systemd init 及 systemd-journald" href="systemd_enable.html" />
+    <link rel="prev" title="28. QEMU 启动 Linux 内核过程记录" href="ai_task_summary/qemu_boot_linux_process.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">29. Buildroot 自动登录配置排障记录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">29.1. 背景</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">29.2. 问题分析过程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#systemd-console-getty-service">29.2.1. 第一次尝试：修改 systemd console-getty.service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#serial-getty-service">29.2.2. 第二次尝试：修改 serial-getty&#64;.service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">29.2.3. 根因定位</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">29.3. 最终解决方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">29.4. 关键经验总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">29. </span>Buildroot 自动登录配置排障记录</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/buildroot_autologin_troubleshooting.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="buildroot">
+<h1><span class="section-number">29. </span>Buildroot 自动登录配置排障记录<a class="headerlink" href="#buildroot" title="链接到此标题。"></a></h1>
+<section id="id1">
+<h2><span class="section-number">29.1. </span>背景<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<p>Buildroot 构建完成后，通过 QEMU 启动 Linux 系统，串口终端会出现如下登录提示:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Welcome</span> <span class="n">to</span> <span class="n">Buildroot</span>
+<span class="n">buildroot</span> <span class="n">login</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>即使 root 密码已设为空（<code class="docutils literal notranslate"><span class="pre">BR2_TARGET_GENERIC_ROOT_PASSWD=&quot;&quot;</span></code>），仍需要手动按回车才能登录，
+需要实现系统启动后自动以 root 身份进入 shell。</p>
+</section>
+<section id="id2">
+<h2><span class="section-number">29.2. </span>问题分析过程<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<section id="systemd-console-getty-service">
+<h3><span class="section-number">29.2.1. </span>第一次尝试：修改 systemd console-getty.service<a class="headerlink" href="#systemd-console-getty-service" title="链接到此标题。"></a></h3>
+<p>Buildroot defconfig 中配置了 <code class="docutils literal notranslate"><span class="pre">BR2_INIT_SYSTEMD=y</span></code>，因此首先在 rootfs overlay 中为
+<code class="docutils literal notranslate"><span class="pre">console-getty.service</span></code> 创建 systemd drop-in override 文件:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">console</span><span class="o">-</span><span class="n">getty</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">autologin</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>内容为:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[Service]
+ExecStart=
+ExecStart=-/sbin/agetty -a root --noclear --keep-baud - 115200,38400,9600 $TERM
+</pre></div>
+</div>
+<p>重新构建后启动，登录提示依然存在。</p>
+</section>
+<section id="serial-getty-service">
+<h3><span class="section-number">29.2.2. </span>第二次尝试：修改 serial-getty&#64;.service<a class="headerlink" href="#serial-getty-service" title="链接到此标题。"></a></h3>
+<p>检查内核命令行发现 <code class="docutils literal notranslate"><span class="pre">console=ttyAMA0</span></code>，systemd 在这种情况下激活的是
+<code class="docutils literal notranslate"><span class="pre">serial-getty&#64;ttyAMA0.service</span></code> 而非 <code class="docutils literal notranslate"><span class="pre">console-getty.service</span></code>。
+因此补充为 <code class="docutils literal notranslate"><span class="pre">serial-getty&#64;.service.d/autologin.conf</span></code> 添加同样的 override。</p>
+<p>重新构建后启动，登录提示**仍然存在**。</p>
+</section>
+<section id="id3">
+<h3><span class="section-number">29.2.3. </span>根因定位<a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>两次尝试都失败，说明 systemd drop-in 方案本身就不适用。进一步排查发现了关键线索：</p>
+<ol class="arabic">
+<li><p>内核命令行中存在 <code class="docutils literal notranslate"><span class="pre">init=/linuxrc</span></code> 参数:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">console</span><span class="o">=</span><span class="n">ttyAMA0</span> <span class="n">root</span><span class="o">=/</span><span class="n">dev</span><span class="o">/</span><span class="n">ram0</span> <span class="n">rw</span> <span class="n">init</span><span class="o">=/</span><span class="n">linuxrc</span> <span class="n">nokaslr</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">init=/linuxrc</span></code> 会覆盖默认的 init 进程，而 <code class="docutils literal notranslate"><span class="pre">linuxrc</span></code> 通常是指向 BusyBox init 的符号链接。</p>
+</li>
+<li><p>BusyBox init 解析的是 <code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code>，而不是 systemd 的 service 文件。
+查看 <code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code> 内容:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">console</span><span class="p">::</span><span class="n">respawn</span><span class="p">:</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">getty</span> <span class="o">-</span><span class="n">L</span>  <span class="n">console</span> <span class="mi">0</span> <span class="n">vt100</span> <span class="c1"># GENERIC_SERIAL</span>
+</pre></div>
+</div>
+<p>这一行才是实际产生登录提示的来源。</p>
+</li>
+<li><p>虽然 Buildroot 配置了 <code class="docutils literal notranslate"><span class="pre">BR2_INIT_SYSTEMD=y</span></code> 并打包了 systemd，
+但内核的 <code class="docutils literal notranslate"><span class="pre">init=/linuxrc</span></code> 参数导致系统实际运行的是 BusyBox init，
+systemd 及其所有 service 配置完全未被加载。</p></li>
+</ol>
+<p>结论：<strong>配置与实际运行环境不一致</strong> — Buildroot 配置了 systemd init，但内核参数指定了 BusyBox init。</p>
+</section>
+</section>
+<section id="id4">
+<h2><span class="section-number">29.3. </span>最终解决方案<a class="headerlink" href="#id4" title="链接到此标题。"></a></h2>
+<p>在 rootfs overlay 中覆盖 <code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code>，将 getty 登录行改为直接启动 root shell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 原始内容（需要登录）:</span>
+<span class="n">console</span><span class="p">::</span><span class="n">respawn</span><span class="p">:</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">getty</span> <span class="o">-</span><span class="n">L</span>  <span class="n">console</span> <span class="mi">0</span> <span class="n">vt100</span> <span class="c1"># GENERIC_SERIAL</span>
+
+<span class="c1"># 修改后（自动登录）:</span>
+<span class="n">console</span><span class="p">::</span><span class="n">respawn</span><span class="p">:</span><span class="o">-/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>其中 <code class="docutils literal notranslate"><span class="pre">-/bin/sh</span></code> 前的 <code class="docutils literal notranslate"><span class="pre">-</span></code> 表示以 login shell 方式启动，会正确加载 <code class="docutils literal notranslate"><span class="pre">/etc/profile</span></code> 等环境变量。</p>
+<p>同时清理掉之前创建的无效 systemd drop-in 文件。</p>
+</section>
+<section id="id5">
+<h2><span class="section-number">29.4. </span>关键经验总结<a class="headerlink" href="#id5" title="链接到此标题。"></a></h2>
+<ol class="arabic">
+<li><p><strong>确认实际 init 系统，不要只看 Buildroot 配置</strong>
+Buildroot 的 <code class="docutils literal notranslate"><span class="pre">BR2_INIT_SYSTEMD=y</span></code> 并不意味着系统一定使用 systemd init。
+内核 <code class="docutils literal notranslate"><span class="pre">init=</span></code> 参数拥有最高优先级，会覆盖 Buildroot 的 init 配置。
+排查时应先确认实际运行的 init 进程:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ps</span> <span class="n">aux</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">init</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="n">comm</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>根据 init 系统选择正确的配置方式</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>init 系统</p></th>
+<th class="head"><p>配置文件</p></th>
+<th class="head"><p>自动登录方式</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BusyBox</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">console::respawn:-/bin/sh</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>SysV init</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1:2345:respawn:/sbin/getty</span> <span class="pre">-n</span> <span class="pre">-l</span> <span class="pre">/bin/sh</span> <span class="pre">...</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>systemd</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">*.service.d/*.conf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ExecStart=-/sbin/agetty</span> <span class="pre">-a</span> <span class="pre">root</span> <span class="pre">...</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p><strong>systemd drop-in 中 ExecStart 必须先清空再重写</strong>
+systemd 的 drop-in override 机制要求先写空行 <code class="docutils literal notranslate"><span class="pre">ExecStart=</span></code> 清除原始命令，
+然后再写新的 <code class="docutils literal notranslate"><span class="pre">ExecStart=...</span></code>。只写新的 <code class="docutils literal notranslate"><span class="pre">ExecStart</span></code> 会导致两个命令同时存在。</p></li>
+<li><p><strong>排查 init 问题的检查清单</strong></p>
+<ul class="simple">
+<li><p>查看内核命令行中的 <code class="docutils literal notranslate"><span class="pre">init=</span></code> 参数</p></li>
+<li><p>确认 <code class="docutils literal notranslate"><span class="pre">/linuxrc</span></code> 或 <code class="docutils literal notranslate"><span class="pre">/sbin/init</span></code> 指向哪个程序</p></li>
+<li><p>检查 <code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code> 是否存在（BusyBox/SysV init）</p></li>
+<li><p>检查 systemd service 文件（systemd init）</p></li>
+<li><p>确认 getty/agetty 二进制路径是否正确（<code class="docutils literal notranslate"><span class="pre">/sbin/agetty</span></code> vs <code class="docutils literal notranslate"><span class="pre">/usr/sbin/agetty</span></code>）</p></li>
+</ul>
+</li>
+<li><p><strong>``console=`` 参数影响 systemd 的 getty 服务选择</strong>
+<code class="docutils literal notranslate"><span class="pre">console=ttyAMA0</span></code> 会触发 <code class="docutils literal notranslate"><span class="pre">serial-getty&#64;ttyAMA0.service</span></code>,
+<code class="docutils literal notranslate"><span class="pre">console=tty0</span></code> 会触发 <code class="docutils literal notranslate"><span class="pre">getty&#64;tty1.service</span></code>,
+不指定 console 则可能使用 <code class="docutils literal notranslate"><span class="pre">console-getty.service</span></code>。
+需要根据实际情况修改对应的 service 文件。</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="ai_task_summary/qemu_boot_linux_process.html" class="btn btn-neutral float-left" title="28. QEMU 启动 Linux 内核过程记录" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="systemd_enable.html" class="btn btn-neutral float-right" title="30. 使能 systemd init 及 systemd-journald" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

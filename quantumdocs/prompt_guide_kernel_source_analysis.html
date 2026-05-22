@@ -1,0 +1,444 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>31. Linux 内核源码分析 — 提示词编写指南 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例" href="driver_analysis_arm_pmu.html" />
+    <link rel="prev" title="30. 使能 systemd init 及 systemd-journald" href="systemd_enable.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id6">37. 6. 提示词编写原则</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id7">37.1. 6.1 指定文件路径</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">37.2. 6.2 指定分析深度</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">37.3. 6.3 提供已知上下文</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">37.4. 6.4 要求结构化输出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">37.5. 6.5 指定输出语言和格式</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">31. </span>Linux 内核源码分析 — 提示词编写指南</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/prompt_guide_kernel_source_analysis.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="linux">
+<h1><span class="section-number">31. </span>Linux 内核源码分析 — 提示词编写指南<a class="headerlink" href="#linux" title="链接到此标题。"></a></h1>
+<p>本文档提供一套结构化的提示词模板，用于指导 AI 分析 Linux 内核源码。
+核心原则：<strong>上下文越精确，分析越深入</strong>。</p>
+</section>
+<section id="id1">
+<h1><span class="section-number">32. </span>1. 基本分析模板<a class="headerlink" href="#id1" title="链接到此标题。"></a></h1>
+<p>分析单个文件时使用：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>请分析以下 Linux 内核源码文件，输出中文：
+
+文件：src/linux-6.1-rc6/drivers/xxx/yyy.c
+
+要求：
+1. 驱动功能概述（一句话描述 + 所属子系统）
+2. 核心数据结构及其关系
+3. 初始化/注册流程（从入口点到硬件可用）
+4. 操作函数集（回调表：函数名 → 职责 → 调用者）
+5. 中断处理流程（中断类型 → 触发条件 → 处理链）
+6. 并发保护机制（锁类型 → 保护对象 → 无锁设计）
+7. CPU 热插拔/电源管理处理
+8. 与用户空间的接口（sysfs/ioctl/proc 等）
+9. 本文件是框架层还是具体实现？如果是框架层，列出需要具体驱动实现的回调
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h1><span class="section-number">33. </span>2. 跨文件追踪模板<a class="headerlink" href="#id2" title="链接到此标题。"></a></h1>
+<p>分析一个功能涉及多个文件时使用：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>请分析 Linux 内核中 &lt;功能名称&gt; 的完整实现。
+
+已知入口文件：src/linux-6.1-rc6/path/to/entry.c
+
+要求：
+1. 从入口函数开始，画出完整的调用链（函数名 + 文件:行号）
+2. 识别所有涉及的数据结构（struct 定义位置 + 成员说明）
+3. 按执行阶段分组：初始化阶段 / 运行时阶段 / 清理阶段
+4. 标注关键的内核 API 调用及其作用
+5. 画出组件交互图（用 ASCII 或文字描述）
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h1><span class="section-number">34. </span>3. 机制对比模板<a class="headerlink" href="#id3" title="链接到此标题。"></a></h1>
+<p>对比两种实现机制时使用：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>请对比 Linux 内核中 &lt;机制A&gt; 和 &lt;机制B&gt; 的实现差异：
+
+文件A：src/linux-6.1-rc6/path/to/a.c
+文件B：src/linux-6.1-rc6/path/to/b.c
+
+要求：
+1. 两者解决的问题分别是什么？
+2. 数据结构差异
+3. 注册/初始化流程差异
+4. 性能特征差异（锁粒度、内存分配、中断上下文）
+5. 各自的适用场景
+6. 用表格对比
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h1><span class="section-number">35. </span>4. 数据流追踪模板<a class="headerlink" href="#id4" title="链接到此标题。"></a></h1>
+<p>追踪一个数据从产生到消费的完整路径：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>请追踪 Linux 内核中 &lt;数据/事件&gt; 从产生到消费的完整路径。
+
+起点：src/linux-6.1-rc6/path/to/producer.c
+终点：src/linux-6.1-rc6/path/to/consumer.c
+
+要求：
+1. 数据结构定义（在各层之间的变换）
+2. 完整传递路径（函数调用链 + 文件:行号）
+3. 每一层的处理逻辑（做了什么变换/过滤/聚合）
+4. 并发安全如何保证
+5. 错误处理路径（数据丢失/重试/回退）
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h1><span class="section-number">36. </span>5. 硬件交互分析模板<a class="headerlink" href="#id5" title="链接到此标题。"></a></h1>
+<p>分析驱动与硬件寄存器的交互：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>请分析以下驱动与硬件的交互方式：
+
+文件：src/linux-6.1-rc6/drivers/xxx/yyy.c
+参考手册：&lt;手册名称或规范文档路径&gt;
+
+要求：
+1. 硬件寄存器列表（偏移 + 名称 + 读写属性）
+2. 寄存器操作封装函数（readx/writex 调用位置）
+3. 初始化时的寄存器配置序列
+4. 运行时的寄存器读写时机（中断中？进程上下文？）
+5. 与硬件手册的对应关系（代码中的操作对应手册哪一节）
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h1><span class="section-number">37. </span>6. 提示词编写原则<a class="headerlink" href="#id6" title="链接到此标题。"></a></h1>
+<section id="id7">
+<h2><span class="section-number">37.1. </span>6.1 指定文件路径<a class="headerlink" href="#id7" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>差</p></th>
+<th class="head"><p>好</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>分析一下 PMU 驱动</p></td>
+<td><p>分析 src/linux-6.1-rc6/drivers/perf/arm_pmu.c</p></td>
+</tr>
+<tr class="row-odd"><td><p>看看中断处理部分</p></td>
+<td><p>分析 arm_pmu.c 中 armpmu_dispatch_irq() 到 pmu-&gt;handle_irq() 的中断处理链</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id8">
+<h2><span class="section-number">37.2. </span>6.2 指定分析深度<a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>差</p></th>
+<th class="head"><p>好</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>解释这个函数</p></td>
+<td><p>用 3 句话解释这个函数，并标注每一行代码的作用</p></td>
+</tr>
+<tr class="row-odd"><td><p>分析这个驱动</p></td>
+<td><p>画出从 subsys_initcall 到 perf_pmu_register 的完整注册流程图</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id9">
+<h2><span class="section-number">37.3. </span>6.3 提供已知上下文<a class="headerlink" href="#id9" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>差</p></th>
+<th class="head"><p>好</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>为什么这里要 reset？</p></td>
+<td><p>在 CPU_PM_EXIT（休眠唤醒）时为什么必须先调用 pmu-&gt;reset()？考虑 PMU 硬件在掉电后寄存器状态 UNKNOWN 的因素</p></td>
+</tr>
+<tr class="row-odd"><td><p>这个锁有什么用？</p></td>
+<td><p>armpmu_event_update() 为什么用 local64_cmpxchg 而不是 spinlock？考虑中断上下文的约束</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id10">
+<h2><span class="section-number">37.4. </span>6.4 要求结构化输出<a class="headerlink" href="#id10" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>差</p></th>
+<th class="head"><p>好</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>帮我总结一下</p></td>
+<td><p>用表格列出所有回调函数：函数名 | 文件:行号 | 职责 | 调用者</p></td>
+</tr>
+<tr class="row-odd"><td><p>这些数据结构什么关系？</p></td>
+<td><p>用 ASCII 图画出 struct arm_pmu、struct pmu_hw_events、struct pmu 之间的关系</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id11">
+<h2><span class="section-number">37.5. </span>6.5 指定输出语言和格式<a class="headerlink" href="#id11" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>差</p></th>
+<th class="head"><p>好</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>（无语言要求）</p></td>
+<td><p>输出中文，技术术语保留英文原文</p></td>
+</tr>
+<tr class="row-odd"><td><p>（无格式要求）</p></td>
+<td><p>输出为 Markdown，代码块标注语言，表格对比</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id12">
+<h1><span class="section-number">38. </span>7. 常用追问模板<a class="headerlink" href="#id12" title="链接到此标题。"></a></h1>
+<p>深入分析时的追问：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># 追问设计决策
+为什么这里选择 &lt;方案A&gt; 而不是 &lt;方案B&gt;？考虑了哪些 trade-off？
+
+# 追问边界条件
+这个函数在以下场景的行为是什么：
+1. 多个 CPU 同时调用
+2. 中断上下文中被调用
+3. 传入参数为 NULL/0
+4. 资源已耗尽
+
+# 追问历史演进
+这个实现从哪个内核版本开始引入？解决了什么问题？
+查看 git log: git log --oneline src/linux-6.1-rc6/path/to/file.c
+
+# 追问与规范的对应
+这段代码对应 &lt;ARM 规范文档&gt; 的哪一节？实现是否完整？
+
+# 追问性能影响
+这个函数在热路径上被调用吗？是否有锁竞争或 cache line bouncing 的风险？
+</pre></div>
+</div>
+</section>
+<section id="id13">
+<h1><span class="section-number">39. </span>8. 实战示例<a class="headerlink" href="#id13" title="链接到此标题。"></a></h1>
+<p>以 arm_pmu.c 为例，完整的提问序列：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># 第一轮：整体理解
+分析 src/linux-6.1-rc6/drivers/perf/arm_pmu.c，输出：
+1. 驱动功能概述
+2. 核心数据结构
+3. 注册流程（从入口到 perf_pmu_register）
+4. pmu 回调函数表（函数名 → 职责）
+5. 中断处理链
+6. CPU 热插拔处理
+7. 框架层 vs 具体驱动的接口边界
+
+# 第二轮：深入数据流
+从用户执行 `perf stat -e cycles` 开始，追踪代码路径：
+perf_event_open() → event_init → add → start → 溢出中断 → stop → del
+每一步标注文件:行号和关键操作
+
+# 第三轮：并发分析
+分析 arm_pmu 中的并发保护：
+1. 哪些数据被多个 CPU 并发访问？
+2. 用了什么同步机制？为什么选这个机制？
+3. armpmu_event_update() 中 local64_cmpxchg 的 CAS 循环为什么需要重试？
+
+# 第四轮：与硬件规范对应
+arm_pmu.c 中的以下操作对应 ARM PMUv3 规范的哪些寄存器：
+- enable/disable_event
+- read_counter/write_counter
+- set_event_filter
+- reset
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="systemd_enable.html" class="btn btn-neutral float-left" title="30. 使能 systemd init 及 systemd-journald" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="driver_analysis_arm_pmu.html" class="btn btn-neutral float-right" title="40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

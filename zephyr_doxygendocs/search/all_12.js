@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['z_5fcstart_0',['z_cstart',['../prep__c_8c.html#aad40119de3368bfe9306fecb2fb0506a',1,'z_cstart(void):&#160;init.c'],['../init_8c.html#adfd4d123ec633dc8571868d07a22eb53',1,'z_cstart(void):&#160;init.c']]],
+  ['z_5fcurrent_5fthread_5fset_1',['z_current_thread_set',['../kernel__structs_8h.html#a5324ca8a831fcbf73321f1866069db3e',1,'kernel_structs.h']]],
+  ['z_5fdevice_5fstate_5finit_2',['z_device_state_init',['../init_8c.html#a1a4559ebab9e967cd7abc51a51afec87',1,'init.c']]],
+  ['z_5fearly_5frand_5fget_3',['z_early_rand_get',['../init_8c.html#aecef4e284ee68cec1f66df16de5f7390',1,'init.c']]],
+  ['z_5ffree_5fpage_5fcount_4',['z_free_page_count',['../mmu_8c.html#af515100f74d50e04655e595e31a13f68',1,'mmu.c']]],
+  ['z_5fidle_5fthreads_5',['z_idle_threads',['../init_8c.html#a458dabc4b01f5c5ce8652cdf9e86ebf2',1,'init.c']]],
+  ['z_5finit_5fcpu_6',['z_init_cpu',['../init_8c.html#a64702faa4b8c51f9244154dd0a78f553',1,'init.c']]],
+  ['z_5finit_5fstatic_5fthreads_7',['z_init_static_threads',['../init_8c.html#aa0c9642dc1a436af32963706634a4c22',1,'init.c']]],
+  ['z_5fkernel_8',['z_kernel',['../structz__kernel.html',1,'']]],
+  ['z_5fmain_5fthread_9',['z_main_thread',['../init_8c.html#af0dfdfacb01882327eeb37d659600bc7',1,'init.c']]],
+  ['z_5fmem_5fmanage_5fboot_5ffinish_10',['z_mem_manage_boot_finish',['../mmu_8c.html#a31d9d1cf800503d27fd65abf64c0a639',1,'mmu.c']]],
+  ['z_5fmem_5fmanage_5finit_11',['z_mem_manage_init',['../mmu_8c.html#aada8c0b6fd80b177eafd1cd9239e38ce',1,'mmu.c']]],
+  ['z_5fmm_5flock_12',['z_mm_lock',['../mmu_8c.html#a63f464f661b3b016e67504eb5a7afb0f',1,'mmu.c']]],
+  ['z_5fprep_5fc_13',['z_prep_c',['../prep__c_8c.html#a489803053339ddcdb4a27e52658f6875',1,'prep_c.c']]],
+  ['z_5fsmp_5fcpu_5fmobile_14',['z_smp_cpu_mobile',['../kernel__structs_8h.html#a4a257e875ccf25fd20f02b7c40af961d',1,'kernel_structs.h']]],
+  ['z_5fsmp_5fcurrent_5fget_15',['z_smp_current_get',['../kernel__structs_8h.html#a3dcb0d2440c9015516824d6d698a6213',1,'kernel_structs.h']]],
+  ['z_5fsys_5finit_5frun_5flevel_16',['z_sys_init_run_level',['../init_8c.html#a52b87dda269755a45e5b04e2ccd956c2',1,'init.c']]],
+  ['z_5fsys_5fpost_5fkernel_17',['z_sys_post_kernel',['../init_8c.html#a43e63847a06f33b0ffe5d7528f076bf7',1,'init.c']]],
+  ['z_5fvirt_5fregion_5fend_5faddr_18',['Z_VIRT_REGION_END_ADDR',['../mmu_8c.html#a86d06fd5b8879dca0254821c97b206d2',1,'mmu.c']]],
+  ['z_5fvirt_5fregion_5fstart_5faddr_19',['Z_VIRT_REGION_START_ADDR',['../mmu_8c.html#a0ffe9e731cb596376d34aa346e59b8a9',1,'mmu.c']]],
+  ['z_5fwait_5fq_5finit_20',['Z_WAIT_Q_INIT',['../kernel__structs_8h.html#a15762db2334ee4d6e6a4ff5a315e6154',1,'kernel_structs.h']]]
+];

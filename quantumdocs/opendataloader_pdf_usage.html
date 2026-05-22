@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>26. opendataloader-pdf 使用指南 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="27. reStructuredText 搭建任务过程记录" href="ai_task_summary/build_reStructedText_task.html" />
+    <link rel="prev" title="25. macOS 使用 Windows App 远程访问 Ubuntu 桌面" href="macos_remotedesktop_to_ubuntu.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">26. opendataloader-pdf 使用指南</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">26.1. 环境信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">26.2. 安装过程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#convert">26.3. convert 函数签名</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pdf-convert-py">26.4. pdf_convert.py 封装脚本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">26.5. 踩坑记录</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">26. </span>opendataloader-pdf 使用指南</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/opendataloader_pdf_usage.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="opendataloader-pdf">
+<h1><span class="section-number">26. </span>opendataloader-pdf 使用指南<a class="headerlink" href="#opendataloader-pdf" title="链接到此标题。"></a></h1>
+<p>本文档记录 opendataloader-pdf 的安装、使用过程及踩坑经验。</p>
+<section id="id1">
+<h2><span class="section-number">26.1. </span>环境信息<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p>OS: Ubuntu 24.04</p></li>
+<li><p>Python: 3.12</p></li>
+<li><p>opendataloader-pdf: 2.0.2</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2><span class="section-number">26.2. </span>安装过程<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p>系统 Python 为 externally-managed 环境（Ubuntu 24.04 默认），无法直接 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>，
+需要先创建虚拟环境:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 创建虚拟环境</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+
+<span class="c1"># 激活虚拟环境</span>
+<span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+
+<span class="c1"># 安装 opendataloader-pdf</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">opendataloader</span><span class="o">-</span><span class="n">pdf</span>
+</pre></div>
+</div>
+<p>验证安装:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;import opendataloader_pdf; print(&#39;import success&#39;)&quot;</span>
+</pre></div>
+</div>
+<p>模块导出:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert</span> <span class="o">/</span> <span class="n">convert_generated</span>  <span class="o">-</span> <span class="n">转换功能</span>
+<span class="n">run</span> <span class="o">/</span> <span class="n">run_jar</span> <span class="o">/</span> <span class="n">runner</span>       <span class="o">-</span> <span class="n">运行功能</span>
+<span class="n">cli_options_generated</span>        <span class="o">-</span> <span class="n">CLI</span> <span class="n">选项</span>
+<span class="n">wrapper</span>                      <span class="o">-</span> <span class="n">包装器</span>
+</pre></div>
+</div>
+</section>
+<section id="convert">
+<h2><span class="section-number">26.3. </span>convert 函数签名<a class="headerlink" href="#convert" title="链接到此标题。"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">opendataloader_pdf.convert</span></code> 主要参数：</p>
+<p>支持的输出格式：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> （默认）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">html</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pdf</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markdown</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markdown-with-html</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">markdown-with-images</span></code></p></li>
+</ul>
+</section>
+<section id="pdf-convert-py">
+<h2><span class="section-number">26.4. </span>pdf_convert.py 封装脚本<a class="headerlink" href="#pdf-convert-py" title="链接到此标题。"></a></h2>
+<p>路径：<code class="docutils literal notranslate"><span class="pre">scripts/pdf_convert.py</span></code></p>
+<p>该脚本对 opendataloader-pdf 的 <code class="docutils literal notranslate"><span class="pre">convert</span></code> 函数做了命令行封装，便于日常使用。</p>
+<p>基本用法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># 激活虚拟环境</span>
+<span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+
+<span class="c1"># 转 markdown，输出到指定目录</span>
+<span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">pdf_convert</span><span class="o">.</span><span class="n">py</span> <span class="n">docs</span><span class="o">/</span><span class="n">pdf</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">pdf</span> <span class="o">-</span><span class="n">f</span> <span class="n">markdown</span> <span class="o">-</span><span class="n">o</span> <span class="n">output</span><span class="o">/</span>
+
+<span class="c1"># 转 text，提取指定页码</span>
+<span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">pdf_convert</span><span class="o">.</span><span class="n">py</span> <span class="n">docs</span><span class="o">/</span><span class="n">pdf</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">pdf</span> <span class="o">-</span><span class="n">f</span> <span class="n">text</span> <span class="o">--</span><span class="n">pages</span> <span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="o">-</span><span class="mi">7</span>
+
+<span class="c1"># 静默模式</span>
+<span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">pdf_convert</span><span class="o">.</span><span class="n">py</span> <span class="n">docs</span><span class="o">/</span><span class="n">pdf</span><span class="o">/</span><span class="n">file</span><span class="o">.</span><span class="n">pdf</span> <span class="o">-</span><span class="n">f</span> <span class="n">json</span> <span class="o">--</span><span class="n">quiet</span>
+
+<span class="c1"># 查看完整帮助</span>
+<span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">pdf_convert</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2><span class="section-number">26.5. </span>踩坑记录<a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<ol class="arabic">
+<li><p><strong>externally-managed-environment 错误</strong></p>
+<p>Ubuntu 24.04 的系统 Python 受 PEP 668 保护，直接 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> 会报错。
+解决方案：使用 <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">venv</span> <span class="pre">.venv</span></code> 创建虚拟环境，在虚拟环境中安装。</p>
+</li>
+<li><p><strong>PDF 文件内部格式不规范导致转换失败</strong></p>
+<p>测试 <code class="docutils literal notranslate"><span class="pre">BPF.Performance.Tools.2019.12.pdf</span></code> 时，verapdf 解析器报 cross-reference
+table 格式错误，导致 Java 后端异常退出。这是 PDF 文件本身的问题，与工具无关。
+解决方案：尝试用其他工具修复 PDF，或使用 <code class="docutils literal notranslate"><span class="pre">--pages</span></code> 参数跳过问题页面。</p>
+</li>
+<li><p><strong>图片输出</strong></p>
+<p>默认 <code class="docutils literal notranslate"><span class="pre">image_output</span></code> 为 <code class="docutils literal notranslate"><span class="pre">external</span></code>，会生成独立的图片文件目录。
+如不需要图片，使用 <code class="docutils literal notranslate"><span class="pre">--image-output</span> <span class="pre">off</span></code>；如需内嵌 Base64，使用
+<code class="docutils literal notranslate"><span class="pre">--image-output</span> <span class="pre">embedded</span></code>。</p>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="macos_remotedesktop_to_ubuntu.html" class="btn btn-neutral float-left" title="25. macOS 使用 Windows App 远程访问 Ubuntu 桌面" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="ai_task_summary/build_reStructedText_task.html" class="btn btn-neutral float-right" title="27. reStructuredText 搭建任务过程记录" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

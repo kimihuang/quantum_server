@@ -1,0 +1,1817 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: scp_firmware/module/cmn600/include/internal/cmn600_ccix.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cmn600__ccix_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">结构体</a> &#124;
+<a href="#define-members">宏定义</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">cmn600_ccix.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>CMN-600 CCIX 配置内部接口  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;<a class="el" href="cmn600__ctx_8h_source.html">internal/cmn600_ctx.h</a>&gt;</code><br />
+<code>#include &lt;fwk_module_idx.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+</div>
+<p><a href="cmn600__ccix_8h_source.html">浏览源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+结构体</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcxg__link__regs.html">cxg_link_regs</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX Gateway (CXG) 协议链路控制与状态寄存器  <a href="structcxg__link__regs.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__cxg__ha__reg.html">cmn600_cxg_ha_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX Gateway Home Agent (CXHA) 寄存器映射  <a href="structcmn600__cxg__ha__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__cxg__ra__reg.html">cmn600_cxg_ra_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX Gateway Requesting Agent (CXRA) 寄存器映射  <a href="structcmn600__cxg__ra__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__cxla__reg.html">cmn600_cxla_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX Gateway Link Agent (CXLA) 寄存器映射  <a href="structcmn600__cxla__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcxg__wait__condition__data.html">cxg_wait_condition_data</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 链路等待条件数据  <a href="structcxg__wait__condition__data.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:a7834cdb8d2137221a01ecbad1bc2d5bb" id="r_a7834cdb8d2137221a01ecbad1bc2d5bb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a7834cdb8d2137221a01ecbad1bc2d5bb">CXG_RA_SAM_HA_TGT_ID_SHIFT_VAL</a>&#160;&#160;&#160;52</td></tr>
+<tr class="memdesc:a7834cdb8d2137221a01ecbad1bc2d5bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA SAM 地址寄存器中 Home Agent Target ID 的位移值  <br /></td></tr>
+<tr class="separator:a7834cdb8d2137221a01ecbad1bc2d5bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c5a1493b5304878add3b1d162831987" id="r_a3c5a1493b5304878add3b1d162831987"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a3c5a1493b5304878add3b1d162831987">CXG_RA_RNF_LDID_TO_RAID_REG_OFFSET</a>&#160;&#160;&#160;0xEA0</td></tr>
+<tr class="memdesc:a3c5a1493b5304878add3b1d162831987"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA RN-F LDID-to-RAID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a3c5a1493b5304878add3b1d162831987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6698ec97da6f082b228b5ed6c637bb6b" id="r_a6698ec97da6f082b228b5ed6c637bb6b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a6698ec97da6f082b228b5ed6c637bb6b">CXG_RA_RNI_LDID_TO_RAID_REG_OFFSET</a>&#160;&#160;&#160;0xEE0</td></tr>
+<tr class="memdesc:a6698ec97da6f082b228b5ed6c637bb6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA RN-I LDID-to-RAID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a6698ec97da6f082b228b5ed6c637bb6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cccd53dac9c29c3d9b43fd931d570d7" id="r_a9cccd53dac9c29c3d9b43fd931d570d7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a9cccd53dac9c29c3d9b43fd931d570d7">CXG_RA_RND_LDID_TO_RAID_REG_OFFSET</a>&#160;&#160;&#160;0xF00</td></tr>
+<tr class="memdesc:a9cccd53dac9c29c3d9b43fd931d570d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA RN-D LDID-to-RAID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a9cccd53dac9c29c3d9b43fd931d570d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33642460f4b17ec8a8d17e7db92e4529" id="r_a33642460f4b17ec8a8d17e7db92e4529"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a33642460f4b17ec8a8d17e7db92e4529">CXG_RA_RNF_RAID_VALID_REG_OFFSET</a>&#160;&#160;&#160;0xF28</td></tr>
+<tr class="memdesc:a33642460f4b17ec8a8d17e7db92e4529"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA RN-F RAID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a33642460f4b17ec8a8d17e7db92e4529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9d43d2838917fc8b0bf988c07a2f87" id="r_a7a9d43d2838917fc8b0bf988c07a2f87"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a7a9d43d2838917fc8b0bf988c07a2f87">CXG_RA_RNI_RAID_VALID_REG_OFFSET</a>&#160;&#160;&#160;0xF30</td></tr>
+<tr class="memdesc:a7a9d43d2838917fc8b0bf988c07a2f87"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA RN-I RAID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a7a9d43d2838917fc8b0bf988c07a2f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdd5fd76982ad37f1d64f2fac2779b9d" id="r_acdd5fd76982ad37f1d64f2fac2779b9d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#acdd5fd76982ad37f1d64f2fac2779b9d">CXG_RA_RND_RAID_VALID_REG_OFFSET</a>&#160;&#160;&#160;0xF38</td></tr>
+<tr class="memdesc:acdd5fd76982ad37f1d64f2fac2779b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA RN-D RAID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:acdd5fd76982ad37f1d64f2fac2779b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbbf0ef43593bf81740f9b6217527710" id="r_afbbf0ef43593bf81740f9b6217527710"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#afbbf0ef43593bf81740f9b6217527710">CXG_RA_AGENTID_TO_LINKID_OFFSET</a>&#160;&#160;&#160;0xE60</td></tr>
+<tr class="memdesc:afbbf0ef43593bf81740f9b6217527710"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA AgentID-to-LinkID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:afbbf0ef43593bf81740f9b6217527710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50f362c7a1bdefa0d74a461ae2483729" id="r_a50f362c7a1bdefa0d74a461ae2483729"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a50f362c7a1bdefa0d74a461ae2483729">CXG_RA_AGENTID_TO_LINKID_VAL_OFFSET</a>&#160;&#160;&#160;0xF20</td></tr>
+<tr class="memdesc:a50f362c7a1bdefa0d74a461ae2483729"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA AgentID-to-LinkID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a50f362c7a1bdefa0d74a461ae2483729"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51165996609cae8972d950220f1b0629" id="r_a51165996609cae8972d950220f1b0629"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a51165996609cae8972d950220f1b0629">CXG_RA_REQUEST_TRACKER_DEPTH_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000001FF0000)</td></tr>
+<tr class="memdesc:a51165996609cae8972d950220f1b0629"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA 单元信息寄存器中 Request Tracker 深度的位掩码  <br /></td></tr>
+<tr class="separator:a51165996609cae8972d950220f1b0629"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a809ed4afaed7671169de60dd7074fcd4" id="r_a809ed4afaed7671169de60dd7074fcd4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a809ed4afaed7671169de60dd7074fcd4">CXG_RA_REQUEST_TRACKER_DEPTH_VAL</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memdesc:a809ed4afaed7671169de60dd7074fcd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA Request Tracker 深度字段在寄存器中的起始位位置  <br /></td></tr>
+<tr class="separator:a809ed4afaed7671169de60dd7074fcd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace76825c43e1c074202794b37f0e6b0b" id="r_ace76825c43e1c074202794b37f0e6b0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ace76825c43e1c074202794b37f0e6b0b">CXG_RA_UNIT_INFO_SMP_MODE_RO_MASK</a>&#160;&#160;&#160;(UINT64_C(1) &lt;&lt; 61)</td></tr>
+<tr class="memdesc:ace76825c43e1c074202794b37f0e6b0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA 单元信息寄存器中 SMP 模式只读位的位掩码（r2p0 使用）  <br /></td></tr>
+<tr class="separator:ace76825c43e1c074202794b37f0e6b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38166e2931facc571bed2a0d591728ea" id="r_a38166e2931facc571bed2a0d591728ea"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a38166e2931facc571bed2a0d591728ea">CXG_RA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL</a>&#160;&#160;&#160;(16)</td></tr>
+<tr class="memdesc:a38166e2931facc571bed2a0d591728ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA 辅助控制寄存器中 SMP 模式可写位的位移值（r3p0+ 使用）  <br /></td></tr>
+<tr class="separator:a38166e2931facc571bed2a0d591728ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2204da39a7cab069a5ba660d22a9b213" id="r_a2204da39a7cab069a5ba660d22a9b213"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a2204da39a7cab069a5ba660d22a9b213">CXG_HA_AGENTID_TO_LINKID_OFFSET</a>&#160;&#160;&#160;0xC40</td></tr>
+<tr class="memdesc:a2204da39a7cab069a5ba660d22a9b213"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA AgentID-to-LinkID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a2204da39a7cab069a5ba660d22a9b213"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a751cd927e90eab709ab2dc55fddfa1aa" id="r_a751cd927e90eab709ab2dc55fddfa1aa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a751cd927e90eab709ab2dc55fddfa1aa">CXG_HA_AGENTID_TO_LINKID_VAL_OFFSET</a>&#160;&#160;&#160;0xD00</td></tr>
+<tr class="memdesc:a751cd927e90eab709ab2dc55fddfa1aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA AgentID-to-LinkID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a751cd927e90eab709ab2dc55fddfa1aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1595d73e7a783b2c00313cb3be19e1ce" id="r_a1595d73e7a783b2c00313cb3be19e1ce"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a1595d73e7a783b2c00313cb3be19e1ce">CXG_HA_RAID_TO_LDID_OFFSET</a>&#160;&#160;&#160;(0xC00)</td></tr>
+<tr class="memdesc:a1595d73e7a783b2c00313cb3be19e1ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA RAID-to-LDID 映射寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a1595d73e7a783b2c00313cb3be19e1ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a897283dcd1cc2d6b1d896c8cb2d3e9fb" id="r_a897283dcd1cc2d6b1d896c8cb2d3e9fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a897283dcd1cc2d6b1d896c8cb2d3e9fb">CXG_HA_RAID_TO_LDID_VALID_OFFSET</a>&#160;&#160;&#160;(0xD08)</td></tr>
+<tr class="memdesc:a897283dcd1cc2d6b1d896c8cb2d3e9fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA RAID-to-LDID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a897283dcd1cc2d6b1d896c8cb2d3e9fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4105efe569683886c27270094cb95c4" id="r_ab4105efe569683886c27270094cb95c4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ab4105efe569683886c27270094cb95c4">CXG_HA_RAID_TO_LDID_RNF_MASK</a>&#160;&#160;&#160;(0x80)</td></tr>
+<tr class="memdesc:ab4105efe569683886c27270094cb95c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA RAID-to-LDID 映射中 RN-F 标志位的掩码（bit[7]）  <br /></td></tr>
+<tr class="separator:ab4105efe569683886c27270094cb95c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4aa309ef3f023114be250e4f6ac4159" id="r_ad4aa309ef3f023114be250e4f6ac4159"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ad4aa309ef3f023114be250e4f6ac4159">CXG_HA_LDID_TO_RAID_OFFSET</a>&#160;&#160;&#160;0xC00</td></tr>
+<tr class="memdesc:ad4aa309ef3f023114be250e4f6ac4159"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA LDID-to-RAID 映射寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:ad4aa309ef3f023114be250e4f6ac4159"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ac756537f0b58387632acd9093bdd52" id="r_a2ac756537f0b58387632acd9093bdd52"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a2ac756537f0b58387632acd9093bdd52">CXG_HA_SNOOP_TRACKER_DEPTH_MASK</a>&#160;&#160;&#160;UINT64_C(0x00001FF000000000)</td></tr>
+<tr class="memdesc:a2ac756537f0b58387632acd9093bdd52"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA 单元信息寄存器中 Snoop Tracker 深度的位掩码  <br /></td></tr>
+<tr class="separator:a2ac756537f0b58387632acd9093bdd52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cfef22299a3db1dea202a57146481ae" id="r_a8cfef22299a3db1dea202a57146481ae"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a8cfef22299a3db1dea202a57146481ae">CXG_HA_SNOOP_TRACKER_DEPTH_VAL</a>&#160;&#160;&#160;36</td></tr>
+<tr class="memdesc:a8cfef22299a3db1dea202a57146481ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA Snoop Tracker 深度字段在寄存器中的起始位位置  <br /></td></tr>
+<tr class="separator:a8cfef22299a3db1dea202a57146481ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02966b4d7bff2fc7e5ec5197ba346883" id="r_a02966b4d7bff2fc7e5ec5197ba346883"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a02966b4d7bff2fc7e5ec5197ba346883">CXG_HA_WDB_DEPTH_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000007FC0000)</td></tr>
+<tr class="memdesc:a02966b4d7bff2fc7e5ec5197ba346883"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA 单元信息寄存器中 WDB (Write Data Buffer) 深度的位掩码  <br /></td></tr>
+<tr class="separator:a02966b4d7bff2fc7e5ec5197ba346883"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fbe9fa263d2c73f6b9259964ccefb8e" id="r_a9fbe9fa263d2c73f6b9259964ccefb8e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a9fbe9fa263d2c73f6b9259964ccefb8e">CXG_HA_WDB_DEPTH_VAL</a>&#160;&#160;&#160;18</td></tr>
+<tr class="memdesc:a9fbe9fa263d2c73f6b9259964ccefb8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA WDB 深度字段在寄存器中的起始位位置  <br /></td></tr>
+<tr class="separator:a9fbe9fa263d2c73f6b9259964ccefb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab19b6fea8f77a54e2e7094b0e8cce0da" id="r_ab19b6fea8f77a54e2e7094b0e8cce0da"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ab19b6fea8f77a54e2e7094b0e8cce0da">CXG_HA_UNIT_INFO_SMP_MODE_RO_MASK</a>&#160;&#160;&#160;(UINT64_C(1) &lt;&lt; 63)</td></tr>
+<tr class="memdesc:ab19b6fea8f77a54e2e7094b0e8cce0da"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA 单元信息寄存器中 SMP 模式只读位的位掩码（r2p0 使用）  <br /></td></tr>
+<tr class="separator:ab19b6fea8f77a54e2e7094b0e8cce0da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38e78126678d10251dd0012de7abbb5b" id="r_a38e78126678d10251dd0012de7abbb5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a38e78126678d10251dd0012de7abbb5b">CXG_HA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL</a>&#160;&#160;&#160;(16)</td></tr>
+<tr class="memdesc:a38e78126678d10251dd0012de7abbb5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXHA 辅助控制寄存器中 SMP 模式可写位的位移值（r3p0+ 使用）  <br /></td></tr>
+<tr class="separator:a38e78126678d10251dd0012de7abbb5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dd54e24f0b1e58e02bda8833f321063" id="r_a6dd54e24f0b1e58e02bda8833f321063"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a6dd54e24f0b1e58e02bda8833f321063">CXLA_AGENTID_TO_LINKID_OFFSET</a>&#160;&#160;&#160;0xC30</td></tr>
+<tr class="memdesc:a6dd54e24f0b1e58e02bda8833f321063"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA AgentID-to-LinkID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a6dd54e24f0b1e58e02bda8833f321063"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4b0f7cefe75a4556d94c88023a447d9" id="r_ac4b0f7cefe75a4556d94c88023a447d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ac4b0f7cefe75a4556d94c88023a447d9">CXLA_AGENTID_TO_LINKID_VAL_OFFSET</a>&#160;&#160;&#160;0xC70</td></tr>
+<tr class="memdesc:ac4b0f7cefe75a4556d94c88023a447d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA AgentID-to-LinkID 有效位寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:ac4b0f7cefe75a4556d94c88023a447d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b304afe4645855f5a1ab572eabfedf4" id="r_a0b304afe4645855f5a1ab572eabfedf4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a0b304afe4645855f5a1ab572eabfedf4">CXLA_CCIX_PROP_MSG_PACK_SHIFT_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000400)</td></tr>
+<tr class="memdesc:a0b304afe4645855f5a1ab572eabfedf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA CCIX 协议能力寄存器中消息打包标志的位掩码  <br /></td></tr>
+<tr class="separator:a0b304afe4645855f5a1ab572eabfedf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7f344b390a26968e7a5a5ecf2acd64c" id="r_af7f344b390a26968e7a5a5ecf2acd64c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#af7f344b390a26968e7a5a5ecf2acd64c">CXLA_CCIX_PROP_MSG_PACK_SHIFT_VAL</a>&#160;&#160;&#160;10</td></tr>
+<tr class="memdesc:af7f344b390a26968e7a5a5ecf2acd64c"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA 消息打包标志位在寄存器中的位移值  <br /></td></tr>
+<tr class="separator:af7f344b390a26968e7a5a5ecf2acd64c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38350603de8d03956ed1ae403c3bdcd3" id="r_a38350603de8d03956ed1ae403c3bdcd3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a38350603de8d03956ed1ae403c3bdcd3">CXLA_CCIX_PROP_MAX_PACK_SIZE_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000380)</td></tr>
+<tr class="memdesc:a38350603de8d03956ed1ae403c3bdcd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA CCIX 协议能力寄存器中最大包大小的位掩码  <br /></td></tr>
+<tr class="separator:a38350603de8d03956ed1ae403c3bdcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a740f73de54f51bd40a70c3e7bf68241e" id="r_a740f73de54f51bd40a70c3e7bf68241e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a740f73de54f51bd40a70c3e7bf68241e">CXLA_CCIX_PROP_MAX_PACK_SIZE_SHIFT_VAL</a>&#160;&#160;&#160;7</td></tr>
+<tr class="memdesc:a740f73de54f51bd40a70c3e7bf68241e"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA 最大包大小字段在寄存器中的位移值  <br /></td></tr>
+<tr class="separator:a740f73de54f51bd40a70c3e7bf68241e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94b97bd29b81c00784c01f00806f9502" id="r_a94b97bd29b81c00784c01f00806f9502"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a94b97bd29b81c00784c01f00806f9502">CXLA_CCIX_PROP_MAX_PACK_SIZE_128</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:a94b97bd29b81c00784c01f00806f9502"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA 最大包大小编码：128 字节  <br /></td></tr>
+<tr class="separator:a94b97bd29b81c00784c01f00806f9502"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00f0fe8b9d11969d884ae4e33278252c" id="r_a00f0fe8b9d11969d884ae4e33278252c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a00f0fe8b9d11969d884ae4e33278252c">CXLA_CCIX_PROP_MAX_PACK_SIZE_256</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:a00f0fe8b9d11969d884ae4e33278252c"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA 最大包大小编码：256 字节  <br /></td></tr>
+<tr class="separator:a00f0fe8b9d11969d884ae4e33278252c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd238141d5aed5edd3bb266a2f25cf8a" id="r_abd238141d5aed5edd3bb266a2f25cf8a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#abd238141d5aed5edd3bb266a2f25cf8a">CXLA_CCIX_PROP_MAX_PACK_SIZE_512</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memdesc:abd238141d5aed5edd3bb266a2f25cf8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA 最大包大小编码：512 字节  <br /></td></tr>
+<tr class="separator:abd238141d5aed5edd3bb266a2f25cf8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36dfccd7bfbbd20f3b4885bdf4090845" id="r_a36dfccd7bfbbd20f3b4885bdf4090845"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a36dfccd7bfbbd20f3b4885bdf4090845">CXLA_PCIE_HDR_TRAFFIC_CLASS_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000007000)</td></tr>
+<tr class="memdesc:a36dfccd7bfbbd20f3b4885bdf4090845"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA PCIe TLP 头字段中 Traffic Class 的位掩码  <br /></td></tr>
+<tr class="separator:a36dfccd7bfbbd20f3b4885bdf4090845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f724ee6f3e5be28d3c49c501a7382fd" id="r_a0f724ee6f3e5be28d3c49c501a7382fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a0f724ee6f3e5be28d3c49c501a7382fd">CXLA_PCIE_HDR_VENDOR_ID_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000FFFF00000000)</td></tr>
+<tr class="memdesc:a0f724ee6f3e5be28d3c49c501a7382fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA PCIe TLP 头字段中 Vendor ID 的位掩码  <br /></td></tr>
+<tr class="separator:a0f724ee6f3e5be28d3c49c501a7382fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d324002acba73c51cf7dfa0d8a1f657" id="r_a4d324002acba73c51cf7dfa0d8a1f657"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a4d324002acba73c51cf7dfa0d8a1f657">CXLA_PCIE_HDR_TRAFFIC_CLASS_SHIFT_VAL</a>&#160;&#160;&#160;12</td></tr>
+<tr class="memdesc:a4d324002acba73c51cf7dfa0d8a1f657"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA PCIe TLP 头字段中 Traffic Class 的位移值  <br /></td></tr>
+<tr class="separator:a4d324002acba73c51cf7dfa0d8a1f657"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18a4b4a638dca00ec934547b7ef6777a" id="r_a18a4b4a638dca00ec934547b7ef6777a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a18a4b4a638dca00ec934547b7ef6777a">CXLA_PCIE_HDR_VENDOR_ID_SHIFT_VAL</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a18a4b4a638dca00ec934547b7ef6777a"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA PCIe TLP 头字段中 Vendor ID 的位移值  <br /></td></tr>
+<tr class="separator:a18a4b4a638dca00ec934547b7ef6777a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ce4d38952cbcc6a8ad6417822899cd1" id="r_a7ce4d38952cbcc6a8ad6417822899cd1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a7ce4d38952cbcc6a8ad6417822899cd1">CXLA_AUX_CTRL_SMP_MODE_SHIFT_VAL</a>&#160;&#160;&#160;(47)</td></tr>
+<tr class="memdesc:a7ce4d38952cbcc6a8ad6417822899cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXLA 辅助控制寄存器中 SMP 模式配置位的位移值  <br /></td></tr>
+<tr class="separator:a7ce4d38952cbcc6a8ad6417822899cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedeb7e151fa7fc8407c14622d12ee42d" id="r_aedeb7e151fa7fc8407c14622d12ee42d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#aedeb7e151fa7fc8407c14622d12ee42d">CXG_LINK_CTRL_EN_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000001)</td></tr>
+<tr class="memdesc:aedeb7e151fa7fc8407c14622d12ee42d"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路控制寄存器 EN（使能）位的掩码  <br /></td></tr>
+<tr class="separator:aedeb7e151fa7fc8407c14622d12ee42d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7191330ea556fd284d40b1297d59e32c" id="r_a7191330ea556fd284d40b1297d59e32c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a7191330ea556fd284d40b1297d59e32c">CXG_LINK_CTRL_REQ_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td></tr>
+<tr class="memdesc:a7191330ea556fd284d40b1297d59e32c"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路控制寄存器 REQ（请求）位的掩码  <br /></td></tr>
+<tr class="separator:a7191330ea556fd284d40b1297d59e32c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a755e834e7493e34d5aec50b4368543df" id="r_a755e834e7493e34d5aec50b4368543df"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a755e834e7493e34d5aec50b4368543df">CXG_LINK_CTRL_UP_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000004)</td></tr>
+<tr class="memdesc:a755e834e7493e34d5aec50b4368543df"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路控制寄存器 UP 位的掩码，用于协议信用交换  <br /></td></tr>
+<tr class="separator:a755e834e7493e34d5aec50b4368543df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9707ff10aedd9f582f7a1aecfaaa2c05" id="r_a9707ff10aedd9f582f7a1aecfaaa2c05"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a9707ff10aedd9f582f7a1aecfaaa2c05">CXG_LINK_CTRL_DVMDOMAIN_REQ_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000008)</td></tr>
+<tr class="memdesc:a9707ff10aedd9f582f7a1aecfaaa2c05"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路控制寄存器 DVMDOMAIN_REQ（DVM 域请求）位的掩码  <br /></td></tr>
+<tr class="separator:a9707ff10aedd9f582f7a1aecfaaa2c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45947648c5955ed3ab9e48deb2700183" id="r_a45947648c5955ed3ab9e48deb2700183"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a45947648c5955ed3ab9e48deb2700183">CXG_LINK_STATUS_ACK_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000001)</td></tr>
+<tr class="memdesc:a45947648c5955ed3ab9e48deb2700183"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路状态寄存器 ACK（确认）位的掩码  <br /></td></tr>
+<tr class="separator:a45947648c5955ed3ab9e48deb2700183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eaca7ff1ea9b39379b440faad0dc9b5" id="r_a1eaca7ff1ea9b39379b440faad0dc9b5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a1eaca7ff1ea9b39379b440faad0dc9b5">CXG_LINK_STATUS_DOWN_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td></tr>
+<tr class="memdesc:a1eaca7ff1ea9b39379b440faad0dc9b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路状态寄存器 DOWN 位的掩码  <br /></td></tr>
+<tr class="separator:a1eaca7ff1ea9b39379b440faad0dc9b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae04982ec912f4d94183b48da1f686e3f" id="r_ae04982ec912f4d94183b48da1f686e3f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ae04982ec912f4d94183b48da1f686e3f">CXG_LINK_STATUS_DVMDOMAIN_ACK_MASK</a>&#160;&#160;&#160;UINT64_C(0x0000000000000004)</td></tr>
+<tr class="memdesc:ae04982ec912f4d94183b48da1f686e3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路状态寄存器 DVMDOMAIN_ACK 位的掩码  <br /></td></tr>
+<tr class="separator:ae04982ec912f4d94183b48da1f686e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10382b9671cab8b3fa0723c67131afa6" id="r_a10382b9671cab8b3fa0723c67131afa6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a10382b9671cab8b3fa0723c67131afa6">CXG_PRTCL_LINK_CTRL_TIMEOUT</a>&#160;&#160;&#160;UINT32_C(100)</td></tr>
+<tr class="memdesc:a10382b9671cab8b3fa0723c67131afa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">链路控制操作的超时值（毫秒）  <br /></td></tr>
+<tr class="separator:a10382b9671cab8b3fa0723c67131afa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64541e34f5ff9ef67e2358f5cc7f444d" id="r_a64541e34f5ff9ef67e2358f5cc7f444d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a64541e34f5ff9ef67e2358f5cc7f444d">CXG_PRTCL_LINK_DVMDOMAIN_TIMEOUT</a>&#160;&#160;&#160;UINT32_C(100)</td></tr>
+<tr class="memdesc:a64541e34f5ff9ef67e2358f5cc7f444d"><td class="mdescLeft">&#160;</td><td class="mdescRight">DVM 域进入操作的超时值（毫秒）  <br /></td></tr>
+<tr class="separator:a64541e34f5ff9ef67e2358f5cc7f444d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ea01bbbc1c38390b2fef6ac1ebe93b7" id="r_a9ea01bbbc1c38390b2fef6ac1ebe93b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a9ea01bbbc1c38390b2fef6ac1ebe93b7">RAID_RNF_BIT_SHIFT_VAL</a>&#160;&#160;&#160;7</td></tr>
+<tr class="memdesc:a9ea01bbbc1c38390b2fef6ac1ebe93b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAID 中 RN-F 标志位的位移值  <br /></td></tr>
+<tr class="separator:a9ea01bbbc1c38390b2fef6ac1ebe93b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04297815f82b8ea2b676c7b071e853e8" id="r_a04297815f82b8ea2b676c7b071e853e8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a04297815f82b8ea2b676c7b071e853e8">HNF_RN_PHYS_NODE_ID_SHIFT_VAL</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memdesc:a04297815f82b8ea2b676c7b071e853e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F RN_PHYS_ID 寄存器中 Node ID 字段的位移值  <br /></td></tr>
+<tr class="separator:a04297815f82b8ea2b676c7b071e853e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4daee379f4fb88913c8125541864f996" id="r_a4daee379f4fb88913c8125541864f996"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a4daee379f4fb88913c8125541864f996">HNF_RN_PHYS_RN_ID_VALID_SHIFT_VAL</a>&#160;&#160;&#160;31</td></tr>
+<tr class="memdesc:a4daee379f4fb88913c8125541864f996"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F RN_PHYS_ID 寄存器中有效位的位移值  <br /></td></tr>
+<tr class="separator:a4daee379f4fb88913c8125541864f996"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dfcbffcc4e217facbc2f7daa495505f" id="r_a5dfcbffcc4e217facbc2f7daa495505f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a5dfcbffcc4e217facbc2f7daa495505f">HNF_RN_PHYS_RN_LOCAL_REMOTE_SHIFT_VAL</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memdesc:a5dfcbffcc4e217facbc2f7daa495505f"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F RN_PHYS_ID 寄存器中本地/远端标志位的位移值  <br /></td></tr>
+<tr class="separator:a5dfcbffcc4e217facbc2f7daa495505f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1003280e94697420b93dad124ea63a27" id="r_a1003280e94697420b93dad124ea63a27"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a1003280e94697420b93dad124ea63a27">NUM_BITS_RESERVED_FOR_RAID</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a1003280e94697420b93dad124ea63a27"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAID 字段占用的位数（8 位）  <br /></td></tr>
+<tr class="separator:a1003280e94697420b93dad124ea63a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81d17d22bbf93959bf4c6f4d83833dda" id="r_a81d17d22bbf93959bf4c6f4d83833dda"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a81d17d22bbf93959bf4c6f4d83833dda">NUM_BITS_RESERVED_FOR_LINK_ID</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a81d17d22bbf93959bf4c6f4d83833dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Link ID 字段占用的位数（8 位）  <br /></td></tr>
+<tr class="separator:a81d17d22bbf93959bf4c6f4d83833dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa10c24282806e5b704f83dcef4ce626f" id="r_aa10c24282806e5b704f83dcef4ce626f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#aa10c24282806e5b704f83dcef4ce626f">NUM_BITS_RESERVED_FOR_LDID</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:aa10c24282806e5b704f83dcef4ce626f"><td class="mdescLeft">&#160;</td><td class="mdescRight">LDID 字段占用的位数（8 位）  <br /></td></tr>
+<tr class="separator:aa10c24282806e5b704f83dcef4ce626f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75fa7ca475b1f14ef44327fbf02ff9ae" id="r_a75fa7ca475b1f14ef44327fbf02ff9ae"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a75fa7ca475b1f14ef44327fbf02ff9ae">NUM_BITS_RESERVED_FOR_PHYS_ID</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a75fa7ca475b1f14ef44327fbf02ff9ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">物理标识符字段占用的位数（32 位）  <br /></td></tr>
+<tr class="separator:a75fa7ca475b1f14ef44327fbf02ff9ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a47f7c1a6f62628ed2888c924092233" id="r_a0a47f7c1a6f62628ed2888c924092233"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a0a47f7c1a6f62628ed2888c924092233">HNF_RN_PHYS_ID_OFFSET</a>&#160;&#160;&#160;0xD28</td></tr>
+<tr class="memdesc:a0a47f7c1a6f62628ed2888c924092233"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F RN_PHYS_ID 寄存器的偏移地址  <br /></td></tr>
+<tr class="separator:a0a47f7c1a6f62628ed2888c924092233"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac58d45603f07006acfc2a54c2e83a979" id="r_ac58d45603f07006acfc2a54c2e83a979"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ac58d45603f07006acfc2a54c2e83a979">LOCAL_CCIX_NODE</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:ac58d45603f07006acfc2a54c2e83a979"><td class="mdescLeft">&#160;</td><td class="mdescRight">标识本地 CCIX 节点  <br /></td></tr>
+<tr class="separator:ac58d45603f07006acfc2a54c2e83a979"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb1c8140117c059c494d3268b4ae7424" id="r_acb1c8140117c059c494d3268b4ae7424"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#acb1c8140117c059c494d3268b4ae7424">REMOTE_CCIX_NODE</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:acb1c8140117c059c494d3268b4ae7424"><td class="mdescLeft">&#160;</td><td class="mdescRight">标识远端 CCIX 节点  <br /></td></tr>
+<tr class="separator:acb1c8140117c059c494d3268b4ae7424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70b3e208545559aa2a240a467bfb4446" id="r_a70b3e208545559aa2a240a467bfb4446"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a70b3e208545559aa2a240a467bfb4446">SAM_ADDR_HOME_AGENT_ID_SHIFT</a>&#160;&#160;&#160;(52)</td></tr>
+<tr class="memdesc:a70b3e208545559aa2a240a467bfb4446"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA SAM 地址寄存器中 Home Agent ID 的位移值  <br /></td></tr>
+<tr class="separator:a70b3e208545559aa2a240a467bfb4446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac40906e05b6e7d660fc7760df53f191e" id="r_ac40906e05b6e7d660fc7760df53f191e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ac40906e05b6e7d660fc7760df53f191e">SAM_ADDR_REG_VALID_MASK</a>&#160;&#160;&#160;UINT64_C(0x8000000000000000)</td></tr>
+<tr class="memdesc:ac40906e05b6e7d660fc7760df53f191e"><td class="mdescLeft">&#160;</td><td class="mdescRight">CXRA SAM 地址寄存器中有效位的掩码  <br /></td></tr>
+<tr class="separator:ac40906e05b6e7d660fc7760df53f191e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13ed84cc82eaf7db949e91f4babf7ba6" id="r_a13ed84cc82eaf7db949e91f4babf7ba6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a13ed84cc82eaf7db949e91f4babf7ba6">PCIE_OPT_HDR_MASK</a>&#160;&#160;&#160;(0x1ULL &lt;&lt; 6)</td></tr>
+<tr class="memdesc:a13ed84cc82eaf7db949e91f4babf7ba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">PCIe 优化 TLP 头使能位的掩码  <br /></td></tr>
+<tr class="separator:a13ed84cc82eaf7db949e91f4babf7ba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0bfde18089beb888fb058aa2147ade5" id="r_aa0bfde18089beb888fb058aa2147ade5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#aa0bfde18089beb888fb058aa2147ade5">CTL_NUM_SNPCRDS_MASK</a>&#160;&#160;&#160;(0xF &lt;&lt; 4)</td></tr>
+<tr class="memdesc:aa0bfde18089beb888fb058aa2147ade5"><td class="mdescLeft">&#160;</td><td class="mdescRight">控制寄存器中 SNP credit 数量的掩码  <br /></td></tr>
+<tr class="separator:aa0bfde18089beb888fb058aa2147ade5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01376e7d9aaddb1bcaeeb892b6083a14" id="r_a01376e7d9aaddb1bcaeeb892b6083a14"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a01376e7d9aaddb1bcaeeb892b6083a14">CCIX_VENDER_ID</a>&#160;&#160;&#160;(0x1E2C)</td></tr>
+<tr class="memdesc:a01376e7d9aaddb1bcaeeb892b6083a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 标准定义的 Vendor ID  <br /></td></tr>
+<tr class="separator:a01376e7d9aaddb1bcaeeb892b6083a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a9f4fd1898f4ee8583350fe3cb6262539" id="r_a9f4fd1898f4ee8583350fe3cb6262539"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">cxg_link_up_wait_cond</a> { <br />
+&#160;&#160;<a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956">CXG_LINK_CTRL_EN_BIT_SET</a>
+, <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e">CXG_LINK_CTRL_UP_BIT_CLR</a>
+, <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59">CXG_LINK_STATUS_DWN_BIT_SET</a>
+, <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931">CXG_LINK_STATUS_DWN_BIT_CLR</a>
+, <br />
+&#160;&#160;<a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c">CXG_LINK_STATUS_ACK_BIT_SET</a>
+, <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25">CXG_LINK_STATUS_ACK_BIT_CLR</a>
+, <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4">CXG_LINK_STATUS_HA_DVMDOMAIN_ACK_BIT_SET</a>
+, <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0">CXG_LINK_STATUS_RA_DVMDOMAIN_ACK_BIT_SET</a>
+, <br />
+&#160;&#160;<a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4">CXG_LINK_UP_SEQ_COUNT</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:a9f4fd1898f4ee8583350fe3cb6262539"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 链路 UP 等待条件枚举  <a href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">更多...</a><br /></td></tr>
+<tr class="separator:a9f4fd1898f4ee8583350fe3cb6262539"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a5fc9bffccce08056b1f2f15db1068112" id="r_a5fc9bffccce08056b1f2f15db1068112"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a5fc9bffccce08056b1f2f15db1068112">ccix_setup</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, void *remote_config)</td></tr>
+<tr class="memdesc:a5fc9bffccce08056b1f2f15db1068112"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 网关配置设置  <br /></td></tr>
+<tr class="separator:a5fc9bffccce08056b1f2f15db1068112"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41d93798e15e5b5111b9b310367f3873" id="r_a41d93798e15e5b5111b9b310367f3873"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a41d93798e15e5b5111b9b310367f3873">ccix_exchange_protocol_credit</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id)</td></tr>
+<tr class="memdesc:a41d93798e15e5b5111b9b310367f3873"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX 协议信用交换  <br /></td></tr>
+<tr class="separator:a41d93798e15e5b5111b9b310367f3873"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4b2950e2ed20ed7e27528aa7eeaa067" id="r_ae4b2950e2ed20ed7e27528aa7eeaa067"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#ae4b2950e2ed20ed7e27528aa7eeaa067">ccix_enter_system_coherency</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id)</td></tr>
+<tr class="memdesc:ae4b2950e2ed20ed7e27528aa7eeaa067"><td class="mdescLeft">&#160;</td><td class="mdescRight">进入 CCIX 系统一致性域  <br /></td></tr>
+<tr class="separator:ae4b2950e2ed20ed7e27528aa7eeaa067"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2835736501d1dbb5a752479480706032" id="r_a2835736501d1dbb5a752479480706032"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a2835736501d1dbb5a752479480706032">ccix_enter_dvm_domain</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>, uint8_t link_id)</td></tr>
+<tr class="memdesc:a2835736501d1dbb5a752479480706032"><td class="mdescLeft">&#160;</td><td class="mdescRight">进入 DVM (Distributed Virtual Memory) 域  <br /></td></tr>
+<tr class="separator:a2835736501d1dbb5a752479480706032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a966d301336f726211f14ae636ef9e9aa" id="r_a966d301336f726211f14ae636ef9e9aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600__ccix_8h.html#a966d301336f726211f14ae636ef9e9aa">ccix_capabilities_get</a> (struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *<a class="el" href="mod__cmn600_8c.html#a669380856325926ff84fe997801828d6">ctx</a>)</td></tr>
+<tr class="memdesc:a966d301336f726211f14ae636ef9e9aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取 CCIX 能力信息  <br /></td></tr>
+<tr class="separator:a966d301336f726211f14ae636ef9e9aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>CMN-600 CCIX 配置内部接口 </p>
+<p>定义 CCIX (Cache Coherent Interconnect for Accelerators) 相关的 寄存器结构体、宏定义和内部函数声明。包括 CCIX Gateway 的三种代理 （CXRA/CXHA/CXLA）的寄存器映射、链路控制/状态定义和地址映射宏。 该头文件仅供模块内部使用，不属于公共接口。</p>
+<dl class="section note"><dt>注解</dt><dd>CCIX 是一种缓存一致性互连协议，用于加速器与处理器之间的高效数据共享。</dd></dl>
+<dl class="section copyright"><dt>版权所有</dt><dd>Copyright (c) 2019-2021, Arm Limited and Contributors. All rights reserved. @license SPDX-License-Identifier: BSD-3-Clause </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 中定义.</p>
+</div><h2 class="groupheader">宏定义说明</h2>
+<a id="a01376e7d9aaddb1bcaeeb892b6083a14" name="a01376e7d9aaddb1bcaeeb892b6083a14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01376e7d9aaddb1bcaeeb892b6083a14">&#9670;&#160;</a></span>CCIX_VENDER_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CCIX_VENDER_ID&#160;&#160;&#160;(0x1E2C)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX 标准定义的 Vendor ID </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00645">645</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa0bfde18089beb888fb058aa2147ade5" name="aa0bfde18089beb888fb058aa2147ade5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0bfde18089beb888fb058aa2147ade5">&#9670;&#160;</a></span>CTL_NUM_SNPCRDS_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CTL_NUM_SNPCRDS_MASK&#160;&#160;&#160;(0xF &lt;&lt; 4)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>控制寄存器中 SNP credit 数量的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00641">641</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2204da39a7cab069a5ba660d22a9b213" name="a2204da39a7cab069a5ba660d22a9b213"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2204da39a7cab069a5ba660d22a9b213">&#9670;&#160;</a></span>CXG_HA_AGENTID_TO_LINKID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_AGENTID_TO_LINKID_OFFSET&#160;&#160;&#160;0xC40</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA AgentID-to-LinkID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00441">441</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a751cd927e90eab709ab2dc55fddfa1aa" name="a751cd927e90eab709ab2dc55fddfa1aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a751cd927e90eab709ab2dc55fddfa1aa">&#9670;&#160;</a></span>CXG_HA_AGENTID_TO_LINKID_VAL_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_AGENTID_TO_LINKID_VAL_OFFSET&#160;&#160;&#160;0xD00</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA AgentID-to-LinkID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00445">445</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a38e78126678d10251dd0012de7abbb5b" name="a38e78126678d10251dd0012de7abbb5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38e78126678d10251dd0012de7abbb5b">&#9670;&#160;</a></span>CXG_HA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL&#160;&#160;&#160;(16)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA 辅助控制寄存器中 SMP 模式可写位的位移值（r3p0+ 使用） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00485">485</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad4aa309ef3f023114be250e4f6ac4159" name="ad4aa309ef3f023114be250e4f6ac4159"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4aa309ef3f023114be250e4f6ac4159">&#9670;&#160;</a></span>CXG_HA_LDID_TO_RAID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_LDID_TO_RAID_OFFSET&#160;&#160;&#160;0xC00</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA LDID-to-RAID 映射寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00461">461</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a1595d73e7a783b2c00313cb3be19e1ce" name="a1595d73e7a783b2c00313cb3be19e1ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1595d73e7a783b2c00313cb3be19e1ce">&#9670;&#160;</a></span>CXG_HA_RAID_TO_LDID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_RAID_TO_LDID_OFFSET&#160;&#160;&#160;(0xC00)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA RAID-to-LDID 映射寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00449">449</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab4105efe569683886c27270094cb95c4" name="ab4105efe569683886c27270094cb95c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4105efe569683886c27270094cb95c4">&#9670;&#160;</a></span>CXG_HA_RAID_TO_LDID_RNF_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_RAID_TO_LDID_RNF_MASK&#160;&#160;&#160;(0x80)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA RAID-to-LDID 映射中 RN-F 标志位的掩码（bit[7]） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00457">457</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a897283dcd1cc2d6b1d896c8cb2d3e9fb" name="a897283dcd1cc2d6b1d896c8cb2d3e9fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a897283dcd1cc2d6b1d896c8cb2d3e9fb">&#9670;&#160;</a></span>CXG_HA_RAID_TO_LDID_VALID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_RAID_TO_LDID_VALID_OFFSET&#160;&#160;&#160;(0xD08)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA RAID-to-LDID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00453">453</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2ac756537f0b58387632acd9093bdd52" name="a2ac756537f0b58387632acd9093bdd52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ac756537f0b58387632acd9093bdd52">&#9670;&#160;</a></span>CXG_HA_SNOOP_TRACKER_DEPTH_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_SNOOP_TRACKER_DEPTH_MASK&#160;&#160;&#160;UINT64_C(0x00001FF000000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA 单元信息寄存器中 Snoop Tracker 深度的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00465">465</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8cfef22299a3db1dea202a57146481ae" name="a8cfef22299a3db1dea202a57146481ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cfef22299a3db1dea202a57146481ae">&#9670;&#160;</a></span>CXG_HA_SNOOP_TRACKER_DEPTH_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_SNOOP_TRACKER_DEPTH_VAL&#160;&#160;&#160;36</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA Snoop Tracker 深度字段在寄存器中的起始位位置 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00469">469</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab19b6fea8f77a54e2e7094b0e8cce0da" name="ab19b6fea8f77a54e2e7094b0e8cce0da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab19b6fea8f77a54e2e7094b0e8cce0da">&#9670;&#160;</a></span>CXG_HA_UNIT_INFO_SMP_MODE_RO_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_UNIT_INFO_SMP_MODE_RO_MASK&#160;&#160;&#160;(UINT64_C(1) &lt;&lt; 63)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA 单元信息寄存器中 SMP 模式只读位的位掩码（r2p0 使用） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00481">481</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a02966b4d7bff2fc7e5ec5197ba346883" name="a02966b4d7bff2fc7e5ec5197ba346883"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02966b4d7bff2fc7e5ec5197ba346883">&#9670;&#160;</a></span>CXG_HA_WDB_DEPTH_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_WDB_DEPTH_MASK&#160;&#160;&#160;UINT64_C(0x0000000007FC0000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA 单元信息寄存器中 WDB (Write Data Buffer) 深度的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00473">473</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9fbe9fa263d2c73f6b9259964ccefb8e" name="a9fbe9fa263d2c73f6b9259964ccefb8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fbe9fa263d2c73f6b9259964ccefb8e">&#9670;&#160;</a></span>CXG_HA_WDB_DEPTH_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_HA_WDB_DEPTH_VAL&#160;&#160;&#160;18</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXHA WDB 深度字段在寄存器中的起始位位置 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00477">477</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9707ff10aedd9f582f7a1aecfaaa2c05" name="a9707ff10aedd9f582f7a1aecfaaa2c05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9707ff10aedd9f582f7a1aecfaaa2c05">&#9670;&#160;</a></span>CXG_LINK_CTRL_DVMDOMAIN_REQ_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_CTRL_DVMDOMAIN_REQ_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000008)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路控制寄存器 DVMDOMAIN_REQ（DVM 域请求）位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00561">561</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aedeb7e151fa7fc8407c14622d12ee42d" name="aedeb7e151fa7fc8407c14622d12ee42d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedeb7e151fa7fc8407c14622d12ee42d">&#9670;&#160;</a></span>CXG_LINK_CTRL_EN_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_CTRL_EN_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000001)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路控制寄存器 EN（使能）位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00549">549</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7191330ea556fd284d40b1297d59e32c" name="a7191330ea556fd284d40b1297d59e32c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7191330ea556fd284d40b1297d59e32c">&#9670;&#160;</a></span>CXG_LINK_CTRL_REQ_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_CTRL_REQ_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路控制寄存器 REQ（请求）位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00553">553</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a755e834e7493e34d5aec50b4368543df" name="a755e834e7493e34d5aec50b4368543df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a755e834e7493e34d5aec50b4368543df">&#9670;&#160;</a></span>CXG_LINK_CTRL_UP_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_CTRL_UP_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000004)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路控制寄存器 UP 位的掩码，用于协议信用交换 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00557">557</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a45947648c5955ed3ab9e48deb2700183" name="a45947648c5955ed3ab9e48deb2700183"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45947648c5955ed3ab9e48deb2700183">&#9670;&#160;</a></span>CXG_LINK_STATUS_ACK_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_STATUS_ACK_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000001)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路状态寄存器 ACK（确认）位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00565">565</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a1eaca7ff1ea9b39379b440faad0dc9b5" name="a1eaca7ff1ea9b39379b440faad0dc9b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eaca7ff1ea9b39379b440faad0dc9b5">&#9670;&#160;</a></span>CXG_LINK_STATUS_DOWN_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_STATUS_DOWN_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路状态寄存器 DOWN 位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00569">569</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae04982ec912f4d94183b48da1f686e3f" name="ae04982ec912f4d94183b48da1f686e3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae04982ec912f4d94183b48da1f686e3f">&#9670;&#160;</a></span>CXG_LINK_STATUS_DVMDOMAIN_ACK_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_LINK_STATUS_DVMDOMAIN_ACK_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000004)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路状态寄存器 DVMDOMAIN_ACK 位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00573">573</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a10382b9671cab8b3fa0723c67131afa6" name="a10382b9671cab8b3fa0723c67131afa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10382b9671cab8b3fa0723c67131afa6">&#9670;&#160;</a></span>CXG_PRTCL_LINK_CTRL_TIMEOUT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_PRTCL_LINK_CTRL_TIMEOUT&#160;&#160;&#160;UINT32_C(100)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>链路控制操作的超时值（毫秒） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00577">577</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a64541e34f5ff9ef67e2358f5cc7f444d" name="a64541e34f5ff9ef67e2358f5cc7f444d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64541e34f5ff9ef67e2358f5cc7f444d">&#9670;&#160;</a></span>CXG_PRTCL_LINK_DVMDOMAIN_TIMEOUT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_PRTCL_LINK_DVMDOMAIN_TIMEOUT&#160;&#160;&#160;UINT32_C(100)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>DVM 域进入操作的超时值（毫秒） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00581">581</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afbbf0ef43593bf81740f9b6217527710" name="afbbf0ef43593bf81740f9b6217527710"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbbf0ef43593bf81740f9b6217527710">&#9670;&#160;</a></span>CXG_RA_AGENTID_TO_LINKID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_AGENTID_TO_LINKID_OFFSET&#160;&#160;&#160;0xE60</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA AgentID-to-LinkID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00415">415</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a50f362c7a1bdefa0d74a461ae2483729" name="a50f362c7a1bdefa0d74a461ae2483729"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50f362c7a1bdefa0d74a461ae2483729">&#9670;&#160;</a></span>CXG_RA_AGENTID_TO_LINKID_VAL_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_AGENTID_TO_LINKID_VAL_OFFSET&#160;&#160;&#160;0xF20</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA AgentID-to-LinkID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00419">419</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a38166e2931facc571bed2a0d591728ea" name="a38166e2931facc571bed2a0d591728ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38166e2931facc571bed2a0d591728ea">&#9670;&#160;</a></span>CXG_RA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_AUX_CTRL_SMP_MODE_RW_SHIFT_VAL&#160;&#160;&#160;(16)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA 辅助控制寄存器中 SMP 模式可写位的位移值（r3p0+ 使用） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00435">435</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a51165996609cae8972d950220f1b0629" name="a51165996609cae8972d950220f1b0629"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51165996609cae8972d950220f1b0629">&#9670;&#160;</a></span>CXG_RA_REQUEST_TRACKER_DEPTH_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_REQUEST_TRACKER_DEPTH_MASK&#160;&#160;&#160;UINT64_C(0x0000000001FF0000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA 单元信息寄存器中 Request Tracker 深度的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00423">423</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a809ed4afaed7671169de60dd7074fcd4" name="a809ed4afaed7671169de60dd7074fcd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a809ed4afaed7671169de60dd7074fcd4">&#9670;&#160;</a></span>CXG_RA_REQUEST_TRACKER_DEPTH_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_REQUEST_TRACKER_DEPTH_VAL&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA Request Tracker 深度字段在寄存器中的起始位位置 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00427">427</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9cccd53dac9c29c3d9b43fd931d570d7" name="a9cccd53dac9c29c3d9b43fd931d570d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cccd53dac9c29c3d9b43fd931d570d7">&#9670;&#160;</a></span>CXG_RA_RND_LDID_TO_RAID_REG_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_RND_LDID_TO_RAID_REG_OFFSET&#160;&#160;&#160;0xF00</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA RN-D LDID-to-RAID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00399">399</a> 行定义.</p>
+
+</div>
+</div>
+<a id="acdd5fd76982ad37f1d64f2fac2779b9d" name="acdd5fd76982ad37f1d64f2fac2779b9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdd5fd76982ad37f1d64f2fac2779b9d">&#9670;&#160;</a></span>CXG_RA_RND_RAID_VALID_REG_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_RND_RAID_VALID_REG_OFFSET&#160;&#160;&#160;0xF38</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA RN-D RAID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00411">411</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3c5a1493b5304878add3b1d162831987" name="a3c5a1493b5304878add3b1d162831987"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c5a1493b5304878add3b1d162831987">&#9670;&#160;</a></span>CXG_RA_RNF_LDID_TO_RAID_REG_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_RNF_LDID_TO_RAID_REG_OFFSET&#160;&#160;&#160;0xEA0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA RN-F LDID-to-RAID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00391">391</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a33642460f4b17ec8a8d17e7db92e4529" name="a33642460f4b17ec8a8d17e7db92e4529"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33642460f4b17ec8a8d17e7db92e4529">&#9670;&#160;</a></span>CXG_RA_RNF_RAID_VALID_REG_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_RNF_RAID_VALID_REG_OFFSET&#160;&#160;&#160;0xF28</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA RN-F RAID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00403">403</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6698ec97da6f082b228b5ed6c637bb6b" name="a6698ec97da6f082b228b5ed6c637bb6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6698ec97da6f082b228b5ed6c637bb6b">&#9670;&#160;</a></span>CXG_RA_RNI_LDID_TO_RAID_REG_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_RNI_LDID_TO_RAID_REG_OFFSET&#160;&#160;&#160;0xEE0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA RN-I LDID-to-RAID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00395">395</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7a9d43d2838917fc8b0bf988c07a2f87" name="a7a9d43d2838917fc8b0bf988c07a2f87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9d43d2838917fc8b0bf988c07a2f87">&#9670;&#160;</a></span>CXG_RA_RNI_RAID_VALID_REG_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_RNI_RAID_VALID_REG_OFFSET&#160;&#160;&#160;0xF30</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA RN-I RAID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00407">407</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7834cdb8d2137221a01ecbad1bc2d5bb" name="a7834cdb8d2137221a01ecbad1bc2d5bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7834cdb8d2137221a01ecbad1bc2d5bb">&#9670;&#160;</a></span>CXG_RA_SAM_HA_TGT_ID_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_SAM_HA_TGT_ID_SHIFT_VAL&#160;&#160;&#160;52</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA SAM 地址寄存器中 Home Agent Target ID 的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00387">387</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ace76825c43e1c074202794b37f0e6b0b" name="ace76825c43e1c074202794b37f0e6b0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace76825c43e1c074202794b37f0e6b0b">&#9670;&#160;</a></span>CXG_RA_UNIT_INFO_SMP_MODE_RO_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXG_RA_UNIT_INFO_SMP_MODE_RO_MASK&#160;&#160;&#160;(UINT64_C(1) &lt;&lt; 61)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA 单元信息寄存器中 SMP 模式只读位的位掩码（r2p0 使用） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00431">431</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6dd54e24f0b1e58e02bda8833f321063" name="a6dd54e24f0b1e58e02bda8833f321063"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dd54e24f0b1e58e02bda8833f321063">&#9670;&#160;</a></span>CXLA_AGENTID_TO_LINKID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_AGENTID_TO_LINKID_OFFSET&#160;&#160;&#160;0xC30</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA AgentID-to-LinkID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00491">491</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac4b0f7cefe75a4556d94c88023a447d9" name="ac4b0f7cefe75a4556d94c88023a447d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4b0f7cefe75a4556d94c88023a447d9">&#9670;&#160;</a></span>CXLA_AGENTID_TO_LINKID_VAL_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_AGENTID_TO_LINKID_VAL_OFFSET&#160;&#160;&#160;0xC70</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA AgentID-to-LinkID 有效位寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00495">495</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7ce4d38952cbcc6a8ad6417822899cd1" name="a7ce4d38952cbcc6a8ad6417822899cd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ce4d38952cbcc6a8ad6417822899cd1">&#9670;&#160;</a></span>CXLA_AUX_CTRL_SMP_MODE_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_AUX_CTRL_SMP_MODE_SHIFT_VAL&#160;&#160;&#160;(47)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA 辅助控制寄存器中 SMP 模式配置位的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00543">543</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a94b97bd29b81c00784c01f00806f9502" name="a94b97bd29b81c00784c01f00806f9502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94b97bd29b81c00784c01f00806f9502">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MAX_PACK_SIZE_128</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_128&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA 最大包大小编码：128 字节 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00515">515</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a00f0fe8b9d11969d884ae4e33278252c" name="a00f0fe8b9d11969d884ae4e33278252c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00f0fe8b9d11969d884ae4e33278252c">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MAX_PACK_SIZE_256</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_256&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA 最大包大小编码：256 字节 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00519">519</a> 行定义.</p>
+
+</div>
+</div>
+<a id="abd238141d5aed5edd3bb266a2f25cf8a" name="abd238141d5aed5edd3bb266a2f25cf8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd238141d5aed5edd3bb266a2f25cf8a">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MAX_PACK_SIZE_512</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_512&#160;&#160;&#160;2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA 最大包大小编码：512 字节 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00523">523</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a38350603de8d03956ed1ae403c3bdcd3" name="a38350603de8d03956ed1ae403c3bdcd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38350603de8d03956ed1ae403c3bdcd3">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MAX_PACK_SIZE_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000380)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA CCIX 协议能力寄存器中最大包大小的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00507">507</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a740f73de54f51bd40a70c3e7bf68241e" name="a740f73de54f51bd40a70c3e7bf68241e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a740f73de54f51bd40a70c3e7bf68241e">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MAX_PACK_SIZE_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MAX_PACK_SIZE_SHIFT_VAL&#160;&#160;&#160;7</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA 最大包大小字段在寄存器中的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00511">511</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0b304afe4645855f5a1ab572eabfedf4" name="a0b304afe4645855f5a1ab572eabfedf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b304afe4645855f5a1ab572eabfedf4">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MSG_PACK_SHIFT_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MSG_PACK_SHIFT_MASK&#160;&#160;&#160;UINT64_C(0x0000000000000400)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA CCIX 协议能力寄存器中消息打包标志的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00499">499</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af7f344b390a26968e7a5a5ecf2acd64c" name="af7f344b390a26968e7a5a5ecf2acd64c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7f344b390a26968e7a5a5ecf2acd64c">&#9670;&#160;</a></span>CXLA_CCIX_PROP_MSG_PACK_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_CCIX_PROP_MSG_PACK_SHIFT_VAL&#160;&#160;&#160;10</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA 消息打包标志位在寄存器中的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00503">503</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a36dfccd7bfbbd20f3b4885bdf4090845" name="a36dfccd7bfbbd20f3b4885bdf4090845"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36dfccd7bfbbd20f3b4885bdf4090845">&#9670;&#160;</a></span>CXLA_PCIE_HDR_TRAFFIC_CLASS_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_PCIE_HDR_TRAFFIC_CLASS_MASK&#160;&#160;&#160;UINT64_C(0x0000000000007000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA PCIe TLP 头字段中 Traffic Class 的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00527">527</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a4d324002acba73c51cf7dfa0d8a1f657" name="a4d324002acba73c51cf7dfa0d8a1f657"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d324002acba73c51cf7dfa0d8a1f657">&#9670;&#160;</a></span>CXLA_PCIE_HDR_TRAFFIC_CLASS_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_PCIE_HDR_TRAFFIC_CLASS_SHIFT_VAL&#160;&#160;&#160;12</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA PCIe TLP 头字段中 Traffic Class 的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00535">535</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0f724ee6f3e5be28d3c49c501a7382fd" name="a0f724ee6f3e5be28d3c49c501a7382fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f724ee6f3e5be28d3c49c501a7382fd">&#9670;&#160;</a></span>CXLA_PCIE_HDR_VENDOR_ID_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_PCIE_HDR_VENDOR_ID_MASK&#160;&#160;&#160;UINT64_C(0x0000FFFF00000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA PCIe TLP 头字段中 Vendor ID 的位掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00531">531</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a18a4b4a638dca00ec934547b7ef6777a" name="a18a4b4a638dca00ec934547b7ef6777a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18a4b4a638dca00ec934547b7ef6777a">&#9670;&#160;</a></span>CXLA_PCIE_HDR_VENDOR_ID_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CXLA_PCIE_HDR_VENDOR_ID_SHIFT_VAL&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXLA PCIe TLP 头字段中 Vendor ID 的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00539">539</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0a47f7c1a6f62628ed2888c924092233" name="a0a47f7c1a6f62628ed2888c924092233"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a47f7c1a6f62628ed2888c924092233">&#9670;&#160;</a></span>HNF_RN_PHYS_ID_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HNF_RN_PHYS_ID_OFFSET&#160;&#160;&#160;0xD28</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F RN_PHYS_ID 寄存器的偏移地址 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00617">617</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a04297815f82b8ea2b676c7b071e853e8" name="a04297815f82b8ea2b676c7b071e853e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04297815f82b8ea2b676c7b071e853e8">&#9670;&#160;</a></span>HNF_RN_PHYS_NODE_ID_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HNF_RN_PHYS_NODE_ID_SHIFT_VAL&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F RN_PHYS_ID 寄存器中 Node ID 字段的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00589">589</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a4daee379f4fb88913c8125541864f996" name="a4daee379f4fb88913c8125541864f996"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4daee379f4fb88913c8125541864f996">&#9670;&#160;</a></span>HNF_RN_PHYS_RN_ID_VALID_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HNF_RN_PHYS_RN_ID_VALID_SHIFT_VAL&#160;&#160;&#160;31</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F RN_PHYS_ID 寄存器中有效位的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00593">593</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5dfcbffcc4e217facbc2f7daa495505f" name="a5dfcbffcc4e217facbc2f7daa495505f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dfcbffcc4e217facbc2f7daa495505f">&#9670;&#160;</a></span>HNF_RN_PHYS_RN_LOCAL_REMOTE_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HNF_RN_PHYS_RN_LOCAL_REMOTE_SHIFT_VAL&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F RN_PHYS_ID 寄存器中本地/远端标志位的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00597">597</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac58d45603f07006acfc2a54c2e83a979" name="ac58d45603f07006acfc2a54c2e83a979"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac58d45603f07006acfc2a54c2e83a979">&#9670;&#160;</a></span>LOCAL_CCIX_NODE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOCAL_CCIX_NODE&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>标识本地 CCIX 节点 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00621">621</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa10c24282806e5b704f83dcef4ce626f" name="aa10c24282806e5b704f83dcef4ce626f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa10c24282806e5b704f83dcef4ce626f">&#9670;&#160;</a></span>NUM_BITS_RESERVED_FOR_LDID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NUM_BITS_RESERVED_FOR_LDID&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>LDID 字段占用的位数（8 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00609">609</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a81d17d22bbf93959bf4c6f4d83833dda" name="a81d17d22bbf93959bf4c6f4d83833dda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81d17d22bbf93959bf4c6f4d83833dda">&#9670;&#160;</a></span>NUM_BITS_RESERVED_FOR_LINK_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NUM_BITS_RESERVED_FOR_LINK_ID&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Link ID 字段占用的位数（8 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00605">605</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a75fa7ca475b1f14ef44327fbf02ff9ae" name="a75fa7ca475b1f14ef44327fbf02ff9ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75fa7ca475b1f14ef44327fbf02ff9ae">&#9670;&#160;</a></span>NUM_BITS_RESERVED_FOR_PHYS_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NUM_BITS_RESERVED_FOR_PHYS_ID&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>物理标识符字段占用的位数（32 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00613">613</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a1003280e94697420b93dad124ea63a27" name="a1003280e94697420b93dad124ea63a27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1003280e94697420b93dad124ea63a27">&#9670;&#160;</a></span>NUM_BITS_RESERVED_FOR_RAID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NUM_BITS_RESERVED_FOR_RAID&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RAID 字段占用的位数（8 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00601">601</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a13ed84cc82eaf7db949e91f4babf7ba6" name="a13ed84cc82eaf7db949e91f4babf7ba6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13ed84cc82eaf7db949e91f4babf7ba6">&#9670;&#160;</a></span>PCIE_OPT_HDR_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PCIE_OPT_HDR_MASK&#160;&#160;&#160;(0x1ULL &lt;&lt; 6)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PCIe 优化 TLP 头使能位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00637">637</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9ea01bbbc1c38390b2fef6ac1ebe93b7" name="a9ea01bbbc1c38390b2fef6ac1ebe93b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ea01bbbc1c38390b2fef6ac1ebe93b7">&#9670;&#160;</a></span>RAID_RNF_BIT_SHIFT_VAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RAID_RNF_BIT_SHIFT_VAL&#160;&#160;&#160;7</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RAID 中 RN-F 标志位的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00585">585</a> 行定义.</p>
+
+</div>
+</div>
+<a id="acb1c8140117c059c494d3268b4ae7424" name="acb1c8140117c059c494d3268b4ae7424"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb1c8140117c059c494d3268b4ae7424">&#9670;&#160;</a></span>REMOTE_CCIX_NODE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define REMOTE_CCIX_NODE&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>标识远端 CCIX 节点 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00625">625</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a70b3e208545559aa2a240a467bfb4446" name="a70b3e208545559aa2a240a467bfb4446"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70b3e208545559aa2a240a467bfb4446">&#9670;&#160;</a></span>SAM_ADDR_HOME_AGENT_ID_SHIFT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SAM_ADDR_HOME_AGENT_ID_SHIFT&#160;&#160;&#160;(52)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA SAM 地址寄存器中 Home Agent ID 的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00629">629</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac40906e05b6e7d660fc7760df53f191e" name="ac40906e05b6e7d660fc7760df53f191e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac40906e05b6e7d660fc7760df53f191e">&#9670;&#160;</a></span>SAM_ADDR_REG_VALID_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SAM_ADDR_REG_VALID_MASK&#160;&#160;&#160;UINT64_C(0x8000000000000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CXRA SAM 地址寄存器中有效位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00633">633</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">枚举类型说明</h2>
+<a id="a9f4fd1898f4ee8583350fe3cb6262539" name="a9f4fd1898f4ee8583350fe3cb6262539"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f4fd1898f4ee8583350fe3cb6262539">&#9670;&#160;</a></span>cxg_link_up_wait_cond</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600__ccix_8h.html#a9f4fd1898f4ee8583350fe3cb6262539">cxg_link_up_wait_cond</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX 链路 UP 等待条件枚举 </p>
+<p>定义 CCIX 链路建立过程中各阶段需要轮询的寄存器条件， 用于 timer_api-&gt;wait() 的条件回调函数。 链路建立序列按此枚举值的顺序依次执行。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956" name="a9f4fd1898f4ee8583350fe3cb6262539a9d343fe3a224b03b6c3a44101a80a956"></a>CXG_LINK_CTRL_EN_BIT_SET&#160;</td><td class="fielddoc"><p>等待 CXRA/CXHA 链路控制 EN 位置位 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e" name="a9f4fd1898f4ee8583350fe3cb6262539aa376a5209d27a51c52443b6aeefb363e"></a>CXG_LINK_CTRL_UP_BIT_CLR&#160;</td><td class="fielddoc"><p>等待 CXRA/CXHA 链路控制 UP 位清零 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59" name="a9f4fd1898f4ee8583350fe3cb6262539a25d586b5f2f1abc361af695fa8949a59"></a>CXG_LINK_STATUS_DWN_BIT_SET&#160;</td><td class="fielddoc"><p>等待 CXRA/CXHA 链路状态 DOWN 位置位 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931" name="a9f4fd1898f4ee8583350fe3cb6262539a8f5bdd0f7f406b68dceebd8064231931"></a>CXG_LINK_STATUS_DWN_BIT_CLR&#160;</td><td class="fielddoc"><p>等待 CXRA/CXHA 链路状态 DOWN 位清零 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c" name="a9f4fd1898f4ee8583350fe3cb6262539a65dbd958dc44a3edc79189c87cbb775c"></a>CXG_LINK_STATUS_ACK_BIT_SET&#160;</td><td class="fielddoc"><p>等待 CXRA/CXHA 链路状态 ACK 位置位 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25" name="a9f4fd1898f4ee8583350fe3cb6262539afe93c68c42b5a77c4b9ef5f808dfda25"></a>CXG_LINK_STATUS_ACK_BIT_CLR&#160;</td><td class="fielddoc"><p>等待 CXRA/CXHA 链路状态 ACK 位清零 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4" name="a9f4fd1898f4ee8583350fe3cb6262539a0247ba3d95a94e9fa5b131bf7dcf99d4"></a>CXG_LINK_STATUS_HA_DVMDOMAIN_ACK_BIT_SET&#160;</td><td class="fielddoc"><p>等待 CXHA 链路状态 DVMDOMAIN ACK 位置位 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0" name="a9f4fd1898f4ee8583350fe3cb6262539a0d3af2db62fb24a0108efadbf6c94fe0"></a>CXG_LINK_STATUS_RA_DVMDOMAIN_ACK_BIT_SET&#160;</td><td class="fielddoc"><p>等待 CXRA 链路状态 DVMDOMAIN ACK 位置位 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4" name="a9f4fd1898f4ee8583350fe3cb6262539a77757c399943dca3bb4aa785aa4a77c4"></a>CXG_LINK_UP_SEQ_COUNT&#160;</td><td class="fielddoc"><p>链路建立序列总步骤数 </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8h_source.html">cmn600_ccix.h</a> 第 <a class="el" href="cmn600__ccix_8h_source.html#l00354">354</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">函数说明</h2>
+<a id="a966d301336f726211f14ae636ef9e9aa" name="a966d301336f726211f14ae636ef9e9aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a966d301336f726211f14ae636ef9e9aa">&#9670;&#160;</a></span>ccix_capabilities_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ccix_capabilities_get </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取 CCIX 能力信息 </p>
+<p>从 CXRA/CXHA/CXLA 的硬件寄存器中读取 CCIX 能力参数， 包括请求信用数、侦听信用数、数据信用数、最大包大小和消息打包支持等， 并将结果填充到 ctx-&gt;ccix_host_info 中。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针，ccix_host_info 字段将被更新</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>该函数通常在 CCIX 配置获取 (get_config) 时被调用</dd></dl>
+<p>从 CXRA/CXHA/CXLA 的硬件寄存器中读取 CCIX 能力参数：</p><ul>
+<li>请求信用数（CXRA Request Tracker 深度）</li>
+<li>侦听信用数（CXHA Snoop Tracker 深度）</li>
+<li>数据信用数（CXHA WDB 深度）</li>
+<li>最大包大小（CXLA 能力寄存器）</li>
+<li>优化 TLP（CMN-600 始终支持）</li>
+<li>消息打包（CXLA 能力寄存器反相读取）</li>
+</ul>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针，ccix_host_info 字段将被更新 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00853">853</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2835736501d1dbb5a752479480706032" name="a2835736501d1dbb5a752479480706032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2835736501d1dbb5a752479480706032">&#9670;&#160;</a></span>ccix_enter_dvm_domain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_enter_dvm_domain </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进入 DVM (Distributed Virtual Memory) 域 </p>
+<p>在指定链路上请求进入 DVM 域，设置 CXRA 的 DVMDOMAIN_REQ 位 并等待远端返回 DVMDOMAIN ACK 确认。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">link_id</td><td>CCIX 链路标识符，有效值为 0-2</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>0 成功（FWK_SUCCESS）；负值为错误码 </dd></dl>
+<dl class="retval"><dt>返回值</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FWK_E_PARAM</td><td>link_id 超出有效范围</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>该操作需要在进入系统一致性域之后执行</dd></dl>
+<p>进入 DVM (Distributed Virtual Memory) 域</p>
+<p>设置 CXRA 链路控制寄存器的 DVMDOMAIN_REQ 位， 请求进入 DVM 域，并等待 DVMDOMAIN ACK 确认。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00809">809</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae4b2950e2ed20ed7e27528aa7eeaa067" name="ae4b2950e2ed20ed7e27528aa7eeaa067"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4b2950e2ed20ed7e27528aa7eeaa067">&#9670;&#160;</a></span>ccix_enter_system_coherency()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_enter_system_coherency </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进入 CCIX 系统一致性域 </p>
+<p>在指定链路上请求进入系统一致性域，设置 CXHA 的 DVMDOMAIN_REQ 位 并等待远端返回 DVMDOMAIN ACK 确认。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">link_id</td><td>CCIX 链路标识符，有效值为 0-2</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>0 成功（FWK_SUCCESS）；负值为错误码 </dd></dl>
+<dl class="retval"><dt>返回值</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FWK_E_PARAM</td><td>link_id 超出有效范围</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>该操作需要在 CCIX 链路 UP 之后执行</dd></dl>
+<p>设置 CXHA 链路控制寄存器的 DVMDOMAIN_REQ 位， 请求进入系统一致性域，并等待 DVMDOMAIN ACK 确认。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00772">772</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a41d93798e15e5b5111b9b310367f3873" name="a41d93798e15e5b5111b9b310367f3873"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41d93798e15e5b5111b9b310367f3873">&#9670;&#160;</a></span>ccix_exchange_protocol_credit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_exchange_protocol_credit </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>link_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX 协议信用交换 </p>
+<p>在指定链路上触发 CCIX 协议信用交换， 通过设置 CXRA/CXHA 的 LINK_CTRL UP 位实现。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">link_id</td><td>CCIX 链路标识符，有效值为 0-2</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>0 成功（FWK_SUCCESS）；负值为错误码 </dd></dl>
+<dl class="retval"><dt>返回值</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">FWK_E_PARAM</td><td>link_id 超出有效范围</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>在 CXRA/CXHA 的链路控制寄存器中设置 UP 位， 触发协议信用交换。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00749">749</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5fc9bffccce08056b1f2f15db1068112" name="a5fc9bffccce08056b1f2f15db1068112"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fc9bffccce08056b1f2f15db1068112">&#9670;&#160;</a></span>ccix_setup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ccix_setup </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__ctx.html">cmn600_ctx</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>remote_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX 网关配置设置 </p>
+<p>根据远端节点配置信息，配置本地 CCIX Gateway 的 RAID/LDID 映射、 AgentID-to-LinkID 表、SAM 地址区域，并启动 CCIX 链路建立序列。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>CMN-600 模块上下文指针 </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">remote_config</td><td>远端节点配置数据指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>0 成功（FWK_SUCCESS）；负值为错误码</dd></dl>
+<dl class="section pre"><dt>前置条件</dt><dd>ctx 必须已完成拓扑发现和节点配置</dd></dl>
+<p>完整的 CCIX Gateway 配置流程：</p><ol type="1">
+<li>如需 SMP 模式则使能</li>
+<li>为本地 RN-F/RN-D/RN-I 代理分配 RAID 并编程 LDID-to-RAID 映射</li>
+<li>为所有本地代理编程 AgentID-to-LinkID 映射</li>
+<li>配置 CXHA HA ID</li>
+<li>为远端 RN-F 代理编程 CXHA RAID-to-LDID 映射和 HN-F LDID-to-CHI-Node-ID</li>
+<li>配置 CXRA SAM 地址区域</li>
+<li>启动 CCIX 链路 UP 序列 </li>
+</ol>
+
+<p class="definition">在文件 <a class="el" href="cmn600__ccix_8c_source.html">cmn600_ccix.c</a> 第 <a class="el" href="cmn600__ccix_8c_source.html#l00610">610</a> 行定义.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_48f311512fb313e8ec1c32eaef206743.html">scp_firmware</a></li><li class="navelem"><a class="el" href="dir_fcc1255ba6bda919d85092c50000c4b5.html">module</a></li><li class="navelem"><a class="el" href="dir_a446bcb378e7d3b34199efec74fac8d3.html">cmn600</a></li><li class="navelem"><a class="el" href="dir_dfaf74a7e0a30d6f2b03404a92276f19.html">include</a></li><li class="navelem"><a class="el" href="dir_34586aada5f6b86c3b06b4faf9f82e08.html">internal</a></li><li class="navelem"><a class="el" href="cmn600__ccix_8h.html">cmn600_ccix.h</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

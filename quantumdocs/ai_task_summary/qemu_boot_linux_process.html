@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>28. QEMU 启动 Linux 内核过程记录 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="29. Buildroot 自动登录配置排障记录" href="../buildroot_autologin_troubleshooting.html" />
+    <link rel="prev" title="27. reStructuredText 搭建任务过程记录" href="build_reStructedText_task.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">28. QEMU 启动 Linux 内核过程记录</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">28.1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">28.2. 环境准备</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linux">28.3. 启动方式一：直接启动 Linux 内核</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">28.3.1. 启动流程</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#u-boot-linux">28.4. 启动方式二：通过 U-Boot 启动 Linux 内核</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">28.4.1. 启动流程</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">28.5. 当前状态</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">28.6. 文件结构</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">28.7. 内核命令行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">28.8. 尝试的解决方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">28.9. 结论</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">28. </span>QEMU 启动 Linux 内核过程记录</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ai_task_summary/qemu_boot_linux_process.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="qemu-linux">
+<h1><span class="section-number">28. </span>QEMU 启动 Linux 内核过程记录<a class="headerlink" href="#qemu-linux" title="链接到此标题。"></a></h1>
+<section id="id1">
+<h2><span class="section-number">28.1. </span>概述<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<p>本文档记录了使用 QEMU 启动 Linux 内核的过程，包括通过直接启动内核和通过 U-Boot 启动内核两种方式。当前状态是尚未成功启动到 Linux 系统。</p>
+</section>
+<section id="id2">
+<h2><span class="section-number">28.2. </span>环境准备<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>环境变量设置</strong>：通过 <cite>source build/envsetup.sh</cite> 加载环境变量</p></li>
+<li><p><strong>板卡配置</strong>：通过 <cite>lunch</cite> 命令选择板卡配置，例如 <cite>lunch 2</cite> 选择 <cite>quantum_qemu_debug</cite> 配置</p></li>
+</ol>
+</section>
+<section id="linux">
+<h2><span class="section-number">28.3. </span>启动方式一：直接启动 Linux 内核<a class="headerlink" href="#linux" title="链接到此标题。"></a></h2>
+<p>使用 <cite>boot_kernel</cite> 函数直接启动 Linux 内核，命令格式：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>boot_kernel<span class="w"> </span><span class="o">[</span>monitor<span class="o">]</span><span class="w"> </span><span class="o">[</span>no-memdisk<span class="o">]</span>
+</pre></div>
+</div>
+<section id="id3">
+<h3><span class="section-number">28.3.1. </span>启动流程<a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>检查板卡配置</strong>：确保已选择板卡配置</p></li>
+<li><p><strong>解析参数</strong>：处理 <cite>monitor</cite> 和 <cite>no-memdisk</cite> 参数</p></li>
+<li><p><strong>设置内核镜像路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/Image</cite></p></li>
+<li><p><strong>设置根文件系统路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/rootfs.cpio</cite></p></li>
+<li><p><strong>设置设备树文件路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/quantum_qemu.dtb</cite></p></li>
+<li><p><strong>配置 QEMU 参数</strong>：
+- 机器类型：<cite>$QEMU_MACHINE</cite> (virt)
+- CPU：<cite>$QEMU_CPU</cite> (cortex-a57)
+- SMP：<cite>$QEMU_SMP</cite> (4)
+- 内存：<cite>$QEMU_MEM</cite> (4096M)
+- 内核参数：<cite>$KERNEL_CMDLINE</cite></p></li>
+<li><p><strong>启动 QEMU</strong>：执行 <cite>qemu-system-aarch64</cite> 命令</p></li>
+</ol>
+</section>
+</section>
+<section id="u-boot-linux">
+<h2><span class="section-number">28.4. </span>启动方式二：通过 U-Boot 启动 Linux 内核<a class="headerlink" href="#u-boot-linux" title="链接到此标题。"></a></h2>
+<p>使用 <cite>boot_uboot</cite> 函数启动 U-Boot，然后在 U-Boot shell 中启动 Linux 内核，命令格式：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>boot_uboot<span class="w"> </span><span class="o">[</span>monitor<span class="o">]</span>
+</pre></div>
+</div>
+<section id="id4">
+<h3><span class="section-number">28.4.1. </span>启动流程<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<ol class="arabic">
+<li><p><strong>检查板卡配置</strong>：确保已选择板卡配置</p></li>
+<li><p><strong>解析参数</strong>：处理 <cite>monitor</cite> 参数</p></li>
+<li><p><strong>设置 U-Boot 镜像路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/u-boot.bin</cite></p></li>
+<li><p><strong>设置内核镜像路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/Image</cite></p></li>
+<li><p><strong>设置根文件系统路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/rootfs.cpio</cite></p></li>
+<li><p><strong>设置设备树文件路径</strong>：使用 <cite>$BOARD_OUT_DIR/images/quantum_qemu.dtb</cite></p></li>
+<li><p><strong>加载文件到内存</strong>：
+- Linux 内核：加载到 0x41000000
+- 根文件系统：加载到 0x42000000
+- 设备树：加载到 0x45000000</p></li>
+<li><p><strong>启动 QEMU</strong>：执行 <cite>qemu-system-aarch64</cite> 命令，使用 <cite>-bios</cite> 参数指定 U-Boot 镜像</p></li>
+<li><p><strong>在 U-Boot shell 中启动 Linux</strong>：
+.. code-block:: bash</p>
+<blockquote>
+<div><p>=&gt; setenv bootargs $KERNEL_CMDLINE
+=&gt; booti 0x41000000 0x42000000 0x45000000</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+</section>
+<section id="id5">
+<h2><span class="section-number">28.5. </span>当前状态<a class="headerlink" href="#id5" title="链接到此标题。"></a></h2>
+<p><strong>尚未成功启动到 Linux 系统</strong>，遇到以下问题：</p>
+<ol class="arabic">
+<li><p><strong>U-Boot 启动过程中的警告</strong>：
+.. code-block:: bash</p>
+<blockquote>
+<div><p>Bloblist at 0 not found (err=-2)
+alloc space exhausted ptr 400 limit 0</p>
+</div></blockquote>
+</li>
+<li><p><strong>根文件系统镜像格式错误</strong>：
+.. code-block:: bash</p>
+<blockquote>
+<div><p>Wrong Ramdisk Image Format
+Ramdisk image is corrupt or invalid</p>
+</div></blockquote>
+</li>
+<li><p><strong>内核启动失败</strong>：
+.. code-block:: bash</p>
+<blockquote>
+<div><p>Hardware name: linux,dummy-virt (DT)
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : amba_read_periphid+0x94/0x1cc
+lr : amba_read_periphid+0x80/0x1cc
+...
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="id6">
+<h2><span class="section-number">28.6. </span>文件结构<a class="headerlink" href="#id6" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p><strong>`build/qemu.sh`</strong>：包含 QEMU 启动相关函数
+- <cite>qemu_monitor</cite>：连接到 QEMU monitor
+- <cite>boot_kernel</cite>：直接启动 Linux 内核
+- <cite>boot_uboot</cite>：启动 U-Boot，然后在 U-Boot shell 中启动 Linux 内核</p></li>
+<li><p><strong>镜像文件路径</strong>：
+- U-Boot 镜像：<cite>$BOARD_OUT_DIR/images/u-boot.bin</cite>
+- Linux 内核镜像：<cite>$BOARD_OUT_DIR/images/Image</cite>
+- 根文件系统镜像：<cite>$BOARD_OUT_DIR/images/rootfs.cpio</cite>
+- 设备树文件：<cite>$BOARD_OUT_DIR/images/quantum_qemu.dtb</cite></p></li>
+</ul>
+</section>
+<section id="id7">
+<h2><span class="section-number">28.7. </span>内核命令行<a class="headerlink" href="#id7" title="链接到此标题。"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">console</span><span class="o">=</span>ttyAMA0<span class="w"> </span><span class="nv">root</span><span class="o">=</span>/dev/ram0<span class="w"> </span>rw<span class="w"> </span><span class="nv">init</span><span class="o">=</span>/linuxrc<span class="w"> </span>nokaslr<span class="w"> </span><span class="nv">earlycon</span><span class="o">=</span>pl011,0x9000000<span class="w"> </span>debug<span class="w"> </span><span class="nv">loglevel</span><span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="nv">MEMDISK_PHY_ADDR</span><span class="o">=</span>0x78000000<span class="w"> </span><span class="nv">MEMDISK_SIZE</span><span class="o">=</span><span class="m">268435456</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h2><span class="section-number">28.8. </span>尝试的解决方案<a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>修复 `load_args` 赋值逻辑</strong>：使用 <cite>+=</cite> 运算符确保所有设备加载参数都被正确累积</p></li>
+<li><p><strong>调整内存加载地址</strong>：
+- 尝试使用 0x40000000 系列地址
+- 尝试使用 0x80000000 系列地址</p></li>
+<li><p><strong>确保设备树文件正确加载</strong>：取消设备树加载代码的注释</p></li>
+<li><p><strong>更新 U-Boot shell 启动命令</strong>：确保使用正确的内存地址</p></li>
+</ol>
+</section>
+<section id="id9">
+<h2><span class="section-number">28.9. </span>结论<a class="headerlink" href="#id9" title="链接到此标题。"></a></h2>
+<p>当前尚未成功启动到 Linux 系统，需要进一步调试和解决以下问题：</p>
+<ol class="arabic simple">
+<li><p>U-Boot 启动过程中的警告信息</p></li>
+<li><p>根文件系统镜像格式错误</p></li>
+<li><p>内核启动失败的原因</p></li>
+</ol>
+<p>建议的下一步操作：</p>
+<ol class="arabic simple">
+<li><p>检查根文件系统镜像的格式和完整性</p></li>
+<li><p>验证设备树文件是否正确</p></li>
+<li><p>调整 QEMU 启动参数和内存地址</p></li>
+<li><p>查看更详细的内核启动日志，定位具体的失败原因</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="build_reStructedText_task.html" class="btn btn-neutral float-left" title="27. reStructuredText 搭建任务过程记录" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../buildroot_autologin_troubleshooting.html" class="btn btn-neutral float-right" title="29. Buildroot 自动登录配置排障记录" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

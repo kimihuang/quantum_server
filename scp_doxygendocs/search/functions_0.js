@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['ccix_5fcapabilities_5fget_0',['ccix_capabilities_get',['../cmn600__ccix_8c.html#a966d301336f726211f14ae636ef9e9aa',1,'ccix_capabilities_get(struct cmn600_ctx *ctx):&#160;cmn600_ccix.c'],['../cmn600__ccix_8h.html#a966d301336f726211f14ae636ef9e9aa',1,'ccix_capabilities_get(struct cmn600_ctx *ctx):&#160;cmn600_ccix.c']]],
+  ['ccix_5fenter_5fdvm_5fdomain_1',['ccix_enter_dvm_domain',['../cmn600__ccix_8h.html#a2835736501d1dbb5a752479480706032',1,'ccix_enter_dvm_domain(struct cmn600_ctx *ctx, uint8_t link_id):&#160;cmn600_ccix.c'],['../cmn600__ccix_8c.html#a2835736501d1dbb5a752479480706032',1,'ccix_enter_dvm_domain(struct cmn600_ctx *ctx, uint8_t link_id):&#160;cmn600_ccix.c']]],
+  ['ccix_5fenter_5fsystem_5fcoherency_2',['ccix_enter_system_coherency',['../cmn600__ccix_8h.html#ae4b2950e2ed20ed7e27528aa7eeaa067',1,'ccix_enter_system_coherency(struct cmn600_ctx *ctx, uint8_t link_id):&#160;cmn600_ccix.c'],['../cmn600__ccix_8c.html#ae4b2950e2ed20ed7e27528aa7eeaa067',1,'ccix_enter_system_coherency(struct cmn600_ctx *ctx, uint8_t link_id):&#160;cmn600_ccix.c']]],
+  ['ccix_5fexchange_5fprotocol_5fcredit_3',['ccix_exchange_protocol_credit',['../cmn600__ccix_8h.html#a41d93798e15e5b5111b9b310367f3873',1,'ccix_exchange_protocol_credit(struct cmn600_ctx *ctx, uint8_t link_id):&#160;cmn600_ccix.c'],['../cmn600__ccix_8c.html#a41d93798e15e5b5111b9b310367f3873',1,'ccix_exchange_protocol_credit(struct cmn600_ctx *ctx, uint8_t link_id):&#160;cmn600_ccix.c']]],
+  ['ccix_5fsetup_4',['ccix_setup',['../cmn600__ccix_8h.html#a5fc9bffccce08056b1f2f15db1068112',1,'ccix_setup(struct cmn600_ctx *ctx, void *remote_config):&#160;cmn600_ccix.c'],['../cmn600__ccix_8c.html#a5fc9bffccce08056b1f2f15db1068112',1,'ccix_setup(struct cmn600_ctx *ctx, void *remote_config):&#160;cmn600_ccix.c']]],
+  ['cmn600_5fbind_5',['cmn600_bind',['../mod__cmn600_8c.html#a1ab885d1e08faf1a24785d430a610eb2',1,'mod_cmn600.c']]],
+  ['cmn600_5fccix_5fconfig_5fget_6',['cmn600_ccix_config_get',['../mod__cmn600_8c.html#aaa8ca6b8ae8aa0bb7abe1976443d9e27',1,'mod_cmn600.c']]],
+  ['cmn600_5fccix_5fconfig_5fset_7',['cmn600_ccix_config_set',['../mod__cmn600_8c.html#ac90e209b7ef00e678c1e534fcf1348e5',1,'mod_cmn600.c']]],
+  ['cmn600_5fccix_5fenter_5fdvm_5fdomain_8',['cmn600_ccix_enter_dvm_domain',['../mod__cmn600_8c.html#a4b0d503ef20ac4c328ce4fce25e487a6',1,'mod_cmn600.c']]],
+  ['cmn600_5fccix_5fenter_5fsystem_5fcoherency_9',['cmn600_ccix_enter_system_coherency',['../mod__cmn600_8c.html#ab34a5ced3b0c1f7c4dc9735172c0670d',1,'mod_cmn600.c']]],
+  ['cmn600_5fccix_5fexchange_5fprotocol_5fcredit_10',['cmn600_ccix_exchange_protocol_credit',['../mod__cmn600_8c.html#a96bfdbb4b977d7aaf75b5fb9c78c9263',1,'mod_cmn600.c']]],
+  ['cmn600_5fconfigure_11',['cmn600_configure',['../mod__cmn600_8c.html#a22644f5b1eae028881599d71bcfc5ab5',1,'mod_cmn600.c']]],
+  ['cmn600_5fdiscovery_12',['cmn600_discovery',['../mod__cmn600_8c.html#a1796ad5b63417d44b38e8cc7c52d8e7b',1,'mod_cmn600.c']]],
+  ['cmn600_5fhnf_5fcache_5fgroup_5fcount_13',['cmn600_hnf_cache_group_count',['../mod__cmn600_8c.html#a653a76d174c37eda39eeb0ee26f2299b',1,'mod_cmn600.c']]],
+  ['cmn600_5finit_14',['cmn600_init',['../mod__cmn600_8c.html#a80e75fa0dfc6399e1f832ce66a4dd567',1,'mod_cmn600.c']]],
+  ['cmn600_5fprocess_5fbind_5frequest_15',['cmn600_process_bind_request',['../mod__cmn600_8c.html#a6affec2faed5ed61b22f9e5fa8b81c65',1,'mod_cmn600.c']]],
+  ['cmn600_5fprocess_5fnotification_16',['cmn600_process_notification',['../mod__cmn600_8c.html#a5ba4a693f8049b689db3a37536bf01c5',1,'mod_cmn600.c']]],
+  ['cmn600_5fsetup_17',['cmn600_setup',['../mod__cmn600_8c.html#a38cab884ba9ba3f1dfe8589624bc8b48',1,'mod_cmn600.c']]],
+  ['cmn600_5fsetup_5frnsam_18',['cmn600_setup_rnsam',['../mod__cmn600_8c.html#a53a59e05df161f718b365d768628a848',1,'mod_cmn600.c']]],
+  ['cmn600_5fsetup_5fsam_19',['cmn600_setup_sam',['../cmn600__ctx_8h.html#a8df77e0501c61e815e25a1042f0337ca',1,'cmn600_setup_sam(struct cmn600_rnsam_reg *rnsam):&#160;mod_cmn600.c'],['../mod__cmn600_8c.html#a8df77e0501c61e815e25a1042f0337ca',1,'cmn600_setup_sam(struct cmn600_rnsam_reg *rnsam):&#160;mod_cmn600.c']]],
+  ['cmn600_5fstart_20',['cmn600_start',['../mod__cmn600_8c.html#a89475a9600bec3e76f3b86c42b536ec2',1,'mod_cmn600.c']]],
+  ['configure_5fregion_21',['configure_region',['../cmn600_8c.html#a71449bb071080b3ad2397e417287826c',1,'configure_region(volatile uint64_t *reg, unsigned int bit_offset, uint64_t base, uint64_t size, enum sam_node_type node_type):&#160;cmn600.c'],['../cmn600_8h.html#a71449bb071080b3ad2397e417287826c',1,'configure_region(volatile uint64_t *reg, unsigned int bit_offset, uint64_t base, uint64_t size, enum sam_node_type node_type):&#160;cmn600.c']]],
+  ['cxg_5flink_5fwait_5fcondition_22',['cxg_link_wait_condition',['../cmn600__ccix_8c.html#a55c705e278f08ccd16742dd27b0609f1',1,'cmn600_ccix.c']]]
+];

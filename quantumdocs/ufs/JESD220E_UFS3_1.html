@@ -1,0 +1,1524 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JESD220E UFS 3.1 规范深度分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">JESD220E UFS 3.1 规范深度分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ufs/JESD220E_UFS3_1.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jesd220e-ufs-3-1">
+<h1>JESD220E UFS 3.1 规范深度分析<a class="headerlink" href="#jesd220e-ufs-3-1" title="链接到此标题。"></a></h1>
+<p>本文档基于 JEDEC Universal Flash Storage (UFS) Version 3.1 规范 (JESD220E, January 2020),
+系统梳理 UFS 3.1 的架构、协议、电气特性和功能特性。</p>
+<p>参考文档：<code class="docutils literal notranslate"><span class="pre">docs/pdf/UFS/JESD220E_UFS3_1.md</span></code></p>
+</section>
+<section id="id2">
+<h1>概述<a class="headerlink" href="#id2" title="链接到此标题。"></a></h1>
+<section id="ufs-section-4">
+<h2>UFS 简介 [Section 4]_<a class="headerlink" href="#ufs-section-4" title="链接到此标题。"></a></h2>
+<p>Universal Flash Storage (UFS) 是一种简单、高性能的串行接口大容量存储设备，主要用于移动系统中主机处理器和大容量存储设备之间。</p>
+<p><strong>目标应用</strong> [Section 4.1]_:</p>
+<ul class="simple">
+<li><p>手机、UMPC(超移动 PC)、DSC(数字静物相机)、PMP(便携式媒体播放器)、MP3 播放器</p></li>
+<li><p>需要大容量存储、可启动大容量存储和外部卡的应用</p></li>
+</ul>
+<p><strong>目标设备类型</strong> [Section 4.1]_:</p>
+<ul class="simple">
+<li><p>外部卡</p></li>
+<li><p>嵌入式设备 (大容量存储和可启动大容量存储)</p></li>
+<li><p>未来扩展的设备类型 (I/O 设备、摄像头、无线设备等)</p></li>
+</ul>
+<p><strong>拓扑结构</strong> [Section 4.1]_:</p>
+<ul class="simple">
+<li><p>每个 UFS 端口连接一个设备</p></li>
+</ul>
+<p><strong>层叠架构</strong> [Section 4.1, Figure 5.1]_:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>UFS Application Layer (UAP)
+├── UFS Command Set Layer (UCS)
+│   ├── UFS Native Command Set
+│   ├── Simplified SCSI Command Set
+│   └── Future Extension
+├── Device Manager (Query Request)
+└── Task Manager
+
+UFS Transport Protocol Layer (UTP)
+
+UFS InterConnect Layer (UIC)
+├── MIPI UniPro (数据链路层)
+└── MIPI M-PHY (物理层)
+</pre></div>
+</div>
+</section>
+<section id="section-4-1">
+<h2>通用特性 [Section 4.1]_<a class="headerlink" href="#section-4-1" title="链接到此标题。"></a></h2>
+<p><strong>目标性能</strong>:</p>
+<ul class="simple">
+<li><p>支持高速 GEAR1/GEAR2/GEAR3/GEAR4 (全部强制支持)</p></li>
+</ul>
+<p><strong>接口特性</strong> [Section 4.2]_:</p>
+<ul class="simple">
+<li><p>三种电源供电:
+- VCCQ: 1.2 V (标称)
+- VCCQ2: 1.8 V (标称)
+- VCC: 2.5 V/3.3 V (标称)</p></li>
+<li><p>信号定义遵循 [MIPI-M-PHY]:
+- 400 mVp (未端接)
+- 200 mVp (端接)</p></li>
+<li><p>8b10b 线路编码</p></li>
+<li><p>高可靠性 - BER 低于 10⁻¹⁰</p></li>
+<li><p>两种信令方案:
+- 低速模式：PWM 信令
+- 高速突发模式</p></li>
+<li><p>低速和高速模式均定义多个 GEAR</p></li>
+<li><p>Adapt (M-PHY 4.1): M-RX 均衡器训练以适应信道特性</p></li>
+</ul>
+</section>
+<section id="section-4-3">
+<h2>功能特性 [Section 4.3]_<a class="headerlink" href="#section-4-3" title="链接到此标题。"></a></h2>
+<p>UFS 功能特性主要是 NAND 管理特性，包括:</p>
+<ul class="simple">
+<li><p>类似 eMMC 的功能特性</p></li>
+<li><p>启动操作模式</p></li>
+<li><p>多个可配置特性的逻辑单元</p></li>
+<li><p>Replay Protected Memory Block (RPMB)</p></li>
+<li><p>可靠写入操作</p></li>
+<li><p>后台操作</p></li>
+<li><p>安全操作 (Purge 和 Erase 增强数据安全)</p></li>
+<li><p>写保护选项 (包括永久和上电写保护)</p></li>
+<li><p>RPMB 的签名访问</p></li>
+<li><p>硬件复位信号</p></li>
+<li><p>任务管理操作</p></li>
+<li><p>电源管理操作</p></li>
+</ul>
+</section>
+</section>
+<section id="id3">
+<h1>架构概述<a class="headerlink" href="#id3" title="链接到此标题。"></a></h1>
+<section id="section-5-1">
+<h2>顶层架构 [Section 5.1]_<a class="headerlink" href="#section-5-1" title="链接到此标题。"></a></h2>
+<p>UFS 通信采用分层通信架构，基于 SCSI SAM 架构模型 [SAM]。</p>
+<p><strong>应用层</strong> [Section 5.1.1]_:</p>
+<p>由 UFS 命令集 (UCS)、设备管理器和任务管理器组成:</p>
+<ul class="simple">
+<li><p><strong>UCS</strong>: 处理正常命令 (如读、写等),可支持多种命令集</p></li>
+<li><p><strong>Task Manager</strong>: 处理命令队列控制相关命令</p></li>
+<li><p><strong>Device Manager</strong>: 提供设备级控制 (如 Query Request) 和底层链路层控制</p></li>
+</ul>
+<p><strong>UFS 设备管理器</strong> [Section 5.1.2]_:</p>
+<p>两个主要职责:</p>
+<ol class="arabic simple">
+<li><p>处理设备级操作 (电源管理、数据传输设置、后台操作使能等)</p></li>
+<li><p>管理设备级配置 (维护和存储描述符集)</p></li>
+</ol>
+<p><strong>服务访问点</strong> [Section 5.1.3-5.1.5, Figure 5.2, 5.3]_:</p>
+<p>设备管理器通过两个服务访问点与下层交互:</p>
+<ul>
+<li><p><strong>UDM_SAP</strong> (UFS Device Manager Service Access Point):
+- UTP 层暴露给设备管理器的 SAP
+- 用于处理设备级操作和配置
+- 对应 Query Request 和 Query Response 功能
+- 例如：处理描述符的 query request</p></li>
+<li><p><strong>UIO_SAP</strong> (UFS IC IO control Service Access Point):
+- UIC 层暴露给设备管理器的 SAP
+- 用于触发 UIC 层复位和传输 UIC 管理功能相关请求/响应
+- 在 UniPro 中对应 DME_SAP
+- 提供原语包括:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>DME_RESET: 复位整个 UniPro 协议栈</p></li>
+<li><p>DME_ENDPOINTRESET: UFS 主机要求 UFS 设备执行复位</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>UFS 传输协议层</strong> [Section 5.1.6]_:</p>
+<p>UTP 层为上层提供服务，UPIU (UFS Protocol Information Unit) 在 UFS 主机和设备的 UTP 层之间交换。</p>
+<p>UTP 层提供三个访问点:</p>
+<ol class="arabic simple">
+<li><p>UDM_SAP: 执行设备级管理 (如描述符访问)</p></li>
+<li><p>UTP_CMD_SAP: 传输命令</p></li>
+<li><p>UTP_TM_SAP: 传输任务管理功能 (如&quot;abortion task&quot;)</p></li>
+</ol>
+<p><strong>UFS 互连层</strong> [Section 5.1.7]_:</p>
+<p>最底层是 UFS Interconnect Layer (UIC),处理 UFS 主机和设备之间的连接。</p>
+<p>UIC 组成:
+- MIPI UniPro
+- MIPI M-PHY</p>
+<p>UIC 提供两个服务访问点:
+- <strong>UIC_SAP</strong>: 在 UFS 主机和设备之间传输 UPIU (对应 UniPro 中的 T_SAP)
+- <strong>UIO_SAP</strong>: 管理 UIC (对应 UniPro 中的 DME_SAP)</p>
+<p><strong>UFS 拓扑</strong> [Section 5.1.8]_:</p>
+<p>此版本标准假设只有一个设备连接到 UFS 端口，其他拓扑可能在将来版本中定义。</p>
+</section>
+<section id="section-5-2-figure-5-4">
+<h2>系统模型 [Section 5.2, Figure 5.4]_<a class="headerlink" href="#section-5-2-figure-5-4" title="链接到此标题。"></a></h2>
+<p>UFS 系统示例展示 UFS 主机如何连接到 UFS 设备，以及 UFS 主机控制器的位置和相关 UFS HCI 接口。</p>
+<p><strong>UFS 主机组件</strong>:</p>
+<ul class="simple">
+<li><p><strong>Application</strong>: 希望与 UFS 设备通信的实体</p></li>
+<li><p><strong>UFS Driver</strong>: 通过 UFS HCI 管理 UFS 主机控制器</p></li>
+<li><p><strong>UFS Host Controller</strong>: 包含一组寄存器 (UFS HCI)</p></li>
+<li><p><strong>UFS Host Reg</strong>: 主机控制器暴露的寄存器组</p></li>
+</ul>
+<p><strong>UFS 设备组件</strong>:</p>
+<ul class="simple">
+<li><p><strong>Device Level Managing</strong>: 设备级管理 (如电源管理)</p></li>
+<li><p><strong>Descriptors</strong>: 存储配置相关信息</p></li>
+<li><p><strong>LU-0 to LU-N</strong>: 多个逻辑单元，执行读、写等功能</p></li>
+<li><p><strong>UIC</strong>: 包含 MIPI UniPro 和 MIPI M-PHY</p></li>
+</ul>
+<p><strong>UFS 接口信号</strong>:</p>
+<ul class="simple">
+<li><p>REF_CLK: 参考时钟</p></li>
+<li><p>RST_n: 复位信号</p></li>
+<li><p>DOUT_t/c: 上行差分输出</p></li>
+<li><p>DIN_t/c: 下行差分输入</p></li>
+</ul>
+</section>
+<section id="section-5-3">
+<h2>系统启动和枚举 [Section 5.3]_<a class="headerlink" href="#section-5-3" title="链接到此标题。"></a></h2>
+<p>系统从可启动 UFS 设备启动在上电后开始，当 UFS InterConnect Layer (MIPI M-PHY 和 UniPro) 完成启动序列后。</p>
+<p><strong>启动流程</strong>:</p>
+<ul class="simple">
+<li><p>启动代码可从适当的 boot logical unit 读取</p></li>
+<li><p>或者根据需要，boot ROM 代码可在读取启动代码前重新配置 MIPI M-PHY 和 UniPro 到适当设置</p></li>
+<li><p>多个 boot logical unit 可能在 UFS 设备中可用，但上电时只有一个激活</p></li>
+<li><p>适当的描述符可用于配置启动过程</p></li>
+<li><p>启动期间，通过 SCSI 命令支持对 boot logical unit 的访问</p></li>
+</ul>
+</section>
+<section id="scsi-section-5-5-1-figure-5-5-5-6">
+<h2>SCSI 域模型 [Section 5.5.1, Figure 5.5, 5.6]_<a class="headerlink" href="#scsi-section-5-5-1-figure-5-5-5-6" title="链接到此标题。"></a></h2>
+<p><strong>CDB、状态、任务管理</strong> [Section 5.5.1.2]_:</p>
+<p>UTP 采用 Command Descriptor Block (CDB) 格式用于命令、设备状态数据层次结构和报告方法，以及未完成任务的任务管理功能，这些都在 [SAM] 中描述。</p>
+<p>无论 UTP 传递的命令协议如何，UFS 设备应统一采用 SCSI CDB、状态和任务管理功能。</p>
+<p><strong>Nexus</strong> [Section 5.5.1.3]_:</p>
+<p>Nexus 表示 Initiator、Target、Logical Unit 和 Command (Task) 之间的关系。</p>
+<p>Nexus 表示法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>I_T_L_Q nexus
+其中：I = Initiator, T = Target, L = Logical Unit, Q = Command
+</pre></div>
+</div>
+<p><strong>要求</strong>:</p>
+<ul class="simple">
+<li><p>UFS 定义中应至少有一个 initiator device</p></li>
+<li><p>只能有一个 target device (UFS 设备)</p></li>
+<li><p>UFS 设备中应有一个或多个 logical units</p></li>
+<li><p>命令标识符 (即 I_T_L_Q nexus 中的 Q) 由 Initiator device 分配，以在特定 I_T_L nexus 上下文中唯一标识一个命令</p></li>
+<li><p>允许同一时间有多个命令在 I_T_L nexus 中 outstanding</p></li>
+</ul>
+<p><strong>重叠命令</strong>:</p>
+<p>当 task manager 或 task router 在命令完成其命令生命周期之前检测到 I_T_L_Q nexus 重复使用时，发生重叠命令。</p>
+<p>UFS 中不允许并发重叠命令。每个命令应有唯一的 Task Tag。UFS 设备不需要检测重叠命令。</p>
+<p><strong>SCSI 命令模型</strong> [Section 5.5.1.4]_:</p>
+<p>所有命令请求源自 Initiator device 中的 application clients。</p>
+<p>Application Client 使用以下过程调用请求命令处理:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Service</span> <span class="n">Response</span> <span class="o">=</span> <span class="n">Execute</span> <span class="n">Command</span> <span class="p">(</span>
+    <span class="n">IN</span> <span class="p">(</span><span class="n">I_T_L_Q</span> <span class="n">Nexus</span><span class="p">,</span> <span class="n">CDB</span><span class="p">,</span> <span class="n">Task</span> <span class="n">Attribute</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">Data</span><span class="o">-</span><span class="n">In</span> <span class="n">Buffer</span> <span class="n">Size</span><span class="p">],</span> <span class="p">[</span><span class="n">Data</span><span class="o">-</span><span class="n">Out</span> <span class="n">Buffer</span><span class="p">],</span> <span class="p">[</span><span class="n">Data</span><span class="o">-</span><span class="n">Out</span> <span class="n">Buffer</span> <span class="n">Size</span><span class="p">],</span>
+        <span class="p">[</span><span class="n">CRN</span><span class="p">],</span> <span class="p">[</span><span class="n">Command</span> <span class="n">Priority</span><span class="p">]),</span>
+    <span class="n">OUT</span> <span class="p">([</span><span class="n">Data</span><span class="o">-</span><span class="n">In</span> <span class="n">Buffer</span><span class="p">],</span> <span class="p">[</span><span class="n">Sense</span> <span class="n">Data</span><span class="p">],</span> <span class="p">[</span><span class="n">Sense</span> <span class="n">Data</span> <span class="n">Length</span><span class="p">],</span>
+         <span class="n">Status</span><span class="p">,</span> <span class="p">[</span><span class="n">Status</span> <span class="n">Qualifier</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>UTP Command、Response、Ready-to-Transfer、Data-Out、Data-In UPIU 头中的参数字段包含 [SAM] 合规的 Execute Command 过程调用的输入和输出参数所需信息。</p>
+<p><strong>SCSI 任务管理功能</strong> [Section 5.5.1.5]_:</p>
+<p>Application client 使用以下过程调用请求任务管理功能处理:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Service</span> <span class="n">Response</span> <span class="o">=</span> <span class="n">Function</span> <span class="n">name</span> <span class="p">(</span>
+    <span class="n">IN</span> <span class="p">(</span><span class="n">Nexus</span><span class="p">),</span>
+    <span class="n">OUT</span> <span class="p">([</span><span class="n">Additional</span> <span class="n">Response</span> <span class="n">Information</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>UTP Task Management Request 和 UTP Task Management Response 头中的参数字段包含 [SAM] 合规的任务管理功能过程调用的输入和输出参数所需信息。</p>
+</section>
+<section id="section-5-6">
+<h2>应用和命令层 [Section 5.6]_<a class="headerlink" href="#section-5-6" title="链接到此标题。"></a></h2>
+<p>UFS 接口设计为协议无关接口，但 SCSI 被选为此标准的基础协议层。描述符可用于识别和选择 UFS 接口的适当协议。</p>
+<p><strong>命令集层的主要功能</strong>:</p>
+<ul class="simple">
+<li><p>建立 UFS 主机和设备之间的数据交换方法</p></li>
+<li><p>提供基础设备管理能力</p></li>
+</ul>
+<p><strong>UFS SCSI 命令集</strong> [Section 5.6]:</p>
+<ol class="arabic simple">
+<li><p><strong>SBC 兼容命令</strong> [SBC]:
+- FORMAT UNIT
+- READ (6) 和 READ (10)
+- READ CAPACITY (10)
+- REQUEST SENSE
+- SEND DIAGNOSTIC
+- UNMAP
+- WRITE (6) 和 WRITE (10)</p></li>
+<li><p><strong>SPC 兼容命令</strong> [SPC]:
+- INQUIRY
+- REPORT LUNS
+- READ BUFFER
+- TEST UNIT READY
+- WRITE BUFFER
+- SECURITY PROTOCOL IN 和 SECURITY PROTOCOL OUT</p></li>
+<li><p><a href="#id4"><span class="problematic" id="id5">**</span></a>UFS 应用的 SCSI 操作命令**(与现有 SCSI 驱动兼容):
+- MODE SELECT (10) 和 MODE SENSE (10)
+- PRE-FETCH (10)
+- START STOP UNIT
+- SYNCHRONIZE CACHE (10)
+- VERIFY (10)</p></li>
+<li><p><strong>UFS 增值可选命令</strong>:
+- READ (16), WRITE (16), PRE-FETCH (16), SYNCHRONIZE CACHE (16), READ CAPACITY (16)
+- 这些命令支持具有 8 字节 LBA 字段的更大容量逻辑单元</p></li>
+</ol>
+</section>
+<section id="section-5-7">
+<h2>机械特性 [Section 5.7]_<a class="headerlink" href="#section-5-7" title="链接到此标题。"></a></h2>
+<p>UFS 嵌入式设备的封装和要求应遵循以下指南:</p>
+<ul class="simple">
+<li><p>复位和数据传输引脚应位于封装侧面数起的第二行 (PoP) 或第三行 (MCP),以防止访问</p></li>
+</ul>
+</section>
+</section>
+<section id="id6">
+<h1>电气特性：时钟、复位、信号和电源<a class="headerlink" href="#id6" title="链接到此标题。"></a></h1>
+<section id="ufs-section-6-1-table-6-1-figure-6-1">
+<h2>UFS 信号 [Section 6.1, Table 6.1, Figure 6.1]_<a class="headerlink" href="#ufs-section-6-1-table-6-1-figure-6-1" title="链接到此标题。"></a></h2>
+<p><strong>电源信号</strong>:</p>
+<p><strong>控制和数据信号</strong>:</p>
+<p><a href="#id7"><span class="problematic" id="id8">**</span></a>电荷泵电容**(可选):</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>如果没有需要输出电容的内部稳压器，VDDi 引脚应在内部连接如下:VDDi 到 VCC,VDDiQ 到 VCCQ,VDDiQ2 到 VCCQ2</p></li>
+<li><p>建议对所有信号应用 [HBM-MM] 和 [CDM] ESD 防护</p></li>
+</ul>
+</section>
+<section id="section-6-2-table-6-2">
+<h2>复位信号 [Section 6.2, Table 6.2]_<a class="headerlink" href="#section-6-2-table-6-2" title="链接到此标题。"></a></h2>
+<p>为满足 JEDEC 标准 [JESD8-12A] 的要求，RST_n 信号电压应在 Table 6.2 规定的 VCCQ 范围内。</p>
+<p><strong>复位信号电气参数</strong>:</p>
+</section>
+<section id="section-6-3-table-6-3-figure-6-2">
+<h2>电源 [Section 6.3, Table 6.3, Figure 6.2]_<a class="headerlink" href="#section-6-3-table-6-3-figure-6-2" title="链接到此标题。"></a></h2>
+<p><strong>UFS 电源参数</strong>:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>上电时序从电源电压首次达到 300 mV 开始，到达到最小工作值结束</p></li>
+<li><p>根据供应商不同，每个 UFS 设备供应商数据表中可能定义有效的电源配置</p></li>
+</ul>
+</section>
+<section id="section-6-4-table-6-4">
+<h2>参考时钟 [Section 6.4, Table 6.4]_<a class="headerlink" href="#section-6-4-table-6-4" title="链接到此标题。"></a></h2>
+<p>M-PHY 规范定义参考时钟对于 State Machine Type I 为可选 [MIPI-M-PHY]。由于 PWM 信令是自时钟的，不需要参考时钟进行数据锁存。因此，UFS 设备应能在 LS-MODE (LINE-CFG、SLEEP 和 PWM-BURST) 下无参考时钟运行。</p>
+<p>然而，参考时钟的存在可用于实现更低的 BER 和更快的 HS-MODE PLL/DLL锁定。因此，UFS 设备应实现方波单端参考时钟输入，并且在 HS-MODE (STALL 和 HS-BURST) 运行时需要本节所述特性的参考时钟。</p>
+<p>为避免潜在的竞争条件，建议在请求功率模式变更到 Fast_Mode 或 FastAuto_Mode 之前，该参考时钟已经存在。</p>
+<p><strong>参考时钟参数</strong>:</p>
+<p><strong>备注</strong>:</p>
+<ol class="arabic simple">
+<li><p>HS-BURST 速率 A 和 B 通过 fref 的整数倍频实现</p></li>
+<li><p>Figure 6.4 显示输入电平 VIL,MAX 到 VIH,MIN</p></li>
+<li><p>时钟上升和下降时间应从 VIL,MAX 到 VIH,MIN 窗口的 20% 到 80% 测量</p></li>
+<li><p>时钟占空比应在 REF_CLK 信号与中点 VMID 交叉处测量，VMID = (VIL,MAX + VIH,MIN) / 2</p></li>
+<li><p>单边带相位噪声积分从 50 KHz 到 10 MHz，此参数仅指随机抖动</p></li>
+<li><p>白噪声基底，此参数仅指随机抖动</p></li>
+<li><p>RLRX 和 CLRX 包括 Rx 封装和 Rx 输入阻抗</p></li>
+</ol>
+<p><strong>bRefClkFreq 属性</strong>:</p>
+<ul class="simple">
+<li><p>向设备指示 REF_CLK 信号的频率，默认值对应 26 MHz</p></li>
+<li><p>UFS 设备只有在 bRefClkFreq 属性指示正确的 REF_CLK 频率值时才能在 HS-MODE 下运行</p></li>
+<li><p>bRefClkFreq 属性只有在两个子链路都处于 LS-MODE 时才能写入</p></li>
+</ul>
+<p><strong>参考时钟门控</strong>:</p>
+<p>参考时钟在以下情况下不需要且可以关闭:</p>
+<ul class="simple">
+<li><p>两个 SUB-LINK 都已达到并在以下 M-PHY 状态下运行:
+- LS-MODE (LINE-CFG、SLEEP 或 PWM-BURST 状态)
+- HIBERN8 状态</p></li>
+</ul>
+<p>如果 UFS 主机发起从 HS-MODE 到 LS-MODE 或 HIBERN8 的功率模式变更，则应确保至少经过 bRefClkGatingWaitTime 定义的最短持续时间后才能关闭参考时钟 [Figure 6.3]_。</p>
+<p>UFS 主机可在收到 HS-MODE 到 LS-MODE 转换的 DME_POWERMODE.ind 或 HS-MODE 到 HIBERN8 转换的 DME_HIBERNATE_ENTER.ind 时启动定时器。除了 bRefClkGatingWaitTime 外，还应考虑 Device PA_MinRxTrailingClocks 和 Host PA_MinRxTrailingClocks 来确定何时可以停止参考时钟。</p>
+<p>在从 HS-MODE 到 HIBERN8 的转换以达到 UFS-DeepSleep 功率模式的情况下，也应应用此关闭参考时钟的约束。</p>
+<p>UniPro 层定义使用 PA_INIT 机制的重新初始化过程。在此过程中，两个子链路都可能短暂进入 LS-MODE，然后返回 HS-MODE。在整个 PA_INIT 过程中不应门控参考时钟。</p>
+<p>在从 LS-MODE (LINE-CFG 或 SLEEP) 或 HIBERN8 状态转换到 STALL 之前，参考时钟应开启并稳定运行。HS 模式下不应门控参考时钟。</p>
+<p><strong>HS Gear 速率</strong> [Table 6.5]_:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>&quot;Mbps&quot;表示 1000000 bit/sec</p></li>
+<li><p>使用 fref = 38.4 MHz 时，1248 Mbps 可通过预分频器获得：fref × M/P,M = 65 (PLL 倍频器),P = 2 (预分频器)</p></li>
+<li><p>所示 B 系列速率不是常见参考频率 19.2 MHz 或 26 MHz 的整数倍，但在 2000 ppm 容差范围内</p></li>
+</ul>
+</section>
+<section id="section-6-4-2-table-6-6">
+<h2>主机控制器参考时钟生成要求 [Section 6.4.2, Table 6.6]_<a class="headerlink" href="#section-6-4-2-table-6-6" title="链接到此标题。"></a></h2>
+<p><strong>主机控制器参考时钟参数</strong>:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>输出负载电阻和电容分量定义为 20 pF 并联 100 KΩ</p></li>
+<li><p>REF_CLK 驱动器 AC 电压 (如回弹) 应保持在输出电压限制内</p></li>
+<li><p>时钟上升和下降时间应从 VOL,MAX 到 VOH,MIN 窗口的 20% 到 80% 测量</p></li>
+<li><p>包括发射机输出、Tx 封装、互连、Rx 封装和 Rx 输入阻抗</p></li>
+<li><p>测试负载阻抗放置在驱动器输出端，互连最短</p></li>
+</ul>
+</section>
+<section id="section-6-5">
+<h2>外部电荷泵电容 (可选) [Section 6.5]_<a class="headerlink" href="#section-6-5" title="链接到此标题。"></a></h2>
+<p>为生产能适应低电压核心供电 (VCC=1.8 V) 的存储设备，可能需要内部电荷泵电路。</p>
+<p>电荷泵电路需要额外尺寸的无源元件。提供可选的外部电荷泵电容用法。</p>
+<p><strong>电荷泵电容描述</strong>:</p>
+<p><strong>电荷泵相关引脚名称</strong>:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>给定电容应放置在靠近存储设备的位置以最小化电感</p></li>
+<li><p>作为封装设计指南，建议将 CP 相关引脚彼此靠近放置并靠近封装边缘</p></li>
+</ul>
+</section>
+<section id="section-6-6-table-6-9">
+<h2>绝对最大额定值和工作条件 [Section 6.6, Table 6.9]_<a class="headerlink" href="#section-6-6-table-6-9" title="链接到此标题。"></a></h2>
+<p>超过 Table 6.9 列出的应力可能造成设备永久损坏。这是应力额定值，并不意味着设备在这些或任何高于标准操作部分指示的条件下功能操作。暴露在绝对最大额定值条件下长时间可能影响可靠性。</p>
+<p><strong>绝对最大 DC 额定值和工作条件</strong>:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>电压相对于 VSS</p></li>
+<li><p>存储温度是 UFS 设备未供电时的封装外壳表面温度</p></li>
+<li><p>工作温度是 UFS 设备运行时 UFS 设备的封装外壳表面温度</p></li>
+<li><p>仅当设备支持扩展温度 (由 bUFSFeaturesSupport 的 bit[6] 指示为'1') 时才支持扩展温度</p></li>
+<li><p>为设备安全起见 (如保持设备设计的可靠性特性),如果封装外壳温度超过定义的温度范围，设备可能无法保证正常运行</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h1>复位、上电和掉电<a class="headerlink" href="#id9" title="链接到此标题。"></a></h1>
+<section id="section-7-1">
+<h2>复位类型 [Section 7.1]_<a class="headerlink" href="#section-7-1" title="链接到此标题。"></a></h2>
+<p>以下小节定义了复位 UFS 设备或其层的各种方式。</p>
+<p><strong>Power-on Reset</strong> [Section 7.1.1, Figure 7.1]_:</p>
+<p>通过关闭再开启 VCCQ、VCCQ2 和 VCC 电源获得上电复位。</p>
+<p>UFS 设备应有自己的上电检测电路，在上电后将 UFS 设备及其所有层置于定义的状态。</p>
+<p><strong>Hardware Reset</strong> [Section 7.1.2, Figure 7.2, 7.3]_:</p>
+<p>为 UFS 设备定义了专用的硬件复位信号。</p>
+<p><strong>复位时序参数</strong>:</p>
+<p>复位信号低电平有效。UFS 设备不应检测到 100 ns 或更短的正或负 RST_n 脉冲。UFS 设备应检测到大于或等于 1 µs 的正或负 RST_n 脉冲宽度。</p>
+<p><strong>EndPointReset</strong> [Section 7.1.3, Figure 7.4]_:</p>
+<p>EndPointReset 功能在 MIPI UniPro 规范中定义。</p>
+<p>从主机 Application Client 通过 DME_SAP 调用:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DME_ENDPOINTRESET</span><span class="o">.</span><span class="n">req</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>设备管理器通过 DME_SAP 从设备 UniPro 接收 EndPointReset 功能调用并执行 EndPointReset 功能。</p>
+<p>UFS 设备在收到 EndPointReset 时应完全复位自身:
+- UFS Flags (除上电复位 UFS Flags 外)
+- UFS Attributes (除上电复位 UFS Attributes 外)
+- UniPro attributes 复位到默认值
+- 启动 UniPro 链路启动</p>
+<p>由于 attributes 复位到默认值，设备可能需要重新配置。此外，从 UFS 设备下载 boot 代码是可选的，基于系统级条件。</p>
+<p>UFS 主机应忽略从 UFS 设备收到的 EndPointReset。</p>
+<p><strong>Logical Unit Reset</strong> [Section 7.1.4, Figure 7.5]_:</p>
+<p>Logical Unit Reset 功能在 SCSI Architectural Model [SAM] 中定义。此复位通过 10.9.8.4 节描述的 SCSI Task Management 功能触发。</p>
+<p>LU 复位 (LU 0, ..., bMaxNumberLU 指定的最大 LU):</p>
+<p>从主机 Application Client 通过 UTP_TM_SAP 调用:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Task</span> <span class="n">management</span> <span class="n">LOGICAL</span> <span class="n">UNIT</span> <span class="n">RESET</span> <span class="p">(</span><span class="n">IN</span> <span class="p">(</span><span class="n">I_T_L</span> <span class="n">Nexus</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>LU Task manager 应通过 UTP_TM_SAP 从设备 UTP 接收功能调用并执行 LU 复位功能。</p>
+<p><strong>注意</strong>: Logical Unit Reset 不将设备参数设置为默认值，因此不建议使用 Logical Unit Reset 为系统启动准备 UFS 设备。</p>
+<p><strong>Host UniPro Warm Reset</strong> [Section 7.1.5]_:</p>
+<p>主机中的 UniPro Warm Reset 事件是 UFS 设备复位的间接原因。</p>
+<p>主机系统复位自己的 UniPro 栈:主机的 UniPro 栈复位活动通过 DME_LINKLOST.ind 消息信号通知给 UFS 设备的 UniPro 栈。如果 UFS 设备从主机系统收到此 DME_LINKLOST.ind 消息，它应开始重新初始化自己的 UniPro 栈的过程。此外，所有 UFS 设备级活动应中止，所有逻辑单元中的任务队列列表应清除，UFS 功率模式应根据 bInitPowerMode 返回到 UFS-Sleep 功率模式或 Active 功率模式。</p>
+</section>
+<section id="section-7-1-6-table-7-2-7-3">
+<h2>复位总结 [Section 7.1.6, Table 7.2, 7.3]_<a class="headerlink" href="#section-7-1-6-table-7-2-7-3" title="链接到此标题。"></a></h2>
+<p><strong>复位状态总结</strong>:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>设备初始化结束时，功率模式从 Active 转换到 Pre-Sleep，然后在实现特定时间后进入 UFS-Sleep</p></li>
+<li><p>&quot;Boot process&quot;列显示在哪种复位后系统可以执行 13.1 节 UFS Boot 中描述的启动过程。如果复位事件将 UFS 设备恢复到默认状态 (所有参数设置为默认值，队列为空等),则启动过程启用</p></li>
+</ul>
+<p><strong>UniPro Attributes、UFS Attributes 和 UFS Flags 复位总结</strong>:</p>
+<p><strong>注意</strong>:</p>
+<ul class="simple">
+<li><p>参见 Table 14.24 和 Table 14.26 了解 Flags 和 Attributes 写访问属性的定义</p></li>
+<li><p>具有&quot;Write once&quot;或&quot;Persistent&quot;访问属性的 Attributes 和 Flags 的值在电源循环或任何类型的复位事件后保持不变</p></li>
+</ul>
+</section>
+<section id="section-7-2-figure-7-6">
+<h2>上电斜坡 [Section 7.2, Figure 7.6]_<a class="headerlink" href="#section-7-2-figure-7-6" title="链接到此标题。"></a></h2>
+<p>上电期间，应按以下说明施加 VCC 和 VCCQ2:</p>
+<ul class="simple">
+<li><p>Ta 是 VCCQ 或 VCCQ2 电源首次达到 300 mV 的点</p></li>
+<li><p>达到 Ta 后，VCCQ2 应大于 VCCQ - 200 mV</p></li>
+<li><p>VCC 可以独立于 VCCQ 值或 VCCQ2 值斜坡上升</p></li>
+<li><p>上电设备时:
+- RST_n 信号应保持低电平
+- REF_CLK 信号应在 VSS 和 VCCQ 之间</p></li>
+</ul>
+</section>
+<section id="section-7-3-figure-7-7">
+<h2>掉电斜坡 [Section 7.3, Figure 7.7]_<a class="headerlink" href="#section-7-3-figure-7-7" title="链接到此标题。"></a></h2>
+<p>掉电期间应遵循特定的电压斜坡下降顺序以确保设备安全关闭。</p>
+</section>
+<section id="ufs-lu-section-7-4">
+<h2>UFS 设备功率模式和 LU 功率条件 [Section 7.4]_<a class="headerlink" href="#ufs-lu-section-7-4" title="链接到此标题。"></a></h2>
+<p><strong>设备功率模式</strong> [Section 7.4.1, Figure 7.8]_:</p>
+<p>UFS 设备支持多种功率模式以优化功耗:</p>
+<ul class="simple">
+<li><p><strong>Active</strong>: 设备完全运行，可处理所有命令</p></li>
+<li><p><strong>Idle</strong>: 设备空闲但仍准备好快速响应</p></li>
+<li><p><strong>Pre-Sleep</strong>: 设备准备进入低功耗状态</p></li>
+<li><p><strong>Sleep</strong>: 设备处于低功耗状态，需要唤醒时间</p></li>
+<li><p><strong>Power-off</strong>: 设备断电</p></li>
+</ul>
+<p><strong>START STOP UNIT 命令</strong> [Section 7.4.2, Table 7.8, 7.9]_:</p>
+<p>用于控制设备功率模式的 SCSI 命令。</p>
+<p><strong>功率模式控制</strong> [Section 7.4.3, Table 7.10-7.13]_:</p>
+<p>通过属性和描述符控制功率模式的参数和行为。</p>
+<p><strong>逻辑单元功率条件</strong> [Section 7.4.4, Table 7.14]_:</p>
+<p>每个逻辑单元可以有不同的功率条件和响应行为。</p>
+</section>
+</section>
+<section id="ufs-uic-mipi-m-phy">
+<h1>UFS UIC 层：MIPI M-PHY<a class="headerlink" href="#ufs-uic-mipi-m-phy" title="链接到此标题。"></a></h1>
+<section id="section-8-1-figure-8-1">
+<h2>终止 [Section 8.1, Figure 8.1]_<a class="headerlink" href="#section-8-1-figure-8-1" title="链接到此标题。"></a></h2>
+<p>M-PHY 使用特定的端接方案以确保信号完整性。</p>
+</section>
+<section id="section-8-2">
+<h2>驱动电平 [Section 8.2]_<a class="headerlink" href="#section-8-2" title="链接到此标题。"></a></h2>
+<p>M-PHY 定义不同的驱动电平以适配不同的工作模式。</p>
+</section>
+<section id="phy-section-8-3">
+<h2>PHY 状态机 [Section 8.3]_<a class="headerlink" href="#phy-section-8-3" title="链接到此标题。"></a></h2>
+<p>M-PHY 状态机管理 PHY 的各种操作状态和转换。</p>
+</section>
+<section id="hs-burst-section-8-4">
+<h2>HS Burst [Section 8.4]_<a class="headerlink" href="#hs-burst-section-8-4" title="链接到此标题。"></a></h2>
+<p><strong>HS Prepare Length Control</strong> [Section 8.4.1]:</p>
+<p>控制高速突发的准备长度。</p>
+<p><strong>HS Sync Length Control</strong> [Section 8.4.2]:</p>
+<p>控制高速突发的同步长度。</p>
+</section>
+<section id="pwm-burst-section-8-5">
+<h2>PWM Burst [Section 8.5]_<a class="headerlink" href="#pwm-burst-section-8-5" title="链接到此标题。"></a></h2>
+<p><strong>LS Prepare Length Control</strong> [Section 8.5.1]:</p>
+<p>控制低速准备长度。</p>
+</section>
+<section id="adapt-section-8-6">
+<h2>Adapt [Section 8.6]_<a class="headerlink" href="#adapt-section-8-6" title="链接到此标题。"></a></h2>
+<p>M-PHY 4.1 引入 Adapt 功能，用于 M-RX 均衡器训练以适应信道特性。</p>
+</section>
+<section id="ufs-phy-attributes-section-8-7-table-8-1-8-2">
+<h2>UFS PHY Attributes [Section 8.7, Table 8.1, 8.2]_<a class="headerlink" href="#ufs-phy-attributes-section-8-7-table-8-1-8-2" title="链接到此标题。"></a></h2>
+<p><strong>UFS PHY M-TX Capability Attributes</strong>:</p>
+<p>定义 M-PHY 发射机的能力参数。</p>
+<p><strong>UFS PHY M-RX Capability Attributes</strong>:</p>
+<p>定义 M-PHY 接收机的能力参数。</p>
+</section>
+<section id="section-8-8">
+<h2>电气特性 [Section 8.8]_<a class="headerlink" href="#section-8-8" title="链接到此标题。"></a></h2>
+<p><strong>发射机特性</strong> [Section 8.8.1]:</p>
+<p>定义 M-PHY 发射机的电气参数和要求。</p>
+<p><strong>接收机特性</strong> [Section 8.8.2]:</p>
+<p>定义 M-PHY 接收机的电气参数和要求。</p>
+</section>
+</section>
+<section id="ufs-uic-mipi-unipro">
+<h1>UFS UIC 层：MIPI UniPro<a class="headerlink" href="#ufs-uic-mipi-unipro" title="链接到此标题。"></a></h1>
+<section id="section-9-1-figure-9-1">
+<h2>概述 [Section 9.1, Figure 9.1]_<a class="headerlink" href="#section-9-1-figure-9-1" title="链接到此标题。"></a></h2>
+<p>UniPro 提供基本的传输能力给上层 (UTP)。</p>
+</section>
+<section id="section-9-2">
+<h2>架构模型 [Section 9.2]_<a class="headerlink" href="#section-9-2" title="链接到此标题。"></a></h2>
+<p>UniPro 采用分层架构:
+- PHY Adapter Layer (L1.5)
+- Data Link Layer (L2)
+- Network Layer (L3)
+- Transport Layer (L4)
+- Device Management Entity (DME)</p>
+</section>
+<section id="unipro-ufs-section-9-3">
+<h2>UniPro/UFS 传输协议接口 (数据平面) [Section 9.3]_<a class="headerlink" href="#unipro-ufs-section-9-3" title="链接到此标题。"></a></h2>
+<p>定义 UniPro 和 UTP 之间的数据平面接口。</p>
+</section>
+<section id="unipro-ufs-section-9-4">
+<h2>UniPro/UFS 控制接口 (控制平面) [Section 9.4]_<a class="headerlink" href="#unipro-ufs-section-9-4" title="链接到此标题。"></a></h2>
+<p>定义 UniPro 和 UTP 之间的控制平面接口。</p>
+</section>
+<section id="unipro-ufs-section-9-5-table-9-1">
+<h2>UniPro/UFS 传输协议地址映射 [Section 9.5, Table 9.1]_<a class="headerlink" href="#unipro-ufs-section-9-5-table-9-1" title="链接到此标题。"></a></h2>
+<p>定义 UFS Initiator 和 Target Port 标识符。</p>
+</section>
+<section id="unipro-section-9-6">
+<h2>UniPro 选项和可调参数 [Section 9.6]_<a class="headerlink" href="#unipro-section-9-6" title="链接到此标题。"></a></h2>
+<p><strong>UniPro PHY Adapter</strong> [Section 9.6.1]:</p>
+<p>PHY Adapter 层的选项和参数。</p>
+<p><strong>UniPro Data Link Layer</strong> [Section 9.6.2, Figure 9.2]:</p>
+<p>数据链路层的选项和参数。</p>
+<p><strong>UniPro Network Layer</strong> [Section 9.6.3]:</p>
+<p>网络层的选项和参数。</p>
+<p><strong>UniPro Transport Layer</strong> [Section 9.6.4]:</p>
+<p>传输层的选项和参数。</p>
+<p><strong>UniPro Device Management Entity Transport Layer</strong> [Section 9.6.5]:</p>
+<p>设备管理实体传输层的选项和参数。</p>
+<p><strong>UniPro Attributes</strong> [Section 9.6.6, Table 9.2]:</p>
+<p>UniPro 属性定义。</p>
+</section>
+</section>
+<section id="ufs-utp">
+<h1>UFS 传输协议 (UTP) 层<a class="headerlink" href="#ufs-utp" title="链接到此标题。"></a></h1>
+<section id="section-10-1">
+<h2>概述 [Section 10.1]_<a class="headerlink" href="#section-10-1" title="链接到此标题。"></a></h2>
+<p>UTP 层为上层提供服务，UPIU 在 UFS 主机和设备的 UTP 层之间交换。</p>
+</section>
+<section id="utp-unipro-section-10-2">
+<h2>UTP 和 UniPro 特定概述 [Section 10.2]_<a class="headerlink" href="#utp-unipro-section-10-2" title="链接到此标题。"></a></h2>
+<p><strong>Phases</strong> [Section 10.2.1]:</p>
+<p>定义 UTP 事务的不同阶段。</p>
+<p><strong>Data Pacing</strong> [Section 10.2.2]:</p>
+<p>数据节奏控制机制。</p>
+<p><strong>UniPro</strong> [Section 10.2.3]:</p>
+<p>与 UniPro 的交互。</p>
+</section>
+<section id="utp-section-10-3">
+<h2>UTP 事务概述 [Section 10.3]_<a class="headerlink" href="#utp-section-10-3" title="链接到此标题。"></a></h2>
+<p>UTP 定义多种事务类型用于不同的通信需求。</p>
+</section>
+<section id="section-10-4">
+<h2>服务交付子系统 [Section 10.4]_<a class="headerlink" href="#section-10-4" title="链接到此标题。"></a></h2>
+<p>提供服务交付的机制和协议。</p>
+</section>
+<section id="upiu-section-10-5-table-10-1-10-2">
+<h2>UPIU 事务 [Section 10.5, Table 10.1, 10.2]_<a class="headerlink" href="#upiu-section-10-5-table-10-1-10-2" title="链接到此标题。"></a></h2>
+<p><strong>UPIU 事务代码</strong>:</p>
+</section>
+<section id="upiu-section-10-6-table-10-3-10-10">
+<h2>UPIU 格式 [Section 10.6, Table 10.3-10.10]_<a class="headerlink" href="#upiu-section-10-6-table-10-3-10-10" title="链接到此标题。"></a></h2>
+<p><strong>基本头格式</strong>:</p>
+<p>所有 UPIU 共享相同的基本头格式，包含:
+- Transaction Type
+- Flags
+- Task Tag
+- LUN
+- Command Set Type
+- Total Extra Header Segment (EHS) Length
+- Data Segment Length</p>
+</section>
+<section id="command-upiu-section-10-7-1-table-10-11-10-12">
+<h2>COMMAND UPIU [Section 10.7.1, Table 10.11, 10.12]_<a class="headerlink" href="#command-upiu-section-10-7-1-table-10-11-10-12" title="链接到此标题。"></a></h2>
+<p>用于从主机向设备发送 SCSI 命令。</p>
+</section>
+<section id="response-upiu-section-10-7-2-table-10-13-10-18">
+<h2>RESPONSE UPIU [Section 10.7.2, Table 10.13-10.18]_<a class="headerlink" href="#response-upiu-section-10-7-2-table-10-13-10-18" title="链接到此标题。"></a></h2>
+<p>用于设备向主机发送命令执行结果和状态。</p>
+<p><strong>SCSI 状态值</strong>:</p>
+<p>定义各种 SCSI 命令完成状态。</p>
+<p><strong>Sense Data</strong>:</p>
+<p>固定格式 sense data 用于错误报告。</p>
+</section>
+<section id="data-out-upiu-section-10-7-3-table-10-19">
+<h2>DATA OUT UPIU [Section 10.7.3, Table 10.19]_<a class="headerlink" href="#data-out-upiu-section-10-7-3-table-10-19" title="链接到此标题。"></a></h2>
+<p>用于从主机向设备传输写数据。</p>
+</section>
+<section id="data-in-upiu-section-10-7-4-table-10-20">
+<h2>DATA IN UPIU [Section 10.7.4, Table 10.20]_<a class="headerlink" href="#data-in-upiu-section-10-7-4-table-10-20" title="链接到此标题。"></a></h2>
+<p>用于从设备向主机传输读数据。</p>
+</section>
+<section id="ready-to-transfer-upiu-section-10-7-5-table-10-21">
+<h2>READY TO TRANSFER UPIU [Section 10.7.5, Table 10-21]_<a class="headerlink" href="#ready-to-transfer-upiu-section-10-7-5-table-10-21" title="链接到此标题。"></a></h2>
+<p>用于设备通知主机可以开始数据传输。</p>
+</section>
+<section id="task-management-request-upiu-section-10-7-6-table-10-22-10-24">
+<h2>TASK MANAGEMENT REQUEST UPIU [Section 10.7.6, Table 10.22-10.24]_<a class="headerlink" href="#task-management-request-upiu-section-10-7-6-table-10-22-10-24" title="链接到此标题。"></a></h2>
+<p>用于请求任务管理功能。</p>
+<p><strong>任务管理功能值</strong>:</p>
+<p>定义各种任务管理操作如 ABORT TASK、LOGICAL UNIT RESET 等。</p>
+</section>
+<section id="task-management-response-upiu-section-10-7-7-table-10-25-10-27">
+<h2>TASK MANAGEMENT RESPONSE UPIU [Section 10.7.7, Table 10.25-10.27]_<a class="headerlink" href="#task-management-response-upiu-section-10-7-7-table-10-25-10-27" title="链接到此标题。"></a></h2>
+<p>用于响应任务管理请求。</p>
+</section>
+<section id="query-request-upiu-section-10-7-8-table-10-28-10-40">
+<h2>QUERY REQUEST UPIU [Section 10.7.8, Table 10.28-10.40]_<a class="headerlink" href="#query-request-upiu-section-10-7-8-table-10-28-10-40" title="链接到此标题。"></a></h2>
+<p>用于查询或修改设备 descriptors、attributes 和 flags。</p>
+<p><strong>查询功能字段值</strong>:</p>
+<ul class="simple">
+<li><p>Read Descriptor</p></li>
+<li><p>Write Descriptor</p></li>
+<li><p>Read Attribute</p></li>
+<li><p>Write Attribute</p></li>
+<li><p>Read Flag</p></li>
+<li><p>Set Flag</p></li>
+<li><p>Clear Flag</p></li>
+<li><p>Toggle Flag</p></li>
+<li><p>NOP</p></li>
+</ul>
+</section>
+<section id="query-response-upiu-section-10-7-9-table-10-41-10-52">
+<h2>QUERY RESPONSE UPIU [Section 10.7.9, Table 10.41-10.52]_<a class="headerlink" href="#query-response-upiu-section-10-7-9-table-10-41-10-52" title="链接到此标题。"></a></h2>
+<p>用于响应查询请求。</p>
+<p><strong>查询响应码</strong>:</p>
+<p>定义各种查询操作的结果状态。</p>
+</section>
+<section id="reject-upiu-section-10-7-10-table-10-53-10-55">
+<h2>REJECT UPIU [Section 10.7.10, Table 10.53-10.55]_<a class="headerlink" href="#reject-upiu-section-10-7-10-table-10-53-10-55" title="链接到此标题。"></a></h2>
+<p>用于拒绝无效的 UPIU。</p>
+<p><strong>基本头状态描述</strong>:</p>
+<p>定义拒绝的原因。</p>
+</section>
+<section id="nop-out-upiu-section-10-7-11-table-10-56">
+<h2>NOP OUT UPIU [Section 10.7.11, Table 10.56]_<a class="headerlink" href="#nop-out-upiu-section-10-7-11-table-10-56" title="链接到此标题。"></a></h2>
+<p>用于连接保活和链路测试。</p>
+</section>
+<section id="nop-in-upiu-section-10-7-12-table-10-57">
+<h2>NOP IN UPIU [Section 10.7.12, Table 10.57]_<a class="headerlink" href="#nop-in-upiu-section-10-7-12-table-10-57" title="链接到此标题。"></a></h2>
+<p>用于响应 NOP OUT。</p>
+</section>
+<section id="section-10-7-13-figure-10-4-10-7-table-10-58">
+<h2>数据传输规则 [Section 10.7.13, Figure 10.4-10.7, Table 10.58]_<a class="headerlink" href="#section-10-7-13-figure-10-4-10-7-table-10-58" title="链接到此标题。"></a></h2>
+<p>定义 DATA OUT 传输的规则和约束。</p>
+</section>
+<section id="section-10-8">
+<h2>逻辑单元 [Section 10.8]_<a class="headerlink" href="#section-10-8" title="链接到此标题。"></a></h2>
+<p><strong>UFS SCSI 域</strong> [Section 10.8.1, Figure 10.8]:</p>
+<p>UFS 实现 SCSI 域模型。</p>
+<p><strong>UFS 逻辑单元定义</strong> [Section 10.8.2]:</p>
+<p>逻辑单元是 UFS 设备内的功能实体。</p>
+<p><strong>Well Known 逻辑单元定义</strong> [Section 10.8.3]:</p>
+<p>定义特殊的 well known 逻辑单元用于设备管理功能。</p>
+<p><strong>逻辑单元寻址</strong> [Section 10.8.4, Figure 10.9]:</p>
+<p>定义如何寻址逻辑单元。</p>
+<p><strong>UFS 中定义的 Well Known 逻辑单元</strong> [Section 10.8.5, Table 10.59]:</p>
+<ul class="simple">
+<li><p>Report LUNs</p></li>
+<li><p>UFS Device</p></li>
+<li><p>RPMB</p></li>
+<li><p>Boot LU 等</p></li>
+</ul>
+<p><strong>8-bit UFS LUN 到 64-bit SCSI LUN 地址转换</strong> [Section 10.8.6, Table 10.60-10.62]:</p>
+<p>定义 LUN 地址格式的转换。</p>
+<p><strong>SCSI Write 命令</strong> [Section 10.8.7, Figure 10.10]:</p>
+<p>写命令的流程和协议。</p>
+<p><strong>SCSI Read 命令</strong> [Section 10.8.8, Figure 10.11]:</p>
+<p>读命令的流程和协议。</p>
+<p><strong>Unit Attention Condition</strong> [Section 10.8.9, Table 10.61, 10.62]:</p>
+<p>定义 unit attention 条件的建立和例外行为。</p>
+</section>
+<section id="section-10-9">
+<h2>应用层和设备管理器传输协议服务 [Section 10.9]_<a class="headerlink" href="#section-10-9" title="链接到此标题。"></a></h2>
+<p><strong>UFS Initiator Port 和 Target Port Attributes</strong> [Section 10.9.1, Table 10.63]:</p>
+<p>定义端口属性。</p>
+<p><strong>Execute Command 过程调用传输协议服务</strong> [Section 10.9.2]:</p>
+<p>定义命令执行的服务接口。</p>
+<p><strong>SCSI Command 传输协议服务</strong> [Section 10.9.3, Table 10.64]:</p>
+<p>发送 SCSI 命令的服务。</p>
+<p><strong>SCSI Command Received 传输协议</strong> [Section 10.9.4, Table 10.65]:</p>
+<p>接收 SCSI 命令的服务。</p>
+<p><strong>Send Command Complete 传输协议服务</strong> [Section 10.9.5, Table 10.66]:</p>
+<p>发送命令完成的服务。</p>
+<p><strong>Command Complete Received 传输协议服务</strong> [Section 10.9.6, Table 10.67]:</p>
+<p>接收命令完成的服务。</p>
+<p><strong>数据传输 SCSI 传输协议服务</strong> [Section 10.9.7, Table 10.68-10.71, Figure 10.13-10.16]:</p>
+<ul class="simple">
+<li><p>Send Data-In</p></li>
+<li><p>Data-In Delivered</p></li>
+<li><p>Receive Data-Out</p></li>
+<li><p>Data-Out Received</p></li>
+</ul>
+<p><strong>任务管理函数过程调用</strong> [Section 10.9.8, Table 10.72-10.77, Figure 10.17]:</p>
+<p>定义任务管理功能的服务接口。</p>
+<p><strong>查询函数传输协议服务</strong> [Section 10.9.9, Table 10.78-10.81, Figure 10.18]:</p>
+<p>定义查询功能的服务接口。</p>
+</section>
+</section>
+<section id="ufs-scsi">
+<h1>UFS 应用层 - SCSI 命令<a class="headerlink" href="#ufs-scsi" title="链接到此标题。"></a></h1>
+<section id="ufs-section-11-1-figure-11-1">
+<h2>UFS 命令层介绍 [Section 11.1, Figure 11.1]_<a class="headerlink" href="#ufs-section-11-1-figure-11-1" title="链接到此标题。"></a></h2>
+<p><strong>命令描述块 (CDB)</strong> [Section 11.1.1]:</p>
+<p>CDB 的结构和格式。</p>
+</section>
+<section id="ufs-unc-section-11-2">
+<h2>UFS 原生命令 (UNC) [Section 11.2]_<a class="headerlink" href="#ufs-unc-section-11-2" title="链接到此标题。"></a></h2>
+<p>UFS 定义的原生命令集。</p>
+</section>
+<section id="ufs-scsi-section-11-3">
+<h2>UFS SCSI 命令 [Section 11.3]_<a class="headerlink" href="#ufs-scsi-section-11-3" title="链接到此标题。"></a></h2>
+<p><strong>关于 UFS 中 SCSI 命令的一般信息</strong> [Section 11.3.1]:</p>
+<p>SCSI 命令在 UFS 中的应用。</p>
+<p><strong>INQUIRY 命令</strong> [Section 11.3.2, Table 11.2-11.4]:</p>
+<p>用于获取设备基本信息。</p>
+<p><a href="#id10"><span class="problematic" id="id11">**</span></a>MODE SELECT <a href="#id12"><span class="problematic" id="id13">**</span></a>(10) [Section 11.3.3, Table 11.5, 11.6]:</p>
+<p>用于设置设备模式参数。</p>
+<p><a href="#id14"><span class="problematic" id="id15">**</span></a>MODE SENSE <a href="#id16"><span class="problematic" id="id17">**</span></a>(10) [Section 11.3.4, Table 11.7-11.9]:</p>
+<p>用于获取设备模式参数。</p>
+<p><a href="#id18"><span class="problematic" id="id19">**</span></a>READ <a href="#id20"><span class="problematic" id="id21">**</span></a>(6) [Section 11.3.5, Table 11.10]:</p>
+<p>6 字节读命令。</p>
+<p><a href="#id22"><span class="problematic" id="id23">**</span></a>READ <a href="#id24"><span class="problematic" id="id25">**</span></a>(10) [Section 11.3.6, Table 11.11]:</p>
+<p>10 字节读命令。</p>
+<p><a href="#id26"><span class="problematic" id="id27">**</span></a>READ <a href="#id28"><span class="problematic" id="id29">**</span></a>(16) [Section 11.3.7, Table 11.12]:</p>
+<p>16 字节读命令，支持大容量。</p>
+<p><a href="#id30"><span class="problematic" id="id31">**</span></a>READ CAPACITY <a href="#id32"><span class="problematic" id="id33">**</span></a>(10) [Section 11.3.8, Table 11.13, 11.14]:</p>
+<p>获取设备容量信息 (10 字节)。</p>
+<p><a href="#id34"><span class="problematic" id="id35">**</span></a>READ CAPACITY <a href="#id36"><span class="problematic" id="id37">**</span></a>(16) [Section 11.3.9, Table 11.15, 11.16]:</p>
+<p>获取设备容量信息 (16 字节),支持大容量。</p>
+<p><strong>START STOP UNIT 命令</strong> [Section 11.3.10, Table 11.17]:</p>
+<p>控制设备启动/停止。</p>
+<p><strong>TEST UNIT READY 命令</strong> [Section 11.3.11, Table 11.18]:</p>
+<p>测试设备是否就绪。</p>
+<p><strong>REPORT LUNS 命令</strong> [Section 11.3.12, Table 11.19-11.26]:</p>
+<p>报告逻辑单元号。</p>
+<p><a href="#id38"><span class="problematic" id="id39">**</span></a>VERIFY <a href="#id40"><span class="problematic" id="id41">**</span></a>(10) [Section 11.3.13, Table 11.27, 11.28]:</p>
+<p>验证数据而不传输。</p>
+<p><a href="#id42"><span class="problematic" id="id43">**</span></a>WRITE <a href="#id44"><span class="problematic" id="id45">**</span></a>(6) [Section 11-29, Table 11-29]:</p>
+<p>6 字节写命令。</p>
+<p><a href="#id46"><span class="problematic" id="id47">**</span></a>WRITE <a href="#id48"><span class="problematic" id="id49">**</span></a>(10) [Section 11.3.15, Table 11-30]:</p>
+<p>10 字节写命令。</p>
+<p><a href="#id50"><span class="problematic" id="id51">**</span></a>WRITE <a href="#id52"><span class="problematic" id="id53">**</span></a>(16) [Section 11.3.16, Table 11.31]:</p>
+<p>16 字节写命令，支持大容量。</p>
+<p><strong>REQUEST SENSE 命令</strong> [Section 11.3.17, Table 11.32]:</p>
+<p>请求 sense 数据。</p>
+<p><strong>FORMAT UNIT 命令</strong> [Section 11.3.18, Table 11.33, 11.34]:</p>
+<p>格式化逻辑单元。</p>
+<p><a href="#id54"><span class="problematic" id="id55">**</span></a>PRE-FETCH <a href="#id56"><span class="problematic" id="id57">**</span></a>(10) [Section 11.3.19, Table 11.35, 11.36]:</p>
+<p>预取数据到缓存。</p>
+<p><a href="#id58"><span class="problematic" id="id59">**</span></a>PRE-FETCH <a href="#id60"><span class="problematic" id="id61">**</span></a>(16) [Section 11.3.20, Table 11.37]:</p>
+<p>16 字节预取命令。</p>
+<p><strong>SECURITY PROTOCOL IN 命令</strong> [Section 11.3.21, Table 11.38]:</p>
+<p>安全协议输入。</p>
+<p><strong>SECURITY PROTOCOL OUT 命令</strong> [Section 11.3.22, Table 11.39]:</p>
+<p>安全协议输出。</p>
+<p><strong>SEND DIAGNOSTIC 命令</strong> [Section 11.3.23, Table 11.40, 11.41]:</p>
+<p>发送诊断命令。</p>
+<p><a href="#id62"><span class="problematic" id="id63">**</span></a>SYNCHRONIZE CACHE <a href="#id64"><span class="problematic" id="id65">**</span></a>(10) [Section 11.3.24, Table 11.42, 11.43]:</p>
+<p>同步缓存到介质。</p>
+<p><a href="#id66"><span class="problematic" id="id67">**</span></a>SYNCHRONIZE CACHE <a href="#id68"><span class="problematic" id="id69">**</span></a>(16) [Section 11.3.25, Table 11.44]:</p>
+<p>16 字节同步缓存命令。</p>
+<p><strong>UNMAP 命令</strong> [Section 11.3.26, Table 11.45-11.47]:</p>
+<p>解除逻辑块映射。</p>
+<p><strong>READ BUFFER 命令</strong> [Section 11.3.27, Table 11.48-11.53]:</p>
+<p>读取缓冲区数据。</p>
+<p><strong>WRITE BUFFER 命令</strong> [Section 11.3.28, Table 11.54-11.56]:</p>
+<p>写入缓冲区数据。</p>
+</section>
+<section id="section-11-4">
+<h2>模式页 [Section 11.4]_<a class="headerlink" href="#section-11-4" title="链接到此标题。"></a></h2>
+<p><strong>模式页概述</strong> [Section 11.4.1, Table 11.57-11.64]:</p>
+<p>模式页的格式和使用。</p>
+<p><strong>UFS 支持的页</strong> [Section 11.4.2, Table 11.65-11.71]:</p>
+<ul class="simple">
+<li><p>Control Mode Page</p></li>
+<li><p>Read-Write Error Recovery Mode Page</p></li>
+<li><p>Caching Mode Page</p></li>
+</ul>
+</section>
+<section id="vpd-section-11-5">
+<h2>重要产品数据 (VPD) 参数 [Section 11.5]_<a class="headerlink" href="#vpd-section-11-5" title="链接到此标题。"></a></h2>
+<p><strong>概述</strong> [Section 11.5.1]:</p>
+<p>VPD 页面的作用。</p>
+<p><strong>VPD 页面格式</strong> [Section 11.5.2, Table 11.72]:</p>
+<p>VPD 页面的通用格式。</p>
+<p><strong>支持的 VPD 页面 VPD 页面</strong> [Section 11.5.3, Table 11.73]:</p>
+<p>列出所有支持的 VPD 页面。</p>
+<p><strong>模式页策略 VPD 页面</strong> [Section 11.5.4, Table 11.74-11.76]:</p>
+<p>定义模式页的策略。</p>
+</section>
+</section>
+<section id="ufs">
+<h1>UFS 安全<a class="headerlink" href="#ufs" title="链接到此标题。"></a></h1>
+<section id="ufs-section-12-1">
+<h2>UFS 安全特性支持要求 [Section 12.1]_<a class="headerlink" href="#ufs-section-12-1" title="链接到此标题。"></a></h2>
+<p>定义 UFS 设备必须支持的安全特性。</p>
+</section>
+<section id="section-12-2">
+<h2>安全模式 [Section 12.2]_<a class="headerlink" href="#section-12-2" title="链接到此标题。"></a></h2>
+<p><strong>描述</strong> [Section 12.2.1]:</p>
+<p>安全模式的定义和目的。</p>
+<p><strong>要求</strong> [Section 12.2.2]:</p>
+<p>安全模式的要求。</p>
+<p><strong>实现</strong> [Section 12.2.3, Figure 12.1]:</p>
+<p>安全模式的实现方式，包括 purge 操作状态机。</p>
+</section>
+<section id="section-12-3">
+<h2>设备数据保护 [Section 12.3]_<a class="headerlink" href="#section-12-3" title="链接到此标题。"></a></h2>
+<p><strong>描述和要求</strong> [Section 12.3.1]:</p>
+<p>设备数据保护的要求。</p>
+<p><strong>实现</strong> [Section 12.3.2]:</p>
+<p>设备数据保护的实现。</p>
+</section>
+<section id="rpmb-replay-protected-memory-block-section-12-4">
+<h2>RPMB (Replay Protected Memory Block) [Section 12.4]_<a class="headerlink" href="#rpmb-replay-protected-memory-block-section-12-4" title="链接到此标题。"></a></h2>
+<p><strong>介绍</strong> [Section 12.4.1]:</p>
+<p>RPMB 的概念和用途。</p>
+<p><strong>RPMB Well Known 逻辑单元描述</strong> [Section 12.4.2]:</p>
+<p>RPMB 逻辑单元的定义。</p>
+<p><strong>要求</strong> [Section 12.4.3]:</p>
+<p>RPMB 的功能要求。</p>
+<p><strong>实现</strong> [Section 12.4.4]:</p>
+<p>RPMB 的实现细节。</p>
+<p><strong>SECURITY PROTOCOL IN/OUT 命令</strong> [Section 12.4.5, Table 12.1-12.16]:</p>
+<p>用于 RPMB 操作的安全协议命令。</p>
+<p><strong>RPMB 操作</strong> [Section 12.4.6, Figure 12.2-12.8]:</p>
+<ul class="simple">
+<li><p>认证密钥编程流程</p></li>
+<li><p>读取计数器值流程</p></li>
+<li><p>认证数据读取流程</p></li>
+<li><p>认证安全写保护配置块写流程</p></li>
+<li><p>认证安全写保护配置块读流程</p></li>
+</ul>
+</section>
+<section id="section-12-5">
+<h2>恶意软件保护 [Section 12.5]_<a class="headerlink" href="#section-12-5" title="链接到此标题。"></a></h2>
+<p>防止恶意软件攻击的保护机制。</p>
+</section>
+</section>
+<section id="id70">
+<h1>UFS 功能描述<a class="headerlink" href="#id70" title="链接到此标题。"></a></h1>
+<section id="ufs-section-13-1">
+<h2>UFS 启动 [Section 13.1]_<a class="headerlink" href="#ufs-section-13-1" title="链接到此标题。"></a></h2>
+<p><strong>介绍</strong> [Section 13.1.1, Figure 13.1]:</p>
+<p>UFS 启动功能的概述。</p>
+<p><strong>启动配置</strong> [Section 13.1.2, Table 13.1]:</p>
+<p>启动相关的配置参数。</p>
+<p><strong>初始化和 boot 代码下载流程</strong> [Section 13.1.3]:</p>
+<p>设备初始化和 boot 代码下载的步骤。</p>
+<p><strong>无 boot 代码下载的初始化流程</strong> [Section 13.1.4, Table 13.2]:</p>
+<p>不下载 boot 代码的初始化。</p>
+<p><strong>Boot 逻辑单元操作</strong> [Section 13.1.5]:</p>
+<p>Boot LU 的操作。</p>
+<p><strong>可配置性</strong> [Section 13.1.6]:</p>
+<p>启动功能的可配置选项。</p>
+<p><strong>安全</strong> [Section 13.1.7]:</p>
+<p>启动相关的安全考虑。</p>
+</section>
+<section id="section-13-2">
+<h2>逻辑单元管理 [Section 13.2]_<a class="headerlink" href="#section-13-2" title="链接到此标题。"></a></h2>
+<p><strong>介绍</strong> [Section 13.2.1]:</p>
+<p>逻辑单元管理的概述。</p>
+<p><strong>逻辑单元特性</strong> [Section 13.2.2, Figure 13.4]:</p>
+<p>逻辑单元支持的特性。</p>
+<p><strong>逻辑单元配置</strong> [Section 13.2.3, Table 13.3]:</p>
+<p>逻辑单元的配置参数。</p>
+</section>
+<section id="section-13-3">
+<h2>逻辑块供应 [Section 13.3]_<a class="headerlink" href="#section-13-3" title="链接到此标题。"></a></h2>
+<p><strong>概述</strong> [Section 13.3.1]:</p>
+<p>逻辑块供应的概念。</p>
+<p><strong>全供应</strong> [Section 13.3.2]:</p>
+<p>传统的存储分配模式。</p>
+<p><strong>精简供应</strong> [Section 13.3.3]:</p>
+<p>按需分配存储的模式。</p>
+</section>
+<section id="section-13-4">
+<h2>主机设备交互 [Section 13.4]_<a class="headerlink" href="#section-13-4" title="链接到此标题。"></a></h2>
+<p><strong>概述</strong> [Section 13.4.1]:</p>
+<p>主机和设备之间的交互机制。</p>
+<p><strong>适用设备</strong> [Section 13.4.2]:</p>
+<p>支持这些功能的设备类型。</p>
+<p><strong>命令队列：LU 间优先级</strong> [Section 13.4.3]:</p>
+<p>跨逻辑单元的命令优先级处理。</p>
+<p><strong>后台操作模式</strong> [Section 13.4.4]:</p>
+<p>设备在后台执行的操作。</p>
+<p><strong>掉电通知</strong> [Section 13.4.5]:</p>
+<p>主机通知设备即将掉电。</p>
+<p><strong>动态设备容量</strong> [Section 13.4.6, Figure 13.5]:</p>
+<p>设备容量的动态管理。</p>
+<p><strong>数据可靠性</strong> [Section 13.4.7, Table 13.4, Figure 13.6]:</p>
+<p>确保数据可靠写入的机制。</p>
+<p><strong>实时时钟信息</strong> [Section 13.4.8]:</p>
+<p>RTC 相关信息。</p>
+<p><strong>上下文管理</strong> [Section 13.4.9]:</p>
+<p>管理命令执行的上下文。</p>
+<p><strong>系统数据标签机制</strong> [Section 13.4.10]:</p>
+<p>为数据添加系统标签。</p>
+<p><strong>异常事件机制</strong> [Section 13.4.11]:</p>
+<p>报告异常事件的机制。</p>
+<p><strong>队列深度定义</strong> [Section 13.4.12]:</p>
+<p>定义队列深度参数。</p>
+<p><strong>设备寿命模式</strong> [Section 13.4.13]:</p>
+<p>基于设备寿命的操作模式。</p>
+<p><strong>刷新操作</strong> [Section 13.4.14]:</p>
+<p>定期刷新数据。</p>
+<p><strong>温度事件通知</strong> [Section 13.4.15]:</p>
+<p>温度相关的事件通知。</p>
+<p><strong>性能节流事件通知</strong> [Section 13.4.16]:</p>
+<p>性能节流的通知。</p>
+<p><strong>WriteBooster</strong> [Section 13.4.17, Figure 13.7-13.9]:</p>
+<p>提升写性能的功能:
+- LU 专用缓冲模式
+- 共享缓冲模式</p>
+</section>
+<section id="ufs-section-13-5">
+<h2>UFS 缓存 [Section 13.5]_<a class="headerlink" href="#ufs-section-13-5" title="链接到此标题。"></a></h2>
+<p>UFS 缓存功能和策略。</p>
+</section>
+<section id="psa-section-13-6">
+<h2>生产状态感知 (PSA) [Section 13.6]_<a class="headerlink" href="#psa-section-13-6" title="链接到此标题。"></a></h2>
+<p><strong>介绍</strong> [Section 13.6.1]:</p>
+<p>PSA 的概念和目的。</p>
+<p><strong>PSA 流程</strong> [Section 13.6.2, Figure 13.10, 13.11]:</p>
+<p>PSA 的状态机和操作流程。</p>
+</section>
+</section>
+<section id="id71">
+<h1>UFS 描述符、标志和属性<a class="headerlink" href="#id71" title="链接到此标题。"></a></h1>
+<section id="ufs-section-14-1">
+<h2>UFS 描述符 [Section 14.1]_<a class="headerlink" href="#ufs-section-14-1" title="链接到此标题。"></a></h2>
+<p><strong>描述符类型</strong> [Section 14.1.1, Table 14.1]:</p>
+<p>定义各种描述符类型。</p>
+<p><strong>描述符索引</strong> [Section 14.1.2]:</p>
+<p>描述符的索引机制。</p>
+<p><strong>访问描述符和设备配置</strong> [Section 14.1.3]:</p>
+<p>如何访问和配置描述符。</p>
+<p><strong>描述符定义</strong> [Section 14.1.4, Table 14.2-14.23, Figure 14.1-14.3]:</p>
+<ul class="simple">
+<li><p>Device Descriptor</p></li>
+<li><p>Configuration Descriptor</p></li>
+<li><p>Unit Descriptor</p></li>
+<li><p>Geometry Descriptor</p></li>
+<li><p>Power Parameters Descriptor</p></li>
+<li><p>Interconnect Descriptor</p></li>
+<li><p>String Descriptors</p></li>
+<li><p>Health Descriptor 等</p></li>
+</ul>
+</section>
+<section id="section-14-2-table-14-24-14-25">
+<h2>标志 [Section 14.2, Table 14.24, 14.25]_<a class="headerlink" href="#section-14-2-table-14-24-14-25" title="链接到此标题。"></a></h2>
+<p>UFS 标志的定义和访问属性。</p>
+</section>
+<section id="section-14-3-table-14-26-14-27">
+<h2>属性 [Section 14.3, Table 14.26, 14.27]_<a class="headerlink" href="#section-14-3-table-14-26-14-27" title="链接到此标题。"></a></h2>
+<p>UFS 属性的定义和访问属性。</p>
+</section>
+</section>
+<section id="id72">
+<h1>UFS 机械标准<a class="headerlink" href="#id72" title="链接到此标题。"></a></h1>
+<p>第 15 章定义 UFS 嵌入式设备的机械封装要求和指南。</p>
+</section>
+<section id="id73">
+<h1>参考文献<a class="headerlink" href="#id73" title="链接到此标题。"></a></h1>
+<div role="list" class="citation-list">
+<div class="citation" id="mipi-m-phy" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>MIPI-M-PHY<span class="fn-bracket">]</span></span>
+<p>MIPI Alliance Specification for M-PHY, Version 4.1, 28 March 2017</p>
+</div>
+<div class="citation" id="mipi-unipro" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>MIPI-UniPro<span class="fn-bracket">]</span></span>
+<p>MIPI Alliance Specification for Unified Protocol (UniPro), Version 1.8, 11 January 2018</p>
+</div>
+<div class="citation" id="mipi-ddb" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>MIPI-DDB<span class="fn-bracket">]</span></span>
+<p>MIPI Alliance Specification for Device Descriptor Block (DDB), Version 1.0</p>
+</div>
+<div class="citation" id="mipi-ap" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>MIPI-AP<span class="fn-bracket">]</span></span>
+<p>Application Note for UniPro v1.8</p>
+</div>
+<div class="citation" id="sam" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>SAM<span class="fn-bracket">]</span></span>
+<p>INCITS T10 draft standard: SCSI Architecture Model – 5 (SAM–5), Revision 05, 19 May 2010</p>
+</div>
+<div class="citation" id="spc" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>SPC<span class="fn-bracket">]</span></span>
+<p>INCITS T10 draft standard: SCSI Primary Commands – 4 (SPC-4), Revision 27, 11 October 2010</p>
+</div>
+<div class="citation" id="sbc" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>SBC<span class="fn-bracket">]</span></span>
+<p>INCITS T10 draft standard: SCSI Block Commands – 3 (SBC–3), Revision 24, 05 August 2010</p>
+</div>
+<div class="citation" id="jesd8-12a" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>JESD8-12A<span class="fn-bracket">]</span></span>
+<p>1.2 V +/- 0.1V (Normal Range) and 0.8 - 1.3 V (Wide Range) Power Supply Voltage and Interface Standard for Nonterminated Digital Integrated Circuits</p>
+</div>
+<div class="citation" id="hbm-mm" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>HBM-MM<span class="fn-bracket">]</span></span>
+<p>JEDEC Recommended ESD Target Levels for HBM/MM Qualification, JEP155A.01, March 2012</p>
+</div>
+<div class="citation" id="cdm" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>CDM<span class="fn-bracket">]</span></span>
+<p>JEDEC Recommended ESD-CDM Target Levels, JEP157, October 2009</p>
+</div>
+<div class="citation" id="hmac-sha" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>HMAC-SHA<span class="fn-bracket">]</span></span>
+<p>Eastlake, D. and T. Hansen, US Secure Hash Algorithms (SHA and HMAC-SHA), RFC 4634, July 2006</p>
+</div>
+<div class="citation" id="jep106" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>JEP106<span class="fn-bracket">]</span></span>
+<p>Standard Manufacturer's identification code, JEP106</p>
+</div>
+<div class="citation" id="jesd21c" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>JESD21C<span class="fn-bracket">]</span></span>
+<p>Multichip Packages (MCP) and Discrete eMMC, e2MMC, and UFS</p>
+</div>
+<div class="citation" id="jesd220-3" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>JESD220-3<span class="fn-bracket">]</span></span>
+<p>UFS Host Performance Booster (HPB) Extension Specification</p>
+</div>
+</div>
+</section>
+<section id="id74">
+<h1>表格索引<a class="headerlink" href="#id74" title="链接到此标题。"></a></h1>
+<ul class="simple">
+<li><p>Table 5.1: UFS Signals</p></li>
+<li><p>Table 5.2: ManufacturerID and DeviceClass Attributes</p></li>
+<li><p>Table 6.1: Signal Name and Definitions</p></li>
+<li><p>Table 6.2: Reset Signal Electrical Parameters</p></li>
+<li><p>Table 6.3: UFS Power Supply Parameters</p></li>
+<li><p>Table 6.4: Reference Clock parameters</p></li>
+<li><p>Table 6.5: HS-BURST Rates</p></li>
+<li><p>Table 6.6: Host controller reference clock parameters</p></li>
+<li><p>Table 6.7: Charge pump capacitors description</p></li>
+<li><p>Table 6.8: Charge pump related ball names</p></li>
+<li><p>Table 6.9: Absolute maximum DC ratings and Operating Conditions</p></li>
+<li><p>Table 7.1: Reset timing parameters</p></li>
+<li><p>Table 7.2: Reset States</p></li>
+<li><p>Table 7.3: UniPro Attributes, UFS Attributes and UFS Flags reset</p></li>
+<li><p>Table 7.4: Allowed SCSI commands and UPIU for each Power Mode</p></li>
+<li><p>Table 7.5: Device Well Known Logical Unit Responses to SSU command</p></li>
+<li><p>Table 7.6: Device Well Known Logical Unit Responses to commands other than SSU</p></li>
+<li><p>Table 7.7: Pollable Sense Data for each Power Modes</p></li>
+<li><p>Table 7.8: START STOP UNIT command</p></li>
+<li><p>Table 7.9: START STOP UNIT fields</p></li>
+<li><p>Table 7.10: Attribute for Power Mode Control</p></li>
+<li><p>Table 7.11: Device Descriptor parameters</p></li>
+<li><p>Table 7.12: Power Parameters Descriptor fields</p></li>
+<li><p>Table 7.13: Format for Power Parameter element</p></li>
+<li><p>Table 7.14: Logical Unit Response to SCSI command</p></li>
+<li><p>Table 8.1: UFS PHY M-TX Capability Attributes</p></li>
+<li><p>Table 8.2: UFS PHY M-RX Capability Attributes</p></li>
+<li><p>Table 9.1: UFS Initiator and Target Port Identifiers</p></li>
+<li><p>Table 9.2: UniPro Attribute</p></li>
+<li><p>Table 10.1: UPIU Transaction Codes</p></li>
+<li><p>Table 10.2: UPIU Transaction Code Definitions</p></li>
+<li><p>Table 10.3: General format of the UFS Protocol Information Unit</p></li>
+<li><p>Table 10.4: Basic Header Format</p></li>
+<li><p>Table 10.5: Transaction Type Format</p></li>
+<li><p>Table 10.6: UPIU Flags</p></li>
+<li><p>Table 10.7: Task Attribute definition</p></li>
+<li><p>Table 10.8: UTP Response Values</p></li>
+<li><p>Table 10.9: UPIU associated to a single task</p></li>
+<li><p>Table 10.10: Command Set Type</p></li>
+<li><p>Table 10.11: COMMAND UPIU</p></li>
+<li><p>Table 10.12: Flags definition for COMMAND UPIU</p></li>
+<li><p>Table 10.13: RESPONSE UPIU</p></li>
+<li><p>Table 10.14: Flags definition for RESPONSE UPIU</p></li>
+<li><p>Table 10.15: SCSI Status Values</p></li>
+<li><p>Table 10.16: Flags and Residual Count Relationship</p></li>
+<li><p>Table 10.17: SCSI fixed format sense data</p></li>
+<li><p>Table 10.18: Sense Key</p></li>
+<li><p>Table 10.19: DATA OUT UPIU</p></li>
+<li><p>Table 10.20: DATA IN UPIU</p></li>
+<li><p>Table 10-21: READY TO TRANSFER UPIU</p></li>
+<li><p>Table 10.22: Task Management Request UPIU</p></li>
+<li><p>Table 10.23: Task Management Function values</p></li>
+<li><p>Table 10.24: Task Management Input Parameters</p></li>
+<li><p>Table 10.25: Task Management Response UPIU</p></li>
+<li><p>Table 10.26: Task Management Output Parameters</p></li>
+<li><p>Table 10.27: Task Management Service Response</p></li>
+<li><p>Table 10.28: QUERY REQUEST UPIU</p></li>
+<li><p>Table 10.29: Query Function field values</p></li>
+<li><p>Table 10.30: Transaction specific fields</p></li>
+<li><p>Table 10.31: Query Function opcode values</p></li>
+<li><p>Table 10.32: Read descriptor</p></li>
+<li><p>Table 10.33: Write Descriptor</p></li>
+<li><p>Table 10.34: Read Attribute</p></li>
+<li><p>Table 10.35: Write Attribute</p></li>
+<li><p>Table 10.36: Read Flag</p></li>
+<li><p>Table 10.37: Set Flag</p></li>
+<li><p>Table 10.38: Clear Flag</p></li>
+<li><p>Table 10.39: Toggle Flag</p></li>
+<li><p>Table 10.40: NOP</p></li>
+<li><p>Table 10.41: QUERY RESPONSE</p></li>
+<li><p>Table 10.42: Query Response Code</p></li>
+<li><p>Table 10.43: Transaction Specific Fields</p></li>
+<li><p>Table 10.44: Read Descriptor</p></li>
+<li><p>Table 10.45: Write Descriptor</p></li>
+<li><p>Table 10.46: Read Attribute Response Data Format</p></li>
+<li><p>Table 10.47: Write Attribute</p></li>
+<li><p>Table 10.48: Read Flag Response Data Format</p></li>
+<li><p>Table 10.49: Set Flag</p></li>
+<li><p>Table 10.50: Clear Flag</p></li>
+<li><p>Table 10.51: Toggle Flag</p></li>
+<li><p>Table 10.52: NOP</p></li>
+<li><p>Table 10.53: Reject UPIU</p></li>
+<li><p>Table 10.54: Basic Header Status Description</p></li>
+<li><p>Table 10.55: E2E Status Definition</p></li>
+<li><p>Table 10.56: NOP OUT UPIU</p></li>
+<li><p>Table 10.57: NOP IN UPIU</p></li>
+<li><p>Table 10.58: Parameters related to data out transfer rules</p></li>
+<li><p>Table 10.59: Well known logical unit commands</p></li>
+<li><p>Table 10.60: Examples of logical unit representation format</p></li>
+<li><p>Table 10.61: Events for UAC estabishment</p></li>
+<li><p>Table 10.62: Commands for exceptional behavior on UAC</p></li>
+<li><p>Table 10.63: UFS Initiator Port and Target Port Attributes</p></li>
+<li><p>Table 10.64: Send SCSI Command transport protocol service</p></li>
+<li><p>Table 10.65: SCSI Command Received transport protocol</p></li>
+<li><p>Table 10.66: Send Command Complete transport protocol service</p></li>
+<li><p>Table 10.67: Command Complete Received transport protocol service</p></li>
+<li><p>Table 10.68: Send Data-In transport protocol service</p></li>
+<li><p>Table 10.69: Data-In Delivered transport protocol service</p></li>
+<li><p>Table 10.70: Receive Data-Out transport protocol service</p></li>
+<li><p>Table 10.71: Data-Out Received transport protocol service</p></li>
+<li><p>Table 10.72: Task Management Function procedure calls</p></li>
+<li><p>Table 10.73: SCSI transport protocol service responses</p></li>
+<li><p>Table 10.74: Send Task Management Request SCSI transport protocol service request</p></li>
+<li><p>Table 10.75: Task Management Request Received SCSI transport protocol service indication</p></li>
+<li><p>Table 10.76: Task Management Function Executed SCSI transport protocol service response</p></li>
+<li><p>Table 10.77: Received Task Management Function Executed SCSI transport protocol service confirmation</p></li>
+<li><p>Table 10.78: Send Query Request UFS transport protocol service</p></li>
+<li><p>Table 10.79: Query Request Received UFS transport protocol service indication</p></li>
+<li><p>Table 10.80: Query Function Executed UFS transport protocol service response</p></li>
+<li><p>Table 10.81: Received Query Function Executed UFS transport protocol service confirmation</p></li>
+<li><p>Table 11.1: UFS SCSI Command Set</p></li>
+<li><p>Table 11.2: INQUIRY command</p></li>
+<li><p>Table 11.3: Standard INQUIRY data format</p></li>
+<li><p>Table 11.4: Standard INQUIRY Response Data</p></li>
+<li><p>Table 11.5: MODE SELECT (10) command</p></li>
+<li><p>Table 11.6: Mode Select Command Parameters</p></li>
+<li><p>Table 11.7: MODE SENSE (10) command</p></li>
+<li><p>Table 11.8: Mode Sense Command Parameters</p></li>
+<li><p>Table 11.9: Page Control Function</p></li>
+<li><p>Table 11.10: READ (6) command</p></li>
+<li><p>Table 11.11: READ (10) command</p></li>
+<li><p>Table 11.12: READ (16) command</p></li>
+<li><p>Table 11.13: READ CAPACITY (10) command</p></li>
+<li><p>Table 11.14: Read Capacity (10) Parameter Data</p></li>
+<li><p>Table 11.15: READ CAPACITY (16) command</p></li>
+<li><p>Table 11.16: Read Capacity (16) Parameter Data</p></li>
+<li><p>Table 11.17: START STOP UNIT command</p></li>
+<li><p>Table 11.18: TEST UNIT READY command</p></li>
+<li><p>Table 11.19: REPORT LUNS command</p></li>
+<li><p>Table 11.20: Report LUNS Command Parameters</p></li>
+<li><p>Table 11.21: SELECT REPORT field</p></li>
+<li><p>Table 11.22: Report LUNS Parameter Data Format</p></li>
+<li><p>Table 11.23: Single level LUN structure using peripheral device addressing method</p></li>
+<li><p>Table 11.24: Well Known Logical Unit Extended Addressing Format</p></li>
+<li><p>Table 11.25: Format of LUN field in UPIU</p></li>
+<li><p>Table 11.26: Well known logical unit numbers</p></li>
+<li><p>Table 11.27: VERIFY (10) command</p></li>
+<li><p>Table 11.28: Verify Command Parameters</p></li>
+<li><p>Table 11-29: WRITE (6) command</p></li>
+<li><p>Table 11-30: WRITE (10) command</p></li>
+<li><p>Table 11.31: WRITE (16) command</p></li>
+<li><p>Table 11.32: REQUEST SENSE command</p></li>
+<li><p>Table 11.33: FORMAT UNIT command</p></li>
+<li><p>Table 11.34: Format Unit Command Parameters</p></li>
+<li><p>Table 11.35: PRE_FETCH command</p></li>
+<li><p>Table 11.36: PRE-FETCH Command Parameters</p></li>
+<li><p>Table 11.37: PRE-FETCH (16) command</p></li>
+<li><p>Table 11.38: SECURITY PROTOCOL IN command</p></li>
+<li><p>Table 11.39: SECURITY PROTOCOL OUT command</p></li>
+<li><p>Table 11.40: SEND DIAGNOSTIC command</p></li>
+<li><p>Table 11.41: Send Diagnostic Parameters</p></li>
+<li><p>Table 11.42: SYNCHRONIZE CACHE (10) command</p></li>
+<li><p>Table 11.43: Synchronize Cache Command Parameters</p></li>
+<li><p>Table 11.44: SYNCHRONIZE CACHE (16) Command Descriptor Block</p></li>
+<li><p>Table 11.45: UNMAP command</p></li>
+<li><p>Table 11.46: UNMAP parameter list</p></li>
+<li><p>Table 11.47: UNMAP block descriptor</p></li>
+<li><p>Table 11.48: READ BUFFER command</p></li>
+<li><p>Table 11.49: Read Buffer Command Mode Field Values</p></li>
+<li><p>Table 11.50: Buffer ID Field for Error History Mode</p></li>
+<li><p>Table 11.51: Error history directory</p></li>
+<li><p>Table 11.52: EHS_SOURCE field</p></li>
+<li><p>Table 11.53: Error history directory entry</p></li>
+<li><p>Table 11.54: WRITE BUFFER command</p></li>
+<li><p>Table 11.55: Write Buffer Command Parameters</p></li>
+<li><p>Table 11.56: Write Buffer Command Mode Field Values</p></li>
+<li><p>Table 11.57: Mode page code usage</p></li>
+<li><p>Table 11.58: UFS Mode parameter list</p></li>
+<li><p>Table 11.59: UFS Mode parameter header (10)</p></li>
+<li><p>Table 11.60: Mode Parameter Header Detail</p></li>
+<li><p>Table 11.61: Page_0 mode page format</p></li>
+<li><p>Table 11.62: Page 0 Format parameters</p></li>
+<li><p>Table 11.63: Sub_page mode page format</p></li>
+<li><p>Table 11.64: Subpage Format parameters</p></li>
+<li><p>Table 11.65: UFS Supported Pages</p></li>
+<li><p>Table 11.66: Control Mode Page default value</p></li>
+<li><p>Table 11.67: Control Mode Page Parameters</p></li>
+<li><p>Table 11.68: Read-Write Error Recovery Mode Page default value</p></li>
+<li><p>Table 11.69: Read-Write Error Recovery Parameters</p></li>
+<li><p>Table 11.70: Caching Mode Page default value</p></li>
+<li><p>Table 11.71: Caching Mode Page Parameters</p></li>
+<li><p>Table 11.72: VPD page format</p></li>
+<li><p>Table 11.73: Supported VPD Pages VPD page</p></li>
+<li><p>Table 11.74: Mode Page Policy VPD page</p></li>
+<li><p>Table 11.75: Mode page policy descriptor</p></li>
+<li><p>Table 11.76: MODE PAGE POLICY field</p></li>
+<li><p>Table 12.1: Secure Write Protect Configuration Block</p></li>
+<li><p>Table 12.2: Secure Write Protect Entry</p></li>
+<li><p>Table 12.3: Write Protect Type field</p></li>
+<li><p>Table 12.4: RPMB Message Components</p></li>
+<li><p>Table 12.5: Request Message Types</p></li>
+<li><p>Table 12.6: Response Message Types</p></li>
+<li><p>Table 12.7: Result data structure</p></li>
+<li><p>Table 12.8: Result code definition</p></li>
+<li><p>Table 12.9: RPMB Message Data Frame</p></li>
+<li><p>Table 12.10: CDB format of SECURITY PROTOCOL IN/OUT commands</p></li>
+<li><p>Table 12.11: SECURITY PROTOCOL SPECIFIC field for protocol ECh</p></li>
+<li><p>Table 12.12: Security Protocol specific field values for protocol 00h</p></li>
+<li><p>Table 12.13: Supported security protocols SECURITY PROTOCOL IN parameter data</p></li>
+<li><p>Table 12.14: UFS Supported security protocols SECURITY PROTOCOL IN parameter data</p></li>
+<li><p>Table 12.15: Certificate data SECURITY PROTOCOL IN parameter data</p></li>
+<li><p>Table 12.16: UFS certificate data SECURITY PROTOCOL IN parameter data</p></li>
+<li><p>Table 12.17: Expected Data Transfer Length value for Request Type Messages</p></li>
+<li><p>Table 12.18: Expected Data Transfer Length value for Response Type Messages</p></li>
+<li><p>Table 13.1: bBootLunEn Attribute</p></li>
+<li><p>Table 13.2: Valid UPIUs and SCSI Commands for Each Initialization Phase</p></li>
+<li><p>Table 13.3: Logical unit configurable parameters</p></li>
+<li><p>Table 13.4: Parameter for controlling logical unit data reliability</p></li>
+<li><p>Table 14.1: Descriptor identification values</p></li>
+<li><p>Table 14.2: Generic Descriptor Format</p></li>
+<li><p>Table 14.3: Logical Unit Descriptor Format</p></li>
+<li><p>Table 14.4: Device Descriptor</p></li>
+<li><p>Table 14.5: wManufacturerID definition</p></li>
+<li><p>Table 14.6: Configuration Descriptor Format (INDEX = 00h)</p></li>
+<li><p>Table 14.7: Configuration Descriptor Format (INDEX = 01h)</p></li>
+<li><p>Table 14.8: Configuration Descriptor Format (INDEX = 02h)</p></li>
+<li><p>Table 14.9: Configuration Descriptor Format (INDEX = 03h)</p></li>
+<li><p>Table 14.10: Configuration Descr. Header and Device Descr. Conf. parameters (INDEX = 00h)</p></li>
+<li><p>Table 14.11: Configuration Descr. Header with INDEX = 01h/02h/03h</p></li>
+<li><p>Table 14.12: Unit Descriptor configurable parameters</p></li>
+<li><p>Table 14.13: Geometry Descriptor</p></li>
+<li><p>Table 14.14: Unit Descriptor</p></li>
+<li><p>Table 14.15: RPMB Unit Descriptor</p></li>
+<li><p>Table 14.16: Power Parameters Descriptor</p></li>
+<li><p>Table 14.17: Interconnect Descriptor</p></li>
+<li><p>Table 14.18: Manufacturer Name String</p></li>
+<li><p>Table 14.19: Product Name String</p></li>
+<li><p>Table 14.20: OEM_ID String</p></li>
+<li><p>Table 14.21: Serial Number String Descriptor</p></li>
+<li><p>Table 14.22: Product Revision Level String</p></li>
+<li><p>Table 14.23: Device Health Descriptor</p></li>
+<li><p>Table 14.24: Flags access properties</p></li>
+<li><p>Table 14.25: Flags</p></li>
+<li><p>Table 14.26: Attributes access properties</p></li>
+<li><p>Table 14.27: Attributes</p></li>
+</ul>
+</section>
+<section id="id75">
+<h1>图形索引<a class="headerlink" href="#id75" title="链接到此标题。"></a></h1>
+<ul class="simple">
+<li><p>Figure 5.1: UFS Top Level Architecture</p></li>
+<li><p>Figure 5.2: Usage of UDM_SAP</p></li>
+<li><p>Figure 5.3: Usage of UIO_SAP</p></li>
+<li><p>Figure 5.4: UFS System Model</p></li>
+<li><p>Figure 5.5: SCSI Domain Class Diagram</p></li>
+<li><p>Figure 5.6: UFS Domain Class Diagram</p></li>
+<li><p>Figure 6.1: UFS Device Block Diagram</p></li>
+<li><p>Figure 6.2: Supply voltage power up timings</p></li>
+<li><p>Figure 6.3: bRefClkGatingWaitTime</p></li>
+<li><p>Figure 6.4: Clock input levels, rise time, and fall time</p></li>
+<li><p>Figure 6.5: Test Load Impedance</p></li>
+<li><p>Figure 6.6: Output driver and Input receiver levels</p></li>
+<li><p>Figure 6.7: Clock output levels, rise time and fall time</p></li>
+<li><p>Figure 7.1: Power-on Reset</p></li>
+<li><p>Figure 7.2: Hardware Reset</p></li>
+<li><p>Figure 7.3: Reset AC timings</p></li>
+<li><p>Figure 7.4: EndPointReset</p></li>
+<li><p>Figure 7.5: Logical Unit Reset</p></li>
+<li><p>Figure 7.6: Power up ramps</p></li>
+<li><p>Figure 7.7: Power off ramps</p></li>
+<li><p>Figure 7.8: Power Mode State Machine</p></li>
+<li><p>Figure 8.1: Simplified example for I/O termination</p></li>
+<li><p>Figure 9.1: UniPro internal layering view (a) and UniPro Black Box view (b)</p></li>
+<li><p>Figure 9.2: Physical lane connections</p></li>
+<li><p>Figure 10.1: Data out transfer example</p></li>
+<li><p>Figure 10.2: Data in transfer example</p></li>
+<li><p>Figure 10.3: READY TO TRANSFER UPIU sequence example</p></li>
+<li><p>Figure 10.4: Example for data out transfer rule 1</p></li>
+<li><p>Figure 10.5: Example for Data Transfer Count mismatch</p></li>
+<li><p>Figure 10.6: Example for data out transfer rule 2</p></li>
+<li><p>Figure 10.7: Example for data out transfer rule 3</p></li>
+<li><p>Figure 10.8: UFS SCSI domain</p></li>
+<li><p>Figure 10.9: Logical Unit Addressing</p></li>
+<li><p>Figure 10.10: SCSI Write</p></li>
+<li><p>Figure 10.11: SCSI Read</p></li>
+<li><p>Figure 10.12: Command without Data Phase</p></li>
+<li><p>Figure 10.13: Command + Read Data Phase 1/2</p></li>
+<li><p>Figure 10.14: Command + Read Data Phase 2/2</p></li>
+<li><p>Figure 10.15: Command + Write Data Phase ½</p></li>
+<li><p>Figure 10.16: Command + Write Data Phase 2/2</p></li>
+<li><p>Figure 10.17: Task Management Function</p></li>
+<li><p>Figure 10.18: UFS Query Function</p></li>
+<li><p>Figure 11.1: UFS Command Layer</p></li>
+<li><p>Figure 12.1: Purge operation state machine</p></li>
+<li><p>Figure 12.2: Request type message delivery</p></li>
+<li><p>Figure 12.3: Response Type Message delivery</p></li>
+<li><p>Figure 12.4: Authentication Key Programming Flow</p></li>
+<li><p>Figure 12.5: Read Counter Value Flow</p></li>
+<li><p>Figure 12.6: Authenticated Data Read Flow</p></li>
+<li><p>Figure 12.7: Authenticated Secure Write Protect Configuration Block Write Flow</p></li>
+<li><p>Figure 12.8: Authenticated Secure Write Protect Configuration Block Read Flow</p></li>
+<li><p>Figure 13.1: UFS System Diagram</p></li>
+<li><p>Figure 13.2: Example of UFS Device Memory Organization for Boot</p></li>
+<li><p>Figure 13.3: Device Initialization and Boot Procedure Sequence Diagram</p></li>
+<li><p>Figure 13.4: Example of UFS Device Memory Organization</p></li>
+<li><p>Figure 13.5: Physical Memory Resource State Machine</p></li>
+<li><p>Figure 13.6: Example of data status after a power failure during reliable write operation</p></li>
+<li><p>Figure 13.7: Concept of WriteBooster feature</p></li>
+<li><p>Figure 13.8: Example of &quot;LU dedicated buffer&quot; mode configuration</p></li>
+<li><p>Figure 13.9: Example of &quot;shared buffer&quot; mode configuration</p></li>
+<li><p>Figure 13.10: PSA flow</p></li>
+<li><p>Figure 13.11: PSA state machine</p></li>
+<li><p>Figure 14.1: Descriptor Organization</p></li>
+<li><p>Figure 14.2: Read Request Descriptor</p></li>
+<li><p>Figure 14.3: Write Request Descriptor</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

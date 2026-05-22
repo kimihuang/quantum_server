@@ -1,0 +1,540 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: scp_firmware/module/cmn600/include/mod_cmn600.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('mod__cmn600_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">mod_cmn600.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="mod__cmn600_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment"> * @file mod_cmn600.h</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment"> * @brief CMN-600 模块公共接口定义</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> * @details 定义 CMN-600 (Arm Coherent Mesh Network) 互连控制器模块的</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> *          公共接口，包括模块 API 索引、内存区域类型、配置数据结构、</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment"> *          CCIX 配置接口和 PPU 观察者 API。外部模块通过这些接口</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment"> *          配置和查询 CMN-600 互连拓扑。</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment"> * @note 该模块运行在 SCP (System Control Processor) 固件框架中，</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment"> *       遵循 SCP 模块的 init/bind/start 生命周期。</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment"> * @copyright Copyright (c) 2017-2021, Arm Limited and Contributors. All rights reserved.</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment"> * @license SPDX-License-Identifier: BSD-3-Clause</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#ifndef MOD_CMN600_H</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#define MOD_CMN600_H</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;fwk_id.h&gt;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment"></span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">/*!</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment"> * \addtogroup GroupModules Modules</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment"> * \{</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment"></span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment">/*!</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment"> * \defgroup GroupModuleCMN600 CMN600</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment"> * \brief Arm Coherent Mesh Network (CMN) 600 模块</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment"> * \details 该模块为 CMN-600 互连提供支持</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="comment"> * \{</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="comment"></span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="comment">/** @def MAX_HA_MMAP_ENTRIES</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment"> * @brief Home Agent 内存映射表的最大条目数 */</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#gac701f3fb1d37146b792cd4f7f6c797d5">   42</a></span><span class="preprocessor">#define MAX_HA_MMAP_ENTRIES     4</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment"></span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="comment"> * @brief 模块 API 索引</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="comment"> * @details 定义 CMN-600 模块对外暴露的 API 索引，</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment"> *          其他模块通过 fwk_module_bind() 绑定到指定 API。</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00050" data-start="{" data-end="};">
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#ga07d8a00b3c83a111314a3eda87846dfa">   50</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__GroupModuleCMN600.html#ga07d8a00b3c83a111314a3eda87846dfa">mod_cmn600_api_idx</a> {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaa47abcea1baf3b31d53e108916d7c7e1c">   51</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaa47abcea1baf3b31d53e108916d7c7e1c">MOD_CMN600_API_IDX_PPU_OBSERVER</a>,  <span class="comment">/**&lt; PPU_V1 电源状态观察者 API 索引 */</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaacf61589a7abbccdf6b81d3730708d7bc">   52</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaacf61589a7abbccdf6b81d3730708d7bc">MOD_CMN600_API_IDX_CCIX_CONFIG</a>,   <span class="comment">/**&lt; CCIX 配置 API 索引 */</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaa226703f64f5025251863a691021b77dc">MOD_CMN600_API_COUNT</a>              <span class="comment">/**&lt; API 总数 */</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaa226703f64f5025251863a691021b77dc">   54</a></span>};</div>
+</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="comment"></span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="comment"> * @brief 内存区域配置类型</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment"> * @details 定义 CMN-600 互连中内存区域的类型，</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment"> *          不同类型决定了区域由哪类节点服务和如何进行地址映射。</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00062" data-start="{" data-end="};">
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#gacc7242a52b08ea9c263991311b3373af">   62</a></span><span class="keyword">enum</span> <a class="code hl_enumeration" href="group__GroupModuleCMN600.html#gacc7242a52b08ea9c263991311b3373af">mod_cmn600_memory_region_type</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="comment">    /** I/O 区域，由专用的 HN-I 或 HN-D 节点服务 */</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa1e77ba98f0b6bcf555083266f8df686a">   64</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa1e77ba98f0b6bcf555083266f8df686a">MOD_CMN600_MEMORY_REGION_TYPE_IO</a>,</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="comment"></span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="comment">     * 系统缓存区域，由系统中所有 HN-F 节点服务</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="comment">     * （使用 HN-F 节点池进行一致性缓存）</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa00ae9d2ce31ab951922345afa6b480df">   70</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa00ae9d2ce31ab951922345afa6b480df">MOD_CMN600_MEMORY_REGION_TYPE_SYSCACHE</a>,</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment"></span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="comment">     * 系统缓存的非哈希子区域，由 HN-F 节点服务</span></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="comment">     * （不进行哈希映射，直接访问指定目标）</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afaea0c2c6911ef0a87e4b3d0fadc1d3d2b">   76</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afaea0c2c6911ef0a87e4b3d0fadc1d3d2b">MOD_CMN600_REGION_TYPE_SYSCACHE_SUB</a>,</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="comment"></span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment">     * CCIX 访问区域，用于跨片 CCIX 一致性通信</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa3694af439a554586a96ac540f2452335">   81</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa3694af439a554586a96ac540f2452335">MOD_CMN600_REGION_TYPE_CCIX</a>,</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="comment"></span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="comment">     * 系统缓存分组中的非哈希区域</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa7447ea87b558fce9efd01245048ab0a4">   86</a></span>    <a class="code hl_enumvalue" href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa7447ea87b558fce9efd01245048ab0a4">MOD_CMN600_REGION_TYPE_SYSCACHE_NONHASH</a>,</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>};</div>
+</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="comment"></span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment"> * @brief 内存区域映射描述符</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment"> * @details 描述一个内存区域的基地址、大小、类型和目标节点，</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment"> *          用于配置 RN-SAM（请求节点系统地址映射）寄存器。</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00095" data-start="{" data-end="};">
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="structmod__cmn600__memory__region__map.html">   95</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__memory__region__map.html">mod_cmn600_memory_region_map</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="comment">    /** @brief 区域基地址，须按 SAM_GRANULARITY（64MB）对齐 */</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="structmod__cmn600__memory__region__map.html#aa3a7fbb195d194f4eece6190f8c2300e">   97</a></span>    uint64_t <a class="code hl_variable" href="structmod__cmn600__memory__region__map.html#aa3a7fbb195d194f4eece6190f8c2300e">base</a>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="comment"></span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="comment">    /** @brief 区域大小（字节），须为 SAM_GRANULARITY 的 2 的幂次倍 */</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="structmod__cmn600__memory__region__map.html#ae779c67be73dadc807fd590f54a47184">  100</a></span>    uint64_t <a class="code hl_variable" href="structmod__cmn600__memory__region__map.html#ae779c67be73dadc807fd590f54a47184">size</a>;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="comment"></span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="comment">    /** @brief 区域配置类型，参见 enum mod_cmn600_memory_region_type */</span></div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="structmod__cmn600__memory__region__map.html#a015d8f3f9dc4335f05ede37483151a28">  103</a></span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="group__GroupModuleCMN600.html#gacc7242a52b08ea9c263991311b3373af">mod_cmn600_memory_region_type</a> <a class="code hl_variable" href="structmod__cmn600__memory__region__map.html#a015d8f3f9dc4335f05ede37483151a28">type</a>;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment"></span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">     * @brief 目标节点标识符</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="comment">     * @note 对于 MOD_CMN600_MEMORY_REGION_TYPE_SYSCACHE 类型区域不使用此字段，</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment">     *       因为系统缓存区域使用系统中所有可用的 HN-F 节点池。</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="structmod__cmn600__memory__region__map.html#ae25cf2283d1e4003e486d0140e6f8af7">  111</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structmod__cmn600__memory__region__map.html#ae25cf2283d1e4003e486d0140e6f8af7">node_id</a>;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>};</div>
+</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment"></span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span><span class="comment"> * @brief CMN-600 模块配置数据</span></div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span><span class="comment"> * @details 包含 CMN-600 互连的完整硬件配置信息，</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="comment"> *          由平台定义并通过 SCP 框架在模块初始化时传入。</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="comment"> *          该结构体定义了互连 mesh 拓扑、节点映射和时钟依赖等。</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00121" data-start="{" data-end="};">
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html">  121</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__config.html">mod_cmn600_config</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="comment">    /** @brief CMN-600 外设基地址，即 MMIO 映射的起始地址 */</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#abab1f75ebc4cd454618f838111689bff">  123</a></span>    uintptr_t <a class="code hl_variable" href="structmod__cmn600__config.html#abab1f75ebc4cd454618f838111689bff">base</a>;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="comment"></span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><span class="comment">    /** @brief 互连 mesh 的 X 轴尺寸，有效范围 1-8 */</span></div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#ad8e1ec907265eb084c9b860d6ba327a2">  126</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structmod__cmn600__config.html#ad8e1ec907265eb084c9b860d6ba327a2">mesh_size_x</a>;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span><span class="comment"></span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span><span class="comment">    /** @brief 互连 mesh 的 Y 轴尺寸，有效范围 1-8 */</span></div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#ac20fdd7c863895cbf28155206ee19d43">  129</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structmod__cmn600__config.html#ac20fdd7c863895cbf28155206ee19d43">mesh_size_y</a>;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="comment"></span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="comment">    /** @brief 包含全局配置的默认 HN-D 节点标识符，用于定位根节点（Configuration Manager） */</span></div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#a92386295bb712ea1bfbdb0ef18828558">  132</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structmod__cmn600__config.html#a92386295bb712ea1bfbdb0ef18828558">hnd_node_id</a>;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span><span class="comment"></span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span><span class="comment">     * @brief HN-F 节点的目标 SN-F 节点映射表</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span><span class="comment">     * @details 表中每个条目对应一个 HN-F 节点，</span></div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="comment">     *          以 HN-F 的逻辑 ID 作为索引，值为该 HN-F 对应的 SN-F 节点 ID。</span></div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#a9a2c3099c443a31fb6497d34ed05de0b">  140</a></span>    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> *<a class="code hl_variable" href="structmod__cmn600__config.html#a9a2c3099c443a31fb6497d34ed05de0b">snf_table</a>;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span><span class="comment"></span> </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span><span class="comment">    /** @brief snf_table 中的条目数量，须等于系统中 HN-F 的总数 */</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#ab024c77a4924522a40c50584005bfb15">  143</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="structmod__cmn600__config.html#ab024c77a4924522a40c50584005bfb15">snf_count</a>;</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span><span class="comment"></span> </div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="comment">    /** @brief 主节点的 SA（Slave Agent）数量 */</span></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#a2da4e5e0995de8d613fb652ece222711">  146</a></span>    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="structmod__cmn600__config.html#a2da4e5e0995de8d613fb652ece222711">sa_count</a>;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="comment"></span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="comment">    /** @brief 内存区域映射表，描述所有需配置的内存区域 */</span></div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#aa7f57329008280a48493f8372d18c132">  149</a></span>    <span class="keyword">const</span> <span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__memory__region__map.html">mod_cmn600_memory_region_map</a> *<a class="code hl_variable" href="structmod__cmn600__config.html#aa7f57329008280a48493f8372d18c132">mmap_table</a>;</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="comment"></span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="comment">    /** @brief mmap_table 中的条目数量 */</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#ad2ae8eb29651e4b222fb167430c917a6">  152</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="structmod__cmn600__config.html#ad2ae8eb29651e4b222fb167430c917a6">mmap_count</a>;</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="comment"></span> </div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span><span class="comment">    /** @brief 芯片的地址空间大小，用于多芯片场景下的地址偏移计算 */</span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#ac885de45eb02c95f76b880f0af8b70bf">  155</a></span>    uint64_t <a class="code hl_variable" href="structmod__cmn600__config.html#ac885de45eb02c95f76b880f0af8b70bf">chip_addr_space</a>;</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="comment"></span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="comment">    /** @brief 该设备依赖的时钟标识符，若为 FWK_ID_NONE 则不等待时钟 */</span></div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#a7ab046e53064847b301d9bbf19a346cb">  158</a></span>    fwk_id_t <a class="code hl_variable" href="structmod__cmn600__config.html#a7ab046e53064847b301d9bbf19a346cb">clock_id</a>;</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="comment"></span> </div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="comment">     * @brief HN-F CAL 支持使能标志</span></div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="comment">     * @details 当设为 true 时，使能 HN-F 的 CAL (Coherent Address Lookup) 模式。</span></div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="comment">     *          此标志仅当 HN-F 连接到 CAL 端口时生效</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">     *         （连接到 CAL 端口时，HN-F 的节点 ID 为奇数）。</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="comment">     * @note CAL 模式仅 CMN-600 r2p0 及以上版本支持</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno"><a class="line" href="structmod__cmn600__config.html#af8e4219061f6acd75d518b710aba8658">  169</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structmod__cmn600__config.html#af8e4219061f6acd75d518b710aba8658">hnf_cal_mode</a>;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>};</div>
+</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment"></span> </div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="comment"> * @brief CCIX HA 内存映射表条目</span></div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="comment"> * @details 描述 CCIX Home Agent 管理的一个内存区域，</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="comment"> *          包含 HA 标识符、基地址和区域大小。</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00178" data-start="{" data-end="};">
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__ha__mmap.html">  178</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__ha__mmap.html">mod_cmn600_ccix_ha_mmap</a> {</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="comment"></span> </div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="comment">    /** @brief Home Agent 节点 ID */</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__ha__mmap.html#a6be72eef08c275fbc55212e4c17d0eda">  181</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__ha__mmap.html#a6be72eef08c275fbc55212e4c17d0eda">ha_id</a>;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="comment"></span> </div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="comment">    /** @brief 区域基地址 */</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__ha__mmap.html#a987e23868196212cf4c176c3d7c93141">  184</a></span>    uint64_t <a class="code hl_variable" href="structmod__cmn600__ccix__ha__mmap.html#a987e23868196212cf4c176c3d7c93141">base</a>;</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment"></span> </div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="comment">    /** @brief 区域大小（字节） */</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__ha__mmap.html#a5b440d92cd298b29908842fc3c578024">  187</a></span>    uint64_t <a class="code hl_variable" href="structmod__cmn600__ccix__ha__mmap.html#a5b440d92cd298b29908842fc3c578024">size</a>;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>};</div>
+</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="comment"></span> </div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="comment"> * @brief CMN-600 远端节点 CCIX 配置数据</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="comment"> * @details 由远端芯片通过 SCMI 协议传递的 CCIX 配置信息，</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="comment"> *          用于配置本地 CCIX Gateway 以建立跨片一致性链路。</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00197" data-start="{" data-end="};">
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html">  197</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="comment">     * @brief 远端缓存代理 (RN-F) 数量</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment">     * @details 可向本地 HN-F 发送请求的远端 RN-F 数量</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a2ded0ea706aa183d20953e528e32e1f4">  203</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a2ded0ea706aa183d20953e528e32e1f4">remote_rnf_count</a>;</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="comment"></span> </div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="comment">    /** @brief 远端 SA（Slave Agent）数量 */</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a40a60fe0e6a4d5be064703373aa8964d">  206</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a40a60fe0e6a4d5be064703373aa8964d">remote_sa_count</a>;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="comment"></span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="comment">    /** @brief 远端 HA（Home Agent）数量 */</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a3e630ac1493d4ce0e9fb4d9612717a15">  209</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a3e630ac1493d4ce0e9fb4d9612717a15">remote_ha_count</a>;</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span><span class="comment"></span> </div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="comment">    /** @brief CCIX 虚通道使用的 PCIe Traffic Class */</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a01767fea7513742a22c49bba536d03b8">  212</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a01767fea7513742a22c49bba536d03b8">ccix_tc</a>;</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="comment"></span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span><span class="comment">    /** @brief CCIX 消息打包使能标志 */</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#adabbc6ecb8f0d2a37e62624daaddf3fa">  215</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#adabbc6ecb8f0d2a37e62624daaddf3fa">ccix_msg_pack_enable</a>;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="comment"></span> </div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="comment">    /** @brief CCIX 链路使能的 PCIe 总线号 */</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#ada6b0fc97407e6db955b32209732531c">  218</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#ada6b0fc97407e6db955b32209732531c">pcie_bus_num</a>;</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span><span class="comment"></span> </div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span><span class="comment">    /** @brief CCIX 链路标识符，有效值为 0-2 */</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a3f6d68c1deafd09898b7ab88fd46102a">  221</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a3f6d68c1deafd09898b7ab88fd46102a">ccix_link_id</a>;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="comment"></span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="comment">    /** @brief CCIX 优化 TLP 模式使能标志 */</span></div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a05d60146d4d16f3621d1a248281df8cb">  224</a></span>    <span class="keywordtype">bool</span>    <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a05d60146d4d16f3621d1a248281df8cb">ccix_opt_tlp</a>;</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="comment"></span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="comment">    /** @brief 远端 HA 内存映射表条目数量 */</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#ac91d2f2a6525f66e2b8bb45c5265d8d5">  227</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#ac91d2f2a6525f66e2b8bb45c5265d8d5">remote_ha_mmap_count</a>;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="comment"></span> </div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span><span class="comment">    /** @brief SMP 模式使能标志 */</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#aaba61d78d9bdaaf2facebe2ffdb2e6d0">  230</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#aaba61d78d9bdaaf2facebe2ffdb2e6d0">smp_mode</a>;</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="comment"></span> </div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="comment">    /** @brief 远端 HA 内存映射表，最多 MAX_HA_MMAP_ENTRIES 个条目 */</span></div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a0541f619d172454c61cc4f652dbd8b3a">  233</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__ha__mmap.html">mod_cmn600_ccix_ha_mmap</a> <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a0541f619d172454c61cc4f652dbd8b3a">remote_ha_mmap</a>[<a class="code hl_define" href="group__GroupModuleCMN600.html#gac701f3fb1d37146b792cd4f7f6c797d5">MAX_HA_MMAP_ENTRIES</a>];</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span><span class="comment"></span> </div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span><span class="comment">    /** @brief CCIX 最大包大小编码，参见 CXLA_CCIX_PROP_MAX_PACK_SIZE_xxx */</span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__remote__node__config.html#a5bbaf274e91a70dce4df3abaa3bf67e4">  236</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__remote__node__config.html#a5bbaf274e91a70dce4df3abaa3bf67e4">ccix_max_packet_size</a>;</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>};</div>
+</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="comment"></span> </div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span><span class="comment"> * @brief CMN-600 主节点 CCIX 配置数据</span></div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="comment"> * @details 描述本地主节点的 CCIX 能力参数，</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="comment"> *          由 SCMI 等上层协议查询后传递给远端芯片。</span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00245" data-start="{" data-end="};">
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html">  245</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__host__node__config.html">mod_cmn600_ccix_host_node_config</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span><span class="comment">    /** @brief 主节点 RA（Requesting Agent）数量 */</span></div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a9006d1e1c5d12d8d7ae50a9b28f6b587">  247</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a9006d1e1c5d12d8d7ae50a9b28f6b587">host_ra_count</a>;</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="comment"></span> </div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span><span class="comment">    /** @brief 主节点 SA（Slave Agent）数量 */</span></div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a23da27c0b7faf9f81f5a51e6a7a2a959">  250</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a23da27c0b7faf9f81f5a51e6a7a2a959">host_sa_count</a>;</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="comment"></span> </div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="comment">    /** @brief 主节点 HA（Home Agent）数量 */</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#aa388fb81c1e2d0df38dc77dfde8bc4df">  253</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#aa388fb81c1e2d0df38dc77dfde8bc4df">host_ha_count</a>;</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment"></span> </div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">    /** @brief CCIX HA 内存映射表条目数量（用于端点配置） */</span></div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a4b441a203b768ae982123531049cfff1">  256</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a4b441a203b768ae982123531049cfff1">ccix_host_mmap_count</a>;</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="comment"></span> </div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="comment">    /** @brief CCIX HA 内存映射表（用于端点配置） */</span></div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a0f5ca13b417ed576a538e40270530189">  259</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__ha__mmap.html">mod_cmn600_ccix_ha_mmap</a> <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a0f5ca13b417ed576a538e40270530189">ccix_host_mmap</a>[<a class="code hl_define" href="group__GroupModuleCMN600.html#gac701f3fb1d37146b792cd4f7f6c797d5">MAX_HA_MMAP_ENTRIES</a>];</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="comment"></span> </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="comment">    /** @brief 主节点 CCIX 最大 Memory Request 发送信用数 */</span></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#ab5d2d28e929bb53c390453f5df8edc7d">  262</a></span>    uint16_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#ab5d2d28e929bb53c390453f5df8edc7d">ccix_request_credits</a>;</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="comment"></span> </div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="comment">    /** @brief 主节点 CCIX 最大 Snoop 发送信用数 */</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#ab75ac01c1ddf95faccc9da0210e3eccf">  265</a></span>    uint16_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#ab75ac01c1ddf95faccc9da0210e3eccf">ccix_snoop_credits</a>;</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="comment"></span> </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="comment">    /** @brief 主节点 CCIX 最大 Data 发送信用数 */</span></div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#ae935a692ed1d512ec2f4ea82b48a862f">  268</a></span>    uint16_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#ae935a692ed1d512ec2f4ea82b48a862f">ccix_data_credits</a>;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="comment"></span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span><span class="comment">    /** @brief 主节点 CCIX 最大包大小编码 */</span></div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a00c4aacadc8a5f8fcfac5bd5a8d4dfdd">  271</a></span>    uint8_t <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a00c4aacadc8a5f8fcfac5bd5a8d4dfdd">ccix_max_packet_size</a>;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="comment"></span> </div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="comment">    /** @brief 主节点 CCIX 优化 TLP 模式能力 */</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a28f07281e7443adbaef1667ec207b102">  274</a></span>    <span class="keywordtype">bool</span>    <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a28f07281e7443adbaef1667ec207b102">ccix_opt_tlp</a>;</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="comment"></span> </div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="comment">    /** @brief 主节点 CCIX 消息打包能力 */</span></div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__host__node__config.html#a1b71aa39a2047f5460d0cf2def6e3adc">  277</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structmod__cmn600__ccix__host__node__config.html#a1b71aa39a2047f5460d0cf2def6e3adc">ccix_msg_pack_enable</a>;</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>};</div>
+</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="comment"></span> </div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="comment">/**</span></div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span><span class="comment"> * @brief CMN-600 CCIX 配置 API</span></div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="comment"> *</span></div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span><span class="comment"> * @details 定义 CCIX 配置接口，供 SCMI 等上层模块调用，</span></div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="comment"> *          实现跨片一致性互连的配置流程。</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span><span class="comment"> */</span></div>
+<div class="foldopen" id="foldopen00286" data-start="{" data-end="};">
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__config__api.html">  286</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__config__api.html">mod_cmn600_ccix_config_api</a> {<span class="comment"></span></div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="comment">     * @brief 获取 CCIX 主节点配置</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="comment">     * @param[out] config CCIX 主节点配置数据</span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="comment">     * @retval FWK_SUCCESS 操作成功</span></div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span><span class="comment">     * @return 其他错误码表示操作失败</span></div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__config__api.html#a64ec49c0e23a7ddf8ab1b5838bf94602">  295</a></span>    int (*<a class="code hl_variable" href="structmod__cmn600__ccix__config__api.html#a64ec49c0e23a7ddf8ab1b5838bf94602">get_config</a>)(<span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__host__node__config.html">mod_cmn600_ccix_host_node_config</a> *config);</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="comment"></span> </div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="comment">     * @brief 设置 CCIX 远端节点配置</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="comment">     * @param[in] config CCIX 远端节点配置数据</span></div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span><span class="comment">     * @retval FWK_SUCCESS 操作成功</span></div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="comment">     * @return 其他错误码表示操作失败</span></div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__config__api.html#ad2c4408d538febd91b31386fac5ec080">  305</a></span>    int (*<a class="code hl_variable" href="structmod__cmn600__ccix__config__api.html#ad2c4408d538febd91b31386fac5ec080">set_config</a>)(<span class="keyword">struct </span><a class="code hl_struct" href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a> *config);</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span><span class="comment"></span> </div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="comment">     * @brief 触发 CCIX 协议信用交换</span></div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span><span class="comment">     * @param[in] link_id 执行协议信用交换的链路标识符</span></div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span><span class="comment">     * @retval FWK_SUCCESS 操作成功</span></div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span><span class="comment">     * @return 其他错误码表示操作失败</span></div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__config__api.html#a13722bba1b63ddea478fdaaeb63e1651">  315</a></span>    int (*<a class="code hl_variable" href="structmod__cmn600__ccix__config__api.html#a13722bba1b63ddea478fdaaeb63e1651">exchange_protocol_credit</a>)(uint8_t link_id);</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span><span class="comment"></span> </div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="comment">     * @brief 配置进入系统一致性域</span></div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="comment">     * @param[in] link_id 使能一致性的链路标识符</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span><span class="comment">     * @retval FWK_SUCCESS 操作成功</span></div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span><span class="comment">     * @return 其他错误码表示操作失败</span></div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__config__api.html#a60c5131d546bf1037bbb7bdfd00e0b23">  325</a></span>    int (*<a class="code hl_variable" href="structmod__cmn600__ccix__config__api.html#a60c5131d546bf1037bbb7bdfd00e0b23">enter_system_coherency</a>)(uint8_t link_id);</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="comment"></span> </div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="comment">    /**</span></div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="comment">     * @brief 进入 DVM (Distributed Virtual Memory) 域</span></div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span><span class="comment">     * @param[in] link_id 使能 DVM 域的链路标识符</span></div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span><span class="comment">     *</span></div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span><span class="comment">     * @retval FWK_SUCCESS 操作成功</span></div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span><span class="comment">     * @return 其他错误码表示操作失败</span></div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span><span class="comment">     */</span></div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno"><a class="line" href="structmod__cmn600__ccix__config__api.html#a29a6d8f694b996cf8a8c7ddb4fcb707c">  335</a></span>    int (*<a class="code hl_variable" href="structmod__cmn600__ccix__config__api.html#a29a6d8f694b996cf8a8c7ddb4fcb707c">enter_dvm_domain</a>)(uint8_t link_id);</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>};</div>
+</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span><span class="comment"></span> </div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span><span class="comment">/*!</span></div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="comment"> * \}</span></div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="comment"></span> </div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span><span class="comment">/*!</span></div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span><span class="comment"> * \}</span></div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span> </div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span><span class="preprocessor">#endif </span><span class="comment">/* MOD_CMN600_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_ga07d8a00b3c83a111314a3eda87846dfa"><div class="ttname"><a href="group__GroupModuleCMN600.html#ga07d8a00b3c83a111314a3eda87846dfa">mod_cmn600_api_idx</a></div><div class="ttdeci">mod_cmn600_api_idx</div><div class="ttdoc">模块 API 索引</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00050">mod_cmn600.h:50</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_gac701f3fb1d37146b792cd4f7f6c797d5"><div class="ttname"><a href="group__GroupModuleCMN600.html#gac701f3fb1d37146b792cd4f7f6c797d5">MAX_HA_MMAP_ENTRIES</a></div><div class="ttdeci">#define MAX_HA_MMAP_ENTRIES</div><div class="ttdoc">Home Agent 内存映射表的最大条目数</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00042">mod_cmn600.h:42</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_gacc7242a52b08ea9c263991311b3373af"><div class="ttname"><a href="group__GroupModuleCMN600.html#gacc7242a52b08ea9c263991311b3373af">mod_cmn600_memory_region_type</a></div><div class="ttdeci">mod_cmn600_memory_region_type</div><div class="ttdoc">内存区域配置类型</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00062">mod_cmn600.h:62</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_gga07d8a00b3c83a111314a3eda87846dfaa226703f64f5025251863a691021b77dc"><div class="ttname"><a href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaa226703f64f5025251863a691021b77dc">MOD_CMN600_API_COUNT</a></div><div class="ttdeci">@ MOD_CMN600_API_COUNT</div><div class="ttdoc">API 总数</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00054">mod_cmn600.h:53</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_gga07d8a00b3c83a111314a3eda87846dfaa47abcea1baf3b31d53e108916d7c7e1c"><div class="ttname"><a href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaa47abcea1baf3b31d53e108916d7c7e1c">MOD_CMN600_API_IDX_PPU_OBSERVER</a></div><div class="ttdeci">@ MOD_CMN600_API_IDX_PPU_OBSERVER</div><div class="ttdoc">PPU_V1 电源状态观察者 API 索引</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00051">mod_cmn600.h:51</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_gga07d8a00b3c83a111314a3eda87846dfaacf61589a7abbccdf6b81d3730708d7bc"><div class="ttname"><a href="group__GroupModuleCMN600.html#gga07d8a00b3c83a111314a3eda87846dfaacf61589a7abbccdf6b81d3730708d7bc">MOD_CMN600_API_IDX_CCIX_CONFIG</a></div><div class="ttdeci">@ MOD_CMN600_API_IDX_CCIX_CONFIG</div><div class="ttdoc">CCIX 配置 API 索引</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00052">mod_cmn600.h:52</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_ggacc7242a52b08ea9c263991311b3373afa00ae9d2ce31ab951922345afa6b480df"><div class="ttname"><a href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa00ae9d2ce31ab951922345afa6b480df">MOD_CMN600_MEMORY_REGION_TYPE_SYSCACHE</a></div><div class="ttdeci">@ MOD_CMN600_MEMORY_REGION_TYPE_SYSCACHE</div><div class="ttdoc">系统缓存区域，由系统中所有 HN-F 节点服务 （使用 HN-F 节点池进行一致性缓存）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00070">mod_cmn600.h:70</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_ggacc7242a52b08ea9c263991311b3373afa1e77ba98f0b6bcf555083266f8df686a"><div class="ttname"><a href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa1e77ba98f0b6bcf555083266f8df686a">MOD_CMN600_MEMORY_REGION_TYPE_IO</a></div><div class="ttdeci">@ MOD_CMN600_MEMORY_REGION_TYPE_IO</div><div class="ttdoc">I/O 区域，由专用的 HN-I 或 HN-D 节点服务</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00064">mod_cmn600.h:64</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_ggacc7242a52b08ea9c263991311b3373afa3694af439a554586a96ac540f2452335"><div class="ttname"><a href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa3694af439a554586a96ac540f2452335">MOD_CMN600_REGION_TYPE_CCIX</a></div><div class="ttdeci">@ MOD_CMN600_REGION_TYPE_CCIX</div><div class="ttdoc">CCIX 访问区域，用于跨片 CCIX 一致性通信</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00081">mod_cmn600.h:81</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_ggacc7242a52b08ea9c263991311b3373afa7447ea87b558fce9efd01245048ab0a4"><div class="ttname"><a href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afa7447ea87b558fce9efd01245048ab0a4">MOD_CMN600_REGION_TYPE_SYSCACHE_NONHASH</a></div><div class="ttdeci">@ MOD_CMN600_REGION_TYPE_SYSCACHE_NONHASH</div><div class="ttdoc">系统缓存分组中的非哈希区域</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00086">mod_cmn600.h:86</a></div></div>
+<div class="ttc" id="agroup__GroupModuleCMN600_html_ggacc7242a52b08ea9c263991311b3373afaea0c2c6911ef0a87e4b3d0fadc1d3d2b"><div class="ttname"><a href="group__GroupModuleCMN600.html#ggacc7242a52b08ea9c263991311b3373afaea0c2c6911ef0a87e4b3d0fadc1d3d2b">MOD_CMN600_REGION_TYPE_SYSCACHE_SUB</a></div><div class="ttdeci">@ MOD_CMN600_REGION_TYPE_SYSCACHE_SUB</div><div class="ttdoc">系统缓存的非哈希子区域，由 HN-F 节点服务 （不进行哈希映射，直接访问指定目标）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00076">mod_cmn600.h:76</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__config__api_html"><div class="ttname"><a href="structmod__cmn600__ccix__config__api.html">mod_cmn600_ccix_config_api</a></div><div class="ttdoc">CMN-600 CCIX 配置 API</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00286">mod_cmn600.h:286</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__config__api_html_a13722bba1b63ddea478fdaaeb63e1651"><div class="ttname"><a href="structmod__cmn600__ccix__config__api.html#a13722bba1b63ddea478fdaaeb63e1651">mod_cmn600_ccix_config_api::exchange_protocol_credit</a></div><div class="ttdeci">int(* exchange_protocol_credit)(uint8_t link_id)</div><div class="ttdoc">触发 CCIX 协议信用交换</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00315">mod_cmn600.h:315</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__config__api_html_a29a6d8f694b996cf8a8c7ddb4fcb707c"><div class="ttname"><a href="structmod__cmn600__ccix__config__api.html#a29a6d8f694b996cf8a8c7ddb4fcb707c">mod_cmn600_ccix_config_api::enter_dvm_domain</a></div><div class="ttdeci">int(* enter_dvm_domain)(uint8_t link_id)</div><div class="ttdoc">进入 DVM (Distributed Virtual Memory) 域</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00335">mod_cmn600.h:335</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__config__api_html_a60c5131d546bf1037bbb7bdfd00e0b23"><div class="ttname"><a href="structmod__cmn600__ccix__config__api.html#a60c5131d546bf1037bbb7bdfd00e0b23">mod_cmn600_ccix_config_api::enter_system_coherency</a></div><div class="ttdeci">int(* enter_system_coherency)(uint8_t link_id)</div><div class="ttdoc">配置进入系统一致性域</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00325">mod_cmn600.h:325</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__config__api_html_a64ec49c0e23a7ddf8ab1b5838bf94602"><div class="ttname"><a href="structmod__cmn600__ccix__config__api.html#a64ec49c0e23a7ddf8ab1b5838bf94602">mod_cmn600_ccix_config_api::get_config</a></div><div class="ttdeci">int(* get_config)(struct mod_cmn600_ccix_host_node_config *config)</div><div class="ttdoc">获取 CCIX 主节点配置</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00295">mod_cmn600.h:295</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__config__api_html_ad2c4408d538febd91b31386fac5ec080"><div class="ttname"><a href="structmod__cmn600__ccix__config__api.html#ad2c4408d538febd91b31386fac5ec080">mod_cmn600_ccix_config_api::set_config</a></div><div class="ttdeci">int(* set_config)(struct mod_cmn600_ccix_remote_node_config *config)</div><div class="ttdoc">设置 CCIX 远端节点配置</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00305">mod_cmn600.h:305</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__ha__mmap_html"><div class="ttname"><a href="structmod__cmn600__ccix__ha__mmap.html">mod_cmn600_ccix_ha_mmap</a></div><div class="ttdoc">CCIX HA 内存映射表条目</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00178">mod_cmn600.h:178</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__ha__mmap_html_a5b440d92cd298b29908842fc3c578024"><div class="ttname"><a href="structmod__cmn600__ccix__ha__mmap.html#a5b440d92cd298b29908842fc3c578024">mod_cmn600_ccix_ha_mmap::size</a></div><div class="ttdeci">uint64_t size</div><div class="ttdoc">区域大小（字节）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00187">mod_cmn600.h:187</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__ha__mmap_html_a6be72eef08c275fbc55212e4c17d0eda"><div class="ttname"><a href="structmod__cmn600__ccix__ha__mmap.html#a6be72eef08c275fbc55212e4c17d0eda">mod_cmn600_ccix_ha_mmap::ha_id</a></div><div class="ttdeci">uint8_t ha_id</div><div class="ttdoc">Home Agent 节点 ID</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00181">mod_cmn600.h:181</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__ha__mmap_html_a987e23868196212cf4c176c3d7c93141"><div class="ttname"><a href="structmod__cmn600__ccix__ha__mmap.html#a987e23868196212cf4c176c3d7c93141">mod_cmn600_ccix_ha_mmap::base</a></div><div class="ttdeci">uint64_t base</div><div class="ttdoc">区域基地址</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00184">mod_cmn600.h:184</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html">mod_cmn600_ccix_host_node_config</a></div><div class="ttdoc">CMN-600 主节点 CCIX 配置数据</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00245">mod_cmn600.h:245</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a00c4aacadc8a5f8fcfac5bd5a8d4dfdd"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a00c4aacadc8a5f8fcfac5bd5a8d4dfdd">mod_cmn600_ccix_host_node_config::ccix_max_packet_size</a></div><div class="ttdeci">uint8_t ccix_max_packet_size</div><div class="ttdoc">主节点 CCIX 最大包大小编码</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00271">mod_cmn600.h:271</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a0f5ca13b417ed576a538e40270530189"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a0f5ca13b417ed576a538e40270530189">mod_cmn600_ccix_host_node_config::ccix_host_mmap</a></div><div class="ttdeci">struct mod_cmn600_ccix_ha_mmap ccix_host_mmap[MAX_HA_MMAP_ENTRIES]</div><div class="ttdoc">CCIX HA 内存映射表（用于端点配置）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00259">mod_cmn600.h:259</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a1b71aa39a2047f5460d0cf2def6e3adc"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a1b71aa39a2047f5460d0cf2def6e3adc">mod_cmn600_ccix_host_node_config::ccix_msg_pack_enable</a></div><div class="ttdeci">bool ccix_msg_pack_enable</div><div class="ttdoc">主节点 CCIX 消息打包能力</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00277">mod_cmn600.h:277</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a23da27c0b7faf9f81f5a51e6a7a2a959"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a23da27c0b7faf9f81f5a51e6a7a2a959">mod_cmn600_ccix_host_node_config::host_sa_count</a></div><div class="ttdeci">uint8_t host_sa_count</div><div class="ttdoc">主节点 SA（Slave Agent）数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00250">mod_cmn600.h:250</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a28f07281e7443adbaef1667ec207b102"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a28f07281e7443adbaef1667ec207b102">mod_cmn600_ccix_host_node_config::ccix_opt_tlp</a></div><div class="ttdeci">bool ccix_opt_tlp</div><div class="ttdoc">主节点 CCIX 优化 TLP 模式能力</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00274">mod_cmn600.h:274</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a4b441a203b768ae982123531049cfff1"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a4b441a203b768ae982123531049cfff1">mod_cmn600_ccix_host_node_config::ccix_host_mmap_count</a></div><div class="ttdeci">uint8_t ccix_host_mmap_count</div><div class="ttdoc">CCIX HA 内存映射表条目数量（用于端点配置）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00256">mod_cmn600.h:256</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_a9006d1e1c5d12d8d7ae50a9b28f6b587"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#a9006d1e1c5d12d8d7ae50a9b28f6b587">mod_cmn600_ccix_host_node_config::host_ra_count</a></div><div class="ttdeci">uint8_t host_ra_count</div><div class="ttdoc">主节点 RA（Requesting Agent）数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00247">mod_cmn600.h:247</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_aa388fb81c1e2d0df38dc77dfde8bc4df"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#aa388fb81c1e2d0df38dc77dfde8bc4df">mod_cmn600_ccix_host_node_config::host_ha_count</a></div><div class="ttdeci">uint8_t host_ha_count</div><div class="ttdoc">主节点 HA（Home Agent）数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00253">mod_cmn600.h:253</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_ab5d2d28e929bb53c390453f5df8edc7d"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#ab5d2d28e929bb53c390453f5df8edc7d">mod_cmn600_ccix_host_node_config::ccix_request_credits</a></div><div class="ttdeci">uint16_t ccix_request_credits</div><div class="ttdoc">主节点 CCIX 最大 Memory Request 发送信用数</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00262">mod_cmn600.h:262</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_ab75ac01c1ddf95faccc9da0210e3eccf"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#ab75ac01c1ddf95faccc9da0210e3eccf">mod_cmn600_ccix_host_node_config::ccix_snoop_credits</a></div><div class="ttdeci">uint16_t ccix_snoop_credits</div><div class="ttdoc">主节点 CCIX 最大 Snoop 发送信用数</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00265">mod_cmn600.h:265</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__host__node__config_html_ae935a692ed1d512ec2f4ea82b48a862f"><div class="ttname"><a href="structmod__cmn600__ccix__host__node__config.html#ae935a692ed1d512ec2f4ea82b48a862f">mod_cmn600_ccix_host_node_config::ccix_data_credits</a></div><div class="ttdeci">uint16_t ccix_data_credits</div><div class="ttdoc">主节点 CCIX 最大 Data 发送信用数</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00268">mod_cmn600.h:268</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html">mod_cmn600_ccix_remote_node_config</a></div><div class="ttdoc">CMN-600 远端节点 CCIX 配置数据</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00197">mod_cmn600.h:197</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a01767fea7513742a22c49bba536d03b8"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a01767fea7513742a22c49bba536d03b8">mod_cmn600_ccix_remote_node_config::ccix_tc</a></div><div class="ttdeci">uint8_t ccix_tc</div><div class="ttdoc">CCIX 虚通道使用的 PCIe Traffic Class</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00212">mod_cmn600.h:212</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a0541f619d172454c61cc4f652dbd8b3a"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a0541f619d172454c61cc4f652dbd8b3a">mod_cmn600_ccix_remote_node_config::remote_ha_mmap</a></div><div class="ttdeci">struct mod_cmn600_ccix_ha_mmap remote_ha_mmap[MAX_HA_MMAP_ENTRIES]</div><div class="ttdoc">远端 HA 内存映射表，最多 MAX_HA_MMAP_ENTRIES 个条目</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00233">mod_cmn600.h:233</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a05d60146d4d16f3621d1a248281df8cb"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a05d60146d4d16f3621d1a248281df8cb">mod_cmn600_ccix_remote_node_config::ccix_opt_tlp</a></div><div class="ttdeci">bool ccix_opt_tlp</div><div class="ttdoc">CCIX 优化 TLP 模式使能标志</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00224">mod_cmn600.h:224</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a2ded0ea706aa183d20953e528e32e1f4"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a2ded0ea706aa183d20953e528e32e1f4">mod_cmn600_ccix_remote_node_config::remote_rnf_count</a></div><div class="ttdeci">uint8_t remote_rnf_count</div><div class="ttdoc">远端缓存代理 (RN-F) 数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00203">mod_cmn600.h:203</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a3e630ac1493d4ce0e9fb4d9612717a15"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a3e630ac1493d4ce0e9fb4d9612717a15">mod_cmn600_ccix_remote_node_config::remote_ha_count</a></div><div class="ttdeci">uint8_t remote_ha_count</div><div class="ttdoc">远端 HA（Home Agent）数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00209">mod_cmn600.h:209</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a3f6d68c1deafd09898b7ab88fd46102a"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a3f6d68c1deafd09898b7ab88fd46102a">mod_cmn600_ccix_remote_node_config::ccix_link_id</a></div><div class="ttdeci">uint8_t ccix_link_id</div><div class="ttdoc">CCIX 链路标识符，有效值为 0-2</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00221">mod_cmn600.h:221</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a40a60fe0e6a4d5be064703373aa8964d"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a40a60fe0e6a4d5be064703373aa8964d">mod_cmn600_ccix_remote_node_config::remote_sa_count</a></div><div class="ttdeci">uint8_t remote_sa_count</div><div class="ttdoc">远端 SA（Slave Agent）数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00206">mod_cmn600.h:206</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_a5bbaf274e91a70dce4df3abaa3bf67e4"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#a5bbaf274e91a70dce4df3abaa3bf67e4">mod_cmn600_ccix_remote_node_config::ccix_max_packet_size</a></div><div class="ttdeci">uint8_t ccix_max_packet_size</div><div class="ttdoc">CCIX 最大包大小编码，参见 CXLA_CCIX_PROP_MAX_PACK_SIZE_xxx</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00236">mod_cmn600.h:236</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_aaba61d78d9bdaaf2facebe2ffdb2e6d0"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#aaba61d78d9bdaaf2facebe2ffdb2e6d0">mod_cmn600_ccix_remote_node_config::smp_mode</a></div><div class="ttdeci">bool smp_mode</div><div class="ttdoc">SMP 模式使能标志</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00230">mod_cmn600.h:230</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_ac91d2f2a6525f66e2b8bb45c5265d8d5"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#ac91d2f2a6525f66e2b8bb45c5265d8d5">mod_cmn600_ccix_remote_node_config::remote_ha_mmap_count</a></div><div class="ttdeci">uint8_t remote_ha_mmap_count</div><div class="ttdoc">远端 HA 内存映射表条目数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00227">mod_cmn600.h:227</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_ada6b0fc97407e6db955b32209732531c"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#ada6b0fc97407e6db955b32209732531c">mod_cmn600_ccix_remote_node_config::pcie_bus_num</a></div><div class="ttdeci">uint8_t pcie_bus_num</div><div class="ttdoc">CCIX 链路使能的 PCIe 总线号</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00218">mod_cmn600.h:218</a></div></div>
+<div class="ttc" id="astructmod__cmn600__ccix__remote__node__config_html_adabbc6ecb8f0d2a37e62624daaddf3fa"><div class="ttname"><a href="structmod__cmn600__ccix__remote__node__config.html#adabbc6ecb8f0d2a37e62624daaddf3fa">mod_cmn600_ccix_remote_node_config::ccix_msg_pack_enable</a></div><div class="ttdeci">bool ccix_msg_pack_enable</div><div class="ttdoc">CCIX 消息打包使能标志</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00215">mod_cmn600.h:215</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html"><div class="ttname"><a href="structmod__cmn600__config.html">mod_cmn600_config</a></div><div class="ttdoc">CMN-600 模块配置数据</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00121">mod_cmn600.h:121</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_a2da4e5e0995de8d613fb652ece222711"><div class="ttname"><a href="structmod__cmn600__config.html#a2da4e5e0995de8d613fb652ece222711">mod_cmn600_config::sa_count</a></div><div class="ttdeci">unsigned int sa_count</div><div class="ttdoc">主节点的 SA（Slave Agent）数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00146">mod_cmn600.h:146</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_a7ab046e53064847b301d9bbf19a346cb"><div class="ttname"><a href="structmod__cmn600__config.html#a7ab046e53064847b301d9bbf19a346cb">mod_cmn600_config::clock_id</a></div><div class="ttdeci">fwk_id_t clock_id</div><div class="ttdoc">该设备依赖的时钟标识符，若为 FWK_ID_NONE 则不等待时钟</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00158">mod_cmn600.h:158</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_a92386295bb712ea1bfbdb0ef18828558"><div class="ttname"><a href="structmod__cmn600__config.html#a92386295bb712ea1bfbdb0ef18828558">mod_cmn600_config::hnd_node_id</a></div><div class="ttdeci">unsigned int hnd_node_id</div><div class="ttdoc">包含全局配置的默认 HN-D 节点标识符，用于定位根节点（Configuration Manager）</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00132">mod_cmn600.h:132</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_a9a2c3099c443a31fb6497d34ed05de0b"><div class="ttname"><a href="structmod__cmn600__config.html#a9a2c3099c443a31fb6497d34ed05de0b">mod_cmn600_config::snf_table</a></div><div class="ttdeci">const unsigned int * snf_table</div><div class="ttdoc">HN-F 节点的目标 SN-F 节点映射表</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00140">mod_cmn600.h:140</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_aa7f57329008280a48493f8372d18c132"><div class="ttname"><a href="structmod__cmn600__config.html#aa7f57329008280a48493f8372d18c132">mod_cmn600_config::mmap_table</a></div><div class="ttdeci">const struct mod_cmn600_memory_region_map * mmap_table</div><div class="ttdoc">内存区域映射表，描述所有需配置的内存区域</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00149">mod_cmn600.h:149</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_ab024c77a4924522a40c50584005bfb15"><div class="ttname"><a href="structmod__cmn600__config.html#ab024c77a4924522a40c50584005bfb15">mod_cmn600_config::snf_count</a></div><div class="ttdeci">size_t snf_count</div><div class="ttdoc">snf_table 中的条目数量，须等于系统中 HN-F 的总数</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00143">mod_cmn600.h:143</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_abab1f75ebc4cd454618f838111689bff"><div class="ttname"><a href="structmod__cmn600__config.html#abab1f75ebc4cd454618f838111689bff">mod_cmn600_config::base</a></div><div class="ttdeci">uintptr_t base</div><div class="ttdoc">CMN-600 外设基地址，即 MMIO 映射的起始地址</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00123">mod_cmn600.h:123</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_ac20fdd7c863895cbf28155206ee19d43"><div class="ttname"><a href="structmod__cmn600__config.html#ac20fdd7c863895cbf28155206ee19d43">mod_cmn600_config::mesh_size_y</a></div><div class="ttdeci">unsigned int mesh_size_y</div><div class="ttdoc">互连 mesh 的 Y 轴尺寸，有效范围 1-8</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00129">mod_cmn600.h:129</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_ac885de45eb02c95f76b880f0af8b70bf"><div class="ttname"><a href="structmod__cmn600__config.html#ac885de45eb02c95f76b880f0af8b70bf">mod_cmn600_config::chip_addr_space</a></div><div class="ttdeci">uint64_t chip_addr_space</div><div class="ttdoc">芯片的地址空间大小，用于多芯片场景下的地址偏移计算</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00155">mod_cmn600.h:155</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_ad2ae8eb29651e4b222fb167430c917a6"><div class="ttname"><a href="structmod__cmn600__config.html#ad2ae8eb29651e4b222fb167430c917a6">mod_cmn600_config::mmap_count</a></div><div class="ttdeci">size_t mmap_count</div><div class="ttdoc">mmap_table 中的条目数量</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00152">mod_cmn600.h:152</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_ad8e1ec907265eb084c9b860d6ba327a2"><div class="ttname"><a href="structmod__cmn600__config.html#ad8e1ec907265eb084c9b860d6ba327a2">mod_cmn600_config::mesh_size_x</a></div><div class="ttdeci">unsigned int mesh_size_x</div><div class="ttdoc">互连 mesh 的 X 轴尺寸，有效范围 1-8</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00126">mod_cmn600.h:126</a></div></div>
+<div class="ttc" id="astructmod__cmn600__config_html_af8e4219061f6acd75d518b710aba8658"><div class="ttname"><a href="structmod__cmn600__config.html#af8e4219061f6acd75d518b710aba8658">mod_cmn600_config::hnf_cal_mode</a></div><div class="ttdeci">bool hnf_cal_mode</div><div class="ttdoc">HN-F CAL 支持使能标志</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00169">mod_cmn600.h:169</a></div></div>
+<div class="ttc" id="astructmod__cmn600__memory__region__map_html"><div class="ttname"><a href="structmod__cmn600__memory__region__map.html">mod_cmn600_memory_region_map</a></div><div class="ttdoc">内存区域映射描述符</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00095">mod_cmn600.h:95</a></div></div>
+<div class="ttc" id="astructmod__cmn600__memory__region__map_html_a015d8f3f9dc4335f05ede37483151a28"><div class="ttname"><a href="structmod__cmn600__memory__region__map.html#a015d8f3f9dc4335f05ede37483151a28">mod_cmn600_memory_region_map::type</a></div><div class="ttdeci">enum mod_cmn600_memory_region_type type</div><div class="ttdoc">区域配置类型，参见 enum mod_cmn600_memory_region_type</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00103">mod_cmn600.h:103</a></div></div>
+<div class="ttc" id="astructmod__cmn600__memory__region__map_html_aa3a7fbb195d194f4eece6190f8c2300e"><div class="ttname"><a href="structmod__cmn600__memory__region__map.html#aa3a7fbb195d194f4eece6190f8c2300e">mod_cmn600_memory_region_map::base</a></div><div class="ttdeci">uint64_t base</div><div class="ttdoc">区域基地址，须按 SAM_GRANULARITY（64MB）对齐</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00097">mod_cmn600.h:97</a></div></div>
+<div class="ttc" id="astructmod__cmn600__memory__region__map_html_ae25cf2283d1e4003e486d0140e6f8af7"><div class="ttname"><a href="structmod__cmn600__memory__region__map.html#ae25cf2283d1e4003e486d0140e6f8af7">mod_cmn600_memory_region_map::node_id</a></div><div class="ttdeci">unsigned int node_id</div><div class="ttdoc">目标节点标识符</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00111">mod_cmn600.h:111</a></div></div>
+<div class="ttc" id="astructmod__cmn600__memory__region__map_html_ae779c67be73dadc807fd590f54a47184"><div class="ttname"><a href="structmod__cmn600__memory__region__map.html#ae779c67be73dadc807fd590f54a47184">mod_cmn600_memory_region_map::size</a></div><div class="ttdeci">uint64_t size</div><div class="ttdoc">区域大小（字节），须为 SAM_GRANULARITY 的 2 的幂次倍</div><div class="ttdef"><b>Definition</b> <a href="mod__cmn600_8h_source.html#l00100">mod_cmn600.h:100</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_48f311512fb313e8ec1c32eaef206743.html">scp_firmware</a></li><li class="navelem"><a class="el" href="dir_fcc1255ba6bda919d85092c50000c4b5.html">module</a></li><li class="navelem"><a class="el" href="dir_a446bcb378e7d3b34199efec74fac8d3.html">cmn600</a></li><li class="navelem"><a class="el" href="dir_dfaf74a7e0a30d6f2b03404a92276f19.html">include</a></li><li class="navelem"><a class="el" href="mod__cmn600_8h.html">mod_cmn600.h</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

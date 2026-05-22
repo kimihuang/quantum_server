@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8. TCU 和 TBU 一致性维护机制深入分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/translations.js?v=540d3cec"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="9. MMU-600AE RAS 与 PMU 深入分析" href="corelink_mmu600ae_ras_pmu.html" />
+    <link rel="prev" title="7. CoreLink MMU-600AE TCU 与 TBU 架构分析" href="corelink_mmu600ae_trm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. TCU 和 TBU 一致性维护机制深入分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">8.1. 什么需要维护一致性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">8.2. 硬件自动维护一致性的机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dvm-tlb">8.2.1. 1 DVM 广播 TLB 失效</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dti-invalidation">8.2.2. 2 DTI Invalidation 消息传播</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transaction-tracker">8.2.3. 3 Transaction Tracker 实现非阻塞失效</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu">8.2.4. 4 TCU 内部失效级联</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sysco-tcu">8.2.5. 5 SYSCO 接口——TCU 自身的一致性域管理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ace5">8.2.6. 6 ACE5 低功耗扩展</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">8.3. 软件维护一致性的机制</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-queue">8.3.1. 1 通过 Command Queue 发送失效命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inv-all">8.3.2. 2 INV_ALL——全量失效</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ats">8.3.3. 3 ATS 相关的一致性维护</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dis-dvm-dvm">8.3.4. 4 DIS_DVM——按节点禁用 DVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">8.3.5. 5 初始化阶段的一致性维护</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">8.3.6. 6 非一致系统的额外处理</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">8.4. 软件不能做什么</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tbu-tlb">8.4.1. 1 不能直接操作 TBU TLB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu-walk-cache">8.4.2. 2 不能直接操作 TCU Walk Cache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tcu-configuration-cache">8.4.3. 3 不能直接操作 TCU Configuration Cache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">8.4.4. 4 不能跨功耗域直接操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cmd-prefetch-config-addr">8.4.5. 5 CMD_PREFETCH_CONFIG/ADDR 不生效</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#prefetch">8.5. Prefetch 与一致性的交互</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tcu-prefetch">8.5.1. 1 TCU Prefetch 的风险</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stashtranslation-mtlb">8.5.2. 2 StashTranslation 与 MTLB 预取</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id17">8.6. 一致性维护的典型流程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id18">8.6.1. 1 修改页表后的标准流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streamid">8.6.2. 2 迁移设备（更改 StreamID 映射）后的流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ste">8.6.3. 3 修改 STE 配置属性后的流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#direct-indexing-tbu">8.6.4. 4 启用 Direct Indexing 的 TBU 的一致性</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">8.7. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">8. </span>TCU 和 TBU 一致性维护机制深入分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/arm/mmu600ae/corelink_mmu600ae_coherency.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tcu-tbu">
+<h1><span class="section-number">8. </span>TCU 和 TBU 一致性维护机制深入分析<a class="headerlink" href="#tcu-tbu" title="链接到此标题。"></a></h1>
+<p>本文档深入分析 MMU-600AE 中 TCU 和 TBU 如何维护翻译缓存的一致性，
+以及软件在哪些环节可以、必须或无法干预一致性维护。</p>
+<p>参考文档：
+- ARM CoreLink MMU-600AE TRM（DEN 0060D）
+- ARM SMMUv3 架构规范（IHI 0070G）</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#id2" id="id34">什么需要维护一致性</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id35">硬件自动维护一致性的机制</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dvm-tlb" id="id36">1 DVM 广播 TLB 失效</a></p></li>
+<li><p><a class="reference internal" href="#dti-invalidation" id="id37">2 DTI Invalidation 消息传播</a></p></li>
+<li><p><a class="reference internal" href="#transaction-tracker" id="id38">3 Transaction Tracker 实现非阻塞失效</a></p></li>
+<li><p><a class="reference internal" href="#tcu" id="id39">4 TCU 内部失效级联</a></p></li>
+<li><p><a class="reference internal" href="#sysco-tcu" id="id40">5 SYSCO 接口——TCU 自身的一致性域管理</a></p></li>
+<li><p><a class="reference internal" href="#ace5" id="id41">6 ACE5 低功耗扩展</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id8" id="id42">软件维护一致性的机制</a></p>
+<ul>
+<li><p><a class="reference internal" href="#command-queue" id="id43">1 通过 Command Queue 发送失效命令</a></p></li>
+<li><p><a class="reference internal" href="#inv-all" id="id44">2 INV_ALL——全量失效</a></p></li>
+<li><p><a class="reference internal" href="#ats" id="id45">3 ATS 相关的一致性维护</a></p></li>
+<li><p><a class="reference internal" href="#dis-dvm-dvm" id="id46">4 DIS_DVM——按节点禁用 DVM</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id47">5 初始化阶段的一致性维护</a></p></li>
+<li><p><a class="reference internal" href="#id14" id="id48">6 非一致系统的额外处理</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id15" id="id49">软件不能做什么</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tbu-tlb" id="id50">1 不能直接操作 TBU TLB</a></p></li>
+<li><p><a class="reference internal" href="#tcu-walk-cache" id="id51">2 不能直接操作 TCU Walk Cache</a></p></li>
+<li><p><a class="reference internal" href="#tcu-configuration-cache" id="id52">3 不能直接操作 TCU Configuration Cache</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id53">4 不能跨功耗域直接操作</a></p></li>
+<li><p><a class="reference internal" href="#cmd-prefetch-config-addr" id="id54">5 CMD_PREFETCH_CONFIG/ADDR 不生效</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#prefetch" id="id55">Prefetch 与一致性的交互</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tcu-prefetch" id="id56">1 TCU Prefetch 的风险</a></p></li>
+<li><p><a class="reference internal" href="#stashtranslation-mtlb" id="id57">2 StashTranslation 与 MTLB 预取</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id17" id="id58">一致性维护的典型流程</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id18" id="id59">1 修改页表后的标准流程</a></p></li>
+<li><p><a class="reference internal" href="#streamid" id="id60">2 迁移设备（更改 StreamID 映射）后的流程</a></p></li>
+<li><p><a class="reference internal" href="#ste" id="id61">3 修改 STE 配置属性后的流程</a></p></li>
+<li><p><a class="reference internal" href="#direct-indexing-tbu" id="id62">4 启用 Direct Indexing 的 TBU 的一致性</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id19" id="id63">总结</a></p></li>
+</ul>
+</nav>
+<section id="id2">
+<h2><a class="toc-backref" href="#id34" role="doc-backlink"><span class="section-number">8.1. </span>什么需要维护一致性</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p>MMU-600AE 中存在多级翻译缓存，每一级都可能存储过时的（stale）翻译数据：</p>
+<p>当软件修改页表、Stream Table 或 CD 后，上述所有缓存中可能存在与内存不一致的旧数据。
+如果不主动失效，后续事务可能使用过时翻译，导致错误的物理地址或安全属性。</p>
+<p>一致性维护的本质就是：<strong>在软件更新翻译结构后，确保所有相关缓存中的旧条目被失效或更新</strong>。</p>
+</section>
+<section id="id3">
+<h2><a class="toc-backref" href="#id35" role="doc-backlink"><span class="section-number">8.2. </span>硬件自动维护一致性的机制</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<section id="dvm-tlb">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink"><span class="section-number">8.2.1. </span>1 DVM 广播 TLB 失效</a><a class="headerlink" href="#dvm-tlb" title="链接到此标题。"></a></h3>
+<p>当系统支持 Broadcast TLB Maintenance（<code class="docutils literal notranslate"><span class="pre">sup_btm</span> <span class="pre">=</span> <span class="pre">HIGH</span></code>）时，PE（处理器）
+执行 TLBI 指令后，互连通过 DVM 协议将失效消息广播到 TCU。
+TCU 的 QTW/DVM 接口支持 DVMv8.1，可以接收并处理这些消息。</p>
+<p><strong>工作流程</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>PE 执行 TLBI 指令
+    → 互连广播 DVM TLB Invalidate 消息
+        → TCU QTW/DVM 接口接收
+            → TCU 失效自身 Configuration Cache 和 Walk Cache 中匹配的条目
+            → TCU 通过 DTI 发送 Invalidation 消息给各 TBU
+                → TBU 失效 Micro TLB 和 MTLB 中匹配的条目
+        → PE 发起 DVM Sync
+            → TCU 返回 DVM Complete（所有失效完成）
+</pre></div>
+</div>
+<p><strong>PTM 控制</strong>：软件可以通过 <code class="docutils literal notranslate"><span class="pre">SMMU_CR2.PTM</span></code> 和 <code class="docutils literal notranslate"><span class="pre">SMMU_S_CR2.PTM</span></code>
+选择性地屏蔽 DVM TLB Invalidate 操作：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PTM</span> <span class="pre">=</span> <span class="pre">0</span></code>：TLB Invalidate 正常应用于对应安全状态的 TLB</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PTM</span> <span class="pre">=</span> <span class="pre">1</span></code>：TLB Invalidate 不生效（但 QTW/DVM 接口仍返回正常响应）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sup_btm</span> <span class="pre">=</span> <span class="pre">HIGH</span></code> 时复位默认值为 <a href="#id4"><span class="problematic" id="id5">``</span></a>PTM = 1``（屏蔽状态），需要软件主动清除</p></li>
+</ul>
+<p><strong>CD.ASET 对广播失效的影响</strong>：</p>
+<ul class="simple">
+<li><p><a href="#id6"><span class="problematic" id="id7">``</span></a>ASET = 0``（ASID 与 PE 共享）：TLB 条目会被匹配的广播失效操作影响</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ASET</span> <span class="pre">=</span> <span class="pre">1``（设备专用地址空间）：TLB</span> <span class="pre">条目不会被</span> <span class="pre">``VAExIS</span></code>/<code class="docutils literal notranslate"><span class="pre">ASIDExIS</span></code> 失效，
+但仍被 <code class="docutils literal notranslate"><span class="pre">ALLEXIS</span></code> 全量失效影响</p></li>
+</ul>
+<p><strong>优化</strong>：如果自上次 DVM Sync 以来没有发生 TLB Invalidate 操作，
+后续 DVM Sync 会立即返回 DVM Complete，不增加延迟。</p>
+</section>
+<section id="dti-invalidation">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink"><span class="section-number">8.2.2. </span>2 DTI Invalidation 消息传播</a><a class="headerlink" href="#dti-invalidation" title="链接到此标题。"></a></h3>
+<p>TCU 通过 DTI 协议的 <strong>Invalidation and Synchronization</strong> 消息组将失效
+请求传播给 TBU。（来源：Section 2.5）</p>
+<p><strong>关键约束</strong>：</p>
+<ul class="simple">
+<li><p>TCU 同一时刻只能发出**一个** invalidate 消息</p></li>
+<li><p>每个 TBU 只授予**一个** invalidation token（<code class="docutils literal notranslate"><span class="pre">TOK_INV_GNT</span></code>）</p></li>
+<li><p>这意味着**跨 TBU 的失效是串行化的**，不是并行的</p></li>
+</ul>
+<p><strong>Token 机制</strong>：</p>
+<ul class="simple">
+<li><p>TBU 在连接时通过 <code class="docutils literal notranslate"><span class="pre">max_tok_trans</span></code> 信号请求翻译 token 数量</p></li>
+<li><p>TBU 通过 <code class="docutils literal notranslate"><span class="pre">TOK_INV_GNT</span></code> 授予失效 token（只有 1 个）</p></li>
+<li><p>TCU 使用 <code class="docutils literal notranslate"><span class="pre">TOK_TRANS_REQ</span></code> 请求翻译 token</p></li>
+</ul>
+</section>
+<section id="transaction-tracker">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink"><span class="section-number">8.2.3. </span>3 Transaction Tracker 实现非阻塞失效</a><a class="headerlink" href="#transaction-tracker" title="链接到此标题。"></a></h3>
+<p>TBU 的 Transaction Tracker 允许失效和同步操作在不阻塞 AXI 接口的情况下执行。
+即使有未完成的读写事务，TLB 中的条目仍然可以被失效。失效操作会标记对应条目，
+后续事务会重新触发翻译。（来源：Section 2.1）</p>
+</section>
+<section id="tcu">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink"><span class="section-number">8.2.4. </span>4 TCU 内部失效级联</a><a class="headerlink" href="#tcu" title="链接到此标题。"></a></h3>
+<p>当 TCU 收到失效请求时，失效按以下级联顺序执行：</p>
+<ol class="arabic simple">
+<li><p><strong>Configuration Cache</strong> 中匹配的 STE/CD 条目被失效</p></li>
+<li><p><strong>Walk Cache</strong> 中与被失效配置关联的条目被失效</p></li>
+<li><p>通过 DTI 将失效消息发送给各 TBU</p></li>
+<li><p>TBU 失效 Micro TLB 和 MTLB 中的匹配条目</p></li>
+</ol>
+<p>Walk Cache 的失效性能受 <code class="docutils literal notranslate"><span class="pre">ASID_VMID_HASH</span></code> 位影响（<code class="docutils literal notranslate"><span class="pre">TCU_CTRL[19]</span></code>）：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ASID_VMID_HASH</span> <span class="pre">=</span> <span class="pre">0</span></code>：仅使用输入地址做索引，失效效率高</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ASID_VMID_HASH</span> <span class="pre">=</span> <span class="pre">1</span></code>：使用 ASID、VMID 和地址做索引，改善缓存利用率，
+但**不提供 ASID 的失效需要遍历整个缓存**</p></li>
+</ul>
+</section>
+<section id="sysco-tcu">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink"><span class="section-number">8.2.5. </span>5 SYSCO 接口——TCU 自身的一致性域管理</a><a class="headerlink" href="#sysco-tcu" title="链接到此标题。"></a></h3>
+<p>TCU 通过 SYSCO 接口管理自身是否属于系统一致性域。
+这不是用于向 TBU 传播失效的机制，而是用于 TCU 的功耗管理。（来源：Section 2.4.1.7）</p>
+<ul class="simple">
+<li><p>进入低功耗状态前，TCU 通过 <code class="docutils literal notranslate"><span class="pre">syscoreq</span> <span class="pre">=</span> <span class="pre">HIGH</span></code> 请求退出一致性域</p></li>
+<li><p>系统确认后 <code class="docutils literal notranslate"><span class="pre">syscoack</span> <span class="pre">=</span> <span class="pre">HIGH</span></code></p></li>
+<li><p>恢复时反向操作</p></li>
+<li><p>如果 <code class="docutils literal notranslate"><span class="pre">sup_btm</span> <span class="pre">=</span> <span class="pre">LOW``（不支持</span> <span class="pre">BTM），``syscoreq</span></code> 始终为 LOW</p></li>
+</ul>
+</section>
+<section id="ace5">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink"><span class="section-number">8.2.6. </span>6 ACE5 低功耗扩展</a><a class="headerlink" href="#ace5" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 支持 ACE5 低功耗扩展，允许 TCU 在上下电过程中
+订阅/取消订阅 DVM TLB Invalidate 请求，而无需重新编程 DTI Interconnect。
+这确保了 TCU 在不同功耗状态下仍能正确参与 DVM 域。（来源：Section 1.3）</p>
+</section>
+</section>
+<section id="id8">
+<h2><a class="toc-backref" href="#id42" role="doc-backlink"><span class="section-number">8.3. </span>软件维护一致性的机制</a><a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<section id="command-queue">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink"><span class="section-number">8.3.1. </span>1 通过 Command Queue 发送失效命令</a><a class="headerlink" href="#command-queue" title="链接到此标题。"></a></h3>
+<p>软件可以通过向 SMMU Command Queue 写入命令来主动维护一致性。
+这是最核心的软件干预手段。</p>
+<p><strong>TLB 失效命令（仅影响 SMMU 自身 TLB，不广播到 PE）</strong>：</p>
+<p><strong>配置缓存失效命令</strong>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_CFGI_ALL</span></code>：失效 TCU Configuration Cache 和 TBU 的配置缓存 + TLB</p></li>
+</ul>
+<p><strong>关键规则</strong>：所有失效命令序列后**必须**跟 <code class="docutils literal notranslate"><span class="pre">CMD_SYNC</span></code> 命令，
+确保失效操作完成后再执行后续操作。</p>
+</section>
+<section id="inv-all">
+<h3><a class="toc-backref" href="#id44" role="doc-backlink"><span class="section-number">8.3.2. </span>2 INV_ALL——全量失效</a><a class="headerlink" href="#inv-all" title="链接到此标题。"></a></h3>
+<p>Secure 软件可以通过 <code class="docutils literal notranslate"><span class="pre">SMMU_S_INIT.INV_ALL</span></code> 位触发一次全量失效，
+覆盖所有翻译体制和安全状态的 Configuration Cache 和 TLB。（来源：Appendix B.1.6）</p>
+<p>操作步骤:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>1. Secure 软件设置 SMMU_S_INIT.INV_ALL = 1
+2. SMMU 开始全量失效
+3. 轮询 SMMU_S_INIT.INV_ALL 直到读回 0（失效完成）
+4. 继续后续 SMMU 配置
+</pre></div>
+</div>
+</section>
+<section id="ats">
+<h3><a class="toc-backref" href="#id45" role="doc-backlink"><span class="section-number">8.3.3. </span>3 ATS 相关的一致性维护</a><a class="headerlink" href="#ats" title="链接到此标题。"></a></h3>
+<p>当使用 PCIe ATS（Address Translation Service）时，一致性维护需要额外步骤：</p>
+<p><strong>翻译配置变更的顺序</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>1. CMD_TLBI_*   — 失效 SMMU TLB
+2. CMD_SYNC      — 确保 SMMU TLB 失效完成
+3. CMD_ATC_INV   — 失效 PCIe 设备的 ATC（Address Translation Cache）
+4. CMD_SYNC      — 确保 ATC 失效完成
+</pre></div>
+</div>
+<p><strong>关键约束</strong>：必须先完成 SMMU TLB 失效，再发起 ATC 失效。
+否则 PCIe 设备可能在使用已失效的翻译。</p>
+</section>
+<section id="dis-dvm-dvm">
+<h3><a class="toc-backref" href="#id46" role="doc-backlink"><span class="section-number">8.3.4. </span>4 DIS_DVM——按节点禁用 DVM</a><a class="headerlink" href="#dis-dvm-dvm" title="链接到此标题。"></a></h3>
+<p>当某个 TBU 响应 DVM 失效过慢，或软件知道该节点不需要参与 DVM 域时，
+可以通过 <code class="docutils literal notranslate"><span class="pre">TCU_NODE_CTRLn.DIS_DVM</span></code> 按节点禁用 DVM invalidation。（来源：Section 3.5.6）</p>
+<p>设置条件（三个条件同时满足时才应设置）：</p>
+<ol class="arabic simple">
+<li><p>该节点对通过 DTI 发出的失效响应较慢</p></li>
+<li><p>软件知道该节点不需要参与 DVM 域</p></li>
+<li><p>软件将通过 Command Queue 为该节点手动执行失效</p></li>
+</ol>
+<p><strong>注意事项</strong>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DIS_DVM</span></code> 对 DTI-ATS 节点（PCIe RC）无效，因为 ATS 节点从不参与 DVM 失效</p></li>
+<li><p>修改 <code class="docutils literal notranslate"><span class="pre">TCU_NODE_CTRLn</span></code> 后，<a href="#id9"><span class="problematic" id="id10">**</span></a>必须**执行 <code class="docutils literal notranslate"><span class="pre">INV_ALL</span></code> 操作，
+然后才能设置 <code class="docutils literal notranslate"><span class="pre">SMMUEN</span> <span class="pre">=</span> <span class="pre">1</span></code>。否则行为不可预测</p></li>
+<li><p>Arm 建议：对启用 Direct Indexing 的 TBU 设置 <code class="docutils literal notranslate"><span class="pre">DIS_DVM</span> <span class="pre">=</span> <span class="pre">1</span></code></p></li>
+</ul>
+</section>
+<section id="id11">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink"><span class="section-number">8.3.5. </span>5 初始化阶段的一致性维护</a><a class="headerlink" href="#id11" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 上电后，所有 TLB 和 Configuration Cache 的内容是未定义的。
+软件必须在启用 SMMU 前完成以下步骤（来源：Appendix B.1.6）：</p>
+<ol class="arabic simple">
+<li><p><strong>标记所有 STE 为无效</strong>：设置每个 STE 的 <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">=</span> <span class="pre">0</span></code>，
+防止未初始化内存被解释为有效配置</p></li>
+<li><p><strong>确保数据可观察性</strong>：执行 DSB（Data Synchronization Barrier），
+确保 SMMU 能观察到写入的数据。
+如果 <a href="#id12"><span class="problematic" id="id13">``</span></a>SMMU_IDR0.COHACC = 0``（非一致系统），可能需要额外步骤</p></li>
+<li><p><strong>失效所有缓存</strong>：通过 Command Queue 发送失效命令，
+或通过 <code class="docutils literal notranslate"><span class="pre">SMMU_S_INIT.INV_ALL</span></code> 执行全量失效</p></li>
+<li><p><strong>执行 CMD_SYNC</strong>：确保所有失效命令完成</p></li>
+</ol>
+</section>
+<section id="id14">
+<h3><a class="toc-backref" href="#id48" role="doc-backlink"><span class="section-number">8.3.6. </span>6 非一致系统的额外处理</a><a class="headerlink" href="#id14" title="链接到此标题。"></a></h3>
+<p>当 <code class="docutils literal notranslate"><span class="pre">SMMU_IDR0.COHACC</span> <span class="pre">=</span> <span class="pre">0``（``sup_cohacc</span> <span class="pre">=</span> <span class="pre">LOW</span></code>）时，
+TCU 的 QTW 接口不是 I/O 一致的。此时软件必须额外确保：</p>
+<ul class="simple">
+<li><p>写入翻译结构后执行 DSB</p></li>
+<li><p>可能需要额外的 cache maintenance 操作</p></li>
+<li><p>确保 SMMU 能观察到更新后的数据</p></li>
+</ul>
+<p>（来源：Appendix B.1.6）</p>
+</section>
+</section>
+<section id="id15">
+<h2><a class="toc-backref" href="#id49" role="doc-backlink"><span class="section-number">8.4. </span>软件不能做什么</a><a class="headerlink" href="#id15" title="链接到此标题。"></a></h2>
+<section id="tbu-tlb">
+<h3><a class="toc-backref" href="#id50" role="doc-backlink"><span class="section-number">8.4.1. </span>1 不能直接操作 TBU TLB</a><a class="headerlink" href="#tbu-tlb" title="链接到此标题。"></a></h3>
+<p>TBU 的 Micro TLB 和 MTLB 只能通过以下方式失效：</p>
+<ul class="simple">
+<li><p>TCU 发起的 DTI Invalidation 消息（由 DVM 或 CMD_TLBI_* 触发）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_CFGI_ALL</span></code> 全量失效</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SMMU_S_INIT.INV_ALL</span></code> 全量失效</p></li>
+</ul>
+<p>软件**不能**直接读写 TBU 的 TLB 内容。TBU 寄存器（<code class="docutils literal notranslate"><span class="pre">TBU_CTRL</span></code>、<code class="docutils literal notranslate"><span class="pre">TBU_SCR</span></code>）
+只包含调试和安全控制位，不包含 TLB 条目管理接口。</p>
+</section>
+<section id="tcu-walk-cache">
+<h3><a class="toc-backref" href="#id51" role="doc-backlink"><span class="section-number">8.4.2. </span>2 不能直接操作 TCU Walk Cache</a><a class="headerlink" href="#tcu-walk-cache" title="链接到此标题。"></a></h3>
+<p>TCU Walk Cache 只能通过以下方式失效：</p>
+<ul class="simple">
+<li><p>DVM 广播失效消息</p></li>
+<li><p>CMD_TLBI_* 命令（间接触发 Walk Cache 失效）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_CFGI_ALL</span></code> 全量失效</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SMMU_S_INIT.INV_ALL</span></code> 全量失效</p></li>
+</ul>
+<p>Walk Cache 没有软件可编程的失效接口。当页表被修改后，
+只有通过发送 TLB 失效命令间接触发 Walk Cache 失效。</p>
+</section>
+<section id="tcu-configuration-cache">
+<h3><a class="toc-backref" href="#id52" role="doc-backlink"><span class="section-number">8.4.3. </span>3 不能直接操作 TCU Configuration Cache</a><a class="headerlink" href="#tcu-configuration-cache" title="链接到此标题。"></a></h3>
+<p>Configuration Cache 也没有独立的软件失效接口。
+它通过 <code class="docutils literal notranslate"><span class="pre">CMD_CFGI_ALL</span></code> 和 <code class="docutils literal notranslate"><span class="pre">INV_ALL</span></code> 被间接失效。</p>
+</section>
+<section id="id16">
+<h3><a class="toc-backref" href="#id53" role="doc-backlink"><span class="section-number">8.4.4. </span>4 不能跨功耗域直接操作</a><a class="headerlink" href="#id16" title="链接到此标题。"></a></h3>
+<p>当 TBU 处于低功耗状态时：</p>
+<ul class="simple">
+<li><p>软件不应向目标为该 TBU 的寄存器发起写入，写入不会生效</p></li>
+<li><p>TCU 不会向已关断的 TBU 发送错误消息</p></li>
+<li><p>FMU（Fault Management Unit）自动停止向已关断的 TBU 发送 ping 消息</p></li>
+</ul>
+<p>软件需要跟踪 TBU 的功耗状态，避免在 TBU 关断时尝试维护一致性。</p>
+</section>
+<section id="cmd-prefetch-config-addr">
+<h3><a class="toc-backref" href="#id54" role="doc-backlink"><span class="section-number">8.4.5. </span>5 CMD_PREFETCH_CONFIG/ADDR 不生效</a><a class="headerlink" href="#cmd-prefetch-config-addr" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 接受但不执行 SMMUv3 的以下预取命令：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_PREFETCH_CONFIG</span></code>：预取配置</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_PREFETCH_ADDR</span></code>：预取配置和 TLB 条目</p></li>
+</ul>
+<p>软件无法通过这些命令主动预热缓存来辅助一致性维护。</p>
+</section>
+</section>
+<section id="prefetch">
+<h2><a class="toc-backref" href="#id55" role="doc-backlink"><span class="section-number">8.5. </span>Prefetch 与一致性的交互</a><a class="headerlink" href="#prefetch" title="链接到此标题。"></a></h2>
+<section id="tcu-prefetch">
+<h3><a class="toc-backref" href="#id56" role="doc-backlink"><span class="section-number">8.5.1. </span>1 TCU Prefetch 的风险</a><a class="headerlink" href="#tcu-prefetch" title="链接到此标题。"></a></h3>
+<p>当 STE.PF 字段启用 TCU Prefetch 时，TCU 会在完成原始翻译请求后
+发起一次推测性的预取请求，仅分配到 TCU Walk Cache，不返回给 TBU。（来源：Section 2.2.3）</p>
+<p>一致性风险：</p>
+<ul class="simple">
+<li><p>预取的翻译数据进入 Walk Cache 后，如果页表被修改且失效命令尚未到达，
+Walk Cache 中可能存在过时数据</p></li>
+<li><p>预取使用与原始请求相同的翻译 slot，必须等待原始请求完成后才能发起</p></li>
+<li><p>如果预取在完成前被非推测请求抢占，预取可能不会完成</p></li>
+</ul>
+</section>
+<section id="stashtranslation-mtlb">
+<h3><a class="toc-backref" href="#id57" role="doc-backlink"><span class="section-number">8.5.2. </span>2 StashTranslation 与 MTLB 预取</a><a class="headerlink" href="#stashtranslation-mtlb" title="链接到此标题。"></a></h3>
+<p>MMU-600AE 可以使用 <code class="docutils literal notranslate"><span class="pre">StashTranslation</span></code> 事务来预取 Main TLB 内容。
+但 MMU-600AE <strong>不会将 StashTranslation 事务向下游传播</strong>，
+而是始终以 <code class="docutils literal notranslate"><span class="pre">BRESP</span> <span class="pre">=</span> <span class="pre">OKAY</span></code> 终止，即使没有成功存储到 MTLB。</p>
+<p>使用约束：后续要利用预取到 MTLB 中的翻译，<strong>必须使用相同的 StreamID</strong>。（来源：Section 7.3）</p>
+</section>
+</section>
+<section id="id17">
+<h2><a class="toc-backref" href="#id58" role="doc-backlink"><span class="section-number">8.6. </span>一致性维护的典型流程</a><a class="headerlink" href="#id17" title="链接到此标题。"></a></h2>
+<section id="id18">
+<h3><a class="toc-backref" href="#id59" role="doc-backlink"><span class="section-number">8.6.1. </span>1 修改页表后的标准流程</a><a class="headerlink" href="#id18" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>① 软件修改页表（断开旧映射，建立新映射）
+② 执行 DSB（确保页表更新对 SMMU 可见，尤其是 COHACC=0 时）
+③ 通过 CMD_QUEUE 发送 CMD_TLBI_* 失效旧翻译
+④ 通过 CMD_QUEUE 发送 CMD_SYNC 等待失效完成
+⑤ 后续事务将使用新翻译
+</pre></div>
+</div>
+</section>
+<section id="streamid">
+<h3><a class="toc-backref" href="#id60" role="doc-backlink"><span class="section-number">8.6.2. </span>2 迁移设备（更改 StreamID 映射）后的流程</a><a class="headerlink" href="#streamid" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>① 更新 Stream Table（修改 STE 的指向）
+② 执行 DSB
+③ CMD_CFGI_ALL（失效 Configuration Cache + TLB）
+④ CMD_SYNC
+⑤ 设置 SMMUEN = 1（如果是初始化阶段，还需先 INV_ALL）
+</pre></div>
+</div>
+</section>
+<section id="ste">
+<h3><a class="toc-backref" href="#id61" role="doc-backlink"><span class="section-number">8.6.3. </span>3 修改 STE 配置属性后的流程</a><a class="headerlink" href="#ste" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>① 更新 STE（例如修改 S1DSS、S2DSS 等字段）
+② 执行 DSB
+③ CMD_TLBI_*（失效受影响的 TLB 条目，同时间接触发 Configuration Cache 和 Walk Cache 失效）
+④ CMD_SYNC
+</pre></div>
+</div>
+</section>
+<section id="direct-indexing-tbu">
+<h3><a class="toc-backref" href="#id62" role="doc-backlink"><span class="section-number">8.6.4. </span>4 启用 Direct Indexing 的 TBU 的一致性</a><a class="headerlink" href="#direct-indexing-tbu" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>① 设置 TCU_NODE_CTRLn.DIS_DVM = 1（禁用该节点的 DVM）
+② 执行 INV_ALL（通过 SMMU_S_INIT）
+③ 后续一致性由软件通过 CMD_QUEUE 命令手动维护
+④ 软件需要知道何时需要失效（因为 DVM 广播不会到达该 TBU）
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id19">
+<h2><a class="toc-backref" href="#id63" role="doc-backlink"><span class="section-number">8.7. </span>总结</a><a class="headerlink" href="#id19" title="链接到此标题。"></a></h2>
+<p><strong>核心结论</strong>：软件可以通过 Command Queue 命令（<code class="docutils literal notranslate"><span class="pre">CMD_TLBI_*</span></code>、<code class="docutils literal notranslate"><span class="pre">CMD_CFGI_ALL</span></code>、
+<code class="docutils literal notranslate"><span class="pre">CMD_SYNC</span></code>）和寄存器（<code class="docutils literal notranslate"><span class="pre">INV_ALL</span></code>、<code class="docutils literal notranslate"><span class="pre">DIS_DVM</span></code>、<code class="docutils literal notranslate"><span class="pre">PTM</span></code>）**直接控制**一致性维护，
+但**不能直接操作** TBU TLB、TCU Walk Cache 和 Configuration Cache 的内容。
+失效操作是软件唯一可用的干预方式。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="corelink_mmu600ae_trm.html" class="btn btn-neutral float-left" title="7. CoreLink MMU-600AE TCU 与 TBU 架构分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="corelink_mmu600ae_ras_pmu.html" class="btn btn-neutral float-right" title="9. MMU-600AE RAS 与 PMU 深入分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

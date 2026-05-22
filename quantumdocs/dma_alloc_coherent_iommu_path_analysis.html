@@ -1,0 +1,1156 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>12. dma_alloc_coherent 完整实现分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="13. UCIe 规范 2.0 文档结构概览" href="ucie/UCIE_SPECIFICATION.html" />
+    <link rel="prev" title="11. dma_alloc_coherent 完整实现分析" href="dma_alloc_coherent_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">12. dma_alloc_coherent 完整实现分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">12.1. 1. 概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">12.2. 2. 完整调用链</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">12.2.1. 2.1 入口函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">12.2.2. 2.2 核心调度器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#direct">12.2.3. 2.3 Direct 路径完整调用链</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iommu-arm-smmu">12.2.4. 2.4 IOMMU 路径完整调用链 (含 ARM SMMU)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iommu-core-iommu-dma-map-arm-smmu">12.2.5. 2.4.1 IOMMU Core 映射链 (__iommu_dma_map → ARM SMMU)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iommu-iommu-dma-free">12.2.6. 2.4.2 IOMMU 释放链 (iommu_dma_free)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">12.3. 3. 数据结构</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#struct-dma-map-ops">12.3.1. 3.1 struct dma_map_ops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-iommu-ops">12.3.2. 3.2 struct iommu_ops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-iommu-domain-ops">12.3.3. 3.3 struct iommu_domain_ops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-iommu-domain">12.3.4. 3.4 struct iommu_domain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-iommu-domain-geometry">12.3.5. 3.5 struct iommu_domain_geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-io-pgtable-ops">12.3.6. 3.6 struct io_pgtable_ops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-arm-smmu-device-smmuv3">12.3.7. 3.7 struct arm_smmu_device (SMMUv3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-arm-smmu-domain-smmuv3">12.3.8. 3.8 struct arm_smmu_domain (SMMUv3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-arm-smmu-master-smmuv3">12.3.9. 3.9 struct arm_smmu_master (SMMUv3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">12.3.10. 3.10 其他关键数据结构</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">12.4. 4. 执行阶段</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#boot-time">12.4.1. 4.1 初始化阶段 (Boot Time)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iommu">12.4.2. 4.2 运行时阶段 (IOMMU 路径分配)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">12.4.3. 4.3 清理阶段 (IOMMU 释放路径)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#api">12.5. 5. 关键内核 API 调用</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">12.5.1. 5.1 内存分配 API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iova-api">12.5.2. 5.2 IOVA 管理 API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iommu-core-api">12.5.3. 5.3 IOMMU Core 映射 API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dma-iommu-api">12.5.4. 5.4 DMA-IOMMU 桥接 API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arm-smmuv3-api">12.5.5. 5.5 ARM SMMUv3 硬件操作 API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arm-lpae-api">12.5.6. 5.6 ARM LPAE 页表 API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">12.5.7. 5.7 内存映射与属性 API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">12.6. 6. 组件交互图</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">12.6.1. 6.1 IOMMU 路径完整架构图</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#smmuv3">12.6.2. 6.2 SMMUv3 地址翻译流水线</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dma-direct-vs-iommu">12.6.3. 6.3 DMA 地址空间对比 (Direct vs IOMMU)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">12.7. 7. 关键文件索引</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">12. </span>dma_alloc_coherent 完整实现分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dma_alloc_coherent_iommu_path_analysis.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dma-alloc-coherent">
+<h1><span class="section-number">12. </span>dma_alloc_coherent 完整实现分析<a class="headerlink" href="#dma-alloc-coherent" title="链接到此标题。"></a></h1>
+<p>基于 Linux 6.1-rc6 内核源码</p>
+<section id="id1">
+<h2><span class="section-number">12.1. </span>1. 概述<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">dma_alloc_coherent</span></code> 是 Linux 内核 DMA 映射框架的核心 API，用于为设备分配
+CPU 和设备均可访问的一致性 DMA 内存缓冲区。该函数返回 CPU 虚拟地址，并通过
+输出参数返回设备端的 DMA 总线地址。</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">12.2. </span>2. 完整调用链<a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<section id="id4">
+<h3><span class="section-number">12.2.1. </span>2.1 入口函数<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p><strong>dma_alloc_coherent</strong> — <code class="docutils literal notranslate"><span class="pre">include/linux/dma-mapping.h:420</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>dma_alloc_coherent(dev, size, dma_handle, gfp)
+└── dma_alloc_attrs(dev, size, dma_handle, gfp, DMA_ATTR_NO_WARN?)
+    └── kernel/dma/mapping.c:493
+</pre></div>
+</div>
+<p>函数将 <code class="docutils literal notranslate"><span class="pre">__GFP_NOWARN</span></code> 转换为 <code class="docutils literal notranslate"><span class="pre">DMA_ATTR_NO_WARN</span></code> 属性，然后委托给
+<code class="docutils literal notranslate"><span class="pre">dma_alloc_attrs</span></code> 。</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">12.2.2. </span>2.2 核心调度器<a class="headerlink" href="#id5" title="链接到此标题。"></a></h3>
+<p><strong>dma_alloc_attrs</strong> — <code class="docutils literal notranslate"><span class="pre">kernel/dma/mapping.c:493</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>dma_alloc_attrs()  [kernel/dma/mapping.c:493]
+│
+├── get_dma_ops(dev)                        [include/linux/dma-map-ops.h:89]
+│   └── dev-&gt;dma_ops 或 get_arch_dma_ops()
+│
+├── dma_alloc_from_dev_coherent()           [kernel/dma/coherent.c:185]
+│   └── __dma_alloc_from_coherent()         [kernel/dma/coherent.c:139]
+│       └── bitmap_find_free_region()        [位图分配]
+│
+├── dma_alloc_direct(dev, ops)              [kernel/dma/mapping.c:131]
+│   └── dma_go_direct()                     [kernel/dma/mapping.c:112]
+│
+├── [Direct 路径] dma_direct_alloc()        [kernel/dma/direct.c:208]
+│   或
+├── [IOMMU 路径]  ops-&gt;alloc()              [drivers/iommu/dma-iommu.c:1442]
+│
+└── debug_dma_alloc_coherent()              [调试跟踪]
+</pre></div>
+</div>
+</section>
+<section id="direct">
+<h3><span class="section-number">12.2.3. </span>2.3 Direct 路径完整调用链<a class="headerlink" href="#direct" title="链接到此标题。"></a></h3>
+<p><strong>dma_direct_alloc</strong> — <code class="docutils literal notranslate"><span class="pre">kernel/dma/direct.c:208</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>dma_direct_alloc()  [kernel/dma/direct.c:208]
+│
+├── [DMA_ATTR_NO_KERNEL_MAPPING]
+│   └── dma_direct_alloc_no_mapping()       [direct.c:190]
+│       └── __dma_direct_alloc_pages()      [direct.c:117]
+│
+├── [非一致设备 + 无 arch 支持]
+│   └── arch_dma_alloc()                    [arch 特定实现]
+│
+├── [CONFIG_DMA_GLOBAL_POOL + 非一致]
+│   └── dma_alloc_from_global_coherent()    [coherent.c:280]
+│       └── __dma_alloc_from_coherent()     [coherent.c:139]
+│
+├── [非一致 + DMA_DIRECT_REMAP + 原子上下文]
+│   └── dma_direct_alloc_from_pool()        [direct.c:171]
+│       └── dma_alloc_from_pool()           [pool.c:265]
+│           └── __dma_alloc_from_pool()     [pool.c:240]
+│               └── gen_pool_alloc()        [通用内存池]
+│
+├── [force_dma_unencrypted + 原子上下文]
+│   └── dma_direct_alloc_from_pool()        [direct.c:171]
+│
+├── [主路径] __dma_direct_alloc_pages()     [direct.c:117]
+│   │
+│   ├── [SWIOTLB 强制]
+│   │   └── dma_direct_alloc_swiotlb()      [direct.c:105]
+│   │       └── swiotlb_alloc()             [kernel/dma/swiotlb.c]
+│   │
+│   ├── dma_direct_optimal_gfp_mask()       [direct.c:55]
+│   │   └── 计算 GFP 区域掩码
+│   │
+│   ├── dma_alloc_contiguous()              [contiguous.c:304]
+│   │   ├── dev-&gt;cma_area → cma_alloc()     [设备专属 CMA]
+│   │   ├── per-numa CMA → cma_alloc()     [NUMA 节点 CMA]
+│   │   └── dma_contiguous_default_area     [全局默认 CMA]
+│   │       └── cma_alloc_aligned()         [contiguous.c:282]
+│   │           └── cma_alloc()             [mm/cma.c]
+│   │
+│   ├── alloc_pages_node(node, gfp, order)  [mm/page_alloc.c]
+│   │   └── Buddy System 分配器
+│   │
+│   └── [DMA 地址越界时重试]
+│       ├── GFP_DMA32 重试                  [ZONE_DMA32]
+│       └── GFP_DMA 重试                    [ZONE_DMA]
+│
+├── [HighMem 页面] → remap = true
+│
+├── [remap == true]
+│   ├── dma_pgprot()                        [kernel/dma/direct.c:42]
+│   ├── arch_dma_prep_coherent()            [cache 清理]
+│   └── dma_common_contiguous_remap()       [remap.c:38]
+│       ├── kmalloc_array()                 [page 数组]
+│       └── vmap() → VM_DMA_COHERENT        [建立内核映射]
+│
+├── [remap == false]
+│   ├── page_address(page)                  [直接映射地址]
+│   └── dma_set_decrypted()                 [内存解密(SEV/AMD)]
+│
+├── memset(ret, 0, size)                   [清零]
+│
+├── [set_uncached == true]
+│   ├── arch_dma_prep_coherent()
+│   └── arch_dma_set_uncached()
+│
+└── *dma_handle = phys_to_dma_direct()      [物理→总线地址转换]
+</pre></div>
+</div>
+</section>
+<section id="iommu-arm-smmu">
+<h3><span class="section-number">12.2.4. </span>2.4 IOMMU 路径完整调用链 (含 ARM SMMU)<a class="headerlink" href="#iommu-arm-smmu" title="链接到此标题。"></a></h3>
+<p><strong>iommu_dma_alloc</strong> — <code class="docutils literal notranslate"><span class="pre">drivers/iommu/dma-iommu.c:1442</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>iommu_dma_alloc()  [drivers/iommu/dma-iommu.c:1442]
+│
+├── dma_info_to_prot(DMA_BIDIRECTIONAL, coherent, attrs)  [dma-iommu.c:605]
+│   └── 转换 DMA 方向 → IOMMU 保护标志 (IOMMU_READ|IOMMU_WRITE|IOMMU_CACHE)
+│
+├── [路径 A: 阻塞 + !FORCE_CONTIGUOUS] → 最常用路径
+│   └── iommu_dma_alloc_remap()             [dma-iommu.c:856]
+│       │
+│       ├── __iommu_dma_alloc_noncontiguous()  [dma-iommu.c:789]
+│       │   │
+│       │   ├── iommu_get_dma_domain(dev)        [获取 IOMMU domain]
+│       │   ├── iommu_dma_cookie / iova_domain   [IOVA 管理器]
+│       │   │
+│       │   ├── __iommu_dma_alloc_pages()      [dma-iommu.c:730]
+│       │   │   ├── kvcalloc(count, sizeof(*pages))  [页面指针数组]
+│       │   │   ├── gfp |= __GFP_HIGHMEM  [IOMMU 允许 HighMem]
+│       │   │   └── alloc_pages_node(nid, alloc_flags, order)
+│       │   │       └── Buddy System 分配 (非连续 OK)
+│       │   │
+│       │   ├── iommu_dma_alloc_iova()       [dma-iommu.c:625]
+│       │   │   ├── alloc_iova_fast(iovad, iova_len, dma_limit&gt;&gt;shift)
+│       │   │   │   └── iova_rcache_get() / alloc_iova()  [iova.c:439]
+│       │   │   └── PCI 设备优先分配 SAC (&lt; 4GB) IOVA
+│       │   │
+│       │   ├── sg_alloc_table_from_pages()  [构建 sg_table]
+│       │   │
+│       │   ├── [非一致] arch_dma_prep_coherent()  [清理 cache]
+│       │   │
+│       │   └── iommu_map_sg_atomic()       [IOVA → 物理地址映射]
+│       │       └── ───→ 见下方 2.4.1 IOMMU Core 映射链 ───→
+│       │
+│       ├── *dma_handle = sgt.sgl-&gt;dma_address  [返回 IOVA]
+│       │
+│       └── dma_common_pages_remap()         [remap.c:22]
+│           └── vmap(pages, count, VM_DMA_COHERENT, prot)  [建立内核映射]
+│
+├── [路径 B: 非阻塞 + 非一致 + DMA_DIRECT_REMAP]
+│   └── dma_alloc_from_pool()               [pool.c:265]
+│       └── gen_pool_alloc()                [原子池, 无 IOMMU 映射]
+│
+└── [路径 C: FORCE_CONTIGUOUS 或 回退]
+    │
+    ├── iommu_dma_alloc_pages()             [dma-iommu.c:1405]
+    │   ├── dma_alloc_contiguous(dev, size, gfp)    [CMA 优先]
+    │   ├── alloc_pages_node(node, gfp, order)      [Buddy 回退]
+    │   ├── [非一致|HighMem] dma_common_contiguous_remap()
+    │   └── [一致|LowMem] page_address(page)
+    │
+    └── __iommu_dma_map(dev, phys, size, prot, mask)  [dma-iommu.c:697]
+        └── ───→ 见下方 2.4.1 IOMMU Core 映射链 ───→
+</pre></div>
+</div>
+</section>
+<section id="iommu-core-iommu-dma-map-arm-smmu">
+<h3><span class="section-number">12.2.5. </span>2.4.1 IOMMU Core 映射链 (__iommu_dma_map → ARM SMMU)<a class="headerlink" href="#iommu-core-iommu-dma-map-arm-smmu" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>__iommu_dma_map(dev, phys, size, prot, dma_mask)  [dma-iommu.c:697]
+│
+├── [延迟绑定检查]
+│   └── iommu_deferred_attach(dev, domain)     [iommu.c:1980]
+│       └── __iommu_attach_device(domain, dev) [首次使用时绑定]
+│
+├── iommu_dma_alloc_iova(domain, size, dma_mask, dev)  [dma-iommu.c:625]
+│   ├── alloc_iova_fast(iovad, iova_len, dma_limit &gt;&gt; shift, true)
+│   │   └── iova_rcache_get() → alloc_iova()  [IOVA 空间分配]
+│   └── return (dma_addr_t)iova &lt;&lt; shift      [IOVA 地址]
+│
+└── iommu_map_atomic(domain, iova, phys, size, prot)  [iommu.c:2317]
+    └── _iommu_map(domain, iova, paddr, size, prot, GFP_ATOMIC)  [iommu.c:2296]
+        │
+        ├── __iommu_map()                     [iommu.c:2236]
+        │   └── 循环: __iommu_map_pages()     [iommu.c:2212]
+        │       ├── iommu_pgsize(domain, ...)  [确定页大小和数量]
+        │       │
+        │       ├── [优先] ops-&gt;map_pages()    [iommu_domain_ops:287]
+        │       │   │
+        │       │   ▼▼▼ ARM SMMUv3 路径 ▼▼▼
+        │       │   │
+        │       │   arm_smmu_map_pages()      [arm-smmu-v3.c:2472]
+        │       │   └── pgtbl_ops-&gt;map_pages()
+        │       │       │
+        │       │       ▼▼▼ ARM LPAE 页表 ▼▼▼
+        │       │       │
+        │       │       arm_lpae_map_pages()  [io-pgtable-arm.c:464]
+        │       │       ├── arm_lpae_prot_to_pte(data, iommu_prot)
+        │       │       │   └── 将 IOMMU_READ|WRITE|CACHE 转为 PTE 位
+        │       │       └── __arm_lpae_map(data, iova, paddr, ...)
+        │       │           ├── 遍历页表层级 (PGD→PUD→PMD→PTE)
+        │       │           ├── 自底向上分配页表页 (alloc_pages)
+        │       │           ├── arm_lpae_install_table() [安装新页表]
+        │       │           └── 写入 PTE: phys_addr | prot | valid
+        │       │       └── wmb()  [写屏障, 确保页表可见后再继续]
+        │       │
+        │       └── [备选] ops-&gt;map()         [旧式单页映射]
+        │
+        └── [如定义] ops-&gt;iotlb_sync_map()    [SMMUv3 未定义此回调]
+</pre></div>
+</div>
+</section>
+<section id="iommu-iommu-dma-free">
+<h3><span class="section-number">12.2.6. </span>2.4.2 IOMMU 释放链 (iommu_dma_free)<a class="headerlink" href="#iommu-iommu-dma-free" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>iommu_dma_free(dev, size, cpu_addr, handle, attrs)  [dma-iommu.c:1398]
+│
+├── __iommu_dma_unmap(dev, handle, size)     [dma-iommu.c:674]
+│   ├── iommu_unmap_fast(domain, dma_addr, size, &amp;iotlb_gather)  [iommu.c:2405]
+│   │   └── __iommu_unmap()                  [iommu.c:2337]
+│   │       └── 循环: __iommu_unmap_pages()
+│   │           └── ops-&gt;unmap_pages()       [iommu_domain_ops]
+│   │               │
+│   │               ▼▼▼ ARM SMMUv3 路径 ▼▼▼
+│   │               arm_smmu_unmap_pages()   [arm-smmu-v3.c:2484]
+│   │               └── pgtbl_ops-&gt;unmap_pages()
+│   │                   └── arm_lpae_unmap_pages()  [io-pgtable-arm.c:664]
+│   │                       ├── 遍历页表, 清除 PTE valid 位
+│   │                       └── 收集无效化范围到 iotlb_gather
+│   │
+│   ├── [如非 queued] iommu_iotlb_sync()     [TLB 同步]
+│   │   └── ops-&gt;iotlb_sync()
+│   │       └── arm_smmu_iotlb_sync()        [arm-smmu-v3.c:2505]
+│   │           └── arm_smmu_tlb_inv_range_domain()
+│   │               └── 发送 CMDQ_INV_TLB 超过队列到 SMMU 硬件
+│   │
+│   └── iommu_dma_free_iova()                [dma-iommu.c:657]
+│       └── free_iova_fast()                 [iova.c:487]
+│           └── iova_rcache_insert()          [IOVA 回收]
+│
+└── __iommu_dma_free(dev, size, cpu_addr)    [dma-iommu.c:1367]
+    ├── [原子池] dma_free_from_pool()
+    ├── [vmalloc] dma_common_free_remap() → vunmap()
+    │   或 dma_common_find_pages() → __iommu_dma_free_pages()
+    └── [低内存] dma_free_contiguous() → cma_release() / __free_pages()
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h2><span class="section-number">12.3. </span>3. 数据结构<a class="headerlink" href="#id6" title="链接到此标题。"></a></h2>
+<section id="struct-dma-map-ops">
+<h3><span class="section-number">12.3.1. </span>3.1 struct dma_map_ops<a class="headerlink" href="#struct-dma-map-ops" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">include/linux/dma-map-ops.h:22-84</span></code></p>
+<p>DMA 操作的虚函数表，定义了 DMA 映射的全部操作接口:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">dma_map_ops</span> <span class="p">{</span>
+    <span class="n">unsigned</span> <span class="nb">int</span> <span class="n">flags</span><span class="p">;</span>                  <span class="o">/*</span> <span class="n">DMA_F_PCI_P2PDMA_SUPPORTED</span> <span class="n">等</span> <span class="o">*/</span>
+
+    <span class="o">/*</span> <span class="n">一致性内存分配</span><span class="o">/</span><span class="n">释放</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">alloc</span><span class="p">)(</span><span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span>
+                    <span class="n">dma_addr_t</span> <span class="o">*</span><span class="n">dma_handle</span><span class="p">,</span> <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">,</span>
+                    <span class="n">unsigned</span> <span class="n">long</span> <span class="n">attrs</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">free</span><span class="p">)(</span><span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">vaddr</span><span class="p">,</span>
+                <span class="n">dma_addr_t</span> <span class="n">dma_handle</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">attrs</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">基于页面的分配</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">page</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">alloc_pages</span><span class="p">)(</span><span class="o">...</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">free_pages</span><span class="p">)(</span><span class="o">...</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">非连续分配</span> <span class="p">(</span><span class="n">scatter</span><span class="o">-</span><span class="n">gather</span> <span class="n">表</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">sg_table</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">alloc_noncontiguous</span><span class="p">)(</span><span class="o">...</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">free_noncontiguous</span><span class="p">)(</span><span class="o">...</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">流式</span> <span class="n">DMA</span> <span class="n">映射</span> <span class="o">/</span> <span class="n">CPU</span> <span class="n">同步</span> <span class="o">/</span> <span class="n">能力查询</span> <span class="o">...</span> <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>关键实现者:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">iommu_dma_ops</span></code> — <code class="docutils literal notranslate"><span class="pre">drivers/iommu/dma-iommu.c:1547</span></code> (IOMMU DMA 操作)
+<code class="docutils literal notranslate"><span class="pre">.alloc</span> <span class="pre">=</span> <span class="pre">iommu_dma_alloc</span></code>, <code class="docutils literal notranslate"><span class="pre">.free</span> <span class="pre">=</span> <span class="pre">iommu_dma_free</span></code></p></li>
+</ul>
+</section>
+<section id="struct-iommu-ops">
+<h3><span class="section-number">12.3.2. </span>3.2 struct iommu_ops<a class="headerlink" href="#struct-iommu-ops" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">include/linux/iommu.h:229</span></code></p>
+<p>IOMMU 驱动注册的操作函数表:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">iommu_ops</span> <span class="p">{</span>
+    <span class="o">/*</span> <span class="n">设备生命周期</span> <span class="o">*/</span>
+    <span class="nb">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">capable</span><span class="p">)(</span><span class="n">enum</span> <span class="n">iommu_cap</span><span class="p">);</span>
+    <span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">domain_alloc</span><span class="p">)(</span><span class="n">unsigned</span> <span class="n">iommu_domain_type</span><span class="p">);</span>
+    <span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">probe_device</span><span class="p">)(</span><span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">release_device</span><span class="p">)(</span><span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">组和属性</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">iommu_group</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">device_group</span><span class="p">)(</span><span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">get_resv_regions</span><span class="p">)(</span><span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">head</span><span class="p">);</span>
+    <span class="n">enum</span> <span class="n">iommu_resv_type</span> <span class="p">(</span><span class="o">*</span><span class="n">get_resv_regions</span><span class="p">)(</span><span class="o">...</span><span class="p">);</span>  <span class="o">/*</span> <span class="p">(</span><span class="n">注</span><span class="p">:</span> <span class="mf">6.1</span> <span class="n">改为新接口</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="n">of_xlate</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">struct</span> <span class="n">of_phandle_args</span> <span class="o">*</span><span class="n">args</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">域操作</span> <span class="p">(</span><span class="n">嵌入</span> <span class="n">default_domain_ops</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">struct</span> <span class="n">iommu_domain_ops</span> <span class="o">*</span><span class="n">default_domain_ops</span><span class="p">;</span>
+
+    <span class="n">unsigned</span> <span class="n">long</span> <span class="n">pgsize_bitmap</span><span class="p">;</span>
+    <span class="n">struct</span> <span class="n">module</span> <span class="o">*</span><span class="n">owner</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="struct-iommu-domain-ops">
+<h3><span class="section-number">12.3.3. </span>3.3 struct iommu_domain_ops<a class="headerlink" href="#struct-iommu-domain-ops" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">include/linux/iommu.h:287</span></code></p>
+<p>IOMMU 域操作，在 Linux 6.1 中从 iommu_ops 分离到独立结构体:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">iommu_domain_ops</span> <span class="p">{</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="n">attach_dev</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">,</span> <span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">detach_dev</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">,</span> <span class="n">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">页表映射</span> <span class="o">-</span> <span class="n">dma_alloc_coherent</span> <span class="n">走</span> <span class="n">map_pages</span> <span class="n">路径</span> <span class="o">*/</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+               <span class="n">phys_addr_t</span> <span class="n">paddr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="nb">int</span> <span class="n">prot</span><span class="p">,</span> <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">);</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="n">map_pages</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+                     <span class="n">phys_addr_t</span> <span class="n">paddr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">pgsize</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">pgcount</span><span class="p">,</span>
+                     <span class="nb">int</span> <span class="n">prot</span><span class="p">,</span> <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">mapped</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">页表解除映射</span> <span class="o">*/</span>
+    <span class="n">size_t</span> <span class="p">(</span><span class="o">*</span><span class="n">unmap</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+                    <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="n">struct</span> <span class="n">iommu_iotlb_gather</span> <span class="o">*</span><span class="n">gather</span><span class="p">);</span>
+    <span class="n">size_t</span> <span class="p">(</span><span class="o">*</span><span class="n">unmap_pages</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+                          <span class="n">size_t</span> <span class="n">pgsize</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">pgcount</span><span class="p">,</span>
+                          <span class="n">struct</span> <span class="n">iommu_iotlb_gather</span> <span class="o">*</span><span class="n">gather</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">TLB</span> <span class="n">刷新</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">flush_iotlb_all</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">iotlb_sync_map</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">,</span>
+                            <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">iotlb_sync</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">,</span>
+                       <span class="n">struct</span> <span class="n">iommu_iotlb_gather</span> <span class="o">*</span><span class="n">iotlb_gather</span><span class="p">);</span>
+
+    <span class="o">/*</span> <span class="n">地址转换</span> <span class="o">&amp;</span> <span class="n">嵌套</span> <span class="o">*/</span>
+    <span class="n">phys_addr_t</span> <span class="p">(</span><span class="o">*</span><span class="n">iova_to_phys</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">,</span> <span class="n">dma_addr_t</span> <span class="n">iova</span><span class="p">);</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="n">enable_nesting</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">);</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="n">set_pgtable_quirks</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">quirks</span><span class="p">);</span>
+    <span class="n">void</span> <span class="p">(</span><span class="o">*</span><span class="n">free</span><span class="p">)(</span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="o">*</span><span class="n">domain</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>ARM SMMUv3 实现</strong> — <code class="docutils literal notranslate"><span class="pre">arm-smmu-v3.c:2858</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.map_pages</span> <span class="pre">=</span> <span class="pre">arm_smmu_map_pages</span></code> (:2472) — 委托给 <code class="docutils literal notranslate"><span class="pre">pgtbl_ops-&gt;map_pages</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.unmap_pages</span> <span class="pre">=</span> <span class="pre">arm_smmu_unmap_pages</span></code> (:2484) — 委托给 <code class="docutils literal notranslate"><span class="pre">pgtbl_ops-&gt;unmap_pages</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.iotlb_sync</span> <span class="pre">=</span> <span class="pre">arm_smmu_iotlb_sync</span></code> (:2505) — TLB 无效化同步</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.flush_iotlb_all</span> <span class="pre">=</span> <span class="pre">arm_smmu_flush_iotlb_all</span></code> (:2497)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.attach_dev</span> <span class="pre">=</span> <span class="pre">arm_smmu_attach_dev</span></code> (:2396)</p></li>
+</ul>
+</section>
+<section id="struct-iommu-domain">
+<h3><span class="section-number">12.3.4. </span>3.4 struct iommu_domain<a class="headerlink" href="#struct-iommu-domain" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">include/linux/iommu.h:90</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">iommu_domain</span> <span class="p">{</span>
+    <span class="n">unsigned</span> <span class="nb">type</span><span class="p">;</span>                           <span class="o">/*</span> <span class="n">DMA</span><span class="p">,</span> <span class="n">DMA_FQ</span><span class="p">,</span> <span class="n">IDENTITY</span><span class="p">,</span> <span class="n">UNMANAGED</span> <span class="o">*/</span>
+    <span class="n">const</span> <span class="n">struct</span> <span class="n">iommu_domain_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">域操作</span> <span class="p">(</span><span class="n">SMMU</span> <span class="n">驱动设置</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span> <span class="n">pgsize_bitmap</span><span class="p">;</span>              <span class="o">/*</span> <span class="n">支持的页大小位图</span> <span class="o">*/</span>
+    <span class="n">iommu_fault_handler_t</span> <span class="n">handler</span><span class="p">;</span>           <span class="o">/*</span> <span class="n">页面错误回调</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="o">*</span><span class="n">handler_token</span><span class="p">;</span>
+    <span class="n">struct</span> <span class="n">iommu_domain_geometry</span> <span class="n">geometry</span><span class="p">;</span>    <span class="o">/*</span> <span class="n">IOVA</span> <span class="n">窗口范围</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">iommu_dma_cookie</span> <span class="o">*</span><span class="n">iova_cookie</span><span class="p">;</span>     <span class="o">/*</span> <span class="n">DMA</span><span class="o">-</span><span class="n">IOMMU</span> <span class="n">层</span> <span class="n">IOVA</span> <span class="n">管理</span> <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>域类型标志:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IOMMU_DOMAIN_DMA</span></code> = <code class="docutils literal notranslate"><span class="pre">__IOMMU_DOMAIN_PAGING</span> <span class="pre">|</span> <span class="pre">__IOMMU_DOMAIN_DMA_API</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IOMMU_DOMAIN_DMA_FQ</span></code> = 加上 <code class="docutils literal notranslate"><span class="pre">__IOMMU_DOMAIN_DMA_FQ</span></code> (flush queue 延迟 TLB 刷新)</p></li>
+</ul>
+</section>
+<section id="struct-iommu-domain-geometry">
+<h3><span class="section-number">12.3.5. </span>3.5 struct iommu_domain_geometry<a class="headerlink" href="#struct-iommu-domain-geometry" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">include/linux/iommu.h:54</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">iommu_domain_geometry</span> <span class="p">{</span>
+    <span class="n">dma_addr_t</span> <span class="n">aperture_start</span><span class="p">;</span>   <span class="o">/*</span> <span class="n">IOVA</span> <span class="n">空间起始地址</span> <span class="o">*/</span>
+    <span class="n">dma_addr_t</span> <span class="n">aperture_end</span><span class="p">;</span>     <span class="o">/*</span> <span class="n">IOVA</span> <span class="n">空间结束地址</span> <span class="o">*/</span>
+    <span class="nb">bool</span> <span class="n">force_aperture</span><span class="p">;</span>         <span class="o">/*</span> <span class="n">强制</span> <span class="n">IOVA</span> <span class="n">必须在窗口内</span> <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="struct-io-pgtable-ops">
+<h3><span class="section-number">12.3.6. </span>3.6 struct io_pgtable_ops<a class="headerlink" href="#struct-io-pgtable-ops" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">include/linux/io-pgtable.h:162</span></code></p>
+<p>IO 页表操作抽象层，SMMU 驱动通过此接口操作硬件页表:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">io_pgtable_ops</span> <span class="p">{</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">)(</span><span class="n">struct</span> <span class="n">io_pgtable_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+               <span class="n">phys_addr_t</span> <span class="n">paddr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="nb">int</span> <span class="n">prot</span><span class="p">,</span> <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">);</span>
+    <span class="nb">int</span> <span class="p">(</span><span class="o">*</span><span class="n">map_pages</span><span class="p">)(</span><span class="n">struct</span> <span class="n">io_pgtable_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+                     <span class="n">phys_addr_t</span> <span class="n">paddr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">pgsize</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">pgcount</span><span class="p">,</span>
+                     <span class="nb">int</span> <span class="n">prot</span><span class="p">,</span> <span class="n">gfp_t</span> <span class="n">gfp</span><span class="p">,</span> <span class="n">size_t</span> <span class="o">*</span><span class="n">mapped</span><span class="p">);</span>
+    <span class="n">size_t</span> <span class="p">(</span><span class="o">*</span><span class="n">unmap</span><span class="p">)(</span><span class="n">struct</span> <span class="n">io_pgtable_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+                    <span class="n">size_t</span> <span class="n">size</span><span class="p">,</span> <span class="n">struct</span> <span class="n">iommu_iotlb_gather</span> <span class="o">*</span><span class="n">gather</span><span class="p">);</span>
+    <span class="n">size_t</span> <span class="p">(</span><span class="o">*</span><span class="n">unmap_pages</span><span class="p">)(</span><span class="n">struct</span> <span class="n">io_pgtable_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">,</span>
+                          <span class="n">size_t</span> <span class="n">pgsize</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">pgcount</span><span class="p">,</span>
+                          <span class="n">struct</span> <span class="n">iommu_iotlb_gather</span> <span class="o">*</span><span class="n">gather</span><span class="p">);</span>
+    <span class="n">phys_addr_t</span> <span class="p">(</span><span class="o">*</span><span class="n">iova_to_phys</span><span class="p">)(</span><span class="n">struct</span> <span class="n">io_pgtable_ops</span> <span class="o">*</span><span class="n">ops</span><span class="p">,</span> <span class="n">unsigned</span> <span class="n">long</span> <span class="n">iova</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>ARM LPAE 实现</strong> — <code class="docutils literal notranslate"><span class="pre">drivers/iommu/io-pgtable-arm.c:803</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.map_pages</span> <span class="pre">=</span> <span class="pre">arm_lpae_map_pages</span></code> (:464) — 写入 LPAE 页表 PTE</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.unmap_pages</span> <span class="pre">=</span> <span class="pre">arm_lpae_unmap_pages</span></code> (:664) — 清除 PTE valid 位</p></li>
+</ul>
+</section>
+<section id="struct-arm-smmu-device-smmuv3">
+<h3><span class="section-number">12.3.7. </span>3.7 struct arm_smmu_device (SMMUv3)<a class="headerlink" href="#struct-arm-smmu-device-smmuv3" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h:618</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">arm_smmu_device</span> <span class="p">{</span>
+    <span class="n">struct</span> <span class="n">device</span>          <span class="o">*</span><span class="n">dev</span><span class="p">;</span>           <span class="o">/*</span> <span class="n">SMMU</span> <span class="n">设备</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="n">__iomem</span>           <span class="o">*</span><span class="n">base</span><span class="p">;</span>          <span class="o">/*</span> <span class="n">MMIO</span> <span class="n">寄存器基地址</span> <span class="o">*/</span>
+    <span class="n">void</span> <span class="n">__iomem</span>           <span class="o">*</span><span class="n">page1</span><span class="p">;</span>         <span class="o">/*</span> <span class="n">MMIO</span> <span class="n">页面1</span> <span class="p">(</span><span class="n">可选</span><span class="p">)</span> <span class="o">*/</span>
+
+    <span class="n">u32</span>                     <span class="n">features</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">特性位图</span> <span class="o">*/</span>
+    <span class="o">/*</span> <span class="n">关键特性位</span><span class="p">:</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_2_LVL_STRTAB</span>  <span class="o">-</span> <span class="n">两级流表</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_TRANS_S1</span>      <span class="o">-</span> <span class="n">Stage</span> <span class="mi">1</span> <span class="n">翻译</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_TRANS_S2</span>      <span class="o">-</span> <span class="n">Stage</span> <span class="mi">2</span> <span class="n">翻译</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_ATS</span>           <span class="o">-</span> <span class="n">地址转换服务</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_COHERENCY</span>     <span class="o">-</span> <span class="n">一致性</span> <span class="n">walk</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_SVA</span>           <span class="o">-</span> <span class="n">共享虚拟地址</span> <span class="o">*/</span>
+    <span class="o">/*</span>   <span class="n">ARM_SMMU_FEAT_RANGE_INV</span>     <span class="o">-</span> <span class="n">范围无效化</span> <span class="o">*/</span>
+
+    <span class="n">struct</span> <span class="n">arm_smmu_cmdq</span>      <span class="n">cmdq</span><span class="p">;</span>          <span class="o">/*</span> <span class="n">命令队列</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">arm_smmu_evtq</span>      <span class="n">evtq</span><span class="p">;</span>          <span class="o">/*</span> <span class="n">事件队列</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">arm_smmu_priq</span>      <span class="n">priq</span><span class="p">;</span>          <span class="o">/*</span> <span class="n">页面请求队列</span> <span class="o">*/</span>
+
+    <span class="n">unsigned</span> <span class="n">long</span>            <span class="n">ias</span><span class="p">;</span>           <span class="o">/*</span> <span class="n">IO</span> <span class="n">地址空间位数</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>            <span class="n">oas</span><span class="p">;</span>           <span class="o">/*</span> <span class="n">输出地址空间位数</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>            <span class="n">pgsize_bitmap</span><span class="p">;</span> <span class="o">/*</span> <span class="n">支持的页大小</span> <span class="o">*/</span>
+
+    <span class="n">u32</span>                     <span class="n">asid_bits</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">ASID</span> <span class="n">位数</span> <span class="o">*/</span>
+    <span class="n">u32</span>                     <span class="n">vmid_bits</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">VMID</span> <span class="n">位数</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>           <span class="o">*</span><span class="n">vmid_map</span><span class="p">;</span>       <span class="o">/*</span> <span class="n">VMID</span> <span class="n">位图分配器</span> <span class="o">*/</span>
+    <span class="n">u32</span>                     <span class="n">ssid_bits</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">SubStreamID</span> <span class="n">位数</span> <span class="o">*/</span>
+    <span class="n">u32</span>                     <span class="n">sid_bits</span><span class="p">;</span>       <span class="o">/*</span> <span class="n">StreamID</span> <span class="n">位数</span> <span class="o">*/</span>
+
+    <span class="n">struct</span> <span class="n">arm_smmu_strtab_cfg</span> <span class="n">strtab_cfg</span><span class="p">;</span>   <span class="o">/*</span> <span class="n">流表配置</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">rb_root</span>           <span class="n">streams</span><span class="p">;</span>        <span class="o">/*</span> <span class="n">Stream</span> <span class="n">入口红黑树</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">iommu_device</span>      <span class="n">iommu</span><span class="p">;</span>          <span class="o">/*</span> <span class="n">IOMMU</span> <span class="n">core</span> <span class="n">句柄</span> <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="struct-arm-smmu-domain-smmuv3">
+<h3><span class="section-number">12.3.8. </span>3.8 struct arm_smmu_domain (SMMUv3)<a class="headerlink" href="#struct-arm-smmu-domain-smmuv3" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h:709</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">arm_smmu_domain</span> <span class="p">{</span>
+    <span class="n">struct</span> <span class="n">arm_smmu_device</span>  <span class="o">*</span><span class="n">smmu</span><span class="p">;</span>           <span class="o">/*</span> <span class="n">所属</span> <span class="n">SMMU</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">mutex</span>             <span class="n">init_mutex</span><span class="p">;</span>     <span class="o">/*</span> <span class="n">初始化互斥锁</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">io_pgtable_ops</span>   <span class="o">*</span><span class="n">pgtbl_ops</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">IO</span> <span class="n">页表操作</span> <span class="o">*/</span>
+
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">stall_enabled</span><span class="p">;</span>  <span class="o">/*</span> <span class="n">Stall</span> <span class="n">模式</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">nr_ats_masters</span><span class="p">;</span> <span class="o">/*</span> <span class="n">ATS</span> <span class="n">使能的</span> <span class="n">master</span> <span class="n">数</span> <span class="o">*/</span>
+    <span class="n">enum</span> <span class="n">arm_smmu_domain_stage</span> <span class="n">stage</span><span class="p">;</span>        <span class="o">/*</span> <span class="n">S1</span><span class="p">,</span> <span class="n">S2</span><span class="p">,</span> <span class="n">NESTED</span><span class="p">,</span> <span class="n">BYPASS</span> <span class="o">*/</span>
+
+    <span class="n">union</span> <span class="p">{</span>
+        <span class="n">struct</span> <span class="n">arm_smmu_s1_cfg</span> <span class="n">s1_cfg</span><span class="p">;</span>       <span class="o">/*</span> <span class="n">Stage</span> <span class="mi">1</span> <span class="n">配置</span> <span class="o">*/</span>
+        <span class="n">struct</span> <span class="n">arm_smmu_s2_cfg</span> <span class="n">s2_cfg</span><span class="p">;</span>       <span class="o">/*</span> <span class="n">Stage</span> <span class="mi">2</span> <span class="n">配置</span> <span class="o">*/</span>
+    <span class="p">};</span>
+
+    <span class="n">struct</span> <span class="n">iommu_domain</span>      <span class="n">domain</span><span class="p">;</span>         <span class="o">/*</span> <span class="n">内嵌</span> <span class="n">iommu_domain</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">list_head</span>         <span class="n">devices</span><span class="p">;</span>        <span class="o">/*</span> <span class="n">域内设备链表</span> <span class="o">*/</span>
+    <span class="n">spinlock_t</span>               <span class="n">devices_lock</span><span class="p">;</span>
+    <span class="n">struct</span> <span class="n">mmu_notifier</span>      <span class="o">*</span><span class="n">mmu_notifiers</span><span class="p">;</span>  <span class="o">/*</span> <span class="n">SVA</span> <span class="n">通知器</span> <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Stage 1 配置 (s1_cfg) 关键字段:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cd.asid</span></code> — 地址空间标识符</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd.ttbr</span></code> — 翻译表基地址寄存器 (页表根指针)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd.tcr</span></code> — 翻译控制寄存器 (页表格式/大小)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd.mair</span></code> — 内存属性间接寄存器 (cache 策略)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">s1cdmax</span></code> — 最大 SubStreamID 值</p></li>
+</ul>
+<p><strong>Stage 2 配置 (s2_cfg) 关键字段:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vmid</span></code> — 虚拟机标识符</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vttbr</span></code> — 虚拟化翻译表基地址</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vtcr</span></code> — 虚拟化翻译控制寄存器</p></li>
+</ul>
+</section>
+<section id="struct-arm-smmu-master-smmuv3">
+<h3><span class="section-number">12.3.9. </span>3.9 struct arm_smmu_master (SMMUv3)<a class="headerlink" href="#struct-arm-smmu-master-smmuv3" title="链接到此标题。"></a></h3>
+<p><strong>定义位置:</strong> <code class="docutils literal notranslate"><span class="pre">drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h:686</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">arm_smmu_master</span> <span class="p">{</span>
+    <span class="n">struct</span> <span class="n">arm_smmu_device</span>  <span class="o">*</span><span class="n">smmu</span><span class="p">;</span>           <span class="o">/*</span> <span class="n">所属</span> <span class="n">SMMU</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">device</span>           <span class="o">*</span><span class="n">dev</span><span class="p">;</span>            <span class="o">/*</span> <span class="n">关联的设备</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">arm_smmu_domain</span>  <span class="o">*</span><span class="n">domain</span><span class="p">;</span>         <span class="o">/*</span> <span class="n">当前绑定域</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">list_head</span>         <span class="n">domain_head</span><span class="p">;</span>    <span class="o">/*</span> <span class="n">域内设备链表节点</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">arm_smmu_stream</span>  <span class="o">*</span><span class="n">streams</span><span class="p">;</span>        <span class="o">/*</span> <span class="n">Stream</span> <span class="n">描述符数组</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">num_streams</span><span class="p">;</span>    <span class="o">/*</span> <span class="n">Stream</span> <span class="n">数量</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">ats_enabled</span><span class="p">;</span>    <span class="o">/*</span> <span class="n">ATS</span> <span class="n">使能</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">stall_enabled</span><span class="p">;</span>  <span class="o">/*</span> <span class="n">Stall</span> <span class="n">使能</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">sva_enabled</span><span class="p">;</span>    <span class="o">/*</span> <span class="n">SVA</span> <span class="n">使能</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="nb">int</span>             <span class="n">ssid_bits</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">SSID</span> <span class="n">位数</span> <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3><span class="section-number">12.3.10. </span>3.10 其他关键数据结构<a class="headerlink" href="#id7" title="链接到此标题。"></a></h3>
+<p><strong>struct dma_coherent_mem</strong> — <code class="docutils literal notranslate"><span class="pre">kernel/dma/coherent.c:13-21</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">dma_coherent_mem</span> <span class="p">{</span>
+    <span class="n">void</span>           <span class="o">*</span><span class="n">virt_base</span><span class="p">;</span>     <span class="o">/*</span> <span class="n">CPU</span> <span class="n">虚拟地址基地址</span> <span class="o">*/</span>
+    <span class="n">dma_addr_t</span>      <span class="n">device_base</span><span class="p">;</span>   <span class="o">/*</span> <span class="n">设备端</span> <span class="n">DMA</span> <span class="n">总线地址</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>   <span class="n">pfn_base</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">起始</span> <span class="n">PFN</span> <span class="o">*/</span>
+    <span class="nb">int</span>             <span class="n">size</span><span class="p">;</span>          <span class="o">/*</span> <span class="n">大小</span> <span class="p">(</span><span class="n">页为单位</span><span class="p">)</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>  <span class="o">*</span><span class="n">bitmap</span><span class="p">;</span>        <span class="o">/*</span> <span class="n">位图分配器</span> <span class="o">*/</span>
+    <span class="n">spinlock_t</span>      <span class="n">spinlock</span><span class="p">;</span>
+    <span class="nb">bool</span>            <span class="n">use_dev_dma_pfn_offset</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>struct cma</strong> — <code class="docutils literal notranslate"><span class="pre">include/linux/cma.h</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">cma</span> <span class="p">{</span>
+    <span class="n">unsigned</span> <span class="n">long</span>   <span class="n">base_pfn</span><span class="p">;</span>      <span class="o">/*</span> <span class="n">CMA</span> <span class="n">区域起始</span> <span class="n">PFN</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>   <span class="n">count</span><span class="p">;</span>         <span class="o">/*</span> <span class="n">总页数</span> <span class="o">*/</span>
+    <span class="n">unsigned</span> <span class="n">long</span>  <span class="o">*</span><span class="n">bitmap</span><span class="p">;</span>        <span class="o">/*</span> <span class="n">位图管理器</span> <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">mutex</span>    <span class="n">lock</span><span class="p">;</span>
+    <span class="n">const</span> <span class="n">char</span>     <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>struct device 中的 DMA 成员</strong> — <code class="docutils literal notranslate"><span class="pre">include/linux/device.h:588-651</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">device</span> <span class="p">{</span>
+    <span class="n">const</span> <span class="n">struct</span> <span class="n">dma_map_ops</span> <span class="o">*</span><span class="n">dma_ops</span><span class="p">;</span>           <span class="o">/*</span> <span class="p">:</span><span class="mi">588</span>  <span class="o">*/</span>
+    <span class="n">u64</span>  <span class="o">*</span><span class="n">dma_mask</span><span class="p">;</span>                              <span class="o">/*</span> <span class="p">:</span><span class="mi">590</span>  <span class="o">*/</span>
+    <span class="n">u64</span>   <span class="n">coherent_dma_mask</span><span class="p">;</span>                     <span class="o">/*</span> <span class="p">:</span><span class="mi">591</span>  <span class="o">*/</span>
+    <span class="n">u64</span>   <span class="n">bus_dma_limit</span><span class="p">;</span>                         <span class="o">/*</span> <span class="p">:</span><span class="mi">596</span>  <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">device_dma_parameters</span> <span class="o">*</span><span class="n">dma_parms</span><span class="p">;</span>     <span class="o">/*</span> <span class="p">:</span><span class="mi">599</span>  <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">dma_coherent_mem</span> <span class="o">*</span><span class="n">dma_mem</span><span class="p">;</span>            <span class="o">/*</span> <span class="p">:</span><span class="mi">604</span>  <span class="o">*/</span>
+    <span class="n">struct</span> <span class="n">cma</span> <span class="o">*</span><span class="n">cma_area</span><span class="p">;</span>                        <span class="o">/*</span> <span class="p">:</span><span class="mi">608</span>  <span class="o">*/</span>
+    <span class="nb">bool</span> <span class="n">dma_coherent</span><span class="p">:</span><span class="mi">1</span><span class="p">;</span>                         <span class="o">/*</span> <span class="p">:</span><span class="mi">648</span>  <span class="o">*/</span>
+    <span class="nb">bool</span> <span class="n">dma_ops_bypass</span><span class="p">:</span><span class="mi">1</span><span class="p">;</span>                       <span class="o">/*</span> <span class="p">:</span><span class="mi">651</span>  <span class="o">*/</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>DMA 属性常量</strong> — <code class="docutils literal notranslate"><span class="pre">include/linux/dma-mapping.h:23-62</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DMA_ATTR_WEAK_ORDERING</span>       <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">允许读写乱序</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_WRITE_COMBINE</span>       <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">写合并</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_NO_KERNEL_MAPPING</span>   <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">无内核映射</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_SKIP_CPU_SYNC</span>       <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">跳过</span> <span class="n">cache</span> <span class="n">同步</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_FORCE_CONTIGUOUS</span>    <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">强制物理连续</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_ALLOC_SINGLE_PAGES</span>  <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">单页分配提示</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_NO_WARN</span>             <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">抑制警告</span> <span class="o">*/</span>
+<span class="n">DMA_ATTR_PRIVILEGED</span>          <span class="p">(</span><span class="mi">1</span><span class="n">UL</span> <span class="o">&lt;&lt;</span> <span class="mi">9</span><span class="p">)</span>  <span class="o">/*</span> <span class="n">特权级</span> <span class="o">*/</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2><span class="section-number">12.4. </span>4. 执行阶段<a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<section id="boot-time">
+<h3><span class="section-number">12.4.1. </span>4.1 初始化阶段 (Boot Time)<a class="headerlink" href="#boot-time" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────────┐
+│                     初始化阶段调用链                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. early_param(&quot;cma&quot;, ...)                                     │
+│     └── 解析 cma= 内核参数  [kernel/dma/contiguous.c:78]        │
+│                                                                 │
+│  2. early_param(&quot;coherent_pool&quot;, ...)                           │
+│     └── 解析 coherent_pool=  [kernel/dma/pool.c:29]             │
+│                                                                 │
+│  3. SMMU 驱动探测 (platform_driver)                             │
+│     └── arm_smmu_device_probe() / arm_smmu_device_dt_probe()    │
+│         ├── 解析设备树 SMMU 节点                                │
+│         ├── 初始化 MMIO 寄存器、命令队列、事件队列               │
+│         ├── arm_smmu_init_strtab() → 分配流表                   │
+│         ├── arm_smmu_init_queues() → 初始化 CMDQ/EVTQ           │
+│         └── iommu_device_register() → 注册到 IOMMU core         │
+│                                                                 │
+│  4. dma_contiguous_reserve()  [kernel/dma/contiguous.c:167]      │
+│     └── 从 memblock 保留 CMA 物理区域                           │
+│                                                                 │
+│  5. postcore_initcall: dma_atomic_pool_init()                   │
+│     └── 初始化 3 个原子 DMA 池  [kernel/dma/pool.c:187]         │
+│                                                                 │
+│  6. 设备探测阶段 (Device Tree / ACPI)                            │
+│     │                                                            │
+│     ├── iommu_probe_device()                                    │
+│     │   └── SMMU: arm_smmu_probe_device()                       │
+│     │       ├── 解析 iommu-map / iommus 属性                    │
+│     │       ├── 分配 arm_smmu_master, 配置 stream IDs            │
+│     │       └── dev_iommu_priv_set(dev, master)                 │
+│     │                                                            │
+│     ├── arch_setup_dma_ops()  [arch/arm64/mm/dma-mapping.c:49]  │
+│     │   ├── dev-&gt;dma_coherent = coherent                        │
+│     │   └── [有 iommu] iommu_setup_dma_ops()                    │
+│     │       ├── iommu_get_domain_for_dev(dev)                   │
+│     │       ├── iommu_dma_init_domain()                         │
+│     │       │   └── init_iova_domain(iovad, base, limit)        │
+│     │       │       └── 初始化 IOVA 空间 + rcache               │
+│     │       └── dev-&gt;dma_ops = &amp;iommu_dma_ops                   │
+│     │                                                            │
+│     └── iommu_attach_device(domain, dev)  [iommu.c:1952]        │
+│         └── arm_smmu_attach_dev()  [arm-smmu-v3.c:2396]         │
+│             ├── arm_smmu_domain_finalise()                      │
+│             │   ├── 选择 S1/S2 格式 (ARM_64_LPAE_S1/S2)        │
+│             │   ├── alloc_io_pgtable_ops(fmt, &amp;cfg, domain)     │
+│             │   │   └── 分配页表根, 填充 cfg (TTBR/TCR/MAIR)   │
+│             │   ├── [S1] arm_smmu_domain_finalise_s1()          │
+│             │   │   ├── xa_alloc(&amp;arm_smmu_asid_xa) [分配ASID] │
+│             │   │   ├── arm_smmu_alloc_cd_tables() [CD 表]      │
+│             │   │   └── arm_smmu_write_ctx_desc() [写 CD]      │
+│             │   ├── [S2] arm_smmu_domain_finalise_s2()          │
+│             │   │   ├── arm_smmu_bitmap_alloc(vmid_map) [VMID]  │
+│             │   │   └── 配置 VTTBR/VTCR                         │
+│             │   └── smmu_domain-&gt;pgtbl_ops = pgtbl_ops          │
+│             ├── arm_smmu_install_ste_for_dev()                  │
+│             │   └── arm_smmu_write_strtab_ent() [写 STE]        │
+│             └── arm_smmu_enable_ats()  [可选]                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="iommu">
+<h3><span class="section-number">12.4.2. </span>4.2 运行时阶段 (IOMMU 路径分配)<a class="headerlink" href="#iommu" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────────┐
+│                dma_alloc_coherent IOMMU 路径决策树              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  dma_alloc_coherent(dev, size, &amp;handle, gfp)                   │
+│    └── dma_alloc_attrs()                                       │
+│        └── [dma_ops == iommu_dma_ops]                           │
+│            └── iommu_dma_alloc()                                │
+│                │                                                │
+│                ├─ 可阻塞 且 !FORCE_CONTIGUOUS?                  │
+│                │  └── YES: 路径 A (最常用)                       │
+│                │      └── iommu_dma_alloc_remap()               │
+│                │          ├── 分配非连续物理页 (Buddy)           │
+│                │          ├── 分配 IOVA                          │
+│                │          ├── iommu_map_sg_atomic()              │
+│                │          │   └── 写入 ARM LPAE 页表             │
+│                │          └── vmap() 建立内核连续虚拟映射       │
+│                │                                                │
+│                ├─ 不可阻塞 且 非一致 且 DMA_DIRECT_REMAP?       │
+│                │  └── YES: 路径 B (原子池)                      │
+│                │      └── dma_alloc_from_pool()                 │
+│                │          └── gen_pool_alloc() [无 IOMMU 映射]   │
+│                │                                                │
+│                └── 默认: 路径 C (连续)                           │
+│                    ├── iommu_dma_alloc_pages()                  │
+│                    │   ├── CMA 或 Buddy 分配连续物理页          │
+│                    │   └── [非一致] vmap() 建立内核映射          │
+│                    └── __iommu_dma_map()                        │
+│                        ├── alloc_iova_fast() [分配 IOVA]        │
+│                        └── iommu_map_atomic()                  │
+│                            └── arm_lpae_map_pages()             │
+│                                └── 写 ARM LPAE 页表 PTE        │
+│                                                                 │
+│  返回: (cpu_addr, dma_handle=IOVA)                               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h3><span class="section-number">12.4.3. </span>4.3 清理阶段 (IOMMU 释放路径)<a class="headerlink" href="#id9" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────────┐
+│                dma_free_coherent IOMMU 释放路径                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  dma_free_coherent(dev, size, cpu_addr, handle)                │
+│    └── dma_free_attrs()                                         │
+│        └── [dma_ops == iommu_dma_ops]                           │
+│            └── iommu_dma_free()                                 │
+│                │                                                │
+│                ├── __iommu_dma_unmap(dev, handle, size)         │
+│                │   ├── iommu_unmap_fast()                       │
+│                │   │   └── arm_lpae_unmap_pages()               │
+│                │   │       └── 清除 PTE valid 位                 │
+│                │   │                                            │
+│                │   ├── arm_smmu_iotlb_sync() [TLB 无效化]        │
+│                │   │   └── arm_smmu_tlb_inv_range_domain()      │
+│                │   │       └── CMDQ_INV_TLB → SMMU 硬件        │
+│                │   │                                            │
+│                │   └── free_iova_fast() [回收 IOVA]             │
+│                │                                                │
+│                └── __iommu_dma_free(dev, size, cpu_addr)        │
+│                    ├── [原子池] dma_free_from_pool()             │
+│                    ├── [vmalloc] vunmap()                       │
+│                    └── [低内存] dma_free_contiguous()           │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api">
+<h2><span class="section-number">12.5. </span>5. 关键内核 API 调用<a class="headerlink" href="#api" title="链接到此标题。"></a></h2>
+<section id="id10">
+<h3><span class="section-number">12.5.1. </span>5.1 内存分配 API<a class="headerlink" href="#id10" title="链接到此标题。"></a></h3>
+</section>
+<section id="iova-api">
+<h3><span class="section-number">12.5.2. </span>5.2 IOVA 管理 API<a class="headerlink" href="#iova-api" title="链接到此标题。"></a></h3>
+</section>
+<section id="iommu-core-api">
+<h3><span class="section-number">12.5.3. </span>5.3 IOMMU Core 映射 API<a class="headerlink" href="#iommu-core-api" title="链接到此标题。"></a></h3>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">iommu_attach_device()</span></code>       | 将设备绑定到 IOMMU 域                | <code class="docutils literal notranslate"><span class="pre">drivers/iommu/iommu.c:1952</span></code>    |</div>
+</div>
+</section>
+<section id="dma-iommu-api">
+<h3><span class="section-number">12.5.4. </span>5.4 DMA-IOMMU 桥接 API<a class="headerlink" href="#dma-iommu-api" title="链接到此标题。"></a></h3>
+</section>
+<section id="arm-smmuv3-api">
+<h3><span class="section-number">12.5.5. </span>5.5 ARM SMMUv3 硬件操作 API<a class="headerlink" href="#arm-smmuv3-api" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>API</p></th>
+<th class="head"><p>作用</p></th>
+<th class="head"><p>所在文件</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_attach_dev()</span></code>      | 设备绑定域, 初始化页表, 写入 STE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm-smmu-v3.c:2396</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_domain_finalise()</span></code></p></td>
+<td><p>初始化域 (S1/S2, ASID/VMID, 页表)</p></td>
+<td rowspan="2"><blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">arm-smmu-v3.c:2164</span></code></p>
+</div></blockquote>
+<dl class="simple">
+<dt>--------------------------------===</dt><dd><p><code class="docutils literal notranslate"><span class="pre">arm-smmu-v3.c:2472</span></code></p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_map_pages()</span></code></p></td>
+<td><p>映射页面 → pgtbl_ops-&gt;map_pages</p></td>
+</tr>
+</tbody>
+</table>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">arm_smmu_map_pages()</span></code>        | 映射页面 → pgtbl_ops-&gt;map_pages     | <code class="docutils literal notranslate"><span class="pre">arm-smmu-v3.c:2472</span></code>            |</div>
+</div>
+</section>
+<section id="arm-lpae-api">
+<h3><span class="section-number">12.5.6. </span>5.6 ARM LPAE 页表 API<a class="headerlink" href="#arm-lpae-api" title="链接到此标题。"></a></h3>
+</section>
+<section id="id11">
+<h3><span class="section-number">12.5.7. </span>5.7 内存映射与属性 API<a class="headerlink" href="#id11" title="链接到此标题。"></a></h3>
+</section>
+</section>
+<section id="id12">
+<h2><span class="section-number">12.6. </span>6. 组件交互图<a class="headerlink" href="#id12" title="链接到此标题。"></a></h2>
+<section id="id13">
+<h3><span class="section-number">12.6.1. </span>6.1 IOMMU 路径完整架构图<a class="headerlink" href="#id13" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────────────┐
+│                      DMA 驱动程序 (Driver)                           │
+│   dma_alloc_coherent(dev, size, &amp;dma_handle, GFP_KERNEL)            │
+└─────────────────────────────┬───────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                   DMA Mapping Framework                             │
+│   dma_alloc_attrs() → dma_alloc_direct? → NO → ops-&gt;alloc          │
+└─────────────────────────────┬───────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                 dma-iommu 层 (DMA-IOMMU Glue)                        │
+│                 drivers/iommu/dma-iommu.c                            │
+│                                                                      │
+│  iommu_dma_ops.alloc = iommu_dma_alloc()                           │
+│      │                                                               │
+│      ├── 页面分配: alloc_pages / dma_alloc_contiguous               │
+│      ├── IOVA 管理: alloc_iova_fast / free_iova_fast                │
+│      ├── 映射接口:   __iommu_dma_map / __iommu_dma_unmap            │
+│      └── 内核映射:   vmap (VM_DMA_COHERENT) / vunmap               │
+│                                                                      │
+└──────────┬──────────────────────────┬───────────────────────────────┘
+           │ __iommu_dma_map          │ __iommu_dma_unmap
+           ▼                          ▼
+┌─────────────────────────┐  ┌─────────────────────────────┐
+│ IOMMU Core              │  │ IOMMU Core (unmap)          │
+│ drivers/iommu/iommu.c   │  │ drivers/iommu/iommu.c       │
+│                         │  │                             │
+│ iommu_map_atomic()      │  │ iommu_unmap_fast()          │
+│   └── __iommu_map()     │  │   └── __iommu_unmap()       │
+│       └── ops-&gt;map_pages│  │       └── ops-&gt;unmap_pages  │
+└──────────┬──────────────┘  └──────────┬──────────────────┘
+           │ domain_ops                  │ domain_ops
+           ▼                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              ARM SMMUv3 驱动                                      │
+│              drivers/iommu/arm/arm-smmu-v3/                      │
+│                                                                  │
+│  arm_smmu_map_pages()   arm_smmu_unmap_pages()                   │
+│      │                        │                                  │
+│      └── pgtbl_ops ─────────────┘                                │
+│                                                                  │
+│  arm_smmu_iotlb_sync()    ← TLB 无效化同步                      │
+│  arm_smmu_attach_dev()    ← 设备绑定 (STE/CD 编程)              │
+│  arm_smmu_domain_finalise() ← 域初始化 (ASID/VMID/页表)         │
+└──────────┬──────────────────────────────────────────────────────┘
+           │ pgtbl_ops
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              ARM LPAE IO 页表                                    │
+│              drivers/iommu/io-pgtable-arm.c                      │
+│                                                                  │
+│  arm_lpae_map_pages()    arm_lpae_unmap_pages()                 │
+│      │                        │                                 │
+│      └── __arm_lpae_map() ────┘                                │
+│          ├── 遍历页表层级: PGD → PUD → PMD → PTE               │
+│          ├── alloc_pages() 分配页表页                            │
+│          ├── arm_lpae_install_table() 安装子表                  │
+│          └── 写入/清除 PTE: PA | prot | valid                    │
+│                                                                  │
+└──────────┬──────────────────────────────────────────────────────┘
+           │ 页表写入内存 (DDR)
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              SMMUv3 硬件                                         │
+│                                                                  │
+│  Stream Table (STE) ──→ Context Descriptor (CD) ──→ Page Table  │
+│                                                                  │
+│  DMA 事务:                                                       │
+│    Device ──[StreamID/SSID]──→ STE ──→ CD ──→ PT Walk           │
+│                                                  │               │
+│    IOVA ──────────────────────────────────→ PA ──→ DDR          │
+│                                                                  │
+│  TLB: 缓存 IOVA→PA 映射                                          │
+│  CMDQ: 接收 TLB 无效化等命令                                     │
+│  EVTQ: 报告事件 (fault 等)                                       │
+└─────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="smmuv3">
+<h3><span class="section-number">12.6.2. </span>6.2 SMMUv3 地址翻译流水线<a class="headerlink" href="#smmuv3" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌─────────────────────────────────────────────────────────────────┐
+│              SMMUv3 地址翻译流水线 (Stage 1)                     │
+│                                                                  │
+│  Device 发出 DMA 事务:                                          │
+│                                                                  │
+│  ┌──────────┐    ┌──────────────┐    ┌───────────────┐          │
+│  │ StreamID │───→│   Stream     │    │   Context     │          │
+│  │ (SID)    │    │   Table      │    │   Descriptor  │          │
+│  │          │    │   Entry      │    │   Table       │          │
+│  │          │    │   (STE)      │───→│   (CD)        │          │
+│  └──────────┘    │              │    │               │          │
+│                  │ S1CTXPTR     │    │ TTBR ← 页表根 │          │
+│                  │ S1CDMAX      │    │ TCR  ← 格式   │          │
+│                  │ V (=valid)   │    │ MAIR ← 属性   │          │
+│                  │ CFG=S1_TRANS │    │ ASID          │          │
+│                  └──────────────┘    └───────┬───────┘          │
+│                                              │                   │
+│                                       TTBR 指向页表根            │
+│                                              │                   │
+│  IOVA ──────────────────────────────────────┘                   │
+│                                              │                   │
+│                          ┌───────────────────┘                   │
+│                          ▼                                       │
+│  ┌──────────────────────────────────────────┐                    │
+│  │           ARM LPAE 页表 Walk              │                    │
+│  │                                          │                    │
+│  │   PGD[i] ──→ PUD[j] ──→ PMD[k] ──→ PTE[l]│                   │
+│  │                                          │                    │
+│  │   每级:                                  │                    │
+│  │   ├── 读取表项 (从 DDR, 可选 coherent)    │                    │
+│  │   ├── 检查 Valid 位                      │                    │
+│  │   ├── 检查权限 (R/W)                     │                    │
+│  │   ├── 检查 MAIR/TCR 属性                │                    │
+│  │   └── 结果缓存到 TLB                    │                    │
+│  └──────────────────┬───────────────────────┘                    │
+│                     │                                            │
+│                     ▼                                            │
+│  ┌──────────────────────────────────────────┐                    │
+│  │           物理地址 (PA)                   │                    │
+│  │           ──→ DDR 访问                    │                    │
+│  └──────────────────────────────────────────┘                    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+<section id="dma-direct-vs-iommu">
+<h3><span class="section-number">12.6.3. </span>6.3 DMA 地址空间对比 (Direct vs IOMMU)<a class="headerlink" href="#dma-direct-vs-iommu" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌──────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│   Direct Path (无 IOMMU 或 Bypass)                               │
+│   ─────────────────────────────────                              │
+│                                                                  │
+│   CPU ──→ [VA] ──→ [MMU] ──→ [PA] ──→ DDR                       │
+│                                  │                                │
+│   Device ──→ [DMA=PA] ──────────┘                                │
+│                                                                  │
+│   限制: 设备 DMA 地址 = 物理地址, 受限于物理内存范围              │
+│                                                                  │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   IOMMU Path (SMMU)                                              │
+│   ──────────────────                                              │
+│                                                                  │
+│   CPU ──→ [VA] ──→ [MMU] ──→ [PA] ──→ DDR                       │
+│                                  │                                │
+│   Device ──→ [IOVA] ──→ [SMMU STE→CD→PT] ──→ [PA] ──→ DDR      │
+│                                                                  │
+│   优势:                                                          │
+│   • IOVA 独立于物理地址, 设备可访问全部内存                      │
+│   • 内存隔离: 不同域的设备看到不同的地址空间                     │
+│   • 地址聚合: 非连续物理页映射为连续 IOVA                        │
+│   • 安全: 设备无法访问未映射的物理区域                            │
+│                                                                  │
+│   dma_alloc_coherent 返回的 dma_handle 是 IOVA, 不是物理地址    │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id14">
+<h2><span class="section-number">12.7. </span>7. 关键文件索引<a class="headerlink" href="#id14" title="链接到此标题。"></a></h2>
+<div class="line-block">
+<div class="line"><strong>内存分配</strong>                              |                                         |</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="dma_alloc_coherent_analysis.html" class="btn btn-neutral float-left" title="11. dma_alloc_coherent 完整实现分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="ucie/UCIE_SPECIFICATION.html" class="btn btn-neutral float-right" title="13. UCIe 规范 2.0 文档结构概览" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

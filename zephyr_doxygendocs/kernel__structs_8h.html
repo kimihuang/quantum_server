@@ -1,0 +1,796 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: zephyr/include/zephyr/kernel_structs.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('kernel__structs_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">结构体</a> &#124;
+<a href="#define-members">宏定义</a> &#124;
+<a href="#typedef-members">类型定义</a> &#124;
+<a href="#func-members">函数</a> &#124;
+<a href="#var-members">变量</a>  </div>
+  <div class="headertitle"><div class="title">kernel_structs.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Zephyr 内核核心数据结构定义  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;zephyr/sys/atomic.h&gt;</code><br />
+<code>#include &lt;zephyr/types.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/dlist.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/util.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/sys_heap.h&gt;</code><br />
+<code>#include &lt;zephyr/arch/structs.h&gt;</code><br />
+<code>#include &lt;zephyr/kernel/stats.h&gt;</code><br />
+<code>#include &lt;zephyr/kernel/obj_core.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/rb.h&gt;</code><br />
+</div>
+<p><a href="kernel__structs_8h_source.html">浏览源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+结构体</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__priq__rb.html">_priq_rb</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">基于红黑树的优先级队列  <a href="struct__priq__rb.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__priq__mq.html">_priq_mq</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">基于多队列的优先级队列  <a href="struct__priq__mq.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__ready__q.html">_ready_q</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统就绪队列  <a href="struct__ready__q.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__cpu.html">_cpu</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">CPU 核心数据结构  <a href="struct__cpu.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structz__kernel.html">z_kernel</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zephyr 全局内核数据结构（唯一实例 _kernel）  <a href="structz__kernel.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__wait__q__t.html">_wait_q_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">基于双向链表的等待队列  <a href="struct__wait__q__t.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct__timeout.html">_timeout</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">内核超时记录结构体  <a href="struct__timeout.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:ae861b4805a52e8bd99d5481d3943dc5c" id="r_ae861b4805a52e8bd99d5481d3943dc5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#ae861b4805a52e8bd99d5481d3943dc5c">K_NUM_THREAD_PRIO</a>&#160;&#160;&#160;(CONFIG_NUM_PREEMPT_PRIORITIES + CONFIG_NUM_COOP_PRIORITIES + 1)</td></tr>
+<tr class="memdesc:ae861b4805a52e8bd99d5481d3943dc5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">线程优先级总数 = 抢占优先级数 + 协作优先级数 + 1（idle 优先级）  <br /></td></tr>
+<tr class="separator:ae861b4805a52e8bd99d5481d3943dc5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fcfea2426c3da024f627c8ab9e754ad" id="r_a3fcfea2426c3da024f627c8ab9e754ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a3fcfea2426c3da024f627c8ab9e754ad">PRIQ_BITMAP_SIZE</a>&#160;&#160;&#160;(DIV_ROUND_UP(<a class="el" href="kernel__structs_8h.html#ae861b4805a52e8bd99d5481d3943dc5c">K_NUM_THREAD_PRIO</a>, BITS_PER_LONG))</td></tr>
+<tr class="memdesc:a3fcfea2426c3da024f627c8ab9e754ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">优先级位图大小（unsigned long 数组元素个数），用于快速查找最高优先级  <br /></td></tr>
+<tr class="separator:a3fcfea2426c3da024f627c8ab9e754ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10e62d52192cffa010dd24ea106cbac3" id="r_a10e62d52192cffa010dd24ea106cbac3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a10e62d52192cffa010dd24ea106cbac3">_THREAD_DUMMY</a>&#160;&#160;&#160;(BIT(0))</td></tr>
+<tr class="memdesc:a10e62d52192cffa010dd24ea106cbac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">哑线程标志：非真实线程（如启动阶段的 dummy thread）  <br /></td></tr>
+<tr class="separator:a10e62d52192cffa010dd24ea106cbac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ce0dc871ea21d5d1c206627a1cd09c1" id="r_a3ce0dc871ea21d5d1c206627a1cd09c1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a3ce0dc871ea21d5d1c206627a1cd09c1">_THREAD_PENDING</a>&#160;&#160;&#160;(BIT(1))</td></tr>
+<tr class="memdesc:a3ce0dc871ea21d5d1c206627a1cd09c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">等待标志：线程正在等待某个内核对象（信号量、互斥量、队列等）  <br /></td></tr>
+<tr class="separator:a3ce0dc871ea21d5d1c206627a1cd09c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64d84750fe726eb6c7fe92afcc6015be" id="r_a64d84750fe726eb6c7fe92afcc6015be"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a64d84750fe726eb6c7fe92afcc6015be">_THREAD_SLEEPING</a>&#160;&#160;&#160;(BIT(2))</td></tr>
+<tr class="memdesc:a64d84750fe726eb6c7fe92afcc6015be"><td class="mdescLeft">&#160;</td><td class="mdescRight">睡眠标志：线程处于睡眠状态（k_sleep / k_msleep）  <br /></td></tr>
+<tr class="separator:a64d84750fe726eb6c7fe92afcc6015be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd9cb55c6698b2ead2918a5433fa88f3" id="r_acd9cb55c6698b2ead2918a5433fa88f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#acd9cb55c6698b2ead2918a5433fa88f3">_THREAD_DEAD</a>&#160;&#160;&#160;(BIT(3))</td></tr>
+<tr class="memdesc:acd9cb55c6698b2ead2918a5433fa88f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">终止标志：线程已执行完毕或被终止，资源可回收  <br /></td></tr>
+<tr class="separator:acd9cb55c6698b2ead2918a5433fa88f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a734dc4050c246c85552234ce2a0adfb6" id="r_a734dc4050c246c85552234ce2a0adfb6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a734dc4050c246c85552234ce2a0adfb6">_THREAD_SUSPENDED</a>&#160;&#160;&#160;(BIT(4))</td></tr>
+<tr class="memdesc:a734dc4050c246c85552234ce2a0adfb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">挂起标志：线程被显式挂起（k_thread_suspend）  <br /></td></tr>
+<tr class="separator:a734dc4050c246c85552234ce2a0adfb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c30bf0a0cff27c949196fccb7120af2" id="r_a8c30bf0a0cff27c949196fccb7120af2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a8c30bf0a0cff27c949196fccb7120af2">_THREAD_ABORTING</a>&#160;&#160;&#160;(BIT(5))</td></tr>
+<tr class="memdesc:a8c30bf0a0cff27c949196fccb7120af2"><td class="mdescLeft">&#160;</td><td class="mdescRight">中止中标志：线程正在执行中止操作（k_thread_abort 进行中）  <br /></td></tr>
+<tr class="separator:a8c30bf0a0cff27c949196fccb7120af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb24a8ca468f062c739719bf0fb029d4" id="r_acb24a8ca468f062c739719bf0fb029d4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#acb24a8ca468f062c739719bf0fb029d4">_THREAD_SUSPENDING</a>&#160;&#160;&#160;(BIT(6))</td></tr>
+<tr class="memdesc:acb24a8ca468f062c739719bf0fb029d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">挂起中标志：线程正在执行挂起操作（状态转换中间态）  <br /></td></tr>
+<tr class="separator:acb24a8ca468f062c739719bf0fb029d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace776dfc13f3900a6a1107bbf2af8e6b" id="r_ace776dfc13f3900a6a1107bbf2af8e6b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#ace776dfc13f3900a6a1107bbf2af8e6b">_THREAD_QUEUED</a>&#160;&#160;&#160;(BIT(7))</td></tr>
+<tr class="memdesc:ace776dfc13f3900a6a1107bbf2af8e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">就绪队列标志：线程当前在就绪队列中，可被调度执行  <br /></td></tr>
+<tr class="separator:ace776dfc13f3900a6a1107bbf2af8e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f96f6c28804791abc8449d61290ee45" id="r_a4f96f6c28804791abc8449d61290ee45"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a4f96f6c28804791abc8449d61290ee45">_NON_PREEMPT_THRESHOLD</a>&#160;&#160;&#160;0x0080U</td></tr>
+<tr class="memdesc:a4f96f6c28804791abc8449d61290ee45"><td class="mdescLeft">&#160;</td><td class="mdescRight">非抢占阈值：当 preempt &gt;= 此值时，线程不可被抢占  <br /></td></tr>
+<tr class="separator:a4f96f6c28804791abc8449d61290ee45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a56a6c16b959b3ee505678753113e88" id="r_a6a56a6c16b959b3ee505678753113e88"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a6a56a6c16b959b3ee505678753113e88">_PREEMPT_THRESHOLD</a>&#160;&#160;&#160;(<a class="el" href="kernel__structs_8h.html#a4f96f6c28804791abc8449d61290ee45">_NON_PREEMPT_THRESHOLD</a> - 1U)</td></tr>
+<tr class="memdesc:a6a56a6c16b959b3ee505678753113e88"><td class="mdescLeft">&#160;</td><td class="mdescRight">抢占阈值：当 preempt &lt;= 此值时，线程可被抢占  <br /></td></tr>
+<tr class="separator:a6a56a6c16b959b3ee505678753113e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8000cb9c70d59a5efb41feb605275526" id="r_a8000cb9c70d59a5efb41feb605275526"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a8000cb9c70d59a5efb41feb605275526">_current_cpu</a></td></tr>
+<tr class="memdesc:a8000cb9c70d59a5efb41feb605275526"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取当前 CPU 指针（SMP 安全版本）  <br /></td></tr>
+<tr class="separator:a8000cb9c70d59a5efb41feb605275526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a693774d02025251481ce1d262e2d7bbd" id="r_a693774d02025251481ce1d262e2d7bbd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a693774d02025251481ce1d262e2d7bbd">_current</a>&#160;&#160;&#160;<a class="el" href="kernel__structs_8h.html#a3dcb0d2440c9015516824d6d698a6213">z_smp_current_get</a>()</td></tr>
+<tr class="memdesc:a693774d02025251481ce1d262e2d7bbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取当前线程（SMP 模式宏）  <br /></td></tr>
+<tr class="separator:a693774d02025251481ce1d262e2d7bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80c653d62783a4e7ea960794bd287b49" id="r_a80c653d62783a4e7ea960794bd287b49"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a80c653d62783a4e7ea960794bd287b49">CPU_ID</a>&#160;&#160;&#160;((CONFIG_MP_MAX_NUM_CPUS == 1) ? 0 : <a class="el" href="kernel__structs_8h.html#a8000cb9c70d59a5efb41feb605275526">_current_cpu</a>-&gt;id)</td></tr>
+<tr class="memdesc:a80c653d62783a4e7ea960794bd287b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取当前 CPU ID（单核系统编译时优化为常量 0）  <br /></td></tr>
+<tr class="separator:a80c653d62783a4e7ea960794bd287b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5324ca8a831fcbf73321f1866069db3e" id="r_a5324ca8a831fcbf73321f1866069db3e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a5324ca8a831fcbf73321f1866069db3e">z_current_thread_set</a>(thread)&#160;&#160;&#160;({ <a class="el" href="kernel__structs_8h.html#a8000cb9c70d59a5efb41feb605275526">_current_cpu</a>-&gt;current = (thread); })</td></tr>
+<tr class="memdesc:a5324ca8a831fcbf73321f1866069db3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前 CPU 的执行线程  <br /></td></tr>
+<tr class="separator:a5324ca8a831fcbf73321f1866069db3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15762db2334ee4d6e6a4ff5a315e6154" id="r_a15762db2334ee4d6e6a4ff5a315e6154"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a15762db2334ee4d6e6a4ff5a315e6154">Z_WAIT_Q_INIT</a>(wait_q)&#160;&#160;&#160;{ SYS_DLIST_STATIC_INIT(&amp;(wait_q)-&gt;waitq) }</td></tr>
+<tr class="memdesc:a15762db2334ee4d6e6a4ff5a315e6154"><td class="mdescLeft">&#160;</td><td class="mdescRight">等待队列静态初始化宏（链表版本）  <br /></td></tr>
+<tr class="separator:a15762db2334ee4d6e6a4ff5a315e6154"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a669130e66d06e07d5e4732caf7b9f487" id="r_a669130e66d06e07d5e4732caf7b9f487"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="struct__ready__q.html">_ready_q</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a669130e66d06e07d5e4732caf7b9f487">_ready_q_t</a></td></tr>
+<tr class="memdesc:a669130e66d06e07d5e4732caf7b9f487"><td class="mdescLeft">&#160;</td><td class="mdescRight">就绪队列类型别名  <br /></td></tr>
+<tr class="separator:a669130e66d06e07d5e4732caf7b9f487"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a049dc21fdcbc499f15fb84f22880d0e9" id="r_a049dc21fdcbc499f15fb84f22880d0e9"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="struct__cpu.html">_cpu</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a049dc21fdcbc499f15fb84f22880d0e9">_cpu_t</a></td></tr>
+<tr class="memdesc:a049dc21fdcbc499f15fb84f22880d0e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">CPU 核心数据结构类型别名  <br /></td></tr>
+<tr class="separator:a049dc21fdcbc499f15fb84f22880d0e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14f1ce149a5d79139026bee77edaf062" id="r_a14f1ce149a5d79139026bee77edaf062"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structz__kernel.html">z_kernel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a14f1ce149a5d79139026bee77edaf062">_kernel_t</a></td></tr>
+<tr class="memdesc:a14f1ce149a5d79139026bee77edaf062"><td class="mdescLeft">&#160;</td><td class="mdescRight">全局内核数据结构类型别名  <br /></td></tr>
+<tr class="separator:a14f1ce149a5d79139026bee77edaf062"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae480322d2e957a1afdba298be8aed04b" id="r_ae480322d2e957a1afdba298be8aed04b"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#ae480322d2e957a1afdba298be8aed04b">_timeout_func_t</a>) (struct <a class="el" href="struct__timeout.html">_timeout</a> *t)</td></tr>
+<tr class="memdesc:ae480322d2e957a1afdba298be8aed04b"><td class="mdescLeft">&#160;</td><td class="mdescRight">超时回调函数指针类型  <br /></td></tr>
+<tr class="separator:ae480322d2e957a1afdba298be8aed04b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44c6f88a879877ad8da28706e274064f" id="r_a44c6f88a879877ad8da28706e274064f"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a44c6f88a879877ad8da28706e274064f">k_thread_timeslice_fn_t</a>) (struct k_thread *thread, void *data)</td></tr>
+<tr class="memdesc:a44c6f88a879877ad8da28706e274064f"><td class="mdescLeft">&#160;</td><td class="mdescRight">线程时间片到期回调函数指针类型  <br /></td></tr>
+<tr class="separator:a44c6f88a879877ad8da28706e274064f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a4a257e875ccf25fd20f02b7c40af961d" id="r_a4a257e875ccf25fd20f02b7c40af961d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a4a257e875ccf25fd20f02b7c40af961d">z_smp_cpu_mobile</a> (void)</td></tr>
+<tr class="memdesc:a4a257e875ccf25fd20f02b7c40af961d"><td class="mdescLeft">&#160;</td><td class="mdescRight">检查当前上下文是否可被抢占且可迁移到其他 CPU  <br /></td></tr>
+<tr class="separator:a4a257e875ccf25fd20f02b7c40af961d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dcb0d2440c9015516824d6d698a6213" id="r_a3dcb0d2440c9015516824d6d698a6213"><td class="memItemLeft" align="right" valign="top">__attribute_const__ struct k_thread *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a3dcb0d2440c9015516824d6d698a6213">z_smp_current_get</a> (void)</td></tr>
+<tr class="memdesc:a3dcb0d2440c9015516824d6d698a6213"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取当前执行线程指针（SMP 安全版本）  <br /></td></tr>
+<tr class="separator:a3dcb0d2440c9015516824d6d698a6213"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+变量</h2></td></tr>
+<tr class="memitem:a62542dcfda66ee922ac005b8c9753509" id="r_a62542dcfda66ee922ac005b8c9753509"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structz__kernel.html">z_kernel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a62542dcfda66ee922ac005b8c9753509">_kernel</a></td></tr>
+<tr class="memdesc:a62542dcfda66ee922ac005b8c9753509"><td class="mdescLeft">&#160;</td><td class="mdescRight">全局内核实例（在 <a class="el" href="init_8c.html" title="Zephyr 内核初始化模块">init.c</a> 中定义为 __pinned_bss）  <br /></td></tr>
+<tr class="separator:a62542dcfda66ee922ac005b8c9753509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01029617586c369a390ed780f21b7cbd" id="r_a01029617586c369a390ed780f21b7cbd"><td class="memItemLeft" align="right" valign="top">atomic_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="kernel__structs_8h.html#a01029617586c369a390ed780f21b7cbd">_cpus_active</a></td></tr>
+<tr class="memdesc:a01029617586c369a390ed780f21b7cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">活跃 CPU 数量原子计数器（电源管理子系统使用）  <br /></td></tr>
+<tr class="separator:a01029617586c369a390ed780f21b7cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>Zephyr 内核核心数据结构定义 </p>
+<p>本文件定义了 Zephyr 内核中最基础、最关键的数据结构，包括：</p><ul>
+<li>线程状态位掩码（_THREAD_xxx）</li>
+<li>调度器就绪队列（_ready_q 及其三种实现）</li>
+<li>CPU 核心数据结构（_cpu）</li>
+<li>全局内核数据结构（z_kernel / _kernel）</li>
+<li>等待队列（_wait_q_t）</li>
+<li>超时机制（_timeout）</li>
+</ul>
+<p>设计约束：</p><ol type="1">
+<li>本文件不得依赖 kernel.h（直接或间接），以便其他头文件 可以在不拉入完整内核依赖的情况下使用这些结构体。</li>
+<li>kernel.h 会隐式包含本文件，使用者无需显式 include。</li>
+</ol>
+<dl class="section note"><dt>注解</dt><dd>本文件同时被 C 代码和汇编代码引用（通过 _ASMLANGUAGE 宏区分）， 因此结构体布局和偏移量在修改时需谨慎。</dd></dl>
+<dl class="section copyright"><dt>版权所有</dt><dd>Copyright (c) 2016 Wind River Systems, Inc. @license SPDX-License-Identifier: Apache-2.0 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 中定义.</p>
+</div><h2 class="groupheader">宏定义说明</h2>
+<a id="a693774d02025251481ce1d262e2d7bbd" name="a693774d02025251481ce1d262e2d7bbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a693774d02025251481ce1d262e2d7bbd">&#9670;&#160;</a></span>_current</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _current&#160;&#160;&#160;<a class="el" href="kernel__structs_8h.html#a3dcb0d2440c9015516824d6d698a6213">z_smp_current_get</a>()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取当前线程（SMP 模式宏） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00416">416</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8000cb9c70d59a5efb41feb605275526" name="a8000cb9c70d59a5efb41feb605275526"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8000cb9c70d59a5efb41feb605275526">&#9670;&#160;</a></span>_current_cpu</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _current_cpu</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>值:</b><div class="fragment"><div class="line">            ({ __ASSERT_NO_MSG(!<a class="code hl_function" href="kernel__structs_8h.html#a4a257e875ccf25fd20f02b7c40af961d">z_smp_cpu_mobile</a>()); \</div>
+<div class="line">            arch_curr_cpu(); })</div>
+<div class="ttc" id="akernel__structs_8h_html_a4a257e875ccf25fd20f02b7c40af961d"><div class="ttname"><a href="kernel__structs_8h.html#a4a257e875ccf25fd20f02b7c40af961d">z_smp_cpu_mobile</a></div><div class="ttdeci">bool z_smp_cpu_mobile(void)</div><div class="ttdoc">检查当前上下文是否可被抢占且可迁移到其他 CPU</div></div>
+</div><!-- fragment -->
+<p>获取当前 CPU 指针（SMP 安全版本） </p>
+<dl class="section return"><dt>返回</dt><dd>指向当前 CPU 的 <a class="el" href="struct__cpu.html" title="CPU 核心数据结构">_cpu</a> 结构体指针</dd></dl>
+<dl class="section note"><dt>注解</dt><dd>断言当前上下文不可迁移（z_smp_cpu_mobile() == false）， 确保获取的 CPU 指针在后续操作中不会失效。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00405">405</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a4f96f6c28804791abc8449d61290ee45" name="a4f96f6c28804791abc8449d61290ee45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f96f6c28804791abc8449d61290ee45">&#9670;&#160;</a></span>_NON_PREEMPT_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _NON_PREEMPT_THRESHOLD&#160;&#160;&#160;0x0080U</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>非抢占阈值：当 preempt &gt;= 此值时，线程不可被抢占 </p>
+<p>值为 0x0080，协作线程（coop thread）的 preempt 值 &gt;= 此阈值。 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00103">103</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6a56a6c16b959b3ee505678753113e88" name="a6a56a6c16b959b3ee505678753113e88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a56a6c16b959b3ee505678753113e88">&#9670;&#160;</a></span>_PREEMPT_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _PREEMPT_THRESHOLD&#160;&#160;&#160;(<a class="el" href="kernel__structs_8h.html#a4f96f6c28804791abc8449d61290ee45">_NON_PREEMPT_THRESHOLD</a> - 1U)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>抢占阈值：当 preempt &lt;= 此值时，线程可被抢占 </p>
+<p>值为 0x007F，抢占线程（preempt thread）的 preempt 值 &lt;= 此阈值。 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00111">111</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8c30bf0a0cff27c949196fccb7120af2" name="a8c30bf0a0cff27c949196fccb7120af2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c30bf0a0cff27c949196fccb7120af2">&#9670;&#160;</a></span>_THREAD_ABORTING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_ABORTING&#160;&#160;&#160;(BIT(5))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>中止中标志：线程正在执行中止操作（k_thread_abort 进行中） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00077">77</a> 行定义.</p>
+
+</div>
+</div>
+<a id="acd9cb55c6698b2ead2918a5433fa88f3" name="acd9cb55c6698b2ead2918a5433fa88f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd9cb55c6698b2ead2918a5433fa88f3">&#9670;&#160;</a></span>_THREAD_DEAD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_DEAD&#160;&#160;&#160;(BIT(3))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>终止标志：线程已执行完毕或被终止，资源可回收 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00071">71</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a10e62d52192cffa010dd24ea106cbac3" name="a10e62d52192cffa010dd24ea106cbac3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10e62d52192cffa010dd24ea106cbac3">&#9670;&#160;</a></span>_THREAD_DUMMY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_DUMMY&#160;&#160;&#160;(BIT(0))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>哑线程标志：非真实线程（如启动阶段的 dummy thread） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00062">62</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3ce0dc871ea21d5d1c206627a1cd09c1" name="a3ce0dc871ea21d5d1c206627a1cd09c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ce0dc871ea21d5d1c206627a1cd09c1">&#9670;&#160;</a></span>_THREAD_PENDING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_PENDING&#160;&#160;&#160;(BIT(1))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>等待标志：线程正在等待某个内核对象（信号量、互斥量、队列等） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00065">65</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ace776dfc13f3900a6a1107bbf2af8e6b" name="ace776dfc13f3900a6a1107bbf2af8e6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace776dfc13f3900a6a1107bbf2af8e6b">&#9670;&#160;</a></span>_THREAD_QUEUED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_QUEUED&#160;&#160;&#160;(BIT(7))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>就绪队列标志：线程当前在就绪队列中，可被调度执行 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00083">83</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a64d84750fe726eb6c7fe92afcc6015be" name="a64d84750fe726eb6c7fe92afcc6015be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64d84750fe726eb6c7fe92afcc6015be">&#9670;&#160;</a></span>_THREAD_SLEEPING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_SLEEPING&#160;&#160;&#160;(BIT(2))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>睡眠标志：线程处于睡眠状态（k_sleep / k_msleep） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00068">68</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a734dc4050c246c85552234ce2a0adfb6" name="a734dc4050c246c85552234ce2a0adfb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a734dc4050c246c85552234ce2a0adfb6">&#9670;&#160;</a></span>_THREAD_SUSPENDED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_SUSPENDED&#160;&#160;&#160;(BIT(4))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>挂起标志：线程被显式挂起（k_thread_suspend） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00074">74</a> 行定义.</p>
+
+</div>
+</div>
+<a id="acb24a8ca468f062c739719bf0fb029d4" name="acb24a8ca468f062c739719bf0fb029d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb24a8ca468f062c739719bf0fb029d4">&#9670;&#160;</a></span>_THREAD_SUSPENDING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define _THREAD_SUSPENDING&#160;&#160;&#160;(BIT(6))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>挂起中标志：线程正在执行挂起操作（状态转换中间态） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00080">80</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a80c653d62783a4e7ea960794bd287b49" name="a80c653d62783a4e7ea960794bd287b49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80c653d62783a4e7ea960794bd287b49">&#9670;&#160;</a></span>CPU_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CPU_ID&#160;&#160;&#160;((CONFIG_MP_MAX_NUM_CPUS == 1) ? 0 : <a class="el" href="kernel__structs_8h.html#a8000cb9c70d59a5efb41feb605275526">_current_cpu</a>-&gt;id)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取当前 CPU ID（单核系统编译时优化为常量 0） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00426">426</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae861b4805a52e8bd99d5481d3943dc5c" name="ae861b4805a52e8bd99d5481d3943dc5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae861b4805a52e8bd99d5481d3943dc5c">&#9670;&#160;</a></span>K_NUM_THREAD_PRIO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define K_NUM_THREAD_PRIO&#160;&#160;&#160;(CONFIG_NUM_PREEMPT_PRIORITIES + CONFIG_NUM_COOP_PRIORITIES + 1)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>线程优先级总数 = 抢占优先级数 + 协作优先级数 + 1（idle 优先级） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00041">41</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3fcfea2426c3da024f627c8ab9e754ad" name="a3fcfea2426c3da024f627c8ab9e754ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fcfea2426c3da024f627c8ab9e754ad">&#9670;&#160;</a></span>PRIQ_BITMAP_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PRIQ_BITMAP_SIZE&#160;&#160;&#160;(DIV_ROUND_UP(<a class="el" href="kernel__structs_8h.html#ae861b4805a52e8bd99d5481d3943dc5c">K_NUM_THREAD_PRIO</a>, BITS_PER_LONG))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>优先级位图大小（unsigned long 数组元素个数），用于快速查找最高优先级 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00044">44</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5324ca8a831fcbf73321f1866069db3e" name="a5324ca8a831fcbf73321f1866069db3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5324ca8a831fcbf73321f1866069db3e">&#9670;&#160;</a></span>z_current_thread_set</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define z_current_thread_set</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">thread</td><td>)</td>
+          <td>&#160;&#160;&#160;({ <a class="el" href="kernel__structs_8h.html#a8000cb9c70d59a5efb41feb605275526">_current_cpu</a>-&gt;current = (thread); })</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置当前 CPU 的执行线程 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>要设置为当前执行的线程指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>仅在抢占被禁用的上下文中调用（如中断锁定期间、调度器内部）， 确保设置过程中不会被调度器打断。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00436">436</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a15762db2334ee4d6e6a4ff5a315e6154" name="a15762db2334ee4d6e6a4ff5a315e6154"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15762db2334ee4d6e6a4ff5a315e6154">&#9670;&#160;</a></span>Z_WAIT_Q_INIT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Z_WAIT_Q_INIT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">wait_q</td><td>)</td>
+          <td>&#160;&#160;&#160;{ SYS_DLIST_STATIC_INIT(&amp;(wait_q)-&gt;waitq) }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>等待队列静态初始化宏（链表版本） </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00488">488</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">类型定义说明</h2>
+<a id="a049dc21fdcbc499f15fb84f22880d0e9" name="a049dc21fdcbc499f15fb84f22880d0e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a049dc21fdcbc499f15fb84f22880d0e9">&#9670;&#160;</a></span>_cpu_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="struct__cpu.html">_cpu</a> <a class="el" href="kernel__structs_8h.html#a049dc21fdcbc499f15fb84f22880d0e9">_cpu_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CPU 核心数据结构类型别名 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00306">306</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a14f1ce149a5d79139026bee77edaf062" name="a14f1ce149a5d79139026bee77edaf062"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14f1ce149a5d79139026bee77edaf062">&#9670;&#160;</a></span>_kernel_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structz__kernel.html">z_kernel</a> <a class="el" href="kernel__structs_8h.html#a14f1ce149a5d79139026bee77edaf062">_kernel_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>全局内核数据结构类型别名 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00378">378</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a669130e66d06e07d5e4732caf7b9f487" name="a669130e66d06e07d5e4732caf7b9f487"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a669130e66d06e07d5e4732caf7b9f487">&#9670;&#160;</a></span>_ready_q_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="struct__ready__q.html">_ready_q</a> <a class="el" href="kernel__structs_8h.html#a669130e66d06e07d5e4732caf7b9f487">_ready_q_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>就绪队列类型别名 </p>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00199">199</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae480322d2e957a1afdba298be8aed04b" name="ae480322d2e957a1afdba298be8aed04b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae480322d2e957a1afdba298be8aed04b">&#9670;&#160;</a></span>_timeout_func_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* _timeout_func_t) (struct <a class="el" href="struct__timeout.html">_timeout</a> *t)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>超时回调函数指针类型 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">t</td><td>指向触发此回调的 <a class="el" href="struct__timeout.html" title="内核超时记录结构体">_timeout</a> 结构体</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>回调在中断上下文（timeout 系统的软件中断）中执行。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00508">508</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a44c6f88a879877ad8da28706e274064f" name="a44c6f88a879877ad8da28706e274064f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44c6f88a879877ad8da28706e274064f">&#9670;&#160;</a></span>k_thread_timeslice_fn_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* k_thread_timeslice_fn_t) (struct k_thread *thread, void *data)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>线程时间片到期回调函数指针类型 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">thread</td><td>时间片到期的线程 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>注册时传入的用户数据指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>回调在调度器上下文中执行。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="kernel__structs_8h_source.html">kernel_structs.h</a> 第 <a class="el" href="kernel__structs_8h_source.html#l00550">550</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">函数说明</h2>
+<a id="a4a257e875ccf25fd20f02b7c40af961d" name="a4a257e875ccf25fd20f02b7c40af961d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a257e875ccf25fd20f02b7c40af961d">&#9670;&#160;</a></span>z_smp_cpu_mobile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool z_smp_cpu_mobile </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>检查当前上下文是否可被抢占且可迁移到其他 CPU </p>
+<dl class="section return"><dt>返回</dt><dd>true 当前线程可以被迁移到其他 CPU 核心</dd></dl>
+<dl class="section note"><dt>注解</dt><dd>在 SMP 系统中，持有自旋锁等不可迁移上下文中返回 false。 </dd></dl>
+
+</div>
+</div>
+<a id="a3dcb0d2440c9015516824d6d698a6213" name="a3dcb0d2440c9015516824d6d698a6213"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dcb0d2440c9015516824d6d698a6213">&#9670;&#160;</a></span>z_smp_current_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__attribute_const__ struct k_thread * z_smp_current_get </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取当前执行线程指针（SMP 安全版本） </p>
+<dl class="section return"><dt>返回</dt><dd>指向当前正在执行的 k_thread 结构体指针 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">变量说明</h2>
+<a id="a01029617586c369a390ed780f21b7cbd" name="a01029617586c369a390ed780f21b7cbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01029617586c369a390ed780f21b7cbd">&#9670;&#160;</a></span>_cpus_active</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">atomic_t _cpus_active</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>活跃 CPU 数量原子计数器（电源管理子系统使用） </p>
+<p>活跃 CPU 数量原子计数器（电源管理子系统使用） </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00075">75</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a62542dcfda66ee922ac005b8c9753509" name="a62542dcfda66ee922ac005b8c9753509"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62542dcfda66ee922ac005b8c9753509">&#9670;&#160;</a></span>_kernel</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structz__kernel.html">z_kernel</a> _kernel</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>全局内核实例（在 <a class="el" href="init_8c.html" title="Zephyr 内核初始化模块">init.c</a> 中定义为 __pinned_bss） </p>
+<p>全局内核实例（在 <a class="el" href="init_8c.html" title="Zephyr 内核初始化模块">init.c</a> 中定义为 __pinned_bss） </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00071">71</a> 行定义.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_c82fc3b08db7bea18c7f418b7e5582f0.html">zephyr</a></li><li class="navelem"><a class="el" href="dir_1a9fa6684825f424d237db0d4eb87b94.html">include</a></li><li class="navelem"><a class="el" href="dir_c024d1b6cd6f4878a378ea375cbba367.html">zephyr</a></li><li class="navelem"><a class="el" href="kernel__structs_8h.html">kernel_structs.h</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

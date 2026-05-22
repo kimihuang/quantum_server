@@ -1,0 +1,2574 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Zephyr MMU 虚拟内存管理子系统分析 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#zephyr-mmu" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Zephyr MMU 虚拟内存管理子系统分析
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../arm_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  arm技术文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../api_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API参考
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../quantumdocs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  项目文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../allure/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  测试报告
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arm技术文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../api_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quantumdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    项目文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../allure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模块架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 核心数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 核心数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-page-frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Page Frame 元数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-page-frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Page Frame 状态标志
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 全局变量
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 虚拟地址空间管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 虚拟地址空间管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 虚拟内存布局
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 虚拟地址分配策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 关键函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-page-frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Page Frame 管理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Page Frame 管理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 生命周期
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 空闲链表操作
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 内存映射 API
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 内存映射 API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 API 对比
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-k_mem_map_phys_guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 k_mem_map_phys_guard() 流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-demand-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 匿名映射中的 Demand Mapping 优化
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-demand-paging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Demand Paging 子系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Demand Paging 子系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 核心数据流
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 淘汰选择
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-scratch-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Scratch Page 机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-smp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 SMP 与中断处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-demand-paging-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Demand Paging API
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 初始化流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 初始化流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-z_mem_manage_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 z_mem_manage_init()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-z_mem_manage_boot_finish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 z_mem_manage_boot_finish()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 锁策略总结
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-arm64-mmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. ARM64 架构 MMU 实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. ARM64 架构 MMU 实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 架构概述
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 页表结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 页表描述符格式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 描述符关键字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-mair_elx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 内存类型 (MAIR_ELx)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#96-tcr_el1-translation-control-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6 TCR_EL1 (Translation Control Register)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#97-arm64-arch-mmu-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7 ARM64 Arch 层 MMU API 实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.7 ARM64 Arch 层 MMU API 实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        权限映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLB 管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#98-asid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.8 ASID 管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#99" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.9 页表内存分配
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#910-demand-paging-arm64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.10 Demand Paging 的 ARM64 特定实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.10 Demand Paging 的 ARM64 特定实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paged_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAGED_OUT 状态表示
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dirty-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dirty Page 跟踪
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scratch-page" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scratch Page 映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#911" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.11 启动时的页表建立
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 配置选项参考
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="zephyr-mmu">Zephyr MMU 虚拟内存管理子系统分析<a class="headerlink" href="#zephyr-mmu" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>Zephyr 的 MMU 模块实现了完整的虚拟内存管理，包括页帧管理、虚拟地址空间分配、内存映射/解映射，以及可选的 Demand Paging（按需分页）支持。该模块位于 <code>kernel/mmu.c</code>，通过架构抽象层（<code>kernel_arch_interface.h</code>）与具体 CPU 架构解耦。</p>
+<h3 id="_1">模块架构<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│                    用户态/内核 API                        │
+│  k_mem_map() / k_mem_unmap() / k_mem_pin() / k_mem_page_in()  │
+├─────────────────────────────────────────────────────────┤
+│              mmu.c — 通用内存管理层                        │
+│                                                          │
+│  ┌────────────────┐    ┌────────────────────────────┐   │
+│  │ 虚拟地址空间    │    │ Page Frame 管理             │   │
+│  │ bitmap 分配     │    │ free list 分配/回收         │   │
+│  │ (从高向低)      │    │ 6 种状态标志位               │   │
+│  └───────┬────────┘    └──────────┬─────────────────┘   │
+│  ┌───────┴────────────────────────┴─────────────────┐   │
+│  │        内存映射/解映射/权限更新                     │   │
+│  │  map_anon_page / frame_mapped_set / update_flags  │   │
+│  └───────┬────────────────────────┬─────────────────┘   │
+│  ┌───────┴────────────────────────┴─────────────────┐   │
+│  │        Demand Paging 子系统 (CONFIG_DEMAND_PAGING) │   │
+│  │  do_page_fault / do_mem_evict / pin / unpin       │   │
+│  └──────────────────────┬───────────────────────────┘   │
+├─────────────────────────┼───────────────────────────────┤
+│              架构抽象层 (arch API)                        │
+│  arch_mem_map / arch_mem_unmap / arch_mem_scratch        │
+│  arch_page_info_get / arch_mem_page_out / arch_mem_page_in │
+│  arch_page_location_get / arch_page_phys_get             │
+└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h2 id="2">2. 核心数据结构<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21-page-frame">2.1 Page Frame 元数据<a class="headerlink" href="#21-page-frame" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">k_mem_page_frame</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">va_and_flags</span><span class="p">;</span><span class="w">   </span><span class="cm">/**&lt; 已映射时：低位为标志，高位为虚拟地址 */</span>
+<span class="w">        </span><span class="n">sys_sfnode_t</span><span class="w"> </span><span class="n">node</span><span class="p">;</span><span class="w">        </span><span class="cm">/**&lt; 空闲时：单链表节点 */</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>利用联合体复用存储：空闲时 <code>node</code> 用于挂接在 free list 上；映射时 <code>va_and_flags</code> 存储虚拟地址（高位）和状态标志（低位，页大小以内的 bit）。</p>
+<h3 id="22-page-frame">2.2 Page Frame 状态标志<a class="headerlink" href="#22-page-frame" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>Bit</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>K_MEM_PAGE_FRAME_FREE</code></td>
+<td>0</td>
+<td>空闲，在 free list 中</td>
+</tr>
+<tr>
+<td><code>K_MEM_PAGE_FRAME_RESERVED</code></td>
+<td>1</td>
+<td>硬件保留，不可使用</td>
+</tr>
+<tr>
+<td><code>K_MEM_PAGE_FRAME_PINNED</code></td>
+<td>2</td>
+<td>已 pin，不可被 demand paging 淘汰</td>
+</tr>
+<tr>
+<td><code>K_MEM_PAGE_FRAME_MAPPED</code></td>
+<td>3</td>
+<td>已映射到虚拟地址</td>
+</tr>
+<tr>
+<td><code>K_MEM_PAGE_FRAME_BUSY</code></td>
+<td>4</td>
+<td>正在进行 page-in/out 操作</td>
+</tr>
+<tr>
+<td><code>K_MEM_PAGE_FRAME_BACKED</code></td>
+<td>5</td>
+<td>backing store 中有干净副本</td>
+</tr>
+</tbody>
+</table>
+<p>状态判断优先级（<code>va_and_flags</code> 低 6 位）：</p>
+<div class="highlight"><pre><span></span><code>FREE &gt; RESERVED &gt; BUSY &gt; PINNED &gt; AVAILABLE &gt; MAPPED
+</code></pre></div>
+<h3 id="23">2.3 全局变量<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>z_mm_lock</code></td>
+<td><code>k_spinlock</code></td>
+<td>保护所有内存管理全局状态和页表更新</td>
+</tr>
+<tr>
+<td><code>k_mem_page_frames[]</code></td>
+<td><code>k_mem_page_frame[]</code></td>
+<td>所有 RAM 页帧的元数据数据库</td>
+</tr>
+<tr>
+<td><code>free_page_frame_list</code></td>
+<td><code>sys_sflist_t</code></td>
+<td>空闲页帧单链表</td>
+</tr>
+<tr>
+<td><code>z_free_page_count</code></td>
+<td><code>size_t</code></td>
+<td>空闲页帧计数（可即时过时）</td>
+</tr>
+<tr>
+<td><code>virt_region_bitmap</code></td>
+<td><code>sys_bitarray_t</code></td>
+<td>虚拟地址空间分配 bitmap（1 bit = 1 page）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3">3. 虚拟地址空间管理<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 虚拟内存布局<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>高地址
++----------------------+ ← K_MEM_VIRT_RAM_START (= CONFIG_KERNEL_VM_BASE)
+|  Undefined VM        | 辅助区域（如 x86_64 locore）
++----------------------+ ← K_MEM_KERNEL_VIRT_START (= &amp;z_mapped_start)
+|                      |
+|  内核镜像映射          | text / rodata / data / bss
+|                      |
++----------------------+ ← K_MEM_KERNEL_VIRT_END (= &amp;z_mapped_end)
+|                      |
+|  可用虚拟内存          | 由 virt_region_bitmap 管理
+|  (mapping_pos 向下增长)│ 分配方向：从高地址 → 低地址
+|                      |
++----------------------+
+|  Reserved (1 页)      | K_MEM_SCRATCH_PAGE（demand paging scratch）
++----------------------+ ← K_MEM_VIRT_RAM_END (= VM_BASE + VM_SIZE)
+低地址
+</code></pre></div>
+<p><code>CONFIG_ARCH_MAPS_ALL_RAM</code> 启用时，整个 RAM 都有映射，<code>K_MEM_VM_FREE_START</code> 推迟到 RAM 末尾。</p>
+<h3 id="32">3.2 虚拟地址分配策略<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<p><strong>bitmap 设计</strong>：bit #0 对应最高虚拟地址，<code>sys_bitarray_alloc()</code> 从低 offset（高地址）开始扫描，实现<strong>从高向低分配</strong>。</p>
+<p><strong>对齐处理</strong>：分配时多申请 <code>(align - PAGE_SIZE)</code> 额外页，找到对齐地址后释放两端多余部分。</p>
+<div class="highlight"><pre><span></span><code>分配请求: size=S, align=A
+
++================+ ← bitmap 分配起点 (dest_addr)
+|  未使用 (pad)  |
+|.............. | ← ROUND_UP(dest_addr, A) = aligned_dest_addr
+|               |
+|  实际使用 (S)  |
+|               |
+|.............. | ← aligned_dest_addr + S
+|  未使用 (pad)  |
++================+ ← dest_addr + alloc_size
+</code></pre></div>
+<h3 id="33">3.3 关键函数<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>virt_region_init()</code></td>
+<td>标记内核镜像和 reserved 区域为"已分配"</td>
+</tr>
+<tr>
+<td><code>virt_region_alloc(size, align)</code></td>
+<td>从高向低分配虚拟地址，支持对齐</td>
+</tr>
+<tr>
+<td><code>virt_region_free(vaddr, size)</code></td>
+<td>释放虚拟地址，支持 DIRECT_MAP 部分重叠</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-page-frame">4. Page Frame 管理<a class="headerlink" href="#4-page-frame" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 生命周期<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>         系统启动
+            │
+  ┌─────────┴──────────┐
+  │ z_mem_manage_init() │
+  └─────────┬──────────┘
+            │
+    ┌───────┴───────┐
+    │ 遍历所有页帧    │
+    └───────┬───────┘
+            │
+    ┌───────┴──────────────┐
+    │                      │
+  RESERVED              MAPPED + PINNED
+  (arch 标记)           (内核镜像页)
+    │                      │
+    └──────┬───────────────┘
+           │
+    ┌──────┴──────┐
+    │ available?  │──否──→ 跳过
+    └──────┬──────┘
+           │ 是
+    ┌──────┴──────────┐
+    │ 加入 free list   │
+    │ (状态=FREE)      │
+    └─────────────────┘
+
+运行时分配:
+  free_page_frame_list_get() → MAPPED → (可选 PINNED)
+
+运行时回收:
+  page_frame_free_locked() → FREE → 加入 free list
+
+Demand Paging 淘汰:
+  MAPPED → page_frame_prepare_locked() → 写回 backing store → FREE
+</code></pre></div>
+<h3 id="42">4.2 空闲链表操作<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>free_page_frame_list_get()</code></td>
+<td>从链表头部取出一个空闲页帧</td>
+</tr>
+<tr>
+<td><code>free_page_frame_list_put(pf)</code></td>
+<td>将页帧追加到链表尾部</td>
+</tr>
+<tr>
+<td><code>page_frame_free_locked(pf)</code></td>
+<td>清除标志 + 放回链表</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TODO</strong>：未来需要按 SRAM bank 分组管理空闲页，以支持关闭空闲 bank 省电。</p>
+<h2 id="5-api">5. 内存映射 API<a class="headerlink" href="#5-api" title="Permanent link">&para;</a></h2>
+<h3 id="51-api">5.1 API 对比<a class="headerlink" href="#51-api" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Guard Page</th>
+<th>物理地址</th>
+<th>匿名分配</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>k_mem_map_phys_bare()</code></td>
+<td>无</td>
+<td>指定</td>
+<td>否</td>
+<td>内核启动早期、驱动 MMIO 映射</td>
+</tr>
+<tr>
+<td><code>k_mem_unmap_phys_bare()</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>对应解除映射</td>
+</tr>
+<tr>
+<td><code>k_mem_map_phys_guard()</code></td>
+<td>前后各一页</td>
+<td>指定/匿名</td>
+<td>可选</td>
+<td>堆内存分配、安全缓冲区</td>
+</tr>
+<tr>
+<td><code>k_mem_unmap_phys_guard()</code></td>
+<td>验证</td>
+<td>—</td>
+<td>—</td>
+<td>对应解除映射</td>
+</tr>
+<tr>
+<td><code>k_mem_update_flags()</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>修改权限（unmap+remap）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-k_mem_map_phys_guard">5.2 k_mem_map_phys_guard() 流程<a class="headerlink" href="#52-k_mem_map_phys_guard" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>输入: phys, size, flags, is_anon
+  │
+  ├─ 参数校验（用户态不能访问未初始化匿名页）
+  ├─ 计算总大小 = size + 2 * PAGE_SIZE（含 guard page）
+  ├─ k_spin_lock(&amp;z_mm_lock)
+  ├─ virt_region_alloc(total_size) → 分配虚拟地址
+  ├─ arch_mem_unmap() 前后 guard page
+  │
+  ├─ [is_anon=true] 逐页 map_anon_page()
+  │   ├─ free_page_frame_list_get()
+  │   ├─ [空闲链表空 + DEMAND_PAGING] 淘汰一个页帧
+  │   ├─ arch_mem_map(addr, phys, PAGE_SIZE, flags)
+  │   └─ frame_mapped_set()
+  │
+  ├─ [is_anon=false] arch_mem_map(dst, phys, size, flags) 一次性映射
+  ├─ k_spin_unlock()
+  ├─ [非 UNINIT] memset(dst, 0, size)
+  └─ 返回 dst（跳过前导 guard page 的地址）
+</code></pre></div>
+<h3 id="53-demand-mapping">5.3 匿名映射中的 Demand Mapping 优化<a class="headerlink" href="#53-demand-mapping" title="Permanent link">&para;</a></h3>
+<p>启用 <code>CONFIG_DEMAND_MAPPING</code> 且未 pin 时，使用 <code>K_MEM_MAP_UNPAGED</code> 标志进行懒分配：</p>
+<div class="highlight"><pre><span></span><code><span class="n">arch_mem_map</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">ARCH_UNPAGED_ANON_ZERO</span><span class="p">,</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">);</span>
+</code></pre></div>
+<p>不立即分配物理页帧，而是在首次访问时触发 page fault 完成实际分配，减少内存浪费。</p>
+<h2 id="6-demand-paging">6. Demand Paging 子系统<a class="headerlink" href="#6-demand-paging" title="Permanent link">&para;</a></h2>
+<h3 id="61">6.1 概述<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<p>Demand Paging 允许将不常用的页面换出到外部 backing store（如 flash 分区），在需要时再换入。适用于 RAM 受限的嵌入式系统。</p>
+<h3 id="62">6.2 核心数据流<a class="headerlink" href="#62" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>                 CPU 访问 paged-out 页面
+                        │
+                        ▼
+              ┌─────────────────┐
+              │  Page Fault     │
+              │  (arch 异常入口) │
+              └────────┬────────┘
+                       │
+                       ▼
+              ┌─────────────────┐
+              │ k_mem_page_fault│
+              │ (mmu.c)         │
+              └────────┬────────┘
+                       │
+           ┌───────────┴───────────┐
+           │ arch_page_location_get│
+           │ 查询页面状态           │
+           └───────────┬───────────┘
+                       │
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+   PAGED_IN      PAGED_OUT       BAD
+   (已在内存)    (需换入)        (致命错误)
+        │              │
+        │         ┌────┴────────────────────┐
+        │         │ 1. 获取空闲页帧          │
+        │         │    └→ 空闲链表空?        │
+        │         │       └→ 淘汰选择         │
+        │         │          └→ 准备被淘汰帧   │
+        │         │             ├─ dirty?     │
+        │         │             │  └→ 写回     │
+        │         │             └─ 更新页表    │
+        │         │                         │
+        │         │ 2. 从 backing store 读入 │
+        │         │    └→ 到 scratch page    │
+        │         │                         │
+        │         │ 3. 更新页表              │
+        │         │    arch_mem_page_in()    │
+        │         │                         │
+        │         │ 4. 更新页帧元数据         │
+        │         └─────────────────────────┘
+        │              │
+        ▼              ▼
+   [pin?] 设置 PINNED 标志
+        │
+        ▼
+     返回 true（成功）/ false（致命）
+</code></pre></div>
+<h3 id="63">6.3 淘汰选择<a class="headerlink" href="#63" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">pf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_mem_paging_eviction_select</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dirty</span><span class="p">);</span>
+</code></pre></div>
+<p>淘汰策略由 <code>CONFIG_EVICTION_ALGORITHM</code> 控制，常见选项：
+- <strong>Clock 算法</strong>：类似 LRU 近似，使用 accessed 标志位
+- <strong>Random</strong>：随机选择</p>
+<p><code>CONFIG_EVICTION_TRACKING</code> 启用时，维护淘汰候选链表，加速选择。</p>
+<h3 id="64-scratch-page">6.4 Scratch Page 机制<a class="headerlink" href="#64-scratch-page" title="Permanent link">&para;</a></h3>
+<p>Demand Paging 操作需要一个临时映射区域来访问页面内容：</p>
+<div class="highlight"><pre><span></span><code>K_MEM_SCRATCH_PAGE = K_MEM_VIRT_RAM_END - K_MEM_VM_RESERVED
+
+用途:
+- 淘汰时：将被淘汰页映射到 scratch 以读取/写入其内容
+- 换入时：将 backing store 数据读到 scratch，再更新页表
+</code></pre></div>
+<h3 id="65-smp">6.5 SMP 与中断处理<a class="headerlink" href="#65-smp" title="Permanent link">&para;</a></h3>
+<p><code>CONFIG_DEMAND_PAGING_ALLOW_IRQ</code> 控制在 page-in/out I/O 期间是否允许中断：</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>UP 行为</th>
+<th>SMP 行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>未启用</td>
+<td>始终关中断，全程持 spinlock</td>
+<td>同左</td>
+</tr>
+<tr>
+<td>启用</td>
+<td><code>k_sched_lock()</code> + 释放 spinlock 做 I/O</td>
+<td><code>z_mm_paging_lock</code> mutex + 释放 spinlock 做 I/O</td>
+</tr>
+</tbody>
+</table>
+<p>关键约束：
+- ISR 中的 page fault 始终是 bug（ISR 代码/数据必须 pin）
+- UP 下不能让 backing store 驱动睡眠（会破坏调度假设）
+- SMP 下 backing store 驱动可以睡眠（用 mutex 串行化）</p>
+<h3 id="66-demand-paging-api">6.6 Demand Paging API<a class="headerlink" href="#66-demand-paging-api" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>k_mem_page_fault(addr)</code></td>
+<td>处理 page fault（arch 层调用）</td>
+</tr>
+<tr>
+<td><code>k_mem_page_out(addr, size)</code></td>
+<td>主动换出页面</td>
+</tr>
+<tr>
+<td><code>k_mem_page_in(addr, size)</code></td>
+<td>主动换入页面</td>
+</tr>
+<tr>
+<td><code>k_mem_pin(addr, size)</code></td>
+<td>Pin 页面（禁止淘汰）</td>
+</tr>
+<tr>
+<td><code>k_mem_unpin(addr, size)</code></td>
+<td>Unpin 页面（允许淘汰）</td>
+</tr>
+<tr>
+<td><code>k_mem_page_frame_evict(phys)</code></td>
+<td>淘汰指定物理页帧</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7">7. 初始化流程<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-z_mem_manage_init">7.1 z_mem_manage_init()<a class="headerlink" href="#71-z_mem_manage_init" title="Permanent link">&para;</a></h3>
+<p>在主线程入口调用（POST_KERNEL 之前），按顺序执行：</p>
+<div class="highlight"><pre><span></span><code>1. free_page_frame_list_init()
+       │
+2. arch_reserved_pages_update()  [CONFIG_ARCH_HAS_RESERVED_PAGE_FRAMES]
+       │
+3. 标记内核镜像所有页为 MAPPED + PINNED  [CONFIG_LINKER_GENERIC_SECTIONS_PRESENT_AT_BOOT]
+       │
+4. mark_linker_section_pinned(boot)  [CONFIG_LINKER_USE_BOOT_SECTION]
+   mark_linker_section_pinned(pinned) [CONFIG_LINKER_USE_PINNED_SECTION]
+       │
+5. 遍历所有页帧，available 的加入 free list
+       │
+6. k_mem_paging_backing_store_init()   [CONFIG_DEMAND_PAGING]
+   k_mem_paging_eviction_init()
+       │
+7. z_paging_ondemand_section_map()    [CONFIG_LINKER_USE_ONDEMAND_SECTION]
+       │
+8. page_frames_initialized = true
+</code></pre></div>
+<h3 id="72-z_mem_manage_boot_finish">7.2 z_mem_manage_boot_finish()<a class="headerlink" href="#72-z_mem_manage_boot_finish" title="Permanent link">&para;</a></h3>
+<p>POST_KERNEL 阶段调用，解除 boot section 的 pin：</p>
+<div class="highlight"><pre><span></span><code><span class="n">mark_linker_section_pinned</span><span class="p">(</span><span class="n">lnkr_boot_start</span><span class="p">,</span><span class="w"> </span><span class="n">lnkr_boot_end</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+</code></pre></div>
+<p>启动代码在运行期间不再需要常驻内存，可被 demand paging 淘汰。</p>
+<h2 id="8">8. 锁策略总结<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>锁</th>
+<th>保护对象</th>
+<th>持有期间操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>z_mm_lock</code> (spinlock)</td>
+<td>所有全局内存数据 + 页表</td>
+<td>bitmap 操作、free list 操作、arch 页表更新</td>
+</tr>
+<tr>
+<td><code>z_mm_paging_lock</code> (mutex, SMP+ALLOW_IRQ)</td>
+<td>全局 demand paging 串行化</td>
+<td>整个 page fault / evict 流程</td>
+</tr>
+<tr>
+<td><code>k_sched_lock()</code> (UP+ALLOW_IRQ)</td>
+<td>防止线程切换</td>
+<td>整个 page fault / evict 流程</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-arm64-mmu">9. ARM64 架构 MMU 实现<a class="headerlink" href="#9-arm64-mmu" title="Permanent link">&para;</a></h2>
+<h3 id="91">9.1 架构概述<a class="headerlink" href="#91" title="Permanent link">&para;</a></h3>
+<p>ARM64 MMU 基于ARMv8-A 架构规范实现，支持 48-bit 虚拟地址空间的 4 级页表翻译。核心定义位于 <code>arch/arm64/core/mmu.h</code>（~190 行）。</p>
+<h3 id="92">9.2 页表结构<a class="headerlink" href="#92" title="Permanent link">&para;</a></h3>
+<p>ARM64 采用 4 级页表（Level 0 ~ Level 3），每级页表包含 512 个 8 字节描述符：</p>
+<div class="highlight"><pre><span></span><code>48-bit 虚拟地址
+┌────────┬────────┬────────┬────────┬────────┐
+│  L0    │  L1    │  L2    │  L3    │ Offset │
+│ [47:39]│ [38:30]│ [29:21]│ [20:12]│ [11:0] │
+│  9 bit │  9 bit │  9 bit │  9 bit │ 12 bit │
+└────────┴────────┴────────┴────────┴────────┘
+
+页大小与级数关系:
+- 4KB 页: L0 → L1 → L2 → L3 (4 级)
+- 16KB 页: L0 → L1 → L2 → L3 (4 级)
+- 64KB 页: L1 → L2 → L3 (3 级，跳过 L0)
+
+大页映射 (Block mapping):
+- 4KB 页, L1: 1GB Block
+- 4KB 页, L2: 2MB Block
+- 64KB 页, L2: 512MB Block
+</code></pre></div>
+<p><strong>Base Address Register</strong>: <code>TTBR0_EL1</code>（用户空间 0x0 ~ 0x0000FFFFFFFFFFFF）和 <code>TTBR1_EL1</code>（内核空间 0xFFFF000000000000 ~ 0xFFFFFFFFFFFFFFFF），通过 ASID（8-bit）区分不同地址空间。</p>
+<h3 id="93">9.3 页表描述符格式<a class="headerlink" href="#93" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code> 63  62 ... 55 54  53 52 51 50 49 48 47 ... 12 11 10  9  8  7  6  5  4  3  2  1  0
+┌───┬─────┬────┬───┬──┬──┬──┬──┬─────┬────┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│SW │ ... │PXN │UXN│  │  │nG│AF│ ... │OA  │nT│SH │AP │AttrIdx│  │NS│  │  │Type│
+│   │     │    │   │  │  │  │  │     │[47:12]   │   │   │ [4:2] │  │   │  │  │[1:0]│
+└───┴─────┴────┴───┴──┴──┴──┴──┴─────┴────┴──┴──┴──┴───────┴──┴──┴──┴──┴──┴──┘
+
+Type 字段:
+  00 = Invalid (未映射)
+  01 = Block (大页，L1/L2 级)
+  11 = Page (普通页，L3 级)
+  10 = Table (指向下一级页表，L0/L1/L2 级)
+</code></pre></div>
+<h3 id="94">9.4 描述符关键字段<a class="headerlink" href="#94" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>位</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Type[1:0]</code></td>
+<td>1:0</td>
+<td>描述符类型：Invalid / Block / Table / Page</td>
+</tr>
+<tr>
+<td><code>AttrIdx[4:2]</code></td>
+<td>4:2</td>
+<td>Memory Attribute Index，索引 MAIR_ELx 寄存器获取内存类型</td>
+</tr>
+<tr>
+<td><code>NS</code></td>
+<td>5</td>
+<td>Non-Secure：1=Non-Secure, 0=Secure（TrustZone）</td>
+</tr>
+<tr>
+<td><code>AP[2:1]</code></td>
+<td>7:6</td>
+<td>Access Permissions：00=RW@EL1, 01=RW@EL1+RO@EL0, 10=RO@EL1+RO@EL0, 11=RW@EL1+RW@EL0</td>
+</tr>
+<tr>
+<td><code>SH[1:0]</code></td>
+<td>9:8</td>
+<td>Shareability：00=Non-Shareable, 01=Outer, 10=Inner, 11=Full</td>
+</tr>
+<tr>
+<td><code>AF</code></td>
+<td>10</td>
+<td>Access Flag：0=未访问, 1=已访问（硬件管理）</td>
+</tr>
+<tr>
+<td><code>nG</code></td>
+<td>11</td>
+<td>Not Global：0=TLB 全局（所有 ASID）, 1=TLB 按 ASID 隔离</td>
+</tr>
+<tr>
+<td><code>UXN</code></td>
+<td>54</td>
+<td>Unprivileged Execute-Never：1=禁止 EL0 执行</td>
+</tr>
+<tr>
+<td><code>PXN</code></td>
+<td>53</td>
+<td>Privileged Execute-Never：1=禁止 EL1 执行</td>
+</tr>
+<tr>
+<td><code>OA[47:12]</code></td>
+<td>47:12</td>
+<td>Output Address（物理页帧号）</td>
+</tr>
+<tr>
+<td><code>SW</code></td>
+<td>55+</td>
+<td>Software-use，Zephyr 用于 <code>PTE_SW_WRITABLE</code>（脏页跟踪）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="95-mair_elx">9.5 内存类型 (MAIR_ELx)<a class="headerlink" href="#95-mair_elx" title="Permanent link">&para;</a></h3>
+<p>MAIR（Memory Attribute Indirection Register）定义了 8 种内存类型编码：</p>
+<table>
+<thead>
+<tr>
+<th>AttrIdx</th>
+<th>类型</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>Device-nGnRnE</td>
+<td>外设寄存器（MMIO），严格有序，不可合并</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>Device-nGnRE</td>
+<td>外设寄存器，允许读合并</td>
+</tr>
+<tr>
+<td>0x0C</td>
+<td>Normal, Write-Back, RWAlloc</td>
+<td>普通内存（RAM），回写缓存，读写分配</td>
+</tr>
+<tr>
+<td>0x44</td>
+<td>Normal, Non-Cacheable</td>
+<td>普通内存，无缓存</td>
+</tr>
+</tbody>
+</table>
+<p>Zephyr 将这些映射为 <code>K_MEM_CACHE_*</code> 标志传递给 arch 层。</p>
+<h3 id="96-tcr_el1-translation-control-register">9.6 TCR_EL1 (Translation Control Register)<a class="headerlink" href="#96-tcr_el1-translation-control-register" title="Permanent link">&para;</a></h3>
+<p>控制页表配置的关键寄存器：</p>
+<div class="highlight"><pre><span></span><code>TCR_EL1 关键字段:
+┌───────────────────────────────────────────────────┐
+│ TG1[31:30]  : TTBR1 页粒度 (4KB=0b10, 16KB=0b01, 64KB=0b11) │
+│ SH1[29:28]  : TTBR1 Shareability                           │
+│ ORGN1[27:26]: TTBR1 Outer cacheability                      │
+│ IRGN1[25:24]: TTBR1 Inner cacheability                      │
+│ T1SZ[21:16] : TTBR1 地址大小 (48-bit → T1SZ=16)            │
+│ TG0[15:14]  : TTBR0 页粒度                                 │
+│ SH0[13:12]  : TTBR0 Shareability                           │
+│ ORGN0[11:10]: TTBR0 Outer cacheability                      │
+│ IRGN0[9:8]  : TTBR0 Inner cacheability                      │
+│ T0SZ[5:0]   : TTBR0 地址大小                               │
+└───────────────────────────────────────────────────┘
+
+IPS[34:32] (Intermediate Physical Address Size):
+  000 = 32-bit (4GB)
+  001 = 36-bit (64GB)
+  010 = 40-bit (1TB)
+  011 = 42-bit (4TB)
+  100 = 44-bit (16TB)
+  101 = 48-bit (256TB)
+</code></pre></div>
+<p>Zephyr 根据 <code>CONFIG_MAX_PHYS_ADDR_BITS</code> 配置 IPS 字段。</p>
+<h3 id="97-arm64-arch-mmu-api">9.7 ARM64 Arch 层 MMU API 实现<a class="headerlink" href="#97-arm64-arch-mmu-api" title="Permanent link">&para;</a></h3>
+<p>Zephyr 在 <code>arch/arm64/core/</code> 下实现了 <code>kernel_arch_interface.h</code> 声明的 arch MMU API：</p>
+<h4 id="_2">核心函数<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arch 函数</th>
+<th>功能</th>
+<th>关键实现要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>arch_mem_map(vaddr, paddr, size, flags)</code></td>
+<td>建立虚拟→物理映射</td>
+<td>分配/查找页表项，设置 PTE 属性（权限、缓存类型、shareability），维护 page table 树</td>
+</tr>
+<tr>
+<td><code>arch_mem_unmap(vaddr, size)</code></td>
+<td>解除映射</td>
+<td>将 PTE 设为 Invalid，递归释放空页表</td>
+</tr>
+<tr>
+<td><code>arch_mem_scratch(phys)</code></td>
+<td>将物理页映射到 scratch 区域</td>
+<td>临时映射用于 page-in/out 期间的页面访问</td>
+</tr>
+<tr>
+<td><code>arch_mem_page_in(vaddr, phys)</code></td>
+<td>换入完成：更新 PTE</td>
+<td>设置新的 OA，清除 Invalid，可能需 TLB invalidate</td>
+</tr>
+<tr>
+<td><code>arch_mem_page_out(vaddr, location)</code></td>
+<td>换出准备：更新 PTE</td>
+<td>PTE 指向 backing store location 或设为 Invalid</td>
+</tr>
+<tr>
+<td><code>arch_page_info_get(vaddr, &amp;phys, dirty_check)</code></td>
+<td>获取页面信息</td>
+<td>读取 PTE，返回 flags（LOADED / DIRTY / NOT_MAPPED / ACCESSED）</td>
+</tr>
+<tr>
+<td><code>arch_page_location_get(vaddr, &amp;location)</code></td>
+<td>查询页面位置</td>
+<td>返回 PAGED_IN / PAGED_OUT / BAD</td>
+</tr>
+<tr>
+<td><code>arch_page_phys_get(vaddr, &amp;phys)</code></td>
+<td>虚拟→物理地址查询</td>
+<td>从 PTE 中提取 OA 字段</td>
+</tr>
+<tr>
+<td><code>arch_reserved_pages_update()</code></td>
+<td>标记保留页帧</td>
+<td>架构特定的不可用物理内存区域</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_3">权限映射<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>Zephyr 通用标志 → ARM64 PTE 属性：</p>
+<table>
+<thead>
+<tr>
+<th>Zephyr 标志</th>
+<th>ARM64 PTE 字段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>K_MEM_PERM_RW</code></td>
+<td>AP=00 或 AP=11</td>
+</tr>
+<tr>
+<td><code>K_MEM_PERM_RO</code></td>
+<td>AP=10</td>
+</tr>
+<tr>
+<td><code>K_MEM_PERM_USER</code></td>
+<td>AP 低位=1</td>
+</tr>
+<tr>
+<td><code>K_MEM_PERM_EXEC</code></td>
+<td>清除 PXN/UXN</td>
+</tr>
+<tr>
+<td><code>K_MEM_PERM_NO_EXEC</code></td>
+<td>设置 PXN/UXN</td>
+</tr>
+<tr>
+<td><code>K_MEM_CACHE_WB</code></td>
+<td>AttrIdx=0x0C, Inner=Write-Back, Outer=Write-Back</td>
+</tr>
+<tr>
+<td><code>K_MEM_CACHE_NONE</code></td>
+<td>AttrIdx=0x00 (Device-nGnRnE)</td>
+</tr>
+<tr>
+<td><code>K_MEM_CACHE_WT</code></td>
+<td>AttrIdx→Write-Through</td>
+</tr>
+<tr>
+<td><code>PTE_SW_WRITABLE</code></td>
+<td>bit 55, 软件管理的脏页标志</td>
+</tr>
+</tbody>
+</table>
+<h4 id="tlb">TLB 管理<a class="headerlink" href="#tlb" title="Permanent link">&para;</a></h4>
+<p>ARM64 TLB 操作通过系统指令：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TLBI VMALLE1</code></td>
+<td>无效化所有 EL1&amp;0 stage 1 TLB 条目</td>
+</tr>
+<tr>
+<td><code>TLBI VAAE1, Xn</code></td>
+<td>无效化指定虚拟地址 + 所有 ASID</td>
+</tr>
+<tr>
+<td><code>TLBI ASIDE1, Xn</code></td>
+<td>无效化指定 ASID 的所有条目</td>
+</tr>
+<tr>
+<td><code>DSB ISH</code></td>
+<td>数据同步屏障（确保 TLBI 完成）</td>
+</tr>
+<tr>
+<td><code>ISB</code></td>
+<td>指令同步屏障（确保后续使用新 TLB）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="98-asid">9.8 ASID 管理<a class="headerlink" href="#98-asid" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>VM_ASID_BITS = 8  → 最多 256 个地址空间
+TTBR_ASID_SHIFT = 48
+
+切换地址空间时:
+  TTBRn_EL1 = (页表基址 &amp; ~(0xFFULL &lt;&lt; 48)) | (asid &lt;&lt; 48)
+</code></pre></div>
+<p>ASID 避免了进程切换时的全局 TLB flush，只需在 ASID 池耗尽时才需要完整 flush。</p>
+<h3 id="99">9.9 页表内存分配<a class="headerlink" href="#99" title="Permanent link">&para;</a></h3>
+<p>ARM64 arch 层需要在物理内存中分配页表页（4KB/16KB/64KB），Zephyr 通常使用：</p>
+<ul>
+<li><strong>早期启动</strong>：从预分配的页表内存池分配（linker script 中定义）</li>
+<li><strong>运行时</strong>：通过内核页帧分配器（即本文分析的 free page frame list）</li>
+</ul>
+<p>页表分配失败是致命错误，因为无法完成映射操作。</p>
+<h3 id="910-demand-paging-arm64">9.10 Demand Paging 的 ARM64 特定实现<a class="headerlink" href="#910-demand-paging-arm64" title="Permanent link">&para;</a></h3>
+<h4 id="paged_out">PAGED_OUT 状态表示<a class="headerlink" href="#paged_out" title="Permanent link">&para;</a></h4>
+<p>当页面被换出时，ARM64 的 PTE 可以利用高位（bit 50+）存储 backing store location：</p>
+<div class="highlight"><pre><span></span><code>PAGED_OUT 时的 PTE:
+┌─────────────────────────────────┬──────────┐
+│  Backing store location [55:12] │ Type=00  │  (Invalid 描述符)
+│  或                             │          │
+│  ARCH_UNPAGED_ANON_ZERO         │          │
+│  ARCH_UNPAGED_ANON_UNINIT       │          │
+└─────────────────────────────────┴──────────┘
+
+arch_page_location_get() 通过检查 PTE type 判断:
+  - Type=Invalid + 高位有值 → PAGED_OUT
+  - Type=Invalid + 高位无值 → BAD
+  - Type=Page/Block → PAGED_IN
+</code></pre></div>
+<h4 id="dirty-page">Dirty Page 跟踪<a class="headerlink" href="#dirty-page" title="Permanent link">&para;</a></h4>
+<p>ARM64 利用 DBM（Dirty Bit Management, TCR_EL1.A1=1）或软件管理（<code>PTE_SW_WRITABLE</code> bit 55）跟踪脏页：</p>
+<div class="highlight"><pre><span></span><code>方式1 - 硬件 DBM:
+  写入时硬件自动设置 DBM 位，无需 fault
+
+方式2 - 软件 PTE_SW_WRITABLE (bit 55):
+  初次映射: PTE 只读 + PTE_SW_WRITABLE=1
+  首次写入 → Write Permission Fault
+  arch 层 fault handler: 改 PTE 为读写, 清除 PTE_SW_WRITABLE
+  后续写入正常, 无 fault
+  淘汰时检查 PTE_SW_WRITABLE 或 DBM 判断脏页
+</code></pre></div>
+<h4 id="scratch-page">Scratch Page 映射<a class="headerlink" href="#scratch-page" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>arch_mem_scratch(phys) 实现:
+  1. 找到 scratch page 对应的 L3 PTE
+  2. 设置 OA = phys &gt;&gt; PAGE_SHIFT
+  3. 设置权限为 RW, 内核态, 临时映射
+  4. TLB invalidate (TLBI VAAE1)
+  5. 返回 K_MEM_SCRATCH_PAGE 虚拟地址
+
+注意: scratch page 是全局共享的，使用时必须持有 z_mm_lock
+</code></pre></div>
+<h3 id="911">9.11 启动时的页表建立<a class="headerlink" href="#911" title="Permanent link">&para;</a></h3>
+<p>ARM64 内核启动时（<code>z_arm64_mm_init()</code>），arch 层完成：</p>
+<div class="highlight"><pre><span></span><code>1. 计算 RAM 虚拟地址偏移 (K_MEM_VM_OFFSET)
+2. 分配初始页表内存
+3. 建立恒等映射段 (idmap) 用于 MMU 开启
+4. 建立内核镜像的虚拟映射:
+   - text: RO+X, Write-Back cache
+   - rodata: RO, Write-Back cache
+   - data/bss: RW, Write-Back cache
+5. 配置 MAIR_EL1, TCR_EL1, TTBR1_EL1
+6. 使能 MMU (SCTLR_EL1.M=1)
+7. 切换到虚拟地址空间执行
+</code></pre></div>
+<p>页表的初始布局通常为静态数组（<code>z_arm64_kernel_ptables</code>），在链接脚本中分配。</p>
+<h2 id="10">10. 配置选项参考<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kconfig 选项</th>
+<th>默认值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CONFIG_MMU</code></td>
+<td>n</td>
+<td>启用 MMU 支持</td>
+</tr>
+<tr>
+<td><code>CONFIG_MMU_PAGE_SIZE</code></td>
+<td>4KB</td>
+<td>页大小</td>
+</tr>
+<tr>
+<td><code>CONFIG_KERNEL_VM_BASE</code></td>
+<td>0</td>
+<td>内核虚拟地址空间基址</td>
+</tr>
+<tr>
+<td><code>CONFIG_KERNEL_VM_SIZE</code></td>
+<td>—</td>
+<td>内核虚拟地址空间大小</td>
+</tr>
+<tr>
+<td><code>CONFIG_KERNEL_VM_OFFSET</code></td>
+<td>0</td>
+<td>虚拟地址偏移量</td>
+</tr>
+<tr>
+<td><code>CONFIG_DEMAND_PAGING</code></td>
+<td>n</td>
+<td>启用按需分页</td>
+</tr>
+<tr>
+<td><code>CONFIG_DEMAND_PAGING_ALLOW_IRQ</code></td>
+<td>n</td>
+<td>允许 page-in/out 期间中断</td>
+</tr>
+<tr>
+<td><code>CONFIG_DEMAND_MAPPING</code></td>
+<td>n</td>
+<td>启用 demand mapping（懒分配）</td>
+</tr>
+<tr>
+<td><code>CONFIG_EVICTION_ALGORITHM</code></td>
+<td>—</td>
+<td>淘汰算法选择</td>
+</tr>
+<tr>
+<td><code>CONFIG_EVICTION_TRACKING</code></td>
+<td>n</td>
+<td>启用淘汰候选跟踪</td>
+</tr>
+<tr>
+<td><code>CONFIG_DEMAND_PAGING_STATS</code></td>
+<td>n</td>
+<td>启用 paging 统计信息</td>
+</tr>
+<tr>
+<td><code>CONFIG_DEMAND_PAGING_TIMING_HISTOGRAM</code></td>
+<td>n</td>
+<td>启用操作耗时直方图</td>
+</tr>
+<tr>
+<td><code>CONFIG_ARCH_MAPS_ALL_RAM</code></td>
+<td>n</td>
+<td>架构映射全部 RAM</td>
+</tr>
+<tr>
+<td><code>CONFIG_KERNEL_DIRECT_MAP</code></td>
+<td>n</td>
+<td>支持直接映射（virt=phys）</td>
+</tr>
+<tr>
+<td><code>CONFIG_LINKER_USE_BOOT_SECTION</code></td>
+<td>n</td>
+<td>使用独立 boot section</td>
+</tr>
+<tr>
+<td><code>CONFIG_LINKER_USE_PINNED_SECTION</code></td>
+<td>n</td>
+<td>使用 pinned section</td>
+</tr>
+<tr>
+<td><code>CONFIG_LINKER_USE_ONDEMAND_SECTION</code></td>
+<td>n</td>
+<td>使用 on-demand section</td>
+</tr>
+<tr>
+<td><code>CONFIG_ARCH_HAS_RESERVED_PAGE_FRAMES</code></td>
+<td>n</td>
+<td>架构有保留页帧</td>
+</tr>
+<tr>
+<td><code>CONFIG_SMP</code></td>
+<td>n</td>
+<td>SMP 支持（影响 demand paging 锁策略）</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: zephyr/kernel/init.c 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('init_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a> &#124;
+<a href="#var-members">变量</a>  </div>
+  <div class="headertitle"><div class="title">init.c 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Zephyr 内核初始化模块  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;ctype.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+<code>#include &lt;offsets_short.h&gt;</code><br />
+<code>#include &lt;zephyr/kernel.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/printk.h&gt;</code><br />
+<code>#include &lt;zephyr/debug/stack.h&gt;</code><br />
+<code>#include &lt;zephyr/random/random.h&gt;</code><br />
+<code>#include &lt;zephyr/linker/sections.h&gt;</code><br />
+<code>#include &lt;zephyr/toolchain.h&gt;</code><br />
+<code>#include &lt;<a class="el" href="kernel__structs_8h_source.html">zephyr/kernel_structs.h</a>&gt;</code><br />
+<code>#include &lt;zephyr/device.h&gt;</code><br />
+<code>#include &lt;zephyr/init.h&gt;</code><br />
+<code>#include &lt;zephyr/linker/linker-defs.h&gt;</code><br />
+<code>#include &lt;zephyr/platform/hooks.h&gt;</code><br />
+<code>#include &lt;ksched.h&gt;</code><br />
+<code>#include &lt;kthread.h&gt;</code><br />
+<code>#include &lt;ipi.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/dlist.h&gt;</code><br />
+<code>#include &lt;kernel_internal.h&gt;</code><br />
+<code>#include &lt;zephyr/drivers/entropy.h&gt;</code><br />
+<code>#include &lt;zephyr/logging/log_ctrl.h&gt;</code><br />
+<code>#include &lt;zephyr/tracing/tracing.h&gt;</code><br />
+<code>#include &lt;zephyr/debug/gcov.h&gt;</code><br />
+<code>#include &lt;kswap.h&gt;</code><br />
+<code>#include &lt;zephyr/timing/timing.h&gt;</code><br />
+<code>#include &lt;zephyr/logging/log.h&gt;</code><br />
+<code>#include &lt;zephyr/internal/syscall_handler.h&gt;</code><br />
+<code>#include &lt;zephyr/arch/common/init.h&gt;</code><br />
+<code>#include &lt;scheduler.h&gt;</code><br />
+</div>
+<p><a href="init_8c_source.html">浏览源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:aaff476ba6d60f862ead26bcc06a3abfc" id="r_aaff476ba6d60f862ead26bcc06a3abfc"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfc">init_level</a> { <br />
+&#160;&#160;<a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfcacc237e5395fbc5f9e17a689d501919cd">INIT_LEVEL_EARLY</a> = 0
+, <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfca5afbc2dfd6cee8092314ef3435c3a606">INIT_LEVEL_PRE_KERNEL_1</a>
+, <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfca6e28164741914dd7d1dff5cec29c57bb">INIT_LEVEL_PRE_KERNEL_2</a>
+, <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfcac013283b18876e767d4339ca559dbad9">INIT_LEVEL_POST_KERNEL</a>
+, <br />
+&#160;&#160;<a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfcae1af8492718da381d292d8f609acf60f">INIT_LEVEL_APPLICATION</a>
+, <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfca4424cce4aaa730a5dfed9caabe255924">INIT_LEVEL_SMP</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:aaff476ba6d60f862ead26bcc06a3abfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">内核初始化级别枚举  <a href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfc">更多...</a><br /></td></tr>
+<tr class="separator:aaff476ba6d60f862ead26bcc06a3abfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a6b7ac3d9754293ad049a899055012313" id="r_a6b7ac3d9754293ad049a899055012313"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a6b7ac3d9754293ad049a899055012313">LOG_MODULE_REGISTER</a> (os, CONFIG_KERNEL_LOG_LEVEL)</td></tr>
+<tr class="memdesc:a6b7ac3d9754293ad049a899055012313"><td class="mdescLeft">&#160;</td><td class="mdescRight">内核日志模块注册  <br /></td></tr>
+<tr class="separator:a6b7ac3d9754293ad049a899055012313"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9c8030542353c0a0daceb5c8258aea" id="r_a7a9c8030542353c0a0daceb5c8258aea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a7a9c8030542353c0a0daceb5c8258aea">K_THREAD_PINNED_STACK_DEFINE</a> (z_main_stack, 1024)</td></tr>
+<tr class="memdesc:a7a9c8030542353c0a0daceb5c8258aea"><td class="mdescLeft">&#160;</td><td class="mdescRight">main 线程栈定义  <br /></td></tr>
+<tr class="separator:a7a9c8030542353c0a0daceb5c8258aea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d427596c6338134e58ca14ad20b1d63" id="r_a0d427596c6338134e58ca14ad20b1d63"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a0d427596c6338134e58ca14ad20b1d63">K_KERNEL_PINNED_STACK_ARRAY_DEFINE</a> (z_idle_stacks, 1, 256)</td></tr>
+<tr class="memdesc:a0d427596c6338134e58ca14ad20b1d63"><td class="mdescLeft">&#160;</td><td class="mdescRight">各 CPU 的 idle 线程栈数组  <br /></td></tr>
+<tr class="separator:a0d427596c6338134e58ca14ad20b1d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0c9642dc1a436af32963706634a4c22" id="r_aa0c9642dc1a436af32963706634a4c22"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#aa0c9642dc1a436af32963706634a4c22">z_init_static_threads</a> (void)</td></tr>
+<tr class="memdesc:aa0c9642dc1a436af32963706634a4c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">初始化所有静态定义的线程  <br /></td></tr>
+<tr class="separator:aa0c9642dc1a436af32963706634a4c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace3a0d2e6bb02608675bcdba8f1ff311" id="r_ace3a0d2e6bb02608675bcdba8f1ff311"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#ace3a0d2e6bb02608675bcdba8f1ff311">K_KERNEL_PINNED_STACK_ARRAY_DEFINE</a> (z_interrupt_stacks, 1, 2048)</td></tr>
+<tr class="separator:ace3a0d2e6bb02608675bcdba8f1ff311"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a409a288e4d1549923cd51a72f31e5788" id="r_a409a288e4d1549923cd51a72f31e5788"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a409a288e4d1549923cd51a72f31e5788">idle</a> (void *unused1, void *unused2, void *unused3)</td></tr>
+<tr class="memdesc:a409a288e4d1549923cd51a72f31e5788"><td class="mdescLeft">&#160;</td><td class="mdescRight">idle 线程入口函数声明（在 sched.c 中定义）  <br /></td></tr>
+<tr class="separator:a409a288e4d1549923cd51a72f31e5788"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a062cc58b9dac108fa87de088929d8dbb" id="r_a062cc58b9dac108fa87de088929d8dbb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a062cc58b9dac108fa87de088929d8dbb">do_device_init</a> (const struct device *dev)</td></tr>
+<tr class="memdesc:a062cc58b9dac108fa87de088929d8dbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">设备初始化函数（在 device.c 中实现）  <br /></td></tr>
+<tr class="separator:a062cc58b9dac108fa87de088929d8dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a4559ebab9e967cd7abc51a51afec87" id="r_a1a4559ebab9e967cd7abc51a51afec87"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a1a4559ebab9e967cd7abc51a51afec87">z_device_state_init</a> (void)</td></tr>
+<tr class="memdesc:a1a4559ebab9e967cd7abc51a51afec87"><td class="mdescLeft">&#160;</td><td class="mdescRight">初始化所有静态设备的状态对象  <br /></td></tr>
+<tr class="separator:a1a4559ebab9e967cd7abc51a51afec87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52b87dda269755a45e5b04e2ccd956c2" id="r_a52b87dda269755a45e5b04e2ccd956c2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a52b87dda269755a45e5b04e2ccd956c2">z_sys_init_run_level</a> (enum <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfc">init_level</a> level)</td></tr>
+<tr class="memdesc:a52b87dda269755a45e5b04e2ccd956c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">执行指定初始化级别的所有初始化条目  <br /></td></tr>
+<tr class="separator:a52b87dda269755a45e5b04e2ccd956c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a238b815a83617a23f0be9b3b86412c40" id="r_a238b815a83617a23f0be9b3b86412c40"><td class="memItemLeft" align="right" valign="top">static __boot_func void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a238b815a83617a23f0be9b3b86412c40">bg_thread_main</a> (void *unused1, void *unused2, void *unused3)</td></tr>
+<tr class="memdesc:a238b815a83617a23f0be9b3b86412c40"><td class="mdescLeft">&#160;</td><td class="mdescRight">内核 main 线程入口函数  <br /></td></tr>
+<tr class="separator:a238b815a83617a23f0be9b3b86412c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab65a31b0aa8f0df5e301d716ec9837a7" id="r_ab65a31b0aa8f0df5e301d716ec9837a7"><td class="memItemLeft" align="right" valign="top">static __boot_func void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#ab65a31b0aa8f0df5e301d716ec9837a7">init_idle_thread</a> (int i)</td></tr>
+<tr class="memdesc:ab65a31b0aa8f0df5e301d716ec9837a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建指定 CPU 的 idle 线程  <br /></td></tr>
+<tr class="separator:ab65a31b0aa8f0df5e301d716ec9837a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64702faa4b8c51f9244154dd0a78f553" id="r_a64702faa4b8c51f9244154dd0a78f553"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a64702faa4b8c51f9244154dd0a78f553">z_init_cpu</a> (int id)</td></tr>
+<tr class="memdesc:a64702faa4b8c51f9244154dd0a78f553"><td class="mdescLeft">&#160;</td><td class="mdescRight">初始化指定 CPU 的内核数据  <br /></td></tr>
+<tr class="separator:a64702faa4b8c51f9244154dd0a78f553"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd5a6e0f8e85536d3790cb8d6ea69f99" id="r_afd5a6e0f8e85536d3790cb8d6ea69f99"><td class="memItemLeft" align="right" valign="top">static __boot_func char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#afd5a6e0f8e85536d3790cb8d6ea69f99">prepare_multithreading</a> (void)</td></tr>
+<tr class="memdesc:afd5a6e0f8e85536d3790cb8d6ea69f99"><td class="mdescLeft">&#160;</td><td class="mdescRight">准备多线程运行环境  <br /></td></tr>
+<tr class="separator:afd5a6e0f8e85536d3790cb8d6ea69f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bfd1ce2ed3f99ff7cad8cc2f17ea771" id="r_a9bfd1ce2ed3f99ff7cad8cc2f17ea771"><td class="memItemLeft" align="right" valign="top">static __boot_func FUNC_NORETURN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a9bfd1ce2ed3f99ff7cad8cc2f17ea771">switch_to_main_thread</a> (char *stack_ptr)</td></tr>
+<tr class="memdesc:a9bfd1ce2ed3f99ff7cad8cc2f17ea771"><td class="mdescLeft">&#160;</td><td class="mdescRight">上下文切换到 main 线程  <br /></td></tr>
+<tr class="separator:a9bfd1ce2ed3f99ff7cad8cc2f17ea771"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecef4e284ee68cec1f66df16de5f7390" id="r_aecef4e284ee68cec1f66df16de5f7390"><td class="memItemLeft" align="right" valign="top">__boot_func void __weak&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#aecef4e284ee68cec1f66df16de5f7390">z_early_rand_get</a> (uint8_t *buf, size_t length)</td></tr>
+<tr class="memdesc:aecef4e284ee68cec1f66df16de5f7390"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取早期启动阶段的伪随机数  <br /></td></tr>
+<tr class="separator:aecef4e284ee68cec1f66df16de5f7390"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfd4d123ec633dc8571868d07a22eb53" id="r_adfd4d123ec633dc8571868d07a22eb53"><td class="memItemLeft" align="right" valign="top">__boot_func FUNC_NO_STACK_PROTECTOR FUNC_NORETURN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#adfd4d123ec633dc8571868d07a22eb53">z_cstart</a> (void)</td></tr>
+<tr class="memdesc:adfd4d123ec633dc8571868d07a22eb53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zephyr 内核 C 入口函数  <br /></td></tr>
+<tr class="separator:adfd4d123ec633dc8571868d07a22eb53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+变量</h2></td></tr>
+<tr class="memitem:a8155b81e4eb507e70fc725d5d3eaecbb" id="r_a8155b81e4eb507e70fc725d5d3eaecbb"><td class="memItemLeft" align="right" valign="top">__pinned_bss struct <a class="el" href="structz__kernel.html">z_kernel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a8155b81e4eb507e70fc725d5d3eaecbb">_kernel</a></td></tr>
+<tr class="memdesc:a8155b81e4eb507e70fc725d5d3eaecbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">全局唯一的内核数据结构实例  <br /></td></tr>
+<tr class="separator:a8155b81e4eb507e70fc725d5d3eaecbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2d5aae824bbf4afa05713db94829f42" id="r_aa2d5aae824bbf4afa05713db94829f42"><td class="memItemLeft" align="right" valign="top">__pinned_bss atomic_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#aa2d5aae824bbf4afa05713db94829f42">_cpus_active</a></td></tr>
+<tr class="memdesc:aa2d5aae824bbf4afa05713db94829f42"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前活跃 CPU 数量（电源管理子系统使用）  <br /></td></tr>
+<tr class="separator:aa2d5aae824bbf4afa05713db94829f42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0dfdfacb01882327eeb37d659600bc7" id="r_af0dfdfacb01882327eeb37d659600bc7"><td class="memItemLeft" align="right" valign="top">struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#af0dfdfacb01882327eeb37d659600bc7">z_main_thread</a></td></tr>
+<tr class="memdesc:af0dfdfacb01882327eeb37d659600bc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">main 线程控制块  <br /></td></tr>
+<tr class="separator:af0dfdfacb01882327eeb37d659600bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a458dabc4b01f5c5ce8652cdf9e86ebf2" id="r_a458dabc4b01f5c5ce8652cdf9e86ebf2"><td class="memItemLeft" align="right" valign="top">__pinned_bss struct k_thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a458dabc4b01f5c5ce8652cdf9e86ebf2">z_idle_threads</a> [1]</td></tr>
+<tr class="memdesc:a458dabc4b01f5c5ce8652cdf9e86ebf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">各 CPU 的 idle 线程控制块数组  <br /></td></tr>
+<tr class="separator:a458dabc4b01f5c5ce8652cdf9e86ebf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87874c376876fe8b6053fb34b74ee957" id="r_a87874c376876fe8b6053fb34b74ee957"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a87874c376876fe8b6053fb34b74ee957">__init_start</a> []</td></tr>
+<tr class="separator:a87874c376876fe8b6053fb34b74ee957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada9544b3c5bc5a6619d23421ebdbc9b1" id="r_ada9544b3c5bc5a6619d23421ebdbc9b1"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#ada9544b3c5bc5a6619d23421ebdbc9b1">__init_EARLY_start</a> []</td></tr>
+<tr class="separator:ada9544b3c5bc5a6619d23421ebdbc9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30227e7725449ee5f810232fe3650126" id="r_a30227e7725449ee5f810232fe3650126"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a30227e7725449ee5f810232fe3650126">__init_PRE_KERNEL_1_start</a> []</td></tr>
+<tr class="separator:a30227e7725449ee5f810232fe3650126"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6092eee21d2a38939e369952325b522" id="r_ad6092eee21d2a38939e369952325b522"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#ad6092eee21d2a38939e369952325b522">__init_PRE_KERNEL_2_start</a> []</td></tr>
+<tr class="separator:ad6092eee21d2a38939e369952325b522"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1de9b37ba732e80f4d76aeca196e827" id="r_ac1de9b37ba732e80f4d76aeca196e827"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#ac1de9b37ba732e80f4d76aeca196e827">__init_POST_KERNEL_start</a> []</td></tr>
+<tr class="separator:ac1de9b37ba732e80f4d76aeca196e827"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb2b26e2be1b84946e722c796169e200" id="r_acb2b26e2be1b84946e722c796169e200"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#acb2b26e2be1b84946e722c796169e200">__init_APPLICATION_start</a> []</td></tr>
+<tr class="separator:acb2b26e2be1b84946e722c796169e200"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6912496ad0ec89ae790a7c0a59a8f63" id="r_af6912496ad0ec89ae790a7c0a59a8f63"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#af6912496ad0ec89ae790a7c0a59a8f63">__init_end</a> []</td></tr>
+<tr class="separator:af6912496ad0ec89ae790a7c0a59a8f63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aade422c0c182d88bb01398dcd9db09" id="r_a3aade422c0c182d88bb01398dcd9db09"><td class="memItemLeft" align="right" valign="top">const struct init_entry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a3aade422c0c182d88bb01398dcd9db09">__init_SMP_start</a> []</td></tr>
+<tr class="separator:a3aade422c0c182d88bb01398dcd9db09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43e63847a06f33b0ffe5d7528f076bf7" id="r_a43e63847a06f33b0ffe5d7528f076bf7"><td class="memItemLeft" align="right" valign="top">__pinned_bss bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init_8c.html#a43e63847a06f33b0ffe5d7528f076bf7">z_sys_post_kernel</a></td></tr>
+<tr class="memdesc:a43e63847a06f33b0ffe5d7528f076bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">标记 POST_KERNEL 阶段已完成，用于条件编译检查  <br /></td></tr>
+<tr class="separator:a43e63847a06f33b0ffe5d7528f076bf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>Zephyr 内核初始化模块 </p>
+<p>该模块是 Zephyr RTOS 内核的核心初始化入口，包含从 C 运行环境准备 完成后到用户应用 main() 函数执行之前的全部初始化流程。</p>
+<p>主要函数及调用关系： <a class="el" href="init_8c.html#adfd4d123ec633dc8571868d07a22eb53" title="Zephyr 内核 C 入口函数">z_cstart()</a> &ndash; 由 prep_c 调用，内核 C 入口 ├── z_sys_init_run_level(EARLY) ├── arch_kernel_init() ├── <a class="el" href="init_8c.html#a1a4559ebab9e967cd7abc51a51afec87" title="初始化所有静态设备的状态对象">z_device_state_init()</a> ├── soc_early_init_hook() / board_early_init_hook() ├── z_sys_init_run_level(PRE_KERNEL_1) ├── z_sys_init_run_level(PRE_KERNEL_2) └── switch_to_main_thread(prepare_multithreading()) └── <a class="el" href="init_8c.html#a238b815a83617a23f0be9b3b86412c40" title="内核 main 线程入口函数">bg_thread_main()</a> &ndash; main 线程入口 ├── <a class="el" href="mmu_8c.html#aada8c0b6fd80b177eafd1cd9239e38ce" title="页帧管理子系统初始化">z_mem_manage_init()</a> [MMU] ├── z_sys_init_run_level(POST_KERNEL) ├── soc_late_init_hook() / board_late_init_hook() ├── <a class="el" href="init_8c.html#aa0c9642dc1a436af32963706634a4c22" title="初始化所有静态定义的线程">z_init_static_threads()</a> ├── z_smp_init() [SMP] └── main()</p>
+<p>初始化级别（init_level）按以下顺序依次执行： EARLY → PRE_KERNEL_1 → PRE_KERNEL_2 → POST_KERNEL → APPLICATION → [SMP]</p>
+<dl class="section note"><dt>注解</dt><dd>PRE_KERNEL_1/2 在调度器启动前执行，不可使用阻塞 API。 </dd>
+<dd>
+POST_KERNEL 及之后的级别在调度器运行后执行。</dd></dl>
+<dl class="section copyright"><dt>版权所有</dt><dd>Copyright (c) 2010-2014 Wind River Systems, Inc. @license SPDX-License-Identifier: Apache-2.0 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 中定义.</p>
+</div><h2 class="groupheader">枚举类型说明</h2>
+<a id="aaff476ba6d60f862ead26bcc06a3abfc" name="aaff476ba6d60f862ead26bcc06a3abfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaff476ba6d60f862ead26bcc06a3abfc">&#9670;&#160;</a></span>init_level</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfc">init_level</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>内核初始化级别枚举 </p>
+<p>定义系统初始化各阶段的执行顺序。每个级别对应一组通过 SYS_INIT() / INIT_ENTRY_DEFINE() 宏注册的初始化函数， 链接脚本确保同级别内按优先级从高到低执行。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="aaff476ba6d60f862ead26bcc06a3abfcacc237e5395fbc5f9e17a689d501919cd" name="aaff476ba6d60f862ead26bcc06a3abfcacc237e5395fbc5f9e17a689d501919cd"></a>INIT_LEVEL_EARLY&#160;</td><td class="fielddoc"><p>最早期的硬件初始化 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaff476ba6d60f862ead26bcc06a3abfca5afbc2dfd6cee8092314ef3435c3a606" name="aaff476ba6d60f862ead26bcc06a3abfca5afbc2dfd6cee8092314ef3435c3a606"></a>INIT_LEVEL_PRE_KERNEL_1&#160;</td><td class="fielddoc"><p>内核子系统初始化第一阶段（调度器未启动） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaff476ba6d60f862ead26bcc06a3abfca6e28164741914dd7d1dff5cec29c57bb" name="aaff476ba6d60f862ead26bcc06a3abfca6e28164741914dd7d1dff5cec29c57bb"></a>INIT_LEVEL_PRE_KERNEL_2&#160;</td><td class="fielddoc"><p>内核子系统初始化第二阶段（调度器未启动） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaff476ba6d60f862ead26bcc06a3abfcac013283b18876e767d4339ca559dbad9" name="aaff476ba6d60f862ead26bcc06a3abfcac013283b18876e767d4339ca559dbad9"></a>INIT_LEVEL_POST_KERNEL&#160;</td><td class="fielddoc"><p>内核子系统初始化完成（调度器已启动） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaff476ba6d60f862ead26bcc06a3abfcae1af8492718da381d292d8f609acf60f" name="aaff476ba6d60f862ead26bcc06a3abfcae1af8492718da381d292d8f609acf60f"></a>INIT_LEVEL_APPLICATION&#160;</td><td class="fielddoc"><p>应用层初始化 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaff476ba6d60f862ead26bcc06a3abfca4424cce4aaa730a5dfed9caabe255924" name="aaff476ba6d60f862ead26bcc06a3abfca4424cce4aaa730a5dfed9caabe255924"></a>INIT_LEVEL_SMP&#160;</td><td class="fielddoc"><p>SMP 多核启动 </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00178">178</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">函数说明</h2>
+<a id="a238b815a83617a23f0be9b3b86412c40" name="a238b815a83617a23f0be9b3b86412c40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a238b815a83617a23f0be9b3b86412c40">&#9670;&#160;</a></span>bg_thread_main()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static __boot_func void bg_thread_main </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>unused1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>unused2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>unused3</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>内核 main 线程入口函数 </p>
+<p>这是 Zephyr 内核 main 线程的主体函数，在调度器启动后执行。 按顺序完成以下工作：</p><ol type="1">
+<li>内存管理初始化（MMU 模式下）</li>
+<li>设置 POST_KERNEL 完成标志</li>
+<li>执行 POST_KERNEL 级别初始化</li>
+<li>调用 SoC/Board 延迟初始化 hook</li>
+<li>启用栈指针随机化</li>
+<li>执行 APPLICATION 级别初始化</li>
+<li>初始化并启动所有静态定义的线程</li>
+<li>SMP 多核初始化（若启用）</li>
+<li>调用用户应用 main() 函数</li>
+</ol>
+<p>main() 返回后标记线程为非核心线程</p><ol type="1">
+<li>导出覆盖率数据（若启用）</li>
+</ol>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">unused1</td><td>未使用参数 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">unused2</td><td>未使用参数 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">unused3</td><td>未使用参数 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00377">377</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a062cc58b9dac108fa87de088929d8dbb" name="a062cc58b9dac108fa87de088929d8dbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a062cc58b9dac108fa87de088929d8dbb">&#9670;&#160;</a></span>do_device_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int do_device_init </td>
+          <td>(</td>
+          <td class="paramtype">const struct device *&#160;</td>
+          <td class="paramname"><em>dev</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设备初始化函数（在 device.c 中实现） </p>
+
+</div>
+</div>
+<a id="a409a288e4d1549923cd51a72f31e5788" name="a409a288e4d1549923cd51a72f31e5788"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a409a288e4d1549923cd51a72f31e5788">&#9670;&#160;</a></span>idle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void idle </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>unused1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>unused2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>unused3</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>idle 线程入口函数声明（在 sched.c 中定义） </p>
+
+</div>
+</div>
+<a id="ab65a31b0aa8f0df5e301d716ec9837a7" name="ab65a31b0aa8f0df5e301d716ec9837a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab65a31b0aa8f0df5e301d716ec9837a7">&#9670;&#160;</a></span>init_idle_thread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static __boot_func void init_idle_thread </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>创建指定 CPU 的 idle 线程 </p>
+<p>为 CPU i 创建 idle 线程，以最低优先级（K_IDLE_PRIO）运行， 标记为核心线程（K_ESSENTIAL），线程入口为 <a class="el" href="init_8c.html#a409a288e4d1549923cd51a72f31e5788" title="idle 线程入口函数声明（在 sched.c 中定义）">idle()</a> 函数。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">i</td><td>CPU 编号 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00464">464</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0d427596c6338134e58ca14ad20b1d63" name="a0d427596c6338134e58ca14ad20b1d63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d427596c6338134e58ca14ad20b1d63">&#9670;&#160;</a></span>K_KERNEL_PINNED_STACK_ARRAY_DEFINE() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static K_KERNEL_PINNED_STACK_ARRAY_DEFINE </td>
+          <td>(</td>
+          <td class="paramtype">z_idle_stacks&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">1&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">256&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>各 CPU 的 idle 线程栈数组 </p>
+
+</div>
+</div>
+<a id="ace3a0d2e6bb02608675bcdba8f1ff311" name="ace3a0d2e6bb02608675bcdba8f1ff311"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace3a0d2e6bb02608675bcdba8f1ff311">&#9670;&#160;</a></span>K_KERNEL_PINNED_STACK_ARRAY_DEFINE() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">K_KERNEL_PINNED_STACK_ARRAY_DEFINE </td>
+          <td>(</td>
+          <td class="paramtype">z_interrupt_stacks&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">1&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">2048&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7a9c8030542353c0a0daceb5c8258aea" name="a7a9c8030542353c0a0daceb5c8258aea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9c8030542353c0a0daceb5c8258aea">&#9670;&#160;</a></span>K_THREAD_PINNED_STACK_DEFINE()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">K_THREAD_PINNED_STACK_DEFINE </td>
+          <td>(</td>
+          <td class="paramtype">z_main_stack&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">1024&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>main 线程栈定义 </p>
+
+</div>
+</div>
+<a id="a6b7ac3d9754293ad049a899055012313" name="a6b7ac3d9754293ad049a899055012313"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b7ac3d9754293ad049a899055012313">&#9670;&#160;</a></span>LOG_MODULE_REGISTER()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">LOG_MODULE_REGISTER </td>
+          <td>(</td>
+          <td class="paramtype">os&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">CONFIG_KERNEL_LOG_LEVEL&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>内核日志模块注册 </p>
+
+</div>
+</div>
+<a id="afd5a6e0f8e85536d3790cb8d6ea69f99" name="afd5a6e0f8e85536d3790cb8d6ea69f99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd5a6e0f8e85536d3790cb8d6ea69f99">&#9670;&#160;</a></span>prepare_multithreading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static __boot_func char * prepare_multithreading </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>准备多线程运行环境 </p>
+<p>初始化内核调度器、创建 main 线程、初始化 CPU 0 的 idle 线程 及其中断栈。在单核模式下，预先将 main 线程加载到调度器优先级缓存中， 因为它将是第一个运行的线程。</p>
+<dl class="section return"><dt>返回</dt><dd>main 线程的初始栈指针，用于上下文切换</dd></dl>
+<dl class="section note"><dt>注解</dt><dd>调用此函数时 _kernel 结构体的所有字段为零（.bss 已清零）， 对许多字段而言零初始化已足够。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00550">550</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9bfd1ce2ed3f99ff7cad8cc2f17ea771" name="a9bfd1ce2ed3f99ff7cad8cc2f17ea771"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bfd1ce2ed3f99ff7cad8cc2f17ea771">&#9670;&#160;</a></span>switch_to_main_thread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static __boot_func FUNC_NORETURN void switch_to_main_thread </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>stack_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>上下文切换到 main 线程 </p>
+<p>从当前伪线程（启动上下文）切换到 main 线程。 伪线程不在任何等待队列或就绪队列上，因此切换后永远不会被重新调度。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">stack_ptr</td><td>main 线程的初始栈指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00590">590</a> 行定义.</p>
+
+</div>
+</div>
+<a id="adfd4d123ec633dc8571868d07a22eb53" name="adfd4d123ec633dc8571868d07a22eb53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfd4d123ec633dc8571868d07a22eb53">&#9670;&#160;</a></span>z_cstart()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__boot_func FUNC_NO_STACK_PROTECTOR FUNC_NORETURN void z_cstart </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zephyr 内核 C 入口函数 </p>
+<p>这是内核从汇编启动代码（经 prep_c）进入后的第一个 C 函数。 处理器必须处于正确的运行模式（32 位），且 .bss 段必须已清零。</p>
+<p>按以下顺序执行初始化：</p><ol type="1">
+<li>gcov 覆盖率静态初始化</li>
+<li>EARLY 级别系统初始化</li>
+<li>架构相关内核初始化</li>
+<li>日志核心初始化</li>
+<li>dummy 线程初始化（多线程模式）</li>
+<li>静态设备状态初始化</li>
+<li>SoC/Board 早期初始化 hook</li>
+<li>PRE_KERNEL_1 级别初始化</li>
+<li>SMP 架构初始化（若启用）</li>
+</ol>
+<p>PRE_KERNEL_2 级别初始化</p><ol type="1">
+<li>栈保护金丝雀值初始化</li>
+<li>timing 功能初始化（若启用）</li>
+<li>切换到 main 线程（多线程）或直接调用 bg_thread_main（单线程）</li>
+</ol>
+<dl class="section note"><dt>注解</dt><dd>此函数不会返回（FUNC_NORETURN）。 </dd>
+<dd>
+标记为 FUNC_NO_STACK_PROTECTOR，因为在栈保护金丝雀值 初始化之前调用，此时 __stack_chk_guard 尚未设置。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00684">684</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a1a4559ebab9e967cd7abc51a51afec87" name="a1a4559ebab9e967cd7abc51a51afec87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a4559ebab9e967cd7abc51a51afec87">&#9670;&#160;</a></span>z_device_state_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void z_device_state_init </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>初始化所有静态设备的状态对象 </p>
+<p>遍历 linker section 中所有 device 实例，调用 k_object_init() 初始化其内核对象状态。设备状态对象在 .bss 中被零初始化， 但某些场景下需要额外的初始化处理。 </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00272">272</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aecef4e284ee68cec1f66df16de5f7390" name="aecef4e284ee68cec1f66df16de5f7390"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecef4e284ee68cec1f66df16de5f7390">&#9670;&#160;</a></span>z_early_rand_get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__boot_func void __weak z_early_rand_get </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取早期启动阶段的伪随机数 </p>
+<p>在内核完整初始化之前提供伪随机数据，用于栈保护金丝雀值等 需要在启动早期获取随机数据的场景。</p>
+<p>优先尝试使用硬件 entropy 驱动（ISR 模式），若驱动不可用 或返回数据不足，则回退到基于 cycle counter 的线性同余 伪随机数生成器（LCG）。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">buf</td><td>输出缓冲区 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">length</td><td>需要生成的随机数据字节数</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>此函数使用固定种子的 LCG，安全性不适用于加密用途。 </dd>
+<dd>
+函数标记为 __weak，可被平台代码覆盖以使用硬件 TRNG。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00624">624</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a64702faa4b8c51f9244154dd0a78f553" name="a64702faa4b8c51f9244154dd0a78f553"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64702faa4b8c51f9244154dd0a78f553">&#9670;&#160;</a></span>z_init_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void z_init_cpu </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>初始化指定 CPU 的内核数据 </p>
+<p>完成单个 CPU 的 idle 线程创建、中断栈设置、CPU ID 分配、 电源管理计数更新、对象核心系统注册和 IPI 工作队列初始化。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">id</td><td>CPU 编号 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00502">502</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa0c9642dc1a436af32963706634a4c22" name="aa0c9642dc1a436af32963706634a4c22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0c9642dc1a436af32963706634a4c22">&#9670;&#160;</a></span>z_init_static_threads()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void z_init_static_threads </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>初始化所有静态定义的线程 </p>
+<p>遍历 linker section 中所有 _static_thread_data 条目，调用 z_setup_new_thread() 完成线程创建。在 userspace 模式下，还会处理 k_object_assignment 条目， 将指定内核对象授权给对应线程。</p>
+<p>静态线程可能设置了启动延迟（K_FOREVER 表示延迟启动，即 legacy 线程）。 非延迟线程会立即被调度执行。为防止线程在遍历过程中被抢占执行， 整个启动过程在调度器锁定期间完成。 </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00108">108</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a52b87dda269755a45e5b04e2ccd956c2" name="a52b87dda269755a45e5b04e2ccd956c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52b87dda269755a45e5b04e2ccd956c2">&#9670;&#160;</a></span>z_sys_init_run_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void z_sys_init_run_level </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="init_8c.html#aaff476ba6d60f862ead26bcc06a3abfc">init_level</a>&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>执行指定初始化级别的所有初始化条目 </p>
+<p>遍历由链接脚本按优先级排序的 init_entry 数组，依次调用每个 条目的初始化函数。每个条目可能关联一个 device（通过 dev 字段）， 或仅包含一个 init_fn 纯函数。</p>
+<p>对于关联了 device 的条目，若设备设置了 DEVICE_FLAG_INIT_DEFERRED 标志，则跳过在此处初始化（通常由驱动模型在稍后阶段处理）。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">level</td><td>要执行的初始化级别</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>参见</dt><dd>INIT_ENTRY_DEFINE() 注册初始化条目的宏 </dd>
+<dd>
+SYS_INIT() 便捷的设备初始化注册宏 </dd></dl>
+<p>各级别在 linker section 中的起始位置</p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00294">294</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">变量说明</h2>
+<a id="acb2b26e2be1b84946e722c796169e200" name="acb2b26e2be1b84946e722c796169e200"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb2b26e2be1b84946e722c796169e200">&#9670;&#160;</a></span>__init_APPLICATION_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_APPLICATION_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada9544b3c5bc5a6619d23421ebdbc9b1" name="ada9544b3c5bc5a6619d23421ebdbc9b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada9544b3c5bc5a6619d23421ebdbc9b1">&#9670;&#160;</a></span>__init_EARLY_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_EARLY_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af6912496ad0ec89ae790a7c0a59a8f63" name="af6912496ad0ec89ae790a7c0a59a8f63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6912496ad0ec89ae790a7c0a59a8f63">&#9670;&#160;</a></span>__init_end</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_end[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac1de9b37ba732e80f4d76aeca196e827" name="ac1de9b37ba732e80f4d76aeca196e827"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1de9b37ba732e80f4d76aeca196e827">&#9670;&#160;</a></span>__init_POST_KERNEL_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_POST_KERNEL_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a30227e7725449ee5f810232fe3650126" name="a30227e7725449ee5f810232fe3650126"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30227e7725449ee5f810232fe3650126">&#9670;&#160;</a></span>__init_PRE_KERNEL_1_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_PRE_KERNEL_1_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad6092eee21d2a38939e369952325b522" name="ad6092eee21d2a38939e369952325b522"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6092eee21d2a38939e369952325b522">&#9670;&#160;</a></span>__init_PRE_KERNEL_2_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_PRE_KERNEL_2_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3aade422c0c182d88bb01398dcd9db09" name="a3aade422c0c182d88bb01398dcd9db09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3aade422c0c182d88bb01398dcd9db09">&#9670;&#160;</a></span>__init_SMP_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_SMP_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a87874c376876fe8b6053fb34b74ee957" name="a87874c376876fe8b6053fb34b74ee957"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87874c376876fe8b6053fb34b74ee957">&#9670;&#160;</a></span>__init_start</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const struct init_entry __init_start[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa2d5aae824bbf4afa05713db94829f42" name="aa2d5aae824bbf4afa05713db94829f42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2d5aae824bbf4afa05713db94829f42">&#9670;&#160;</a></span>_cpus_active</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__pinned_bss atomic_t _cpus_active</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>当前活跃 CPU 数量（电源管理子系统使用） </p>
+<p>活跃 CPU 数量原子计数器（电源管理子系统使用） </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00075">75</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8155b81e4eb507e70fc725d5d3eaecbb" name="a8155b81e4eb507e70fc725d5d3eaecbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8155b81e4eb507e70fc725d5d3eaecbb">&#9670;&#160;</a></span>_kernel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__pinned_bss struct <a class="el" href="structz__kernel.html">z_kernel</a> _kernel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>全局唯一的内核数据结构实例 </p>
+<p>全局内核实例（在 <a class="el" href="init_8c.html" title="Zephyr 内核初始化模块">init.c</a> 中定义为 __pinned_bss） </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00071">71</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a458dabc4b01f5c5ce8652cdf9e86ebf2" name="a458dabc4b01f5c5ce8652cdf9e86ebf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a458dabc4b01f5c5ce8652cdf9e86ebf2">&#9670;&#160;</a></span>z_idle_threads</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__pinned_bss struct k_thread z_idle_threads[1]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>各 CPU 的 idle 线程控制块数组 </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00090">90</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af0dfdfacb01882327eeb37d659600bc7" name="af0dfdfacb01882327eeb37d659600bc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0dfdfacb01882327eeb37d659600bc7">&#9670;&#160;</a></span>z_main_thread</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct k_thread z_main_thread</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>main 线程控制块 </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00085">85</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a43e63847a06f33b0ffe5d7528f076bf7" name="a43e63847a06f33b0ffe5d7528f076bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43e63847a06f33b0ffe5d7528f076bf7">&#9670;&#160;</a></span>z_sys_post_kernel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__pinned_bss bool z_sys_post_kernel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>标记 POST_KERNEL 阶段已完成，用于条件编译检查 </p>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00260">260</a> 行定义.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_c82fc3b08db7bea18c7f418b7e5582f0.html">zephyr</a></li><li class="navelem"><a class="el" href="dir_c0a1066c560133f9d51db4a842216eb5.html">kernel</a></li><li class="navelem"><a class="el" href="init_8c.html">init.c</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,3583 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>ARM 内存标记扩展（MTE）技术文档 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#arm-mte" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ARM 内存标记扩展（MTE）技术文档
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../arm_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  arm技术文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../api_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API参考
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../quantumdocs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  项目文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../allure/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  测试报告
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arm技术文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../api_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quantumdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    项目文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../allure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        目录
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 技术背景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 设计目标
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 特性演进
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2 架构设计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2 架构设计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 核心概念
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 核心概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#211-tag-granule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.1 标记粒度（Tag Granule）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#212-allocation-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.2 分配标记（Allocation Tag）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#213-logical-address-tag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.3 逻辑地址标记（Logical Address Tag）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#214-tag-check-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.4 标记检查操作（Tag Check Operation）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 内存区域标记类型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 内存区域标记类型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        已标记的完整条件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        特殊情况
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 标记检查机制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 标记检查机制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#231" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.1 已标记区域的标记检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#232" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.2 规范标记区域的规范标记检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#233" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.3 无标记区域
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 标记检查内存访问的判定规则
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.4 标记检查内存访问的判定规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#241" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4.1 访问类型排除
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4.2 寻址模式排除
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#243" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4.3 运行时控制排除
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 分配标记访问控制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 硬件设计与实现
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 硬件设计与实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 标记粒度与标记存储
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 标记粒度与标记存储">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.1 标记粒度
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.2 分配标记存储
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.3 数据位置访问分配标记存储
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 物理标记位置
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 物理标记位置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.1 地址空间关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.2 转换特性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.3 与安全扩展的交互
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 分配标记的缓存
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 分配标记的缓存">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#331" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.1 驱逐行为
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#332" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.2 缓存维护要求
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#333" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.3 无标记区域的缓存维护
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 标记检查故障处理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 标记检查故障处理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        关键行为
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        异常综合征寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 异步标记检查故障
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 异步标记检查故障">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#351" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.1 标记故障状态寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#352" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.2 同步机制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#353" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.3 与同步数据中止的交互
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#354" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.4 寄存器写入的竞态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#355-sve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5.5 SVE 相关约束
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 与设备内存的交互
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4 软件使用指南
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4 软件使用指南">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 寄存器编程模型
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 寄存器编程模型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#411" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.1 分配标记访问控制寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#412" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.2 标记检查故障控制寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#413" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.3 逻辑地址标记控制寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#414" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.4 仅存储标记检查控制寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#415" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.5 标记故障状态寄存器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#416-pstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.6 PSTATE 控制位
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#417" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1.7 同步控制位
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-mte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 MTE 相关指令
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 MTE 相关指令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#421" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.1 分配标记操作指令
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.2 地址生成指令
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#423" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2.3 缓存维护指令
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-mte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 内核态使能 MTE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 内核态使能 MTE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#431" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.1 启用步骤
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#432" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.2 页表配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-mte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 用户态使用 MTE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 用户态使用 MTE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#441" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4.1 编译器支持
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#442" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4.2 内存分配器集成
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#443" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4.3 异步故障的用户态处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 规范标记模式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 性能考量
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.6 性能考量">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#461" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6.1 故障模式选择
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#462" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6.2 性能优化建议
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 软件验证
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5 软件验证">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-mte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 MTE 验证目标
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 硬件验证策略
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 硬件验证策略">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 功能验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-fvpqemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 FVP/QEMU 验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 固件/内核验证策略
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.3 固件/内核验证策略">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#531-tf-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.1 TF-A 验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#532-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.2 Linux 内核验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#533" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3.3 页表标记属性验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 常见漏洞检测场景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 验证测试清单
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 验证测试清单">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#551" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5.1 基础功能测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#552" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5.2 故障模式测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#553" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5.3 控制位测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#554" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5.4 缓存一致性测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#555" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5.5 特殊场景测试
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 术语表
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 参考资料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="arm-mte">ARM 内存标记扩展（MTE）技术文档<a class="headerlink" href="#arm-mte" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>基于 ARM DDI 0487K.a Architecture Reference Manual，面向架构设计、硬件实现、软件验证与软件使用。</p>
+</blockquote>
+<hr />
+<h2 id="_1">目录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#1-概述">1 概述</a></li>
+<li><a href="#2-架构设计">2 架构设计</a></li>
+<li><a href="#21-核心概念">2.1 核心概念</a></li>
+<li><a href="#22-内存区域标记类型">2.2 内存区域标记类型</a></li>
+<li><a href="#23-标记检查机制">2.3 标记检查机制</a></li>
+<li><a href="#24-标记检查内存访问的判定规则">2.4 标记检查内存访问的判定规则</a></li>
+<li><a href="#25-分配标记访问控制">2.5 分配标记访问控制</a></li>
+<li><a href="#3-硬件设计与实现">3 硬件设计与实现</a></li>
+<li><a href="#31-标记粒度与标记存储">3.1 标记粒度与标记存储</a></li>
+<li><a href="#32-物理标记位置">3.2 物理标记位置</a></li>
+<li><a href="#33-分配标记的缓存">3.3 分配标记的缓存</a></li>
+<li><a href="#34-标记检查故障处理">3.4 标记检查故障处理</a></li>
+<li><a href="#35-异步标记检查故障">3.5 异步标记检查故障</a></li>
+<li><a href="#36-与设备内存的交互">3.6 与设备内存的交互</a></li>
+<li><a href="#4-软件使用指南">4 软件使用指南</a></li>
+<li><a href="#41-寄存器编程模型">4.1 寄存器编程模型</a></li>
+<li><a href="#42-mte-相关指令">4.2 MTE 相关指令</a></li>
+<li><a href="#43-内核态使能-mte">4.3 内核态使能 MTE</a></li>
+<li><a href="#44-用户态使用-mte">4.4 用户态使用 MTE</a></li>
+<li><a href="#45-规范标记模式">4.5 规范标记模式</a></li>
+<li><a href="#46-性能考量">4.6 性能考量</a></li>
+<li><a href="#5-软件验证">5 软件验证</a></li>
+<li><a href="#51-mte-验证目标">5.1 MTE 验证目标</a></li>
+<li><a href="#52-硬件验证策略">5.2 硬件验证策略</a></li>
+<li><a href="#53-固件内核验证策略">5.3 固件/内核验证策略</a></li>
+<li><a href="#54-常见漏洞检测场景">5.4 常见漏洞检测场景</a></li>
+<li><a href="#55-验证测试清单">5.5 验证测试清单</a></li>
+<li><a href="#6-术语表">6 术语表</a></li>
+<li><a href="#7-参考资料">7 参考资料</a></li>
+</ul>
+<hr />
+<h2 id="1">1 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 技术背景<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>内存安全漏洞（如缓冲区溢出、释放后使用（Use-After-Free）、越界访问）是系统安全的主要威胁之一。传统的内存安全机制（如 ASLR、Stack Canary、NX bit）提供了部分缓解措施，但无法从根本上检测运行时的内存越界访问。</p>
+<p>ARM 内存标记扩展（Memory Tagging Extension, MTE）是一种硬件辅助的内存安全机制，通过在内存中存储标记（Tag）并在指针中携带标记，在运行时自动检查内存访问的合法性。</p>
+<h3 id="12">1.2 设计目标<a class="headerlink" href="#12" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>越界访问检测</td>
+<td>检测缓冲区溢出（堆/栈/全局）和越界读写</td>
+</tr>
+<tr>
+<td>释放后使用检测</td>
+<td>检测对已释放内存的非法访问</td>
+</tr>
+<tr>
+<td>低性能开销</td>
+<td>硬件自动检查，减少软件干预</td>
+</tr>
+<tr>
+<td>渐进式部署</td>
+<td>支持同步故障、异步故障和仅记录模式</td>
+</tr>
+<tr>
+<td>向后兼容</td>
+<td>未标记代码在标记内存上正常运行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13">1.3 特性演进<a class="headerlink" href="#13" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>FEAT_MTE      → 基础 MTE（标记检查操作、分配标记读取）
+FEAT_MTE2     → 增强版（支持分配标记的显式加载/存储指令）
+FEAT_MTE_ASYNC → 异步故障模式（TFSR 寄存器记录故障位）
+FEAT_MTE3     → 非对称故障（写异步 + 读同步）
+FEAT_MTE_STORE_ONLY → 仅存储标记检查
+FEAT_MTE_CANONICAL_TAGS → 规范标记（基于地址高位自动生成标记）
+</code></pre></div>
+<hr />
+<h2 id="2">2 架构设计<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 核心概念<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<p>MTE 基于以下四个核心概念构建：</p>
+<h4 id="211-tag-granule">2.1.1 标记粒度（Tag Granule）<a class="headerlink" href="#211-tag-granule" title="Permanent link">&para;</a></h4>
+<p>内存中每 <strong>16 字节自然对齐</strong>的块称为一个标记粒度。这是 MTE 的基本操作单元。</p>
+<div class="highlight"><pre><span></span><code>地址空间（每行 16 字节，一个 Tag Granule）
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│  Byte 0-15   │ │  Byte 16-31  │ │  Byte 32-47  │  ...
+└──────────────┘ └──────────────┘ └──────────────┘
+   Tag Granule 0   Tag Granule 1   Tag Granule 2
+       ↓                ↓                ↓
+   Alloc Tag 0      Alloc Tag 1      Alloc Tag 2
+</code></pre></div>
+<h4 id="212-allocation-tag">2.1.2 分配标记（Allocation Tag）<a class="headerlink" href="#212-allocation-tag" title="Permanent link">&para;</a></h4>
+<p>每个标记粒度在内存中关联一个 <strong>4 位分配标记</strong>（值为 <code>0x0</code> ~ <code>0xF</code>）。分配标记由内存分配器在分配内存时设置，并在释放时清除。</p>
+<p><strong>关键属性：</strong>
+- 分配标记是一个 4-bit 值（16 种可能值）
+- 对分配标记的所有访问都是<strong>单拷贝原子</strong>（single-copy atomic）的
+- 对不同分配标记的访问之间<strong>不保证原子性</strong>
+- 指令在 VA 处显式访问分配标记时，实际访问的是按标记粒度对齐的地址</p>
+<h4 id="213-logical-address-tag">2.1.3 逻辑地址标记（Logical Address Tag）<a class="headerlink" href="#213-logical-address-tag" title="Permanent link">&para;</a></h4>
+<p>64 位虚拟地址（VA）的 <strong>bits[59:56]</strong> 构成逻辑地址标记。当程序通过带标记的指针访问内存时，处理器提取指针中的逻辑地址标记，与目标内存的分配标记进行比较。</p>
+<div class="highlight"><pre><span></span><code>64-bit 虚拟地址结构：
+┌─────┬──────────┬───────────┬──────┬─────┐
+│     │          │           │      │     │
+│ 63  │ 62:60    │ 59:56     │ 55:0 │     │
+│     │ Top Byte │ Tag [4b]  │ VA   │     │
+└─────┴──────────┴───────────┴──────┴─────┘
+              ↑
+        逻辑地址标记
+      （Logical Address Tag）
+</code></pre></div>
+<h4 id="214-tag-check-operation">2.1.4 标记检查操作（Tag Check Operation）<a class="headerlink" href="#214-tag-check-operation" title="Permanent link">&para;</a></h4>
+<p>标记检查操作是 MTE 的核心机制：</p>
+<ol>
+<li><strong>隐式读取</strong>目标地址对齐到标记粒度处的分配标记</li>
+<li><strong>比较</strong>分配标记与逻辑地址标记</li>
+<li><strong>不匹配</strong>则产生标记检查故障（Tag Check Fault）</li>
+</ol>
+<h3 id="22">2.2 内存区域标记类型<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<p>每个内存区域具有以下三种标记类型之一：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>条件</th>
+<th>标记检查行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>已标记（Tagged）</strong></td>
+<td>实现了 FEAT_MTE2 + 启用了分配标记访问 + 阶段 1 属性定义了 Tagged 属性 + 内存属性为普通内存/内部外部写回/非瞬态/读写分配</td>
+<td>执行标记检查操作</td>
+</tr>
+<tr>
+<td><strong>规范标记（Canonically Tagged）</strong></td>
+<td>实现了 FEAT_MTE_CANONICAL_TAGS + 启用了规范标记 + 阶段 1 属性未定义 Tagged 属性</td>
+<td>执行规范标记检查操作</td>
+</tr>
+<tr>
+<td><strong>无标记（Untagged）</strong></td>
+<td>以上条件均不满足，或内存类型为设备内存</td>
+<td>不执行标记检查</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_2">已标记的完整条件<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>内存区域为已标记需要<strong>同时满足</strong>以下条件：</p>
+<ol>
+<li>实现了 FEAT_MTE2</li>
+<li>该内存区域<strong>启用了分配标记访问</strong>（通过 SCTLR_ELx.ATA 等控制）</li>
+<li>阶段 1 属性定义了 <strong>Tagged 属性</strong></li>
+<li>阶段 1 和阶段 2 转换的联合效果将内存属性定义为：<strong>普通内存</strong>、<strong>内部写回</strong>、<strong>外部写回</strong>、<strong>非瞬态</strong>、<strong>读分配</strong>、<strong>写分配</strong></li>
+</ol>
+<h4 id="_3">特殊情况<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>不可共享（Non-shareable）属性</strong>：内存区域被处理为已标记还是无标记由 IMPLEMENTATION DEFINED 决定</li>
+<li><strong>SCTLR_ELx.C = 0</strong>（缓存禁用）：内存区域被处理为已标记还是无标记由 CONSTRAINED UNPREDICTABLE 决定</li>
+<li><strong>Arm 建议</strong>：当 SCTLR_ELx.C = 0 时，软件应将 SCTLR_ELx.ATA 设为 0 以确保行为一致</li>
+</ul>
+<h3 id="23">2.3 标记检查机制<a class="headerlink" href="#23" title="Permanent link">&para;</a></h3>
+<h4 id="231">2.3.1 已标记区域的标记检查<a class="headerlink" href="#231" title="Permanent link">&para;</a></h4>
+<p>对已标记内存区域的标记检查操作：</p>
+<ol>
+<li>隐式读取目标 VA 按标记粒度对齐处的分配标记</li>
+<li>比较分配标记与 VA bits[59:56]（逻辑地址标记）</li>
+<li>不匹配 → 产生标记检查故障</li>
+</ol>
+<h4 id="232">2.3.2 规范标记区域的规范标记检查<a class="headerlink" href="#232" title="Permanent link">&para;</a></h4>
+<p>规范标记检查不比较分配标记，而是验证逻辑地址标记是否符合规范值：</p>
+<table>
+<thead>
+<tr>
+<th>VA 范围配置</th>
+<th>VA bit[55]</th>
+<th>期望的逻辑地址标记</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>两个 VA 范围</td>
+<td>0</td>
+<td>0b0000</td>
+</tr>
+<tr>
+<td>两个 VA 范围</td>
+<td>1</td>
+<td>0b1111</td>
+</tr>
+<tr>
+<td>单个 VA 范围</td>
+<td>—</td>
+<td>0b0000</td>
+</tr>
+</tbody>
+</table>
+<p>这确保了用户空间（低地址）和内核空间（高地址）的指针不会被混淆。</p>
+<h4 id="233">2.3.3 无标记区域<a class="headerlink" href="#233" title="Permanent link">&para;</a></h4>
+<p>不执行任何标记检查。分配标记的读取返回 0b0000，分配标记的写入被忽略。</p>
+<h3 id="24">2.4 标记检查内存访问的判定规则<a class="headerlink" href="#24" title="Permanent link">&para;</a></h3>
+<p>单拷贝原子显式内存访问在以下情况下为<strong>标记未检查</strong>（否则为标记检查）：</p>
+<h4 id="241">2.4.1 访问类型排除<a class="headerlink" href="#241" title="Permanent link">&para;</a></h4>
+<p>以下访问类型<strong>始终为标记未检查</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>访问类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>指令取指</td>
+<td>—</td>
+</tr>
+<tr>
+<td>对无标记内存区域的访问</td>
+<td>—</td>
+</tr>
+<tr>
+<td>显式加载/存储分配标记的指令</td>
+<td>如 <code>LDG</code>、<code>STG</code>、<code>STGM</code>、<code>STZGM</code></td>
+</tr>
+<tr>
+<td>标记检查操作隐式引起的分配标记读取</td>
+<td>—</td>
+</tr>
+<tr>
+<td>除 DC ZVA 之外的按 VA 的缓存维护操作</td>
+<td>—</td>
+</tr>
+<tr>
+<td>页表遍历</td>
+<td>—</td>
+</tr>
+<tr>
+<td>预取指令</td>
+<td>—</td>
+</tr>
+<tr>
+<td>相对于 VNCR_EL2 的加载/存储</td>
+<td>如果实现了 FEAT_NV2</td>
+</tr>
+<tr>
+<td>跟踪缓冲单元产生的访问</td>
+<td>如果实现了 FEAT_TRBE</td>
+</tr>
+<tr>
+<td>统计剖析单元产生的访问</td>
+<td>如果实现了 SPE</td>
+</tr>
+<tr>
+<td>GPT 信息取指</td>
+<td>如果实现了 FEAT_RME</td>
+</tr>
+<tr>
+<td>受控保护栈数据访问</td>
+<td>如果实现了 FEAT_GCS</td>
+</tr>
+<tr>
+<td>读取操作</td>
+<td>如果在 ELx 启用了 FEAT_MTE_STORE_ONLY</td>
+</tr>
+</tbody>
+</table>
+<h4 id="242">2.4.2 寻址模式排除<a class="headerlink" href="#242" title="Permanent link">&para;</a></h4>
+<p>使用以下寻址模式的指令产生的内存访问为<strong>标记未检查</strong>：</p>
+<ul>
+<li>仅基址寄存器，其中 SP 为基址寄存器</li>
+<li>基址寄存器加立即数偏移，其中 SP 为基址寄存器</li>
+<li>字面量（PC-relative）</li>
+</ul>
+<h4 id="243">2.4.3 运行时控制排除<a class="headerlink" href="#243" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>PSTATE.TCO = 1</code>（临时绕过标记检查）</li>
+<li>逻辑地址标记被禁用（通过 TCR_ELx.TBI/MTX 控制）</li>
+<li><code>TCR_ELx.TCMA = 1</code> 且逻辑地址标记为 0b0000（免除全零标记的检查）</li>
+<li><code>TCR_ELx.TCMA1 = 1</code> 且访问高地址范围且逻辑地址标记为 0b1111（免除内核空间全一标记的检查）</li>
+</ul>
+<h3 id="25">2.5 分配标记访问控制<a class="headerlink" href="#25" title="Permanent link">&para;</a></h3>
+<p>分配标记访问控制用于：</p>
+<ol>
+<li>确定对内存中分配标记的访问权限</li>
+<li>启用内存访问的标记检查</li>
+<li>控制指令将逻辑地址标记插入地址的行为</li>
+</ol>
+<p><strong>表：各异常级别的分配标记访问控制</strong></p>
+<table>
+<thead>
+<tr>
+<th>异常级别</th>
+<th>系统寄存器控制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EL3</td>
+<td>SCTLR_EL3.ATA</td>
+</tr>
+<tr>
+<td>EL2</td>
+<td>SCR_EL3.ATA, SCTLR_EL2.ATA</td>
+</tr>
+<tr>
+<td>EL1</td>
+<td>SCR_EL3.ATA, HCR_EL2.ATA, SCTLR_EL1.ATA</td>
+</tr>
+<tr>
+<td>EL0</td>
+<td>SCR_EL3.ATA, HCR_EL2.ATA, SCTLR_ELx.ATA0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>层级控制模型</strong>：上层异常级别可以通过控制位<strong>向下传播</strong>启用或禁用分配标记访问。例如 SCR_EL3.ATA 可以控制 EL2/EL1/EL0 是否允许分配标记访问。</p>
+<p><strong>禁用时的行为</strong>：当分配标记访问被禁用时，将逻辑地址标记插入地址的指令会将分配标记视为零。</p>
+<hr />
+<h2 id="3">3 硬件设计与实现<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 标记粒度与标记存储<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<h4 id="311">3.1.1 标记粒度<a class="headerlink" href="#311" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>大小</strong>：16 字节（自然对齐）</li>
+<li><strong>标记宽度</strong>：4 bit（0x0 ~ 0xF）</li>
+<li><strong>标记密度</strong>：4 bit / 16 Byte = 1 bit / 4 Byte = <strong>25% 地址空间开销</strong>（理论上）</li>
+</ul>
+<h4 id="312">3.1.2 分配标记存储<a class="headerlink" href="#312" title="Permanent link">&para;</a></h4>
+<p>为常规内存（Conventional memory）的每个标记粒度提供分配标记存储空间。</p>
+<p><strong>实现选项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>描述</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tag RAM 与 Data RAM 并行</td>
+<td>专用标记存储与数据存储分离</td>
+<td>独立控制，支持加密</td>
+<td>额外存储面积</td>
+</tr>
+<tr>
+<td>数据存储内嵌标记</td>
+<td>标记嵌入数据缓存行中</td>
+<td>无额外存储</td>
+<td>减少可用数据带宽</td>
+</tr>
+<tr>
+<td>数据地址空间映射</td>
+<td>标记存储在独立的 PA 地址</td>
+<td>软件可访问标记</td>
+<td>需要额外的地址映射</td>
+</tr>
+</tbody>
+</table>
+<p><strong>未提供标记存储时</strong>：对分配标记的访问结果由 IMPLEMENTATION DEFINED 决定。</p>
+<h4 id="313">3.1.3 数据位置访问分配标记存储<a class="headerlink" href="#313" title="Permanent link">&para;</a></h4>
+<p>如果实现支持在独立的 PA 处通过数据内存效果访问分配标记存储：</p>
+<ul>
+<li>在标记位置对分配标记存储的访问与在数据位置的访问<strong>不需要在架构上保持一致</strong>（coherent）</li>
+<li>可以通过<strong>缓存维护操作</strong>使两个位置的访问互相可见</li>
+<li>如果实现了 FEAT_RME，仅在<strong>根 PA 空间</strong>可访问</li>
+<li>如果实现了 FEAT_MEC，使用默认 MECID 值零</li>
+</ul>
+<h3 id="32">3.2 物理标记位置<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<h4 id="321">3.2.1 地址空间关系<a class="headerlink" href="#321" title="Permanent link">&para;</a></h4>
+<ul>
+<li>标记位置（Tag location）是 PA 空间中与某个地址关联的分配标记</li>
+<li>分配标记和同一 PA 处的字节是<strong>独立的位置</strong></li>
+<li>没有机制可以在标记粒度起始 PA 之外的 PA 处访问分配标记</li>
+</ul>
+<h4 id="322">3.2.2 转换特性<a class="headerlink" href="#322" title="Permanent link">&para;</a></h4>
+<p>对分配标记的隐式或显式访问：
+- 使用与对关联标记粒度的访问<strong>相同的地址转换</strong>
+- 具有<strong>相同的转换效果</strong></p>
+<h4 id="323">3.2.3 与安全扩展的交互<a class="headerlink" href="#323" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>扩展</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FEAT_RME</td>
+<td>对标记位置的访问需要经过粒度保护检查</td>
+</tr>
+<tr>
+<td>FEAT_MEC</td>
+<td>对标记位置的访问使用与关联标记粒度相同的 PA 空间和 MECID</td>
+</tr>
+<tr>
+<td>FEAT_MEC</td>
+<td>主存中分配标记的加密是可选的纵深防御能力</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33">3.3 分配标记的缓存<a class="headerlink" href="#33" title="Permanent link">&para;</a></h3>
+<h4 id="331">3.3.1 驱逐行为<a class="headerlink" href="#331" title="Permanent link">&para;</a></h4>
+<p>当数据从缓存中驱逐时，被驱逐的数据可能覆盖内存中被其他观察者写入的数据，条件是：</p>
+<ul>
+<li>数据已被该内存位置的可共享性域中的观察者写入</li>
+<li>或关联的分配标记已被该域中的观察者写入</li>
+</ul>
+<p>可被覆盖的最大内存大小由 <strong>CTR_EL0.DWG</strong>（Cache Write-Back Granule）定义。</p>
+<h4 id="332">3.3.2 缓存维护要求<a class="headerlink" href="#332" title="Permanent link">&para;</a></h4>
+<p>如果实现可以覆盖内存中被其他观察者（非同可共享性域）写入的分配标记，则：</p>
+<table>
+<thead>
+<tr>
+<th>缓存维护操作</th>
+<th>对分配标记的要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>清洗（Clean）</td>
+<td>必须同时清洗关联的分配标记</td>
+</tr>
+<tr>
+<td>使失效（Invalidate）</td>
+<td>必须同时清洗并使关联的分配标记失效</td>
+</tr>
+<tr>
+<td>清洗并使失效（Clean &amp; Invalidate）</td>
+<td>必须同时清洗并使关联的分配标记失效</td>
+</tr>
+</tbody>
+</table>
+<h4 id="333">3.3.3 无标记区域的缓存维护<a class="headerlink" href="#333" title="Permanent link">&para;</a></h4>
+<p>如果内存区域为无标记，会使该区域中分配标记失效的数据缓存失效操作会<strong>清洗并使分配标记失效</strong>（而非仅使失效）。</p>
+<h3 id="34">3.4 标记检查故障处理<a class="headerlink" href="#34" title="Permanent link">&para;</a></h3>
+<p>通过 SCTLR_ELx.{TCF, TCF0} 配置标记检查故障的行为：</p>
+<table>
+<thead>
+<tr>
+<th>TCF/TCF0 值</th>
+<th>行为</th>
+<th>适用特性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0b00</td>
+<td>无影响（忽略故障）</td>
+<td>所有</td>
+</tr>
+<tr>
+<td>0b01</td>
+<td>产生同步标记检查故障异常</td>
+<td>所有</td>
+</tr>
+<tr>
+<td>0b10</td>
+<td>异步设置 TFSR_ELx/TFSRE0_EL1 中的位</td>
+<td>需要 FEAT_MTE_ASYNC</td>
+</tr>
+<tr>
+<td>0b11</td>
+<td>写操作异步故障；读操作同步故障</td>
+<td>需要 FEAT_MTE3</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_4">关键行为<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>异步故障不影响数据访问</strong>：加载或存储正常完成，副作用照常发生</li>
+<li><strong>规范标记检查故障</strong>与标记检查故障以<strong>相同方式</strong>处理</li>
+<li><strong>TCF 控制内核空间（TTBR1）</strong>，<strong>TCF0 控制用户空间（TTBR0）</strong></li>
+</ul>
+<h4 id="_5">异常综合征寄存器<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>标记检查故障的异常通过标准 Data Abort 异常报告：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESR_ELx.EC</td>
+<td>异常类，指示标记检查故障类型</td>
+</tr>
+<tr>
+<td>ESR_ELx.ISV</td>
+<td>指令特定故障</td>
+</tr>
+<tr>
+<td>ESR_ELx.TnD</td>
+<td>如果为 1，表示是标记访问故障（非数据访问故障）</td>
+</tr>
+<tr>
+<td>FAR_ELx</td>
+<td>故障地址</td>
+</tr>
+</tbody>
+</table>
+<h3 id="35">3.5 异步标记检查故障<a class="headerlink" href="#35" title="Permanent link">&para;</a></h3>
+<p>需要实现 FEAT_MTE_ASYNC。</p>
+<h4 id="351">3.5.1 标记故障状态寄存器<a class="headerlink" href="#351" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>适用范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TFSR_EL1</td>
+<td>EL1 及以上</td>
+</tr>
+<tr>
+<td>TFSR_EL2</td>
+<td>EL2</td>
+</tr>
+<tr>
+<td>TFSR_EL3</td>
+<td>EL3</td>
+</tr>
+<tr>
+<td>TFSRE0_EL1</td>
+<td>EL0</td>
+</tr>
+</tbody>
+</table>
+<p>每个寄存器包含多个状态位（TF0 ~ TF15），对应 16 种可能的标记值。</p>
+<h4 id="352">3.5.2 同步机制<a class="headerlink" href="#352" title="Permanent link">&para;</a></h4>
+<p>异步标记检查故障引起的对标记故障状态寄存器的隐式写入可以通过以下方式同步：</p>
+<ol>
+<li><strong>异常入口</strong>：如果 SCTLR_ELx.ITFSB = 1，进入 ELx 的异常入口时同步</li>
+<li><strong>DSB 指令</strong>：在程序顺序中，在引起故障的指令之后执行非共享域上的 DSB</li>
+</ol>
+<h4 id="353">3.5.3 与同步数据中止的交互<a class="headerlink" href="#353" title="Permanent link">&para;</a></h4>
+<p>如果一条指令同时产生同步数据中止和异步标记检查故障，且写入标记故障状态寄存器的位的值为 0，则该位变为 <strong>UNKNOWN</strong>。</p>
+<h4 id="354">3.5.4 寄存器写入的竞态<a class="headerlink" href="#354" title="Permanent link">&para;</a></h4>
+<p>如果异步标记检查故障尚未被观测到且未被同步，在此时修改影响标记检查故障处理的系统寄存器，故障效果在旧值和新值之间由 CONSTRAINED UNPREDICTABLE 决定。</p>
+<h4 id="355-sve">3.5.5 SVE 相关约束<a class="headerlink" href="#355-sve" title="Permanent link">&para;</a></h4>
+<p>对于 SVE Non-fault 和 SVE First-fault 加载指令：</p>
+<ul>
+<li>仅<strong>第一个活动元素（First active element）</strong>的异步标记检查故障会在标记故障状态寄存器中设置位</li>
+<li>非第一个活动元素的故障<strong>不设置</strong>位</li>
+</ul>
+<h3 id="36">3.6 与设备内存的交互<a class="headerlink" href="#36" title="Permanent link">&para;</a></h3>
+<ul>
+<li>设备内存类型的内存区域<strong>始终为无标记</strong></li>
+<li>对设备内存执行 STZGM 是 CONSTRAINED UNPREDICTABLE：可能清零数据并保持标记不变，也可能产生对齐故障</li>
+<li>对设备内存执行 DC GVA 是 CONSTRAINED UNPREDICTABLE：可能不修改标记，也可能产生对齐故障</li>
+</ul>
+<hr />
+<h2 id="4">4 软件使用指南<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 寄存器编程模型<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<h4 id="411">4.1.1 分配标记访问控制寄存器<a class="headerlink" href="#411" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>字段</th>
+<th>位宽</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SCTLR_EL1</td>
+<td>ATA</td>
+<td>[43]</td>
+<td>EL1 分配标记访问使能</td>
+</tr>
+<tr>
+<td>SCTLR_EL1</td>
+<td>ATA0</td>
+<td>[42]</td>
+<td>EL0 分配标记访问使能</td>
+</tr>
+<tr>
+<td>SCTLR_EL2</td>
+<td>ATA</td>
+<td>[43]</td>
+<td>EL2 分配标记访问使能</td>
+</tr>
+<tr>
+<td>SCTLR_EL2</td>
+<td>ATA0</td>
+<td>[42]</td>
+<td>EL0 分配标记访问使能</td>
+</tr>
+<tr>
+<td>SCTLR_EL3</td>
+<td>ATA</td>
+<td>[43]</td>
+<td>EL3 分配标记访问使能</td>
+</tr>
+<tr>
+<td>SCR_EL3</td>
+<td>ATA</td>
+<td>[26]</td>
+<td>EL2/EL1/EL0 分配标记访问使能（向下传播）</td>
+</tr>
+<tr>
+<td>HCR_EL2</td>
+<td>ATA</td>
+<td>[26]</td>
+<td>EL1/EL0 分配标记访问使能</td>
+</tr>
+</tbody>
+</table>
+<h4 id="412">4.1.2 标记检查故障控制寄存器<a class="headerlink" href="#412" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>字段</th>
+<th>位宽</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SCTLR_EL1</td>
+<td>TCF</td>
+<td>[40:39]</td>
+<td>EL1 标记检查故障模式</td>
+</tr>
+<tr>
+<td>SCTLR_EL1</td>
+<td>TCF0</td>
+<td>[38:37]</td>
+<td>EL0 标记检查故障模式</td>
+</tr>
+<tr>
+<td>SCTLR_EL2</td>
+<td>TCF</td>
+<td>[40:39]</td>
+<td>EL2 标记检查故障模式</td>
+</tr>
+<tr>
+<td>SCTLR_EL2</td>
+<td>TCF0</td>
+<td>[38:37]</td>
+<td>EL0 标记检查故障模式</td>
+</tr>
+<tr>
+<td>SCTLR_EL3</td>
+<td>TCF</td>
+<td>[40:39]</td>
+<td>EL3 标记检查故障模式</td>
+</tr>
+<tr>
+<td>HCR_EL2</td>
+<td>TCF</td>
+<td>[40:39]</td>
+<td>EL1 标记检查故障模式</td>
+</tr>
+<tr>
+<td>HCR_EL2</td>
+<td>TCF0</td>
+<td>[38:37]</td>
+<td>EL0 标记检查故障模式</td>
+</tr>
+</tbody>
+</table>
+<h4 id="413">4.1.3 逻辑地址标记控制寄存器<a class="headerlink" href="#413" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>字段</th>
+<th>位宽</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCR_EL1</td>
+<td>TBI0</td>
+<td>[37]</td>
+<td>TTBR0 逻辑地址标记使能</td>
+</tr>
+<tr>
+<td>TCR_EL1</td>
+<td>TBI1</td>
+<td>[38]</td>
+<td>TTBR1 逻辑地址标记使能</td>
+</tr>
+<tr>
+<td>TCR_EL1</td>
+<td>MTE0</td>
+<td>[40]</td>
+<td>TTBR0 分配标记使能（页表属性）</td>
+</tr>
+<tr>
+<td>TCR_EL1</td>
+<td>MTE1</td>
+<td>[41]</td>
+<td>TTBR1 分配标记使能（页表属性）</td>
+</tr>
+<tr>
+<td>TCR_EL1</td>
+<td>TCMA0</td>
+<td>[42]</td>
+<td>TTBR0 逻辑地址标记免除（0b0000）</td>
+</tr>
+<tr>
+<td>TCR_EL1</td>
+<td>TCMA1</td>
+<td>[43]</td>
+<td>TTBR1 逻辑地址标记免除（0b1111）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="414">4.1.4 仅存储标记检查控制寄存器<a class="headerlink" href="#414" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>字段</th>
+<th>位宽</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SCTLR_EL1</td>
+<td>TCSO</td>
+<td>[41]</td>
+<td>EL1 仅存储标记检查使能</td>
+</tr>
+<tr>
+<td>SCTLR_EL1</td>
+<td>TSCO0</td>
+<td>[40]</td>
+<td>EL0 仅存储标记检查使能</td>
+</tr>
+</tbody>
+</table>
+<h4 id="415">4.1.5 标记故障状态寄存器<a class="headerlink" href="#415" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TFSR_EL1</td>
+<td>EL1 标记故障状态</td>
+</tr>
+<tr>
+<td>TFSR_EL2</td>
+<td>EL2 标记故障状态</td>
+</tr>
+<tr>
+<td>TFSR_EL3</td>
+<td>EL3 标记故障状态</td>
+</tr>
+<tr>
+<td>TFSRE0_EL1</td>
+<td>EL0 标记故障状态</td>
+</tr>
+</tbody>
+</table>
+<h4 id="416-pstate">4.1.6 PSTATE 控制位<a class="headerlink" href="#416-pstate" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PSTATE.TCO</td>
+<td>临时绕过标记检查（Tag Check Override）</td>
+</tr>
+<tr>
+<td>PSTATE.UAO</td>
+<td>访问覆盖（Upper Access Override），影响非特权指令的标记检查判定</td>
+</tr>
+</tbody>
+</table>
+<h4 id="417">4.1.7 同步控制位<a class="headerlink" href="#417" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SCTLR_ELx</td>
+<td>ITFSB</td>
+<td>为 1 时，进入 ELx 的异常入口同步异步标记检查故障</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-mte">4.2 MTE 相关指令<a class="headerlink" href="#42-mte" title="Permanent link">&para;</a></h3>
+<h4 id="421">4.2.1 分配标记操作指令<a class="headerlink" href="#421" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LDG Xn, [Xn, #imm]</code></td>
+<td>加载标记</td>
+<td>从内存读取分配标记，插入到地址 Xn 的高 4 位</td>
+</tr>
+<tr>
+<td><code>STG Xn, [Xn, #imm]</code></td>
+<td>存储标记</td>
+<td>将地址 Xn 的高 4 位（逻辑地址标记）写入内存的分配标记</td>
+</tr>
+<tr>
+<td><code>STGM Xn, [Xm, #imm]</code></td>
+<td>存储标记（多寄存器）</td>
+<td>批量存储分配标记</td>
+</tr>
+<tr>
+<td><code>STZGM Xn, [Xn, #imm]</code></td>
+<td>存储标记并清零</td>
+<td>将分配标记写入内存，同时将对应的 16 字节数据清零</td>
+</tr>
+<tr>
+<td><code>ST2G</code>, <code>STZ2G</code></td>
+<td>双标记存储</td>
+<td>同时操作两个标记粒度的分配标记</td>
+</tr>
+<tr>
+<td><code>ST4G</code>, <code>STZ4G</code></td>
+<td>四标记存储</td>
+<td>同时操作四个标记粒度的分配标记</td>
+</tr>
+<tr>
+<td><code>LDGM Xm, [Xn]</code></td>
+<td>加载多个标记</td>
+<td>从内存批量加载分配标记到通用寄存器对</td>
+</tr>
+<tr>
+<td><code>STGM Xm, [Xn]</code></td>
+<td>存储多个标记</td>
+<td>将通用寄存器对中的分配标记批量存储到内存</td>
+</tr>
+</tbody>
+</table>
+<h4 id="422">4.2.2 地址生成指令<a class="headerlink" href="#422" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADDG Xd, Xn, #uimm6, #tag_offset</code></td>
+<td>带标记偏移的加法</td>
+<td>调整地址和标记，常用于数组索引</td>
+</tr>
+<tr>
+<td><code>SUBG Xd, Xn, #uimm6, #tag_offset</code></td>
+<td>带标记偏移的减法</td>
+<td>调整地址和标记</td>
+</tr>
+</tbody>
+</table>
+<h4 id="423">4.2.3 缓存维护指令<a class="headerlink" href="#423" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DC GVA, Xt</code></td>
+<td>清除标记的虚拟地址</td>
+<td>清除地址 Xt 处的分配标记缓存（不清洗到内存）</td>
+</tr>
+<tr>
+<td><code>DC GZVA, Xt</code></td>
+<td>清除标记并清零的虚拟地址</td>
+<td>清除标记并将数据清零</td>
+</tr>
+<tr>
+<td><code>DC IGVA, Xt</code></td>
+<td>使标记的虚拟地址失效</td>
+<td>使地址 Xt 处的分配标记缓存失效</td>
+</tr>
+<tr>
+<td><code>DC CIGVA, Xt</code></td>
+<td>清洗并使标记的虚拟地址失效</td>
+<td>清洗到内存并使分配标记缓存失效</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-mte">4.3 内核态使能 MTE<a class="headerlink" href="#43-mte" title="Permanent link">&para;</a></h3>
+<h4 id="431">4.3.1 启用步骤<a class="headerlink" href="#431" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>1. EL3（Secure Monitor）
+   - SCR_EL3.ATA = 1    // 允许低特权级使用分配标记访问
+
+2. EL2（Hypervisor）
+   - HCR_EL2.ATA = 1    // 允许 EL1/EL0 使用分配标记访问
+   - HCR_EL2.{TCF, TCF0} = 0b10  // 异步故障模式（推荐用于生产环境）
+   - 或 HCR_EL2.{TCF, TCF0} = 0b01  // 同步故障模式（推荐用于调试）
+   - TCR_EL2.MTE2 = 1   // 启用内核页表中的标记属性检查
+
+3. EL1（内核）
+   - SCTLR_EL1.ATA = 1  // 启用 EL1 分配标记访问
+   - SCTLR_EL1.ATA0 = 1 // 启用 EL0 分配标记访问
+   - SCTLR_EL1.{TCF, TCF0} = 0b10  // 异步故障模式
+   - TCR_EL1.TBI0 = 1   // 启用用户空间逻辑地址标记
+   - TCR_EL1.TBI1 = 1   // 启用内核空间逻辑地址标记
+   - TCR_EL1.MTE0 = 1   // 启用用户空间页表标记属性
+   - TCR_EL1.MTE1 = 1   // 启用内核空间页表标记属性
+   - TCR_EL1.TCMA0 = 0  // 用户空间不禁用零标记检查
+   - TCR_EL1.TCMA1 = 1  // 内核空间免除全一标记检查（可选）
+</code></pre></div>
+<h4 id="432">4.3.2 页表配置<a class="headerlink" href="#432" title="Permanent link">&para;</a></h4>
+<p>MTE 页表属性通过 MAIR_ELx 和页表描述符配置：</p>
+<div class="highlight"><pre><span></span><code>MAIR_ELx.Attr[n] 设置：
+  - Attr[3:0] 设为 0xF (Normal memory, Write-Back, RA/WA, Non-Transient)
+  - Attr[5:4] 设为 0b00 (Inner WB, RA/WA)
+  - Attr[7:6] 设为 0b00 (Outer WB, RA/WA)
+
+页表描述符 Level 3 设置：
+  - Block/Page descriptor bits [5:2] = MAIR 索引
+  - Block/Page descriptor bit [53] = 1 (Tagged 属性)
+</code></pre></div>
+<h3 id="44-mte">4.4 用户态使用 MTE<a class="headerlink" href="#44-mte" title="Permanent link">&para;</a></h3>
+<h4 id="441">4.4.1 编译器支持<a class="headerlink" href="#441" title="Permanent link">&para;</a></h4>
+<p>GCC 和 Clang 提供 MTE 相关编译选项：</p>
+<div class="highlight"><pre><span></span><code># GCC/Clang 编译选项
+-fmemory-model=tagged       // 启用标记感知的内存模型
+-march=armv8.5-a+memtag     // 启用 MTE 指令集
+-march=armv8.5-a+memtag-tag // 仅使用标记操作指令（不插入检查）
+</code></pre></div>
+<h4 id="442">4.4.2 内存分配器集成<a class="headerlink" href="#442" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>// 堆分配器伪代码
+void *malloc_tagged(size_t size) {
+    // 1. 分配对齐到 16 字节的内存
+    void *ptr = aligned_alloc(16, size);
+    size_t tagged_size = ALIGN_UP(size, 16);
+
+    // 2. 生成随机标记
+    uint8_t tag = random_tag();
+
+    // 3. 使用 STZGM 将标记写入所有标记粒度，同时清零数据
+    for (size_t i = 0; i &lt; tagged_size; i += 16) {
+        stg_set_tag(ptr + i, tag);
+        memset(ptr + i, 0, 16);  // 或使用 STZGM
+    }
+
+    // 4. 将标记插入返回的指针
+    return insert_tag(ptr, tag);
+}
+
+// 释放时清除标记
+void free_tagged(void *ptr) {
+    uint8_t tag = get_tag(ptr);
+    void *untagged_ptr = remove_tag(ptr);
+    size_t size = get_alloc_size(untagged_ptr);
+    size_t tagged_size = ALIGN_UP(size, 16);
+
+    // 清除所有分配标记为 0
+    for (size_t i = 0; i &lt; tagged_size; i += 16) {
+        stg_set_tag(untagged_ptr + i, 0);
+    }
+
+    free(untagged_ptr);
+}
+</code></pre></div>
+<h4 id="443">4.4.3 异步故障的用户态处理<a class="headerlink" href="#443" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>// Linux 用户态异步 MTE 故障处理
+// 通过 prctl 或信号处理
+
+// 启用 MTE 异步故障
+prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0);
+
+// 读取故障状态（通过 prctl）
+unsigned long tags;
+prctl(PR_MTE_GET_TAGS, &amp;tags, 0, 0, 0);
+// tags 中设置了对应位表示发生了该标记值的故障
+
+// 清除故障状态
+prctl(PR_MTE_SET_TAGS, 0, 0, 0, 0);
+</code></pre></div>
+<h3 id="45">4.5 规范标记模式<a class="headerlink" href="#45" title="Permanent link">&para;</a></h3>
+<p>规范标记（FEAT_MTE_CANONICAL_TAGS）是一种轻量级模式，不需要完整的分配标记支持：</p>
+<ul>
+<li><strong>用户空间（低地址，bit[55]=0）</strong>：逻辑地址标记必须为 0b0000</li>
+<li><strong>内核空间（高地址，bit[55]=1）</strong>：逻辑地址标记必须为 0b1111</li>
+</ul>
+<p><strong>配置方式</strong>：
+<div class="highlight"><pre><span></span><code>// 两个 VA 范围
+SCTLR_ELx.{ATA, ATA0}  // 启用规范标记访问
+TCR_ELx.{MTXn, TBIn}    // 启用规范标记属性检查
+
+// 单个 VA 范围
+SCTLR_ELx.ATA           // 启用规范标记访问
+TCR_ELx.{MTX, TBI}      // 启用规范标记属性检查
+</code></pre></div></p>
+<p><strong>写入规范标记区域</strong>：产生阶段 1 权限故障（ESR_ELx.TnD = 1），防止软件篡改规范标记。</p>
+<h3 id="46">4.6 性能考量<a class="headerlink" href="#46" title="Permanent link">&para;</a></h3>
+<h4 id="461">4.6.1 故障模式选择<a class="headerlink" href="#461" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>性能影响</th>
+<th>安全性</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0b00（忽略）</td>
+<td>最低</td>
+<td>无检测</td>
+<td>兼容性测试</td>
+</tr>
+<tr>
+<td>0b01（同步）</td>
+<td>较高</td>
+<td>最高（精确报告）</td>
+<td>调试、开发</td>
+</tr>
+<tr>
+<td>0b10（异步）</td>
+<td>中等</td>
+<td>高</td>
+<td>生产环境推荐</td>
+</tr>
+<tr>
+<td>0b11（非对称）</td>
+<td>中等</td>
+<td>写低/读高</td>
+<td>写密集型工作负载</td>
+</tr>
+</tbody>
+</table>
+<h4 id="462">4.6.2 性能优化建议<a class="headerlink" href="#462" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>TCMA 免除零标记</strong>：对初始化为零的内存区域，启用 <code>TCR_ELx.TCMA0 = 1</code> 免除全零标记的检查</li>
+<li><strong>仅存储检查</strong>：对读密集型工作负载，启用 <code>FEAT_MTE_STORE_ONLY</code> 仅对写操作检查</li>
+<li><strong>避免频繁标记切换</strong>：使用 <code>ADDG</code>/<code>SUBG</code> 保持标记一致性，减少 <code>LDG</code>/<code>STG</code> 调用</li>
+<li><strong>缓存友好分配</strong>：确保分配粒度对齐到标记粒度（16 字节），减少跨标记粒度访问</li>
+</ol>
+<hr />
+<h2 id="5">5 软件验证<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-mte">5.1 MTE 验证目标<a class="headerlink" href="#51-mte" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正确性</td>
+<td>标记检查操作正确比较分配标记与逻辑地址标记</td>
+</tr>
+<tr>
+<td>故障报告</td>
+<td>同步/异步故障正确触发并报告</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>标记检查不引入不合理的性能退化</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>未标记代码在标记内存上正常运行</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>MTE 能检测目标漏洞类型</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52">5.2 硬件验证策略<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<h4 id="521">5.2.1 功能验证<a class="headerlink" href="#521" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>测试维度</th>
+<th>方法</th>
+<th>覆盖要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标记检查匹配</td>
+<td>向标记粒度写入已知标记，使用匹配/不匹配指针访问</td>
+<td>匹配时正常完成，不匹配时产生故障</td>
+</tr>
+<tr>
+<td>内存区域类型</td>
+<td>遍历已标记/规范标记/无标记三种类型</td>
+<td>每种类型的行为符合规范</td>
+</tr>
+<tr>
+<td>故障模式</td>
+<td>切换 TCF/TCF0 四种模式</td>
+<td>每种模式的行为符合规范</td>
+</tr>
+<tr>
+<td>缓存一致性</td>
+<td>在多核场景下同时读写相同标记粒度</td>
+<td>标记检查结果正确</td>
+</tr>
+<tr>
+<td>边界条件</td>
+<td>标记粒度边界、VA 范围边界</td>
+<td>跨边界行为正确</td>
+</tr>
+</tbody>
+</table>
+<h4 id="522-fvpqemu">5.2.2 FVP/QEMU 验证<a class="headerlink" href="#522-fvpqemu" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code># QEMU 启动 MTE
+qemu-system-aarch64 \
+    -cpu max,mte=on \
+    -machine virt \
+    -kernel Image \
+    -append &quot;console=ttyAMA0&quot;
+
+# FVP 启动 MTE（需要支持 MTE 的 FVP 模型）
+fvp_base_revcortexa57x1a53x1 \
+    -C cluster0.has_mte=1 \
+    -C cluster1.has_mte=1
+</code></pre></div>
+<h3 id="53">5.3 固件/内核验证策略<a class="headerlink" href="#53" title="Permanent link">&para;</a></h3>
+<h4 id="531-tf-a">5.3.1 TF-A 验证<a class="headerlink" href="#531-tf-a" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code># 使能 MTE 的 SCTLR_EL3 配置检查
+- 验证 SCR_EL3.ATA 正确设置
+- 验证 SCTLR_EL3.ATA 正确设置
+- 验证异常入口时 TFSR 同步（ITFSB）
+</code></pre></div>
+<h4 id="532-linux">5.3.2 Linux 内核验证<a class="headerlink" href="#532-linux" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code># 内核 MTE Kconfig
+CONFIG_ARM64_MTE=y           // 启用 MTE 支持
+CONFIG_KASAN_HW_TAGS=y       // 基于硬件标记的 KASAN
+
+# 内核启动参数
+kasan=on                      // 启用 KASAN
+kasan.stacktrace=on           // 启用堆栈跟踪
+mte=0x1                      // 异步故障模式
+mte=0x2                      // 同步故障模式
+</code></pre></div>
+<h4 id="533">5.3.3 页表标记属性验证<a class="headerlink" href="#533" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code># 检查页表是否正确设置了 Tagged 属性
+# 通过 /proc/self/pagemap 或 kernel 接口
+cat /sys/kernel/debug/pgtable  // 查看 TLB 和页表状态
+</code></pre></div>
+<h3 id="54">5.4 常见漏洞检测场景<a class="headerlink" href="#54" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>漏洞类型</th>
+<th>MTE 检测机制</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>堆缓冲区溢出</strong></td>
+<td>分配的缓冲区具有标记 A，越界区域具有标记 B，使用标记 A 指针访问标记 B 区域触发故障</td>
+<td><code>malloc(32)</code> 后访问第 33 字节</td>
+</tr>
+<tr>
+<td><strong>栈缓冲区溢出</strong></td>
+<td>栈帧的局部变量具有不同标记，溢出时跨越标记粒度触发故障</td>
+<td><code>strcpy</code> 越界写入</td>
+</tr>
+<tr>
+<td><strong>释放后使用（UAF）</strong></td>
+<td>释放时清除标记为 0，使用旧指针（带非零标记）访问触发故障</td>
+<td><code>free(p)</code> 后通过 <code>p</code> 读写</td>
+</tr>
+<tr>
+<td><strong>双重释放</strong></td>
+<td>第二次释放时标记已为 0，分配器检测到异常</td>
+<td><code>free(p); free(p);</code></td>
+</tr>
+<tr>
+<td><strong>全局缓冲区溢出</strong></td>
+<td>全局变量之间使用不同标记，越界访问触发故障</td>
+<td>数组越界读写</td>
+</tr>
+<tr>
+<td><strong>内核-用户空间混淆</strong></td>
+<td>规范标记模式防止用户空间指针在内核空间使用</td>
+<td>用户态指针传入内核</td>
+</tr>
+</tbody>
+</table>
+<h3 id="55">5.5 验证测试清单<a class="headerlink" href="#55" title="Permanent link">&para;</a></h3>
+<h4 id="551">5.5.1 基础功能测试<a class="headerlink" href="#551" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] 已标记内存区域：匹配标记访问正常完成</li>
+<li>[ ] 已标记内存区域：不匹配标记访问产生故障</li>
+<li>[ ] 无标记内存区域：访问不受标记影响</li>
+<li>[ ] 规范标记区域：低地址全零标记正常</li>
+<li>[ ] 规范标记区域：高地址全一标记正常</li>
+<li>[ ] 规范标记区域：非法标记值产生故障</li>
+<li>[ ] 设备内存区域：始终无标记</li>
+</ul>
+<h4 id="552">5.5.2 故障模式测试<a class="headerlink" href="#552" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] TCF=0b00：故障被忽略，访问正常完成</li>
+<li>[ ] TCF=0b01：同步故障，ESR_ELx 正确记录</li>
+<li>[ ] TCF=0b10：异步故障，TFSR_ELx 正确记录</li>
+<li>[ ] TCF=0b11：写异步故障，读同步故障</li>
+<li>[ ] TCF0 控制 EL0，TCF 控制 EL1：独立生效</li>
+</ul>
+<h4 id="553">5.5.3 控制位测试<a class="headerlink" href="#553" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] PSTATE.TCO=1：临时绕过标记检查</li>
+<li>[ ] PSTATE.UAO=0：非特权指令按 EL0 规则处理</li>
+<li>[ ] SCTLR_ELx.C=0：行为不确定（CONSTRAINED UNPREDICTABLE）</li>
+<li>[ ] TCMA 免除全零标记检查</li>
+<li>[ ] TBI 禁用逻辑地址标记</li>
+</ul>
+<h4 id="554">5.5.4 缓存一致性测试<a class="headerlink" href="#554" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] 数据驱逐不影响同可共享性域的标记</li>
+<li>[ ] 缓存维护操作正确处理关联的分配标记</li>
+<li>[ ] 多核同时写入不同标记粒度</li>
+</ul>
+<h4 id="555">5.5.5 特殊场景测试<a class="headerlink" href="#555" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] Store-Exclusive 指令的标记检查行为</li>
+<li>[ ] SVE Non-fault/First-fault 加载的异步故障</li>
+<li>[ ] Compare and swap 的标记检查（比较失败时）</li>
+<li>[ ] FEAT_SME 流式 SVE 模式的标记检查</li>
+<li>[ ] 调试状态下的标记检查规则</li>
+</ul>
+<hr />
+<h2 id="6">6 术语表<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>English</th>
+<th>中文</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory Tagging Extension (MTE)</td>
+<td>内存标记扩展</td>
+<td></td>
+</tr>
+<tr>
+<td>Allocation Tag</td>
+<td>分配标记</td>
+<td>存储在内存中的 4-bit 标记</td>
+</tr>
+<tr>
+<td>Logical Address Tag</td>
+<td>逻辑地址标记</td>
+<td>VA bits[59:56]</td>
+</tr>
+<tr>
+<td>Tag Granule</td>
+<td>标记粒度</td>
+<td>16 字节自然对齐的内存块</td>
+</tr>
+<tr>
+<td>Tag location</td>
+<td>标记位置</td>
+<td>PA 空间中与分配标记关联的地址</td>
+</tr>
+<tr>
+<td>Tag Checked memory access</td>
+<td>标记检查内存访问</td>
+<td></td>
+</tr>
+<tr>
+<td>Tag Unchecked memory access</td>
+<td>标记未检查内存访问</td>
+<td></td>
+</tr>
+<tr>
+<td>Tag Check operation</td>
+<td>标记检查操作</td>
+<td>比较分配标记与逻辑地址标记</td>
+</tr>
+<tr>
+<td>Canonical Tag Check operation</td>
+<td>规范标记检查操作</td>
+<td></td>
+</tr>
+<tr>
+<td>Tag Check Fault</td>
+<td>标记检查故障</td>
+<td></td>
+</tr>
+<tr>
+<td>Tagged</td>
+<td>已标记（Tagged）</td>
+<td></td>
+</tr>
+<tr>
+<td>Canonically Tagged</td>
+<td>规范标记（Canonically Tagged）</td>
+<td></td>
+</tr>
+<tr>
+<td>Untagged</td>
+<td>无标记（Untagged）</td>
+<td></td>
+</tr>
+<tr>
+<td>Canonical Tagging</td>
+<td>规范标记</td>
+<td></td>
+</tr>
+<tr>
+<td>memory region tagging type</td>
+<td>内存区域标记类型</td>
+<td></td>
+</tr>
+<tr>
+<td>Allocation Tag storage</td>
+<td>分配标记存储</td>
+<td></td>
+</tr>
+<tr>
+<td>Allocation Tag Access</td>
+<td>分配标记访问</td>
+<td></td>
+</tr>
+<tr>
+<td>Tag Fault Status Register</td>
+<td>标记故障状态寄存器</td>
+<td>TFSR_ELx</td>
+</tr>
+<tr>
+<td>Synchronous Tag Check Fault</td>
+<td>同步标记检查故障</td>
+<td></td>
+</tr>
+<tr>
+<td>Asynchronous Tag Check Fault</td>
+<td>异步标记检查故障</td>
+<td></td>
+</tr>
+<tr>
+<td>Store-only Tag Checking</td>
+<td>仅存储标记检查</td>
+<td></td>
+</tr>
+<tr>
+<td>Logical Address Tagging</td>
+<td>逻辑地址标记</td>
+<td></td>
+</tr>
+<tr>
+<td>Single-copy atomic</td>
+<td>单拷贝原子</td>
+<td></td>
+</tr>
+<tr>
+<td>Non-shareable</td>
+<td>不可共享</td>
+<td></td>
+</tr>
+<tr>
+<td>Conventional memory</td>
+<td>常规内存</td>
+<td></td>
+</tr>
+<tr>
+<td>Translation regime</td>
+<td>转换制度</td>
+<td></td>
+</tr>
+<tr>
+<td>IMPLEMENTATION DEFINED</td>
+<td>由实现定义</td>
+<td>不翻译</td>
+</tr>
+<tr>
+<td>CONSTRAINED UNPREDICTABLE</td>
+<td>受限不确定</td>
+<td>不翻译</td>
+</tr>
+<tr>
+<td>UNKNOWN</td>
+<td>未知</td>
+<td>不翻译</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7">7 参考资料<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>编号</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ARM Architecture Reference Manual</td>
+<td>DDI 0487K.a</td>
+<td>本文源文档</td>
+</tr>
+<tr>
+<td>ARMv8-A Memory Tagging Extension</td>
+<td>DEN 0028B</td>
+<td>MTE 技术概述</td>
+</tr>
+<tr>
+<td>ARM SMMU Architecture</td>
+<td>IHI 0055</td>
+<td>SMMU 与 MTE 的交互</td>
+</tr>
+<tr>
+<td>Linux kernel MTE documentation</td>
+<td>kernel.org</td>
+<td>Linux MTE 实现参考</td>
+</tr>
+<tr>
+<td>ARM C Language Extensions</td>
+<td>ARM IHI 0055</td>
+<td><code>__arm_mte_*</code> 内建函数</td>
+</tr>
+<tr>
+<td>GNU C Extension for MTE</td>
+<td>gcc.gnu.org</td>
+<td>GCC MTE 编译选项</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<blockquote>
+<p>本文档基于 ARM DDI 0487K.a 第 D10 章整理，涵盖 MTE 的架构设计、硬件实现要点、软件编程模型、使用指南及验证策略。</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

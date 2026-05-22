@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: zephyr/arch/arm/core/cortex_m/prep_c.c 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('prep__c_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">宏定义</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">prep_c.c 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>ARM Cortex-M 完整 C 运行环境初始化  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;zephyr/kernel.h&gt;</code><br />
+<code>#include &lt;kernel_internal.h&gt;</code><br />
+<code>#include &lt;zephyr/linker/linker-defs.h&gt;</code><br />
+<code>#include &lt;zephyr/sys/barrier.h&gt;</code><br />
+<code>#include &lt;zephyr/platform/hooks.h&gt;</code><br />
+<code>#include &lt;zephyr/arch/cache.h&gt;</code><br />
+<code>#include &lt;cortex_m/debug.h&gt;</code><br />
+<code>#include &lt;zephyr/arch/common/xip.h&gt;</code><br />
+<code>#include &lt;zephyr/arch/common/init.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div>
+<p><a href="prep__c_8c_source.html">浏览源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:ac0f35f2f2509eafad7f077a2f41889b3" id="r_ac0f35f2f2509eafad7f077a2f41889b3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="prep__c_8c.html#ac0f35f2f2509eafad7f077a2f41889b3">VECTOR_ADDRESS</a>&#160;&#160;&#160;((uintptr_t)_vector_start)</td></tr>
+<tr class="memdesc:ac0f35f2f2509eafad7f077a2f41889b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">向量表目标地址：Flash 区域（XIP 或直接映射）  <br /></td></tr>
+<tr class="separator:ac0f35f2f2509eafad7f077a2f41889b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9d920f1e8e03e14517eab28e7e49853" id="r_aa9d920f1e8e03e14517eab28e7e49853"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="prep__c_8c.html#aa9d920f1e8e03e14517eab28e7e49853">VTOR_MASK</a>&#160;&#160;&#160;SCB_VTOR_TBLOFF_Msk</td></tr>
+<tr class="memdesc:aa9d920f1e8e03e14517eab28e7e49853"><td class="mdescLeft">&#160;</td><td class="mdescRight">VTOR 寄存器有效位掩码（仅偏移位）  <br /></td></tr>
+<tr class="separator:aa9d920f1e8e03e14517eab28e7e49853"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a3ca64fb94fa00237bdb51902c9151f6d" id="r_a3ca64fb94fa00237bdb51902c9151f6d"><td class="memItemLeft" align="right" valign="top">void __weak&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="prep__c_8c.html#a3ca64fb94fa00237bdb51902c9151f6d">relocate_vector_table</a> (void)</td></tr>
+<tr class="memdesc:a3ca64fb94fa00237bdb51902c9151f6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">重定位向量表到目标地址并设置 VTOR 寄存器  <br /></td></tr>
+<tr class="separator:a3ca64fb94fa00237bdb51902c9151f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad40119de3368bfe9306fecb2fb0506a" id="r_aad40119de3368bfe9306fecb2fb0506a"><td class="memItemLeft" align="right" valign="top">FUNC_NORETURN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="prep__c_8c.html#aad40119de3368bfe9306fecb2fb0506a">z_cstart</a> (void)</td></tr>
+<tr class="memdesc:aad40119de3368bfe9306fecb2fb0506a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zephyr 内核 C 入口函数  <br /></td></tr>
+<tr class="separator:aad40119de3368bfe9306fecb2fb0506a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a489803053339ddcdb4a27e52658f6875" id="r_a489803053339ddcdb4a27e52658f6875"><td class="memItemLeft" align="right" valign="top">FUNC_NORETURN void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="prep__c_8c.html#a489803053339ddcdb4a27e52658f6875">z_prep_c</a> (void)</td></tr>
+<tr class="memdesc:a489803053339ddcdb4a27e52658f6875"><td class="mdescLeft">&#160;</td><td class="mdescRight">准备并执行 C 代码（C 运行环境初始化入口）  <br /></td></tr>
+<tr class="separator:a489803053339ddcdb4a27e52658f6875"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>ARM Cortex-M 完整 C 运行环境初始化 </p>
+<p>该模块是 Zephyr 在 ARM Cortex-M 架构上从汇编启动代码进入 C 世界后的 第一个 C 函数入口（z_prep_c），负责在跳转到内核主初始化流程 <a class="el" href="prep__c_8c.html#aad40119de3368bfe9306fecb2fb0506a" title="Zephyr 内核 C 入口函数">z_cstart()</a> 之前完成全部硬件级准备：</p><ol type="1">
+<li>调用 SoC 级早期 hook（soc_prep_hook）</li>
+<li>重定位向量表（从 Flash 到 SRAM，或设置 VTOR）</li>
+<li>初始化 FPU（若 CPU 具备浮点单元）</li>
+<li>清零 .bss 段、拷贝 .data 段（XIP 场景）</li>
+<li>初始化中断控制器（NVIC 或 SoC 自定义中断控制器）</li>
+<li>初始化 cache（若架构支持）</li>
+<li>启用 NULL 指针异常检测（可选，通过 DWT 单元）</li>
+</ol>
+<dl class="section note"><dt>注解</dt><dd>该模块执行时栈已可用，但 .data/.bss 段尚未初始化， 因此不可使用任何全局/静态变量（除 .bss 零初始化语义等价的情况）。</dd></dl>
+<dl class="section copyright"><dt>版权所有</dt><dd>Copyright (c) 2013-2014 Wind River Systems, Inc. @license SPDX-License-Identifier: Apache-2.0 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="prep__c_8c_source.html">prep_c.c</a> 中定义.</p>
+</div><h2 class="groupheader">宏定义说明</h2>
+<a id="ac0f35f2f2509eafad7f077a2f41889b3" name="ac0f35f2f2509eafad7f077a2f41889b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0f35f2f2509eafad7f077a2f41889b3">&#9670;&#160;</a></span>VECTOR_ADDRESS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define VECTOR_ADDRESS&#160;&#160;&#160;((uintptr_t)_vector_start)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>向量表目标地址：Flash 区域（XIP 或直接映射） </p>
+
+<p class="definition">在文件 <a class="el" href="prep__c_8c_source.html">prep_c.c</a> 第 <a class="el" href="prep__c_8c_source.html#l00054">54</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa9d920f1e8e03e14517eab28e7e49853" name="aa9d920f1e8e03e14517eab28e7e49853"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9d920f1e8e03e14517eab28e7e49853">&#9670;&#160;</a></span>VTOR_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define VTOR_MASK&#160;&#160;&#160;SCB_VTOR_TBLOFF_Msk</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>VTOR 寄存器有效位掩码（仅偏移位） </p>
+
+<p class="definition">在文件 <a class="el" href="prep__c_8c_source.html">prep_c.c</a> 第 <a class="el" href="prep__c_8c_source.html#l00066">66</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">函数说明</h2>
+<a id="a3ca64fb94fa00237bdb51902c9151f6d" name="a3ca64fb94fa00237bdb51902c9151f6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ca64fb94fa00237bdb51902c9151f6d">&#9670;&#160;</a></span>relocate_vector_table()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void __weak relocate_vector_table </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>重定位向量表到目标地址并设置 VTOR 寄存器 </p>
+<p>当配置了 CONFIG_SRAM_VECTOR_TABLE 时，先将向量表从 Flash 拷贝到 SRAM， 然后将 SRAM 地址写入 SCB-&gt;VTOR，使 CPU 从 SRAM 读取异常向量。 这允许运行时动态修改向量表（如安装新的 ISR）。</p>
+<p>若未配置 CONFIG_SRAM_VECTOR_TABLE，直接将 Flash 中的向量表基地址 写入 VTOR。</p>
+<dl class="section note"><dt>注解</dt><dd>函数标记为 __weak，SoC 或板级代码可提供自定义实现。 </dd>
+<dd>
+写入 VTOR 后执行完整的数据同步屏障和指令同步屏障， 确保后续指令使用更新后的向量表地址。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="prep__c_8c_source.html">prep_c.c</a> 第 <a class="el" href="prep__c_8c_source.html#l00083">83</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aad40119de3368bfe9306fecb2fb0506a" name="aad40119de3368bfe9306fecb2fb0506a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad40119de3368bfe9306fecb2fb0506a">&#9670;&#160;</a></span>z_cstart()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FUNC_NORETURN void z_cstart </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Zephyr 内核 C 入口函数 </p>
+<p>这是内核从汇编启动代码（经 prep_c）进入后的第一个 C 函数。 处理器必须处于正确的运行模式（32 位），且 .bss 段必须已清零。</p>
+<p>按以下顺序执行初始化：</p><ol type="1">
+<li>gcov 覆盖率静态初始化</li>
+<li>EARLY 级别系统初始化</li>
+<li>架构相关内核初始化</li>
+<li>日志核心初始化</li>
+<li>dummy 线程初始化（多线程模式）</li>
+<li>静态设备状态初始化</li>
+<li>SoC/Board 早期初始化 hook</li>
+<li>PRE_KERNEL_1 级别初始化</li>
+<li>SMP 架构初始化（若启用）</li>
+</ol>
+<p>PRE_KERNEL_2 级别初始化</p><ol type="1">
+<li>栈保护金丝雀值初始化</li>
+<li>timing 功能初始化（若启用）</li>
+<li>切换到 main 线程（多线程）或直接调用 bg_thread_main（单线程）</li>
+</ol>
+<dl class="section note"><dt>注解</dt><dd>此函数不会返回（FUNC_NORETURN）。 </dd>
+<dd>
+标记为 FUNC_NO_STACK_PROTECTOR，因为在栈保护金丝雀值 初始化之前调用，此时 __stack_chk_guard 尚未设置。 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="init_8c_source.html">init.c</a> 第 <a class="el" href="init_8c_source.html#l00684">684</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a489803053339ddcdb4a27e52658f6875" name="a489803053339ddcdb4a27e52658f6875"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a489803053339ddcdb4a27e52658f6875">&#9670;&#160;</a></span>z_prep_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">FUNC_NORETURN void z_prep_c </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>准备并执行 C 代码（C 运行环境初始化入口） </p>
+<p>这是 Cortex-M 启动流程中从汇编代码跳转到的第一个 C 函数。 按顺序完成以下硬件级初始化后，跳转到 Zephyr 内核主初始化入口 <a class="el" href="prep__c_8c.html#aad40119de3368bfe9306fecb2fb0506a" title="Zephyr 内核 C 入口函数">z_cstart()</a>：</p>
+<ol type="1">
+<li><b>soc_prep_hook()</b> — 调用 SoC 级早期初始化 hook</li>
+<li><b><a class="el" href="prep__c_8c.html#a3ca64fb94fa00237bdb51902c9151f6d" title="重定位向量表到目标地址并设置 VTOR 寄存器">relocate_vector_table()</a></b> — 重定位向量表（拷贝到 SRAM 或设置 VTOR）</li>
+<li><b>z_arm_floating_point_init()</b> — 初始化 FPU（若 CPU 具备浮点单元）</li>
+<li><b>arch_bss_zero()</b> — 清零 .bss 段</li>
+<li><b>arch_data_copy()</b> — 从 Flash 拷贝 .data 段到 SRAM（XIP 场景）</li>
+<li><b>z_soc_irq_init() / z_arm_interrupt_init()</b> — 初始化中断控制器</li>
+<li><b>arch_cache_init()</b> — 初始化指令/数据 cache（若架构支持）</li>
+<li><b>z_arm_debug_enable_null_pointer_detection()</b> — 启用 NULL 指针异常检测</li>
+</ol>
+<dl class="section note"><dt>注解</dt><dd>此函数不会返回（FUNC_NORETURN）。 </dd>
+<dd>
+在 arch_bss_zero/arch_data_copy 之前，不可使用未显式零初始化的 全局/静态变量。</dd></dl>
+<dl class="section see"><dt>参见</dt><dd><a class="el" href="prep__c_8c.html#aad40119de3368bfe9306fecb2fb0506a" title="Zephyr 内核 C 入口函数">z_cstart()</a> Zephyr 内核主初始化流程 </dd>
+<dd>
+soc_early_init_hook SoC 早期初始化 hook </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="prep__c_8c_source.html">prep_c.c</a> 第 <a class="el" href="prep__c_8c_source.html#l00258">258</a> 行定义.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_c82fc3b08db7bea18c7f418b7e5582f0.html">zephyr</a></li><li class="navelem"><a class="el" href="dir_7e8b4c0d4b1e1e4adc48fa8aa29c7087.html">arch</a></li><li class="navelem"><a class="el" href="dir_f7810a38ea0918f1afba9743992f8679.html">arm</a></li><li class="navelem"><a class="el" href="dir_44b81ce2b9d5edefad543a10bab2c739.html">core</a></li><li class="navelem"><a class="el" href="dir_c1a6ad3a8bcebfc5faa88e460fcc9a56.html">cortex_m</a></li><li class="navelem"><a class="el" href="prep__c_8c.html">prep_c.c</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

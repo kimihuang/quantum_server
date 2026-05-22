@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>25. macOS 使用 Windows App 远程访问 Ubuntu 桌面 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="26. opendataloader-pdf 使用指南" href="opendataloader_pdf_usage.html" />
+    <link rel="prev" title="24. ttyd Web SSH 服务配置" href="ttyd_setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">25.1. 环境信息</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">25.2. 问题背景</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">25.3. 解决方案</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xrdp-xfce">25.3.1. 安装 xrdp 和 XFCE 桌面环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xrdp">25.3.2. 配置 xrdp 启动脚本</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">25.3.3. 验证配置</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#macos">25.4. macOS 端配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ubuntu">25.5. 连接 Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">25.6. 故障排查</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">25.6.1. 常见错误及解决方法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">25.7. 替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">25.8. 持久性说明</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">25.9. 注意事项</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">25.10. 总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">25. </span>macOS 使用 Windows App 远程访问 Ubuntu 桌面</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/macos_remotedesktop_to_ubuntu.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="macos-windows-app-ubuntu">
+<h1><span class="section-number">25. </span>macOS 使用 Windows App 远程访问 Ubuntu 桌面<a class="headerlink" href="#macos-windows-app-ubuntu" title="链接到此标题。"></a></h1>
+<p>本文档介绍如何在 macOS 上使用 Windows App 远程访问 Ubuntu 桌面的完整配置过程。</p>
+<section id="id1">
+<h2><span class="section-number">25.1. </span>环境信息<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p>macOS 主机（已安装 Microsoft Remote Desktop / Windows App）</p></li>
+<li><p>Ubuntu 主机（待配置 xrdp 服务）</p></li>
+<li><p>网络环境：两台主机在同一局域网</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2><span class="section-number">25.2. </span>问题背景<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p>在 macOS 上使用 Windows App 远程连接 Ubuntu 的 xrdp 服务时，可能会遇到以下问题：</p>
+<ol class="arabic simple">
+<li><p>连接后显示黑屏，看不到桌面</p></li>
+<li><p>登录后立即闪退</p></li>
+<li><p>窗口管理器启动失败</p></li>
+</ol>
+<p>这些问题的根本原因是 Ubuntu 默认的 GNOME 桌面环境与 xrdp 兼容性较差。</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">25.3. </span>解决方案<a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<section id="xrdp-xfce">
+<h3><span class="section-number">25.3.1. </span>安装 xrdp 和 XFCE 桌面环境<a class="headerlink" href="#xrdp-xfce" title="链接到此标题。"></a></h3>
+<ol class="arabic simple">
+<li><p>在 Ubuntu 上安装 xrdp 服务：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>xrdp
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>安装 XFCE 桌面环境（轻量且与 xrdp 兼容性好）：</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>xfce4<span class="w"> </span>xfce4-goodies
+</pre></div>
+</div>
+</section>
+<section id="xrdp">
+<h3><span class="section-number">25.3.2. </span>配置 xrdp 启动脚本<a class="headerlink" href="#xrdp" title="链接到此标题。"></a></h3>
+<p>修改 xrdp 的窗口管理器启动脚本，将默认的 GNOME 改为 XFCE：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. 备份原始配置</span>
+sudo<span class="w"> </span>cp<span class="w"> </span>/etc/xrdp/startwm.sh<span class="w"> </span>/etc/xrdp/startwm.sh.backup
+
+<span class="c1"># 2. 创建新的启动脚本</span>
+sudo<span class="w"> </span>tee<span class="w"> </span>/etc/xrdp/startwm.sh<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+<span class="s">#!/bin/sh</span>
+
+<span class="s"># 设置环境变量</span>
+<span class="s">export XDG_SESSION_TYPE=x11</span>
+<span class="s">export GDK_BACKEND=x11</span>
+<span class="s">export QT_QPA_PLATFORM=xcb</span>
+
+<span class="s"># 加载本地化设置</span>
+<span class="s">if [ -r /etc/default/locale ]; then</span>
+<span class="s">  . /etc/default/locale</span>
+<span class="s">  export LANG LANGUAGE</span>
+<span class="s">fi</span>
+
+<span class="s"># 启动 XFCE 桌面</span>
+<span class="s">if command -v startxfce4 &gt; /dev/null 2&gt;&amp;1; then</span>
+<span class="s">    startxfce4</span>
+<span class="s">else</span>
+<span class="s">    # 如果 XFCE 不可用，使用默认的 Xsession</span>
+<span class="s">    if [ -r /etc/X11/Xsession ]; then</span>
+<span class="s">        . /etc/X11/Xsession</span>
+<span class="s">    else</span>
+<span class="s">        # 最后的备选方案</span>
+<span class="s">        xterm</span>
+<span class="s">    fi</span>
+<span class="s">fi</span>
+<span class="s">EOF</span>
+
+<span class="c1"># 3. 设置执行权限</span>
+sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/etc/xrdp/startwm.sh
+
+<span class="c1"># 4. 重启 xrdp 服务</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>xrdp
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">25.3.3. </span>验证配置<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p>确认配置已正确应用：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 查看 startwm.sh 的内容</span>
+cat<span class="w"> </span>/etc/xrdp/startwm.sh
+
+<span class="c1"># 确保 XFCE 已安装</span>
+which<span class="w"> </span>startxfce4
+
+<span class="c1"># 检查 xrdp 服务状态</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>xrdp
+
+<span class="c1"># 确认开机自启已启用</span>
+sudo<span class="w"> </span>systemctl<span class="w"> </span>is-enabled<span class="w"> </span>xrdp
+</pre></div>
+</div>
+</section>
+</section>
+<section id="macos">
+<h2><span class="section-number">25.4. </span>macOS 端配置<a class="headerlink" href="#macos" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p>从 Mac App Store 安装 <strong>Microsoft Remote Desktop</strong> 或 <strong>Windows App</strong></p></li>
+<li><p>添加远程桌面连接：</p>
+<ul class="simple">
+<li><p>PC name: Ubuntu 主机的 IP 地址</p></li>
+<li><p>User account: Ubuntu 用户名</p></li>
+<li><p>Resolution: 根据需要选择（建议自适应）</p></li>
+</ul>
+</li>
+<li><p>连接设置（可选优化）：</p>
+<ul class="simple">
+<li><p>色彩深度：32 位</p></li>
+<li><p>远程桌面大小：自适应或指定分辨率</p></li>
+<li><p>体验：选择&quot;高带宽&quot;</p></li>
+<li><p>可选：启用/禁用桌面背景、字体平滑等</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="ubuntu">
+<h2><span class="section-number">25.5. </span>连接 Ubuntu<a class="headerlink" href="#ubuntu" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p>在 macOS 上打开 Microsoft Remote Desktop / Windows App</p></li>
+<li><p>点击连接到 Ubuntu 主机</p></li>
+<li><p>输入 Ubuntu 用户名和密码</p></li>
+<li><p><strong>重要</strong>：在会话选择界面，选择 <strong>Xvnc</strong> 模式（不是 Xorg）</p></li>
+<li><p>等待连接完成，即可看到 XFCE 桌面环境</p></li>
+</ol>
+</section>
+<section id="id5">
+<h2><span class="section-number">25.6. </span>故障排查<a class="headerlink" href="#id5" title="链接到此标题。"></a></h2>
+<p>如果仍然遇到问题，可以查看 xrdp 日志：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 实时查看 xrdp 日志</span>
+tail<span class="w"> </span>-f<span class="w"> </span>/var/log/xrdp.log<span class="w"> </span>/var/log/xrdp-sesman.log
+</pre></div>
+</div>
+<section id="id6">
+<h3><span class="section-number">25.6.1. </span>常见错误及解决方法<a class="headerlink" href="#id6" title="链接到此标题。"></a></h3>
+<ol class="arabic">
+<li><p><strong>窗口管理器启动失败</strong></p>
+<p>错误信息：<code class="docutils literal notranslate"><span class="pre">Window</span> <span class="pre">manager</span> <span class="pre">(pid</span> <span class="pre">XXXX,</span> <span class="pre">display</span> <span class="pre">XX)</span> <span class="pre">exited</span> <span class="pre">with</span> <span class="pre">non-zero</span> <span class="pre">exit</span> <span class="pre">code</span> <span class="pre">1</span></code></p>
+<p>解决：确保已正确修改 <code class="docutils literal notranslate"><span class="pre">/etc/xrdp/startwm.sh</span></code> 并重启 xrdp 服务</p>
+</li>
+<li><p><strong>黑屏无响应</strong></p>
+<p>尝试：使用 Xvnc 模式而不是 Xorg</p>
+</li>
+<li><p><strong>连接闪退</strong></p>
+<p>确保：<code class="docutils literal notranslate"><span class="pre">startwm.sh</span></code> 文件有执行权限（<code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">+x</span></code>）</p>
+</li>
+<li><p><strong>端口被占用</strong></p>
+<p>检查端口：<code class="docutils literal notranslate"><span class="pre">netstat</span> <span class="pre">-tulpn</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">3389</span></code></p>
+<p>修改端口：编辑 <code class="docutils literal notranslate"><span class="pre">/etc/xrdp/xrdp.ini</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">port</span></code> 配置</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">25.7. </span>替代方案<a class="headerlink" href="#id7" title="链接到此标题。"></a></h2>
+<p>如果 XFCE 仍然无法满足需求，可以考虑安装更轻量的桌面环境：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 安装 LXDE（更轻量）</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>lxde
+
+<span class="c1"># 修改 startwm.sh 使用 LXDE</span>
+sudo<span class="w"> </span>tee<span class="w"> </span>/etc/xrdp/startwm.sh<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+<span class="s">#!/bin/sh</span>
+<span class="s">export XDG_SESSION_TYPE=x11</span>
+<span class="s">export GDK_BACKEND=x11</span>
+
+<span class="s">if [ -r /etc/default/locale ]; then</span>
+<span class="s">  . /etc/default/locale</span>
+<span class="s">  export LANG LANGUAGE</span>
+<span class="s">fi</span>
+
+<span class="s">startlxde</span>
+<span class="s">EOF</span>
+
+sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/etc/xrdp/startwm.sh
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>xrdp
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h2><span class="section-number">25.8. </span>持久性说明<a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<p>所有配置修改都是持久化的：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/xrdp/startwm.sh</span></code> - 配置永久生效</p></li>
+<li><p>xrdp 服务 - 默认开机自启</p></li>
+<li><p>XFCE 桌面环境 - 安装后不会丢失</p></li>
+</ul>
+<p><strong>Ubuntu 重启后无需额外配置，即可直接远程登录。</strong></p>
+</section>
+<section id="id9">
+<h2><span class="section-number">25.9. </span>注意事项<a class="headerlink" href="#id9" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p>网络连接：确保两台主机在同一局域网，或配置好端口转发</p></li>
+<li><p>安全性：
+* 不要在公共网络开放 3389 端口
+* 考虑使用 VPN 或 SSH 隧道增强安全性
+* 可以配置防火墙限制访问来源 IP</p></li>
+<li><p>性能优化：
+* 调整远程桌面的分辨率和色彩深度以获得更好的性能
+* 禁用桌面背景、动画等视觉效果可提升速度</p></li>
+<li><p>多用户支持：
+* xrdp 支持多用户同时登录
+* 每个用户会话独立运行
+* 可以创建专门用于远程桌面访问的用户账户</p></li>
+</ol>
+</section>
+<section id="id10">
+<h2><span class="section-number">25.10. </span>总结<a class="headerlink" href="#id10" title="链接到此标题。"></a></h2>
+<p>通过安装 XFCE 桌面环境并配置 xrdp 启动脚本，成功解决了 macOS 使用 Windows App 远程访问 Ubuntu 桌面时的黑屏和闪退问题。该方案稳定可靠，重启后配置持久有效。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="ttyd_setup.html" class="btn btn-neutral float-left" title="24. ttyd Web SSH 服务配置" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="opendataloader_pdf_usage.html" class="btn btn-neutral float-right" title="26. opendataloader-pdf 使用指南" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

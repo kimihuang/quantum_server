@@ -1,0 +1,1 @@
+$$SEQ_TEST_0002 -v -c "echo second" -p "second" -t 3000^^

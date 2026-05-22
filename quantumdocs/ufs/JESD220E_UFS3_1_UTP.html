@@ -1,0 +1,1483 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JESD220E UFS 3.1 UTP 传输协议层深度分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">JESD220E UFS 3.1 UTP 传输协议层深度分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ufs/JESD220E_UFS3_1_UTP.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jesd220e-ufs-3-1-utp">
+<h1>JESD220E UFS 3.1 UTP 传输协议层深度分析<a class="headerlink" href="#jesd220e-ufs-3-1-utp" title="链接到此标题。"></a></h1>
+<p>本文档基于 JEDEC Universal Flash Storage (UFS) Version 3.1 规范 (JESD220E, January 2020) 第 10 章，
+深入分析 UFS 传输协议 (UTP) 层的架构、事务处理、UPIU 格式和关键数据通路。</p>
+<p>参考文档：<code class="docutils literal notranslate"><span class="pre">docs/pdf/UFS/JESD220E_UFS3_1.md</span></code></p>
+</section>
+<section id="utp">
+<h1>UTP 层概述<a class="headerlink" href="#utp" title="链接到此标题。"></a></h1>
+<section id="utp-section-10-1">
+<h2>UTP 架构定位 [Section 10.1]_<a class="headerlink" href="#utp-section-10-1" title="链接到此标题。"></a></h2>
+<p>UFS 传输协议 (UTP) 层位于 UFS 架构的传输层，建立在 MIPI UniPro(数据链路层) 和 MIPI M-PHY(物理层) 之上。
+UTP 采用 SCSI 架构模型 [SAM] 作为通用架构模型，使用 SAM 任务管理函数进行任务管理。</p>
+<p><strong>核心特性</strong>:</p>
+<ul class="simple">
+<li><p><strong>客户端 - 服务器模型</strong>: Initiator(发起方，主机) 发送命令请求，Target(目标方，UFS 设备) 执行请求</p></li>
+<li><p><strong>任务队列管理</strong>: 每个逻辑单元 (LU) 包含任务队列，支持并发处理多个任务</p></li>
+<li><p><strong>UPIU 事务</strong>: 设备间通信通过 UFS 协议信息单元 (UPIU) 消息实现</p></li>
+<li><p><strong>Task Tag 机制</strong>: 唯一标识每个任务，支持多任务并发追踪</p></li>
+</ul>
+</section>
+<section id="utp-ufs">
+<h2>UTP 在 UFS 架构中的位置<a class="headerlink" href="#utp-ufs" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+----------------------------------+
+|    UFS Application Layer (UAP)   |  &lt;- SCSI 命令层、设备管理器
++----------------------------------+
+               |
+               v
++----------------------------------+
+|  UFS Transport Protocol (UTP)    |  &lt;- 本文档分析核心
+|        (传输协议层)               |
++----------------------------------+
+               |
+               v
++----------------------------------+
+|      UFS InterConnect (UIC)      |  &lt;- UniPro 数据链路层
++----------------------------------+
+               |
+               v
++----------------------------------+
+|         MIPI M-PHY               |  &lt;- 物理层
++----------------------------------+
+</pre></div>
+</div>
+</section>
+<section id="utp-section-10-4">
+<h2>UTP 服务交付子系统 [Section 10.4]_<a class="headerlink" href="#utp-section-10-4" title="链接到此标题。"></a></h2>
+<p>服务交付子系统是在 Initiator 和 Target 设备之间传输服务请求和响应的 I/O 系统。
+UTP 定义为独立于服务交付子系统的协议，便于移植到不同的 I/O 系统。</p>
+<p><strong>当前实现</strong>:</p>
+<ul class="simple">
+<li><p>使用 MIPI UniPro 总线作为传输载体</p></li>
+<li><p>使用 MIPI M-PHY 作为物理层</p></li>
+<li><p>UPIU 结构作为 UniPro 服务数据单元 (T_SDU) 传递</p></li>
+<li><p>T_SDU 大小与 UPIU 大小完全相同</p></li>
+</ul>
+<p><strong>尺寸限制</strong>:</p>
+<ul class="simple">
+<li><p>最小 T_SDU: 32 字节 (基本头格式)</p></li>
+<li><p>最大 T_SDU: 65600 字节 (包含头、扩展头和数据段)</p></li>
+</ul>
+</section>
+</section>
+<section id="upiu">
+<h1>UPIU 事务类型<a class="headerlink" href="#upiu" title="链接到此标题。"></a></h1>
+<section id="section-10-5-table-10-1-10-2">
+<h2>事务代码定义 [Section 10.5, Table 10.1-10.2]_<a class="headerlink" href="#section-10-5-table-10-1-10-2" title="链接到此标题。"></a></h2>
+<p>每个 UPIU 数据结构包含一个事务代码，定义其内容和功能。</p>
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">UPIU 事务代码表</span><a class="headerlink" href="#id12" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 27.8%" />
+<col style="width: 22.2%" />
+<col style="width: 27.8%" />
+<col style="width: 22.2%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Initiator 到 Target</p></th>
+<th class="head"><p>事务代码</p></th>
+<th class="head"><p>Target 到 Initiator</p></th>
+<th class="head"><p>事务代码</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NOP OUT</p></td>
+<td><p>00 0000b</p></td>
+<td><p>NOP IN</p></td>
+<td><p>10 0000b</p></td>
+</tr>
+<tr class="row-odd"><td><p>COMMAND</p></td>
+<td><p>00 0001b</p></td>
+<td><p>RESPONSE</p></td>
+<td><p>10 0001b</p></td>
+</tr>
+<tr class="row-even"><td><p>DATA OUT</p></td>
+<td><p>00 0010b</p></td>
+<td><p>DATA IN</p></td>
+<td><p>10 0010b</p></td>
+</tr>
+<tr class="row-odd"><td><p>TASK MANAGEMENT REQUEST</p></td>
+<td><p>00 0100b</p></td>
+<td><p>TASK MANAGEMENT RESPONSE</p></td>
+<td><p>10 0100b</p></td>
+</tr>
+<tr class="row-even"><td><p>Reserved</p></td>
+<td><p>01 0001b</p></td>
+<td><p>READY TO TRANSFER</p></td>
+<td><p>11 0001b</p></td>
+</tr>
+<tr class="row-odd"><td><p>QUERY REQUEST</p></td>
+<td><p>01 0110b</p></td>
+<td><p>QUERY RESPONSE</p></td>
+<td><p>11 0110b</p></td>
+</tr>
+<tr class="row-even"><td><p>Reserved</p></td>
+<td><p>01 1111b</p></td>
+<td><p>REJECT UPIU</p></td>
+<td><p>11 1111b</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>方向位规则</strong>: 事务代码的 Bit 5 表示流向和发起方:
+- '0': Initiator 设备发起
+- '1': Target 设备发起</p>
+</section>
+<section id="id2">
+<h2>事务类型详解<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p><strong>NOP OUT/NOP IN</strong>: 连接探测 ping 操作，检查设备连接路径</p>
+<p><strong>COMMAND</strong>: Initiator 发送到 LU 的命令请求，包含 CDB(命令描述块)</p>
+<p><strong>RESPONSE</strong>: Target 返回的命令执行状态和响应信息</p>
+<p><strong>DATA OUT</strong>: Initiator 到 Target 的数据传输 (写操作)</p>
+<p><strong>DATA IN</strong>: Target 到 Initiator 的数据传输 (读操作)</p>
+<p><strong>TASK MANAGEMENT REQUEST</strong>: 携带 SAM 任务管理函数请求</p>
+<p><strong>TASK MANAGEMENT RESPONSE</strong>: 携带任务管理函数响应</p>
+<p><strong>READY TO TRANSFER</strong>: Target 准备好接收下一个 DATA OUT UPIU 时发送，包含 DMA 上下文</p>
+<p><strong>QUERY REQUEST</strong>: 读取/写入设备描述符、属性、标志等配置数据</p>
+<p><strong>QUERY RESPONSE</strong>: 响应查询请求，返回请求的描述符信息</p>
+<p><strong>REJECT</strong>: Target 无法解析或执行收到的 UPIU 时发送</p>
+</section>
+</section>
+<section id="id3">
+<h1>UPIU 通用格式<a class="headerlink" href="#id3" title="链接到此标题。"></a></h1>
+<section id="section-10-6-table-10-3-10-4">
+<h2>基本头格式 [Section 10.6, Table 10.3-10.4]_<a class="headerlink" href="#section-10-6-table-10-3-10-4" title="链接到此标题。"></a></h2>
+<p>所有 UPIU 都包含固定位置和大小的基本头 (12 字节)。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | Transaction Type  | Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | Initiator ID      |CSetType | Query/TMF Func| Resp/Stat |
+         +-------+-------+-------+-------+
+   8     | Total EHS Length      | Device Info     |
+         +-------+-------+-------+-------+
+  12     | Data Segment Length                 |
+         +-------+-------+-------+-------+
+  16     | Transaction Specific Fields (20 bytes)    |
+         +-------+-------+-------+-------+
+         :                       :
+         +-------+-------+-------+-------+
+  32     | Extra Header Segment (可选，本版本未使用)   |
+         +-------+-------+-------+-------+
+         :                       :
+         +-------+-------+-------+-------+
+   k     | Data Segment (可选，DWORD 对齐)             |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="section-10-6-2">
+<h2>基本头字段详解 [Section 10.6.2]_<a class="headerlink" href="#section-10-6-2" title="链接到此标题。"></a></h2>
+<p><strong>Transaction Type (字节 0)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Bit 7: HD (Header CRC 使能，本版本固定为 0)
+Bit 6: DD (Data CRC 使能，本版本固定为 0)
+Bit 5-0: Transaction Code (事务代码)
+</pre></div>
+</div>
+<p><strong>Flags (字节 1)</strong>: 根据事务类型变化</p>
+<p>对于 COMMAND UPIU:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Bit 7: 保留
+Bit 6: R (Read，数据从 Target 到 Initiator)
+Bit 5: W (Write，数据从 Initiator 到 Target)
+Bit 4: 保留
+Bit 3: 保留
+Bit 2: CP (Command Priority，命令优先级)
+Bit 1-0: ATTR (Task Attribute，任务属性)
+</pre></div>
+</div>
+<p>任务属性定义 [Table 10.7]_:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42.9%" />
+<col style="width: 28.6%" />
+<col style="width: 28.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>任务属性</p></th>
+<th class="head"><p>Bit 1</p></th>
+<th class="head"><p>Bit 0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Simple (简单)</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ordered (有序)</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>Head of Queue (队列头)</p></td>
+<td><p>1</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACA (未使用)</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>LUN (字节 2)</strong>: 逻辑单元号，目标 LU 的地址</p>
+<p><strong>Task Tag (字节 3)</strong>: 由 Initiator 生成的唯一任务标识符，用于关联同一任务的所有 UPIU</p>
+<p><strong>Initiator ID (字节 4, Bit 7-4)</strong>: Initiator 设备标识 (4 位宽，支持 16 个 Initiator)</p>
+<p><strong>Command Set Type (字节 4, Bit 3-0)</strong> [Table 10.10]_:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>值</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0h</p></td>
+<td><p>SCSI 命令集 (SPC, SBC)</p></td>
+</tr>
+<tr class="row-odd"><td><p>1h</p></td>
+<td><p>UFS 专用命令集 (保留)</p></td>
+</tr>
+<tr class="row-even"><td><p>2h-7h</p></td>
+<td><p>保留</p></td>
+</tr>
+<tr class="row-odd"><td><p>8h-Fh</p></td>
+<td><p>厂商专用</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response (字节 5)</strong>: Target 响应码，指示成功或失败</p>
+<p><strong>Status (字节 5)</strong>: SCSI 状态码 (仅 RESPONSE UPIU)</p>
+<p><strong>Total EHS Length (字节 8-9)</strong>: 额外头段总长度 (DWORD 单位)，本版本固定为 0</p>
+<p><strong>Device Information (字节 10)</strong>: 设备级信息</p>
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">Device Information 字段定义</span><a class="headerlink" href="#id13" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Bit</p></th>
+<th class="head"><p>名称</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bit 0</p></td>
+<td><p>EVENT_ALERT</p></td>
+<td><p>异常事件警报 (0: 无激活源，1: 至少一个源激活)</p></td>
+</tr>
+<tr class="row-odd"><td><p>bit 1</p></td>
+<td><p>保留</p></td>
+<td><p>为 HPB(Host Performance Booster) 保留</p></td>
+</tr>
+<tr class="row-even"><td><p>Others</p></td>
+<td><p>保留</p></td>
+<td><p>固定为 0</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Data Segment Length (字节 12-15)</strong>: 数据段中有效字节数 (最大 65535 字节)</p>
+<p><strong>Expected Data Transfer Length (COMMAND UPIU 特有)</strong>: 期望传输的数据量</p>
+</section>
+</section>
+<section id="command-upiu">
+<h1>COMMAND UPIU 详解<a class="headerlink" href="#command-upiu" title="链接到此标题。"></a></h1>
+<section id="command-upiu-section-10-7-1-table-10-11">
+<h2>COMMAND UPIU 格式 [Section 10.7.1, Table 10.11]_<a class="headerlink" href="#command-upiu-section-10-7-1-table-10-11" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx00 0001b| Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | IID       |00h      | Reserved        | Reserved      |
+         +-------+-------+-------+-------+
+   8     | 00h             | Reserved          |
+         +-------+-------+-------+-------+
+  12     | Expected Data Transfer Length       |
+         +-------+-------+-------+-------+
+  16     | CDB[0]  | CDB[1]  | CDB[2]  | CDB[3]  |
+         +-------+-------+-------+-------+
+  20     | CDB[4]  | CDB[5]  | CDB[6]  | CDB[7]  |
+         +-------+-------+-------+-------+
+  24     | CDB[8]  | CDB[9]  | CDB[10] | CDB[11] |
+         +-------+-------+-------+-------+
+  28     | CDB[12] | CDB[13] | CDB[14] | CDB[15] |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="command-upiu-section-10-7-1-1">
+<h2>COMMAND UPIU 关键字段 [Section 10.7.1.1]_<a class="headerlink" href="#command-upiu-section-10-7-1-1" title="链接到此标题。"></a></h2>
+<p><strong>Flags.R (Bit 6)</strong>:
+- '1': 命令需要从 Target 到 Initiator 的数据传输 (读)
+- .R='1' 时.W 必须='0'
+- .R=.W='0' 时无需数据传输</p>
+<p><strong>Flags.W (Bit 5)</strong>:
+- '1': 命令需要从 Initiator 到 Target 的数据传输 (写)
+- .W='1' 时.R 必须='0'</p>
+<p><strong>Expected Data Transfer Length (字节 12-15)</strong>:
+- 表示完成 SCSI 命令所需传输的字节数
+- 仅当 Flags.W 或 Flags.R 为'1'时有效
+- 对于 SCSI READ/WRITE 命令，值为：逻辑块大小 × TRANSFER LENGTH</p>
+<p><strong>CDB (字节 16-31)</strong>: 16 字节命令描述块
+- 包含标准 SCSI CDB
+- CDB 大小由 CDB[0] 的操作码组位隐式指示
+- 小于 16 字节的 CDB，未用字节保留</p>
+</section>
+</section>
+<section id="response-upiu">
+<h1>RESPONSE UPIU 详解<a class="headerlink" href="#response-upiu" title="链接到此标题。"></a></h1>
+<section id="response-upiu-section-10-7-2-table-10-13">
+<h2>RESPONSE UPIU 格式 [Section 10.7.2, Table 10.13]_<a class="headerlink" href="#response-upiu-section-10-7-2-table-10-13" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx10 0001b| Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | IID       |CSetType | Response      | Status        |
+         +-------+-------+-------+-------+
+   8     | 00h             | Device Info     |
+         +-------+-------+-------+-------+
+  12     | Residual Transfer Count           |
+         +-------+-------+-------+-------+
+  16     | Reserved                          |
+         +-------+-------+-------+-------+
+  20     | Reserved                          |
+         +-------+-------+-------+-------+
+  24     | Reserved                          |
+         +-------+-------+-------+-------+
+  28     | Reserved                          |
+         +-------+-------+-------+-------+
+   k     | Sense Data Length | Sense Data... |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="response-upiu-flags-section-10-7-2-1-table-10-14">
+<h2>RESPONSE UPIU Flags [Section 10.7.2.1, Table 10.14]_<a class="headerlink" href="#response-upiu-flags-section-10-7-2-1-table-10-14" title="链接到此标题。"></a></h2>
+<p><strong>Flags.O (Overflow, Bit 6)</strong>:
+- '1': 数据溢出，Target 有更多数据要传输
+- Residual Transfer Count 表示未传输的字节数</p>
+<p><strong>Flags.U (Underflow, Bit 5)</strong>:
+- '1': 数据下溢，Target 数据少于请求
+- Residual Transfer Count 表示未传输的字节数</p>
+<p><strong>Flags.D (Data Out Mismatch, Bit 4)</strong>:
+- '1': UTP 数据输出不匹配错误
+- Data Out UPIU 中的数据缓冲区偏移/计数与 RTT 请求不匹配</p>
+<section id="residual-transfer-count-table-10-16">
+<h3>Residual Transfer Count 关系 [Table 10.16]_<a class="headerlink" href="#residual-transfer-count-table-10-16" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flags.O</p></th>
+<th class="head"><p>Flags.U</p></th>
+<th class="head"><p>Residual Count</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>传输了预期的数据长度</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>0</p></td>
+<td><p>N</p></td>
+<td><p>Target 期望再发送 N 字节给 Initiator</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>N</p></td>
+<td><p>Initiator 期望从 Target 再接收 N 字节</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>X</p></td>
+<td><p>非法条件</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="scsi-table-10-15">
+<h3>SCSI 状态值 [Table 10.15]_<a class="headerlink" href="#scsi-table-10-15" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 50.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>值</p></th>
+<th class="head"><p>描述</p></th>
+<th class="head"><p>UFS 实现</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>00h</p></td>
+<td><p>GOOD (良好，命令成功完成)</p></td>
+<td><p>强制 (M)</p></td>
+</tr>
+<tr class="row-odd"><td><p>02h</p></td>
+<td><p>CHECK CONDITION (检查条件，需要 Sense Data)</p></td>
+<td><p>强制 (M)</p></td>
+</tr>
+<tr class="row-even"><td><p>08h</p></td>
+<td><p>BUSY (忙，LU 无法接受命令)</p></td>
+<td><p>强制 (M)</p></td>
+</tr>
+<tr class="row-odd"><td><p>18h</p></td>
+<td><p>RESERVATION CONFLICT (保留冲突)</p></td>
+<td><p>可选 (O)</p></td>
+</tr>
+<tr class="row-even"><td><p>28h</p></td>
+<td><p>TASK SET FULL (任务集满，资源不足)</p></td>
+<td><p>强制 (M)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sense-data-table-10-17">
+<h3>Sense Data 格式 [Table 10.17]_<a class="headerlink" href="#sense-data-table-10-17" title="链接到此标题。"></a></h3>
+<p>CHECK CONDITION 状态时返回 18 字节固定格式 Sense Data:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.8%" />
+<col style="width: 18.8%" />
+<col style="width: 37.5%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字节</p></th>
+<th class="head"><p>字段</p></th>
+<th class="head"><p>描述</p></th>
+<th class="head"><p>实现</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>VALID + RESPONSE CODE</p></td>
+<td><p>70h(固定格式)</p></td>
+<td><p>强制</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>SENSE KEY</p></td>
+<td><p>错误类别 (见下表)</p></td>
+<td><p>强制</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>ADDITIONAL SENSE LENGTH</p></td>
+<td><p>固定为 10 (0Ah)</p></td>
+<td><p>强制</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>ASC</p></td>
+<td><p>附加 Sense 代码</p></td>
+<td><p>强制</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>ASCQ</p></td>
+<td><p>ASC 限定符</p></td>
+<td><p>强制</p></td>
+</tr>
+</tbody>
+</table>
+<section id="sense-key-table-10-18">
+<h4>Sense Key 定义 [Table 10.18]_<a class="headerlink" href="#sense-key-table-10-18" title="链接到此标题。"></a></h4>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>值</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>00h</p></td>
+<td><p>NO SENSE (无错误信息，成功完成)</p></td>
+</tr>
+<tr class="row-odd"><td><p>01h</p></td>
+<td><p>RECOVERED ERROR (恢复的错误，经纠错后成功)</p></td>
+</tr>
+<tr class="row-even"><td><p>02h</p></td>
+<td><p>NOT READY (未就绪，LU 暂时无法访问)</p></td>
+</tr>
+<tr class="row-odd"><td><p>03h</p></td>
+<td><p>MEDIUM ERROR (介质错误，不可恢复的介质缺陷)</p></td>
+</tr>
+<tr class="row-even"><td><p>04h</p></td>
+<td><p>HARDWARE ERROR (硬件错误，不可恢复的硬件故障)</p></td>
+</tr>
+<tr class="row-odd"><td><p>05h</p></td>
+<td><p>ILLEGAL REQUEST (非法请求，CDB 参数非法)</p></td>
+</tr>
+<tr class="row-even"><td><p>06h</p></td>
+<td><p>UNIT ATTENTION (单元注意，设备复位或介质更换)</p></td>
+</tr>
+<tr class="row-odd"><td><p>07h</p></td>
+<td><p>DATA PROTECT (数据保护，写保护阻止操作)</p></td>
+</tr>
+<tr class="row-even"><td><p>0Bh</p></td>
+<td><p>ABORTED COMMAND (命令中止，可重试恢复)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+</section>
+<section id="data-out-upiu">
+<h1>DATA OUT UPIU 详解<a class="headerlink" href="#data-out-upiu" title="链接到此标题。"></a></h1>
+<section id="data-out-upiu-section-10-7-3-table-10-19">
+<h2>DATA OUT UPIU 格式 [Section 10.7.3, Table 10.19]_<a class="headerlink" href="#data-out-upiu-section-10-7-3-table-10-19" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx00 0010b| Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | IID       | Reserved        | Reserved        |
+         +-------+-------+-------+-------+
+   8     | 00h             | Reserved          |
+         +-------+-------+-------+-------+
+  12     | Data Buffer Offset                |
+         +-------+-------+-------+-------+
+  16     | Data Transfer Count               |
+         +-------+-------+-------+-------+
+  20     | Reserved                          |
+         +-------+-------+-------+-------+
+  24     | Reserved                          |
+         +-------+-------+-------+-------+
+  28     | Reserved                          |
+         +-------+-------+-------+-------+
+   k     | Data Payload...                   |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="data-out-section-10-7-3-1">
+<h2>DATA OUT 关键字段 [Section 10.7.3.1]_<a class="headerlink" href="#data-out-section-10-7-3-1" title="链接到此标题。"></a></h2>
+<p><strong>Data Buffer Offset (字节 12-15)</strong>:
+- 表示此 UPIU 数据载荷在完整传输区中的偏移
+- Data Buffer Offset + Data Segment Length ≤ Expected Data Transfer Length
+- 支持乱序传输 (需设备支持并启用)
+- 对于 SCSI WRITE 命令，必须是逻辑块大小的整数倍</p>
+<p><strong>Data Transfer Count (字节 16-19)</strong>:
+- 表示此 UPIU 中传输的字节数
+- 最大值：65535 字节/UPIU
+- 必须与 Data Segment Length 字段值相同
+- 与 Data Buffer Offset 一起构成 DMA 上下文</p>
+<p><strong>Data Segment (从字节 32 开始)</strong>:
+- 包含实际数据载荷
+- 始终 DWORD 对齐
+- 最后一个 UPIU 可能需要填充到 DWORD 边界</p>
+</section>
+<section id="data-out-section-10-7-13">
+<h2>DATA OUT 传输规则 [Section 10.7.13]_<a class="headerlink" href="#data-out-section-10-7-13" title="链接到此标题。"></a></h2>
+<p><strong>基本规则</strong>:</p>
+<ol class="arabic simple">
+<li><p>Initiator 在收到 READY TO TRANSFER UPIU 之前不得发送 DATA OUT UPIU</p></li>
+<li><p>Target 通过发送多个 READY TO TRANSFER UPIU 来 pacing 大数据传输</p></li>
+<li><p>每个 DATA OUT UPIU 对应一个 READY TO TRANSFER UPIU</p></li>
+<li><p>Data Buffer Offset 和 Data Transfer Count 必须与 RTT 请求匹配</p></li>
+</ol>
+</section>
+</section>
+<section id="data-in-upiu">
+<h1>DATA IN UPIU 详解<a class="headerlink" href="#data-in-upiu" title="链接到此标题。"></a></h1>
+<section id="data-in-upiu-section-10-7-4-table-10-20">
+<h2>DATA IN UPIU 格式 [Section 10.7.4, Table 10.20]_<a class="headerlink" href="#data-in-upiu-section-10-7-4-table-10-20" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx10 0010b| Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | IID       | Reserved        | Reserved        |
+         +-------+-------+-------+-------+
+   8     | 00h             | Reserved          |
+         +-------+-------+-------+-------+
+  12     | Data Buffer Offset                |
+         +-------+-------+-------+-------+
+  16     | Data Transfer Count               |
+         +-------+-------+-------+-------+
+  20     | Reserved                          |
+         +-------+-------+-------+-------+
+  24     | Reserved                          |
+         +-------+-------+-------+-------+
+  28     | Reserved                          |
+         +-------+-------+-------+-------+
+   k     | Data Payload...                   |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="data-in-section-10-7-4-1">
+<h2>DATA IN 特性 [Section 10.7.4.1]_<a class="headerlink" href="#data-in-section-10-7-4-1" title="链接到此标题。"></a></h2>
+<p><strong>与 DATA OUT 的区别</strong>:</p>
+<ul class="simple">
+<li><p>数据流向：Target → Initiator (读操作)</p></li>
+<li><p>无需 READY TO TRANSFER 握手</p></li>
+<li><p>Host 预先分配足够的缓冲区接收全部数据</p></li>
+<li><p>支持乱序传输 (如果设备支持)</p></li>
+</ul>
+<p><strong>Data Buffer Offset</strong>:
+- 表示此 UPIU 数据在完整传输区中的偏移
+- 允许非顺序传输 DATA IN UPIU
+- 对于 SCSI READ 命令，必须是逻辑块大小的整数倍</p>
+<p><strong>Data Transfer Count</strong>:
+- Target 放置在 Data Segment 中的有效字节数
+- 最大值：65535 字节/UPIU
+- 必须与 Data Segment Length 相同</p>
+</section>
+</section>
+<section id="ready-to-transfer-upiu">
+<h1>READY TO TRANSFER UPIU 详解<a class="headerlink" href="#ready-to-transfer-upiu" title="链接到此标题。"></a></h1>
+<section id="rtt-upiu-section-10-7-5-table-10-21">
+<h2>RTT UPIU 格式 [Section 10.7.5, Table 10-21]_<a class="headerlink" href="#rtt-upiu-section-10-7-5-table-10-21" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx11 0001b| Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | IID       | Reserved        | Reserved        |
+         +-------+-------+-------+-------+
+   8     | 00h             | Reserved          |
+         +-------+-------+-------+-------+
+  12     | Data Buffer Offset                |
+         +-------+-------+-------+-------+
+  16     | Data Transfer Count               |
+         +-------+-------+-------+-------+
+  20     | Reserved                          |
+         +-------+-------+-------+-------+
+  24     | Reserved                          |
+         +-------+-------+-------+-------+
+  28     | Reserved                          |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="rtt-upiu-section-10-7-5-1">
+<h2>RTT UPIU 功能 [Section 10.7.5.1]_<a class="headerlink" href="#rtt-upiu-section-10-7-5-1" title="链接到此标题。"></a></h2>
+<p><strong>用途</strong>:
+- Target 在处理需要 Data Out 传输的 SCSI 命令 (如写命令) 时发出
+- 表示 Target 已准备好接收数据块
+- 可顺序或乱序请求数据</p>
+<p><strong>关键约束</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Data Buffer Offset</strong>:
+- 指示 Initiator 发送数据的起始位置
+- 必须是 4 的整数倍
+- 对于 SCSI WRITE 命令，必须是逻辑块大小的整数倍</p></li>
+<li><p><strong>Data Transfer Count</strong>:
+- 表示 Target 请求的字节数
+- 必须是 4 字节的整数倍 (最后一个 RTT 除外)
+- 不得超过 bMaxDataOutSize 属性值
+- 对于 SCSI WRITE 命令，必须是逻辑块大小的整数倍</p></li>
+<li><p><strong>序列规则</strong>:
+- Target 可发送一个或多个 RTT UPIU 满足 Expected Data Transfer Length
+- Initiator 对每个 RTT 回复一个 DATA OUT UPIU
+- 支持乱序请求 (reverse order 等)</p></li>
+</ol>
+</section>
+</section>
+<section id="id4">
+<h1>任务管理 UPIU<a class="headerlink" href="#id4" title="链接到此标题。"></a></h1>
+<section id="task-management-request-upiu-section-10-7-6-table-10-22">
+<h2>TASK MANAGEMENT REQUEST UPIU [Section 10.7.6, Table 10.22]_<a class="headerlink" href="#task-management-request-upiu-section-10-7-6-table-10-22" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx00 0100b| Flags   | LUN     | Task Tag        |
+         +-------+-------+-------+-------+
+   4     | IID       | Reserved        | TM Function     |
+         +-------+-------+-------+-------+
+   8     | 00h             | Reserved          |
+         +-------+-------+-------+-------+
+  12     | Input Parameter 1 (LUN)           |
+         +-------+-------+-------+-------+
+  16     | Input Parameter 2 (Task Tag)      |
+         +-------+-------+-------+-------+
+  20     | Input Parameter 3 (IID)           |
+         +-------+-------+-------+-------+
+  24     | Reserved                          |
+         +-------+-------+-------+-------+
+  28     | Reserved                          |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="table-10-23">
+<h2>任务管理函数 [Table 10.23]_<a class="headerlink" href="#table-10-23" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>函数</p></th>
+<th class="head"><p>值</p></th>
+<th class="head"><p>描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Abort Task</p></td>
+<td><p>01h</p></td>
+<td><p>中止特定 LU 队列中的指定任务 (通过 IID、LUN、Task Tag 识别)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Abort Task Set</p></td>
+<td><p>02h</p></td>
+<td><p>中止特定 LU 的任务队列列表 (通过 IID 和 LUN 识别)</p></td>
+</tr>
+<tr class="row-even"><td><p>Clear Task Set</p></td>
+<td><p>04h</p></td>
+<td><p>清除特定 LU 的任务队列列表 (通过 LUN 识别)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Logical Unit Reset</p></td>
+<td><p>08h</p></td>
+<td><p>复位指定的 LU (通过 LUN 识别)</p></td>
+</tr>
+<tr class="row-even"><td><p>Query Task</p></td>
+<td><p>80h</p></td>
+<td><p>查询特定 LU 队列中的指定任务是否存在</p></td>
+</tr>
+<tr class="row-odd"><td><p>Query Task Set</p></td>
+<td><p>81h</p></td>
+<td><p>查询特定 LU 是否有任务在队列中</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="table-10-24">
+<h2>输入参数 [Table 10.24]_<a class="headerlink" href="#table-10-24" title="链接到此标题。"></a></h2>
+<ul class="simple">
+<li><p><strong>Input Parameter 1</strong>: LSB 为操作的 LUN</p></li>
+<li><p><strong>Input Parameter 2</strong>: LSB 为操作的任务标签 (Task Tag)</p></li>
+<li><p><strong>Input Parameter 3</strong>: Bit 3-0 为任务的 IID</p></li>
+</ul>
+</section>
+<section id="task-management-response-upiu-section-10-7-7-table-10-25">
+<h2>TASK MANAGEMENT RESPONSE UPIU [Section 10.7.7, Table 10.25]_<a class="headerlink" href="#task-management-response-upiu-section-10-7-7-table-10-25" title="链接到此标题。"></a></h2>
+<section id="table-10-26-10-27">
+<h3>输出参数 [Table 10.26-10.27]_<a class="headerlink" href="#table-10-26-10-27" title="链接到此标题。"></a></h3>
+<p><strong>Output Parameter 1</strong>: LSB 为任务管理服务响应码</p>
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">任务管理服务响应</span><a class="headerlink" href="#id14" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 66.7%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>响应</p></th>
+<th class="head"><p>值</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Task Management Function Complete</p></td>
+<td><p>00h</p></td>
+</tr>
+<tr class="row-odd"><td><p>Task Management Function Not Supported</p></td>
+<td><p>04h</p></td>
+</tr>
+<tr class="row-even"><td><p>Task Management Function Failed</p></td>
+<td><p>05h (TMR 处理能力超限时返回)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Task Management Function Succeeded</p></td>
+<td><p>08h</p></td>
+</tr>
+<tr class="row-even"><td><p>Incorrect Logical Unit Number</p></td>
+<td><p>09h</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="id5">
+<h1>查询 UPIU<a class="headerlink" href="#id5" title="链接到此标题。"></a></h1>
+<section id="query-request-upiu-section-10-7-8-table-10-28">
+<h2>QUERY REQUEST UPIU [Section 10.7.8, Table 10.28]_<a class="headerlink" href="#query-request-upiu-section-10-7-8-table-10-28" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>字节偏移：  0       1       2       3
+         +-------+-------+-------+-------+
+   0     | xx01 0110b| Flags   | Reserved| Task Tag        |
+         +-------+-------+-------+-------+
+   4     | Reserved        | Query Function    |
+         +-------+-------+-------+-------+
+   8     | 00h             | Reserved          |
+         +-------+-------+-------+-------+
+  12     | OPCODE  | OSF[0]  | OSF[1]  | OSF[2]  |
+         +-------+-------+-------+-------+
+  16     | OSF[3]  | OSF[4]  | OSF[5]  | OSF[6]  |
+         +-------+-------+-------+-------+
+  20     | OSF[7]  | Reserved        |
+         +-------+-------+-------+-------+
+  24     | Reserved                          |
+         +-------+-------+-------+-------+
+  28     | Reserved                          |
+         +-------+-------+-------+-------+
+   k     | Data Segment (可选)...            |
+         +-------+-------+-------+-------+
+</pre></div>
+</div>
+</section>
+<section id="section-10-7-8-2-table-10-29">
+<h2>查询功能 [Section 10.7.8.2, Table 10.29]_<a class="headerlink" href="#section-10-7-8-2-table-10-29" title="链接到此标题。"></a></h2>
+<p><strong>Standard Read Request (01h)</strong>: 从 Target 读取信息</p>
+<p><strong>Standard Write Request (81h)</strong>: 向 Target 写入信息</p>
+<p><strong>Vendor Specific Functions</strong>:
+- Read: 40h-7Fh
+- Write: C0h-FFh</p>
+</section>
+<section id="table-10-31">
+<h2>查询操作码 [Table 10.31]_<a class="headerlink" href="#table-10-31" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 46.7%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>OPCODE</p></th>
+<th class="head"><p>操作</p></th>
+<th class="head"><p>QUERY FUNCTION</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>00h</p></td>
+<td><p>NOP</p></td>
+<td><p>任意值</p></td>
+</tr>
+<tr class="row-odd"><td><p>01h</p></td>
+<td><p>READ DESCRIPTOR</p></td>
+<td><p>STANDARD READ REQUEST</p></td>
+</tr>
+<tr class="row-even"><td><p>02h</p></td>
+<td><p>WRITE DESCRIPTOR</p></td>
+<td><p>STANDARD WRITE REQUEST</p></td>
+</tr>
+<tr class="row-odd"><td><p>03h</p></td>
+<td><p>READ ATTRIBUTE</p></td>
+<td><p>STANDARD READ REQUEST</p></td>
+</tr>
+<tr class="row-even"><td><p>04h</p></td>
+<td><p>WRITE ATTRIBUTE</p></td>
+<td><p>STANDARD WRITE REQUEST</p></td>
+</tr>
+<tr class="row-odd"><td><p>05h</p></td>
+<td><p>READ FLAG</p></td>
+<td><p>STANDARD READ REQUEST</p></td>
+</tr>
+<tr class="row-even"><td><p>06h</p></td>
+<td><p>SET FLAG</p></td>
+<td><p>STANDARD WRITE REQUEST</p></td>
+</tr>
+<tr class="row-odd"><td><p>07h</p></td>
+<td><p>CLEAR FLAG</p></td>
+<td><p>STANDARD WRITE REQUEST</p></td>
+</tr>
+<tr class="row-even"><td><p>08h</p></td>
+<td><p>TOGGLE FLAG</p></td>
+<td><p>STANDARD WRITE REQUEST</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="read-descriptor-section-10-7-8-4-table-10-32">
+<h2>READ DESCRIPTOR 操作码 [Section 10.7.8.4, Table 10.32]_<a class="headerlink" href="#read-descriptor-section-10-7-8-4-table-10-32" title="链接到此标题。"></a></h2>
+<p>OSF 字段定义:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 40.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>描述</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DESCRIPTOR IDN</p></td>
+<td><p>描述符类型标识</p></td>
+<td><p>如 Device Descriptor、Unit Descriptor 等</p></td>
+</tr>
+<tr class="row-odd"><td><p>INDEX</p></td>
+<td><p>索引</p></td>
+<td><p>选择特定描述符 (0-255)</p></td>
+</tr>
+<tr class="row-even"><td><p>SELECTOR</p></td>
+<td><p>选择器</p></td>
+<td><p>进一步识别描述符</p></td>
+</tr>
+<tr class="row-odd"><td><p>LENGTH</p></td>
+<td><p>读取长度</p></td>
+<td><p>请求读取的字节数</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="write-descriptor-section-10-7-8-5-table-10-33">
+<h2>WRITE DESCRIPTOR 操作码 [Section 10.7.8.5, Table 10.33]_<a class="headerlink" href="#write-descriptor-section-10-7-8-5-table-10-33" title="链接到此标题。"></a></h2>
+<p>类似 READ DESCRIPTOR，但 Data Segment 包含要写入的数据</p>
+</section>
+<section id="section-10-7-8-1">
+<h2>查询对象类型 [Section 10.7.8.1]_<a class="headerlink" href="#section-10-7-8-1" title="链接到此标题。"></a></h2>
+<p><strong>Descriptors (描述符)</strong>:
+- 描述设备某方面的参数块
+- 如 Device Descriptor、Configuration Descriptor、Unit Descriptor 等</p>
+<p><strong>Attributes (属性)</strong>:
+- 单个参数，代表可设置或读取的数值范围
+- 大小可从 1-bit 到 32-bit
+- 可组织成数组，通过索引识别
+- 如波特率、块大小</p>
+<p><strong>Flags (标志)</strong>:
+- 单个布尔值 (TRUE/FALSE, 0/1, ON/OFF)
+- 可清除、设置、翻转或读取
+- 用于启用/禁用特定功能或模式</p>
+</section>
+</section>
+<section id="id6">
+<h1>逻辑单元寻址<a class="headerlink" href="#id6" title="链接到此标题。"></a></h1>
+<section id="ufs-scsi-section-10-8-1-figure-10-8">
+<h2>UFS SCSI 域模型 [Section 10.8.1, Figure 10.8]_<a class="headerlink" href="#ufs-scsi-section-10-8-1-figure-10-8" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+------------------+</span>              <span class="o">+------------------+</span>
+<span class="o">|</span>  <span class="n">Initiator</span> <span class="n">Port</span>  <span class="o">|</span>              <span class="o">|</span>  <span class="n">Target</span> <span class="n">Port</span>     <span class="o">|</span>
+<span class="o">|</span>  <span class="p">(</span><span class="n">UFS</span> <span class="n">Host</span><span class="p">)</span>      <span class="o">|</span>              <span class="o">|</span>  <span class="p">(</span><span class="n">UFS</span> <span class="n">Device</span><span class="p">)</span>    <span class="o">|</span>
+<span class="o">+--------+---------+</span>              <span class="o">+--------+---------+</span>
+         <span class="o">|</span>                                 <span class="o">|</span>
+         <span class="o">+------------</span> <span class="n">UniPro</span> <span class="o">-------------+</span>
+                      <span class="n">Bus</span>
+
+         <span class="o">|&lt;----</span> <span class="n">I_T</span> <span class="n">Nexus</span> <span class="o">----&gt;|</span>
+</pre></div>
+</div>
+</section>
+<section id="section-10-8-2">
+<h2>逻辑单元定义 [Section 10.8.2]_<a class="headerlink" href="#section-10-8-2" title="链接到此标题。"></a></h2>
+<p><strong>Logical Unit (LU)</strong>:
+- Target 设备内的独立处理实体
+- 包含任务队列，支持并发处理多个任务
+- 每个 LU 有唯一的逻辑单元号 (LUN)</p>
+<p><strong>Well Known Logical Units</strong>:
+- 特殊功能的预定义 LU
+- 如 RPMB LU、Boot LU 等</p>
+</section>
+<section id="lu-section-10-8-4-figure-10-9">
+<h2>LU 寻址 [Section 10.8.4, Figure 10.9]_<a class="headerlink" href="#lu-section-10-8-4-figure-10-9" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Target</span> <span class="n">Device</span>
+<span class="o">+----------------------------------+</span>
+<span class="o">|</span>  <span class="n">LU</span> <span class="mi">0</span>    <span class="n">LU</span> <span class="mi">1</span>    <span class="n">LU</span> <span class="mi">2</span>   <span class="o">...</span> <span class="n">LU</span> <span class="n">n</span> <span class="o">|</span>
+<span class="o">|</span>   <span class="o">|</span>       <span class="o">|</span>       <span class="o">|</span>          <span class="o">|</span>    <span class="o">|</span>
+<span class="o">|</span>   <span class="n">v</span>       <span class="n">v</span>       <span class="n">v</span>          <span class="n">v</span>    <span class="o">|</span>
+<span class="o">|</span>  <span class="n">LUN</span><span class="o">=</span><span class="mi">0</span>   <span class="n">LUN</span><span class="o">=</span><span class="mi">1</span>   <span class="n">LUN</span><span class="o">=</span><span class="mi">2</span>     <span class="n">LUN</span><span class="o">=</span><span class="n">n</span>  <span class="o">|</span>
+<span class="o">+----------------------------------+</span>
+</pre></div>
+</div>
+<p><strong>8-bit UFS LUN 到 64-bit SCSI LUN 转换</strong> [Section 10.8.6]:
+- UFS 使用 8 位 LUN 寻址 (0-255)
+- 转换为 SCSI 64 位 LUN 地址</p>
+</section>
+</section>
+<section id="id7">
+<h1>典型事务流程<a class="headerlink" href="#id7" title="链接到此标题。"></a></h1>
+<section id="scsi-figure-10-10">
+<h2>SCSI 写命令流程 [Figure 10.10]_<a class="headerlink" href="#scsi-figure-10-10" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span>                                  <span class="n">Device</span>
+ <span class="o">|</span>                                      <span class="o">|</span>
+ <span class="o">|---</span> <span class="n">COMMAND</span> <span class="n">UPIU</span> <span class="p">(</span><span class="n">WRITE</span><span class="p">)</span> <span class="o">-----------&gt;</span> <span class="o">|</span>  <span class="n">Flags</span><span class="o">.</span><span class="n">W</span><span class="o">=</span><span class="mi">1</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">Expected</span> <span class="n">Data</span> <span class="n">Length</span><span class="o">=</span><span class="n">N</span>
+ <span class="o">|&lt;--</span> <span class="n">READY</span> <span class="n">TO</span> <span class="n">TRANSFER</span> <span class="n">UPIU</span> <span class="o">----------</span> <span class="o">|</span>  <span class="n">Data</span> <span class="n">Buffer</span> <span class="n">Offset</span><span class="o">=</span><span class="mi">0</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">Data</span> <span class="n">Transfer</span> <span class="n">Count</span><span class="o">=</span><span class="n">M1</span>
+ <span class="o">|---</span> <span class="n">DATA</span> <span class="n">OUT</span> <span class="n">UPIU</span> <span class="o">------------------&gt;</span> <span class="o">|</span>  <span class="n">Offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Count</span><span class="o">=</span><span class="n">M1</span>
+ <span class="o">|&lt;--</span> <span class="n">READY</span> <span class="n">TO</span> <span class="n">TRANSFER</span> <span class="n">UPIU</span> <span class="o">----------</span> <span class="o">|</span>  <span class="n">Data</span> <span class="n">Buffer</span> <span class="n">Offset</span><span class="o">=</span><span class="n">M1</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">Data</span> <span class="n">Transfer</span> <span class="n">Count</span><span class="o">=</span><span class="n">M2</span>
+ <span class="o">|---</span> <span class="n">DATA</span> <span class="n">OUT</span> <span class="n">UPIU</span> <span class="o">------------------&gt;</span> <span class="o">|</span>  <span class="n">Offset</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">Count</span><span class="o">=</span><span class="n">M2</span>
+ <span class="o">|</span>           <span class="o">...</span>                        <span class="o">|</span>
+ <span class="o">|&lt;--</span> <span class="n">RESPONSE</span> <span class="n">UPIU</span> <span class="o">-------------------</span> <span class="o">|</span>  <span class="n">Status</span><span class="o">=</span><span class="n">GOOD</span>
+</pre></div>
+</div>
+</section>
+<section id="scsi-figure-10-11">
+<h2>SCSI 读命令流程 [Figure 10.11]_<a class="headerlink" href="#scsi-figure-10-11" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span>                                  <span class="n">Device</span>
+ <span class="o">|</span>                                      <span class="o">|</span>
+ <span class="o">|---</span> <span class="n">COMMAND</span> <span class="n">UPIU</span> <span class="p">(</span><span class="n">READ</span><span class="p">)</span> <span class="o">------------&gt;</span> <span class="o">|</span>  <span class="n">Flags</span><span class="o">.</span><span class="n">R</span><span class="o">=</span><span class="mi">1</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">Expected</span> <span class="n">Data</span> <span class="n">Length</span><span class="o">=</span><span class="n">N</span>
+ <span class="o">|&lt;--</span> <span class="n">DATA</span> <span class="n">IN</span> <span class="n">UPIU</span> <span class="o">-------------------</span> <span class="o">|</span>  <span class="n">Offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Count</span><span class="o">=</span><span class="n">M1</span>
+ <span class="o">|&lt;--</span> <span class="n">DATA</span> <span class="n">IN</span> <span class="n">UPIU</span> <span class="o">-------------------</span> <span class="o">|</span>  <span class="n">Offset</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">Count</span><span class="o">=</span><span class="n">M2</span>
+ <span class="o">|</span>           <span class="o">...</span>                        <span class="o">|</span>
+ <span class="o">|&lt;--</span> <span class="n">RESPONSE</span> <span class="n">UPIU</span> <span class="o">-------------------</span> <span class="o">|</span>  <span class="n">Status</span><span class="o">=</span><span class="n">GOOD</span>
+</pre></div>
+</div>
+</section>
+<section id="figure-10-12">
+<h2>无数据阶段命令流程 [Figure 10.12]_<a class="headerlink" href="#figure-10-12" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span>                                  <span class="n">Device</span>
+ <span class="o">|</span>                                      <span class="o">|</span>
+ <span class="o">|---</span> <span class="n">COMMAND</span> <span class="n">UPIU</span> <span class="o">-------------------&gt;</span> <span class="o">|</span>  <span class="n">Flags</span><span class="o">.</span><span class="n">R</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Flags</span><span class="o">.</span><span class="n">W</span><span class="o">=</span><span class="mi">0</span>
+ <span class="o">|&lt;--</span> <span class="n">RESPONSE</span> <span class="n">UPIU</span> <span class="o">-------------------</span> <span class="o">|</span>  <span class="n">Status</span><span class="o">=</span><span class="n">GOOD</span>
+</pre></div>
+</div>
+</section>
+<section id="figure-10-17">
+<h2>任务管理函数流程 [Figure 10.17]_<a class="headerlink" href="#figure-10-17" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span>                                  <span class="n">Device</span>
+ <span class="o">|</span>                                      <span class="o">|</span>
+ <span class="o">|---</span> <span class="n">TM</span> <span class="n">REQUEST</span> <span class="n">UPIU</span> <span class="o">---------------&gt;</span> <span class="o">|</span>  <span class="n">Function</span><span class="o">=</span><span class="n">ABORT_TASK</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">LUN</span><span class="p">,</span> <span class="n">Task</span> <span class="n">Tag</span><span class="p">,</span> <span class="n">IID</span>
+ <span class="o">|&lt;--</span> <span class="n">TM</span> <span class="n">RESPONSE</span> <span class="n">UPIU</span> <span class="o">----------------</span> <span class="o">|</span>  <span class="n">Response</span><span class="o">=</span><span class="n">SUCCESS</span>
+</pre></div>
+</div>
+</section>
+<section id="figure-10-18">
+<h2>查询函数流程 [Figure 10.18]_<a class="headerlink" href="#figure-10-18" title="链接到此标题。"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Host</span>                                  <span class="n">Device</span>
+ <span class="o">|</span>                                      <span class="o">|</span>
+ <span class="o">|---</span> <span class="n">QUERY</span> <span class="n">REQUEST</span> <span class="n">UPIU</span> <span class="o">------------&gt;</span> <span class="o">|</span>  <span class="n">Opcode</span><span class="o">=</span><span class="n">READ_DESC</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">Desc</span> <span class="n">IDN</span><span class="p">,</span> <span class="n">Index</span>
+ <span class="o">|&lt;--</span> <span class="n">QUERY</span> <span class="n">RESPONSE</span> <span class="n">UPIU</span> <span class="o">-------------</span> <span class="o">|</span>  <span class="n">Response</span><span class="o">=</span><span class="n">SUCCESS</span>
+ <span class="o">|</span>                                      <span class="o">|</span>  <span class="n">Descriptor</span> <span class="n">Data</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h1>应用层传输协议服务<a class="headerlink" href="#id8" title="链接到此标题。"></a></h1>
+<section id="scsi-section-10-9-3-10-9-7">
+<h2>SCSI 命令传输协议服务 [Section 10.9.3-10.9.7]_<a class="headerlink" href="#scsi-section-10-9-3-10-9-7" title="链接到此标题。"></a></h2>
+<p><strong>Send SCSI Command</strong>:
+- 从应用客户端到 UTP 的服务原语
+- 传递 CDB 和执行参数</p>
+<p><strong>SCSI Command Received</strong>:
+- 从 UTP 到设备任务管理器的指示
+- 触发命令执行</p>
+<p><strong>Send Command Complete</strong>:
+- 从设备任务管理器到 UTP 的响应
+- 包含命令执行状态和 Sense Data</p>
+<p><strong>Data Transfer Services</strong>:
+- Send Data-In: 从设备到主机的数据传输
+- Receive Data-Out: 从主机到设备的数据接收</p>
+</section>
+<section id="section-10-9-8">
+<h2>任务管理过程调用 [Section 10.9.8]_<a class="headerlink" href="#section-10-9-8" title="链接到此标题。"></a></h2>
+<p><strong>Send Task Management Request</strong>:
+- 从应用客户端到 UTP_TM_SAP
+- 传递 TM 函数代码和参数</p>
+<p><strong>Task Management Function Executed</strong>:
+- 从设备 LU 任务管理器返回执行结果</p>
+</section>
+<section id="section-10-9-9">
+<h2>查询函数传输协议服务 [Section 10.9.9]_<a class="headerlink" href="#section-10-9-9" title="链接到此标题。"></a></h2>
+<p><strong>Send Query Request</strong>:
+- 从设备管理器到 UTP
+- 传递查询操作码和参数</p>
+<p><strong>Query Function Executed</strong>:
+- 从设备返回查询结果</p>
+</section>
+</section>
+<section id="id9">
+<h1>关键设计特性<a class="headerlink" href="#id9" title="链接到此标题。"></a></h1>
+<section id="pacing-section-10-2-2">
+<h2>数据 pacing 机制 [Section 10.2.2]_<a class="headerlink" href="#pacing-section-10-2-2" title="链接到此标题。"></a></h2>
+<p><strong>问题</strong>: 设备可能有有限的缓冲资源或处理吞吐量</p>
+<p><strong>解决方案</strong>: READY TO TRANSFER UPIU</p>
+<ul class="simple">
+<li><p>Target 在准备好接收下一个 DATA OUT UPIU 时发送 RTT</p></li>
+<li><p>RTT 包含嵌入式传输上下文，用于在每个包基础上启动 DMA 传输</p></li>
+<li><p>允许 Target 控制数据流速率，避免缓冲区溢出</p></li>
+</ul>
+<p><strong>Data In 阶段</strong>:
+- 无需 RTT 握手
+- 主机可预先指定 Data In 传输大小
+- 提前分配适当的内存资源</p>
+</section>
+<section id="task-tag-section-10-1-table-10-9">
+<h2>Task Tag 关联机制 [Section 10.1, Table 10.9]_<a class="headerlink" href="#task-tag-section-10-1-table-10-9" title="链接到此标题。"></a></h2>
+<p>同一任务的所有相关 UPIU 使用相同的 Task Tag:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Initiator UPIU</p></th>
+<th class="head"><p>Target UPIU</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NOP Out</p></td>
+<td><p>NOP In</p></td>
+</tr>
+<tr class="row-odd"><td><p>Command, Data Out</p></td>
+<td><p>Ready to Transfer, Response</p></td>
+</tr>
+<tr class="row-even"><td><p>Command</p></td>
+<td><p>Data In, Response</p></td>
+</tr>
+<tr class="row-odd"><td><p>Task Management Request</p></td>
+<td><p>Task Management Response</p></td>
+</tr>
+<tr class="row-even"><td><p>Query Request</p></td>
+<td><p>Query Response</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="crc-section-10-6-2">
+<h2>端到端 CRC 支持 (本版本未启用) [Section 10.6.2]_<a class="headerlink" href="#crc-section-10-6-2" title="链接到此标题。"></a></h2>
+<p><strong>HD Bit (Header CRC)</strong>:
+- '1': 包含所有头段的端到端 CRC
+- 本版本不支持，HD 固定为'0'</p>
+<p><strong>DD Bit (Data CRC)</strong>:
+- '1': 包含数据段的端到端 CRC
+- 本版本不支持，DD 固定为'0'</p>
+</section>
+<section id="upiu-section-10-2-3-10-3">
+<h2>UPIU 尺寸灵活性 [Section 10.2.3, 10.3]_<a class="headerlink" href="#upiu-section-10-2-3-10-3" title="链接到此标题。"></a></h2>
+<p><strong>最小尺寸</strong>: 32 字节
+- 12 字节基本头
+- 20 字节事务特定字段</p>
+<p><strong>最大尺寸</strong>: 65600 字节
+- 包含基本头、可选扩展头、数据段
+- Data Segment 最大 65535 字节</p>
+<p><strong>对齐要求</strong>:
+- 所有 UPIU 尺寸为 32 位 (4 字节) 的整数倍
+- 数据段需要填充到最近的 DWORD 边界</p>
+</section>
+</section>
+<section id="id10">
+<h1>表格索引<a class="headerlink" href="#id10" title="链接到此标题。"></a></h1>
+<table class="docutils align-default" id="id15">
+<caption><span class="caption-text">本文档引用的关键表格</span><a class="headerlink" href="#id15" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>表格编号</p></th>
+<th class="head"><p>内容描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Table 10.1</p></td>
+<td><p>UPIU 事务代码</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.2</p></td>
+<td><p>UPIU 事务代码定义</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.3</p></td>
+<td><p>UPIU 通用格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.4</p></td>
+<td><p>基本头格式</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.5</p></td>
+<td><p>事务类型格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.6</p></td>
+<td><p>UPIU Flags 定义</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.7</p></td>
+<td><p>任务属性定义</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.8</p></td>
+<td><p>UTP 响应值</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.9</p></td>
+<td><p>与单个任务关联的 UPIU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.10</p></td>
+<td><p>命令集类型</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.11</p></td>
+<td><p>COMMAND UPIU 格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.12</p></td>
+<td><p>COMMAND UPIU Flags 定义</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.13</p></td>
+<td><p>RESPONSE UPIU 格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.14</p></td>
+<td><p>RESPONSE UPIU Flags 定义</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.15</p></td>
+<td><p>SCSI 状态值</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.16</p></td>
+<td><p>Flags 和剩余传输计数关系</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.17</p></td>
+<td><p>SCSI 固定格式 Sense Data</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.18</p></td>
+<td><p>Sense Key 定义</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.19</p></td>
+<td><p>DATA OUT UPIU 格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.20</p></td>
+<td><p>DATA IN UPIU 格式</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10-21</p></td>
+<td><p>READY TO TRANSFER UPIU 格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.22</p></td>
+<td><p>Task Management Request UPIU</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.23</p></td>
+<td><p>Task Management 函数值</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.24</p></td>
+<td><p>Task Management 输入参数</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.25</p></td>
+<td><p>Task Management Response UPIU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.26</p></td>
+<td><p>Task Management 输出参数</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.27</p></td>
+<td><p>Task Management 服务响应</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.28</p></td>
+<td><p>QUERY REQUEST UPIU 格式</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.29</p></td>
+<td><p>Query Function 字段值</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.30</p></td>
+<td><p>事务特定字段</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.31</p></td>
+<td><p>Query Function 操作码值</p></td>
+</tr>
+<tr class="row-odd"><td><p>Table 10.32</p></td>
+<td><p>Read Descriptor 格式</p></td>
+</tr>
+<tr class="row-even"><td><p>Table 10.33</p></td>
+<td><p>Write Descriptor 格式</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id11">
+<h1>图形索引<a class="headerlink" href="#id11" title="链接到此标题。"></a></h1>
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">本文档引用的关键图形</span><a class="headerlink" href="#id16" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>图形编号</p></th>
+<th class="head"><p>内容描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Figure 5.1</p></td>
+<td><p>UFS 顶层架构</p></td>
+</tr>
+<tr class="row-odd"><td><p>Figure 10.1</p></td>
+<td><p>Data Out 传输示例</p></td>
+</tr>
+<tr class="row-even"><td><p>Figure 10.2</p></td>
+<td><p>Data In 传输示例</p></td>
+</tr>
+<tr class="row-odd"><td><p>Figure 10.3</p></td>
+<td><p>READY TO TRANSFER UPIU 序列示例</p></td>
+</tr>
+<tr class="row-even"><td><p>Figure 10.8</p></td>
+<td><p>UFS SCSI 域</p></td>
+</tr>
+<tr class="row-odd"><td><p>Figure 10.9</p></td>
+<td><p>逻辑单元寻址</p></td>
+</tr>
+<tr class="row-even"><td><p>Figure 10.10</p></td>
+<td><p>SCSI 写操作流程</p></td>
+</tr>
+<tr class="row-odd"><td><p>Figure 10.11</p></td>
+<td><p>SCSI 读操作流程</p></td>
+</tr>
+<tr class="row-even"><td><p>Figure 10.12</p></td>
+<td><p>无数据阶段命令</p></td>
+</tr>
+<tr class="row-odd"><td><p>Figure 10.17</p></td>
+<td><p>任务管理函数流程</p></td>
+</tr>
+<tr class="row-even"><td><p>Figure 10.18</p></td>
+<td><p>UFS 查询函数流程</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

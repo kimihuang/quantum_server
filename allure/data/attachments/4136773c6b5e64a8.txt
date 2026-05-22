@@ -1,0 +1,1 @@
+$$FAIL_TEST_0001 -v -c "exit 1" -p "anything" -t 3000^^

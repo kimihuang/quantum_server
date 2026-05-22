@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>23. Labgrid 自动化测试 QEMU 实践经验 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="24. ttyd Web SSH 服务配置" href="ttyd_setup.html" />
+    <link rel="prev" title="22. Labgrid for QEMU 环境搭建经验总结" href="labgrid_for_qemu.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">23. Labgrid 自动化测试 QEMU 实践经验</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">23.1. 环境搭建</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#labgrid-env-yaml">23.1.1. 核心配置文件 <code class="docutils literal notranslate"><span class="pre">labgrid-env.yaml</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#driver">23.1.2. Driver 激活顺序</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">23.2. 测试时间优化</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">23.2.1. 问题定位</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#await-login-timeout">23.2.2. await_login_timeout 的影响</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">23.2.3. 优化方案</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">23.3. 多文件测试组织</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conftest-py">23.3.1. conftest.py 核心</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#busybox">23.3.2. BusyBox 兼容性</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linux">23.4. 查看 Linux 启动日志</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">23.5. 测试报告生成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qmp-monitor">23.6. QMP Monitor 测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">23.7. 经验总结</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">23. </span>Labgrid 自动化测试 QEMU 实践经验</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/labgrid_qemu_practice.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="labgrid-qemu">
+<h1><span class="section-number">23. </span>Labgrid 自动化测试 QEMU 实践经验<a class="headerlink" href="#labgrid-qemu" title="链接到此标题。"></a></h1>
+<p>本文档记录了使用 Labgrid 搭建 QEMU aarch64 自动化测试的完整实践过程，涵盖环境搭建、
+测试时间优化、多文件测试组织、报告生成等关键经验。</p>
+<p>适用环境：Labgrid 25.x + pytest + QEMU 8.x + Buildroot rootfs</p>
+<section id="id1">
+<h2><span class="section-number">23.1. </span>环境搭建<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<section id="labgrid-env-yaml">
+<h3><span class="section-number">23.1.1. </span>核心配置文件 <code class="docutils literal notranslate"><span class="pre">labgrid-env.yaml</span></code><a class="headerlink" href="#labgrid-env-yaml" title="链接到此标题。"></a></h3>
+<p>Labgrid 通过 YAML 定义 target，关键是正确区分 driver 和 resource。
+QEMU 必须作为 driver（<code class="docutils literal notranslate"><span class="pre">QEMUDriver</span></code>），不能作为 resource。</p>
+<p>最小可用配置：</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">targets</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">main</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">drivers</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">QEMUDriver</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">qemu_bin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;qemu_aarch64&#39;</span>
+<span class="w">        </span><span class="nt">machine</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;virt&#39;</span>
+<span class="w">        </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;cortex-a57&#39;</span>
+<span class="w">        </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;512M&#39;</span>
+<span class="w">        </span><span class="nt">display</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;none&#39;</span>
+<span class="w">        </span><span class="nt">kernel</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;kernel&#39;</span>
+<span class="w">        </span><span class="nt">dtb</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;dtb&#39;</span>
+<span class="w">        </span><span class="nt">extra_args</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;-initrd</span><span class="nv"> </span><span class="s">/path/to/rootfs.cpio&#39;</span>
+<span class="w">        </span><span class="nt">boot_args</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;console=ttyAMA0</span><span class="nv"> </span><span class="s">init=/init&#39;</span>
+<span class="w">      </span><span class="nt">ShellDriver</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[#\\$]</span><span class="nv"> </span><span class="s">&#39;</span>
+<span class="w">        </span><span class="nt">login_prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;</span><span class="nv"> </span><span class="s">login:</span><span class="nv"> </span><span class="s">&#39;</span>
+<span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;root&#39;</span>
+<span class="w">        </span><span class="nt">await_login_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">        </span><span class="nt">login_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<span class="w">      </span><span class="nt">ShellStrategy</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+
+<span class="nt">tools</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">qemu_aarch64</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;qemu-system-aarch64&#39;</span>
+
+<span class="nt">images</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">kernel</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/Image&#39;</span>
+<span class="w">  </span><span class="nt">dtb</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/custom.dtb&#39;</span>
+</pre></div>
+</div>
+<p>几个容易踩的坑：</p>
+<table class="docutils align-default" id="id12">
+<caption><span class="caption-text">配置常见问题</span><a class="headerlink" href="#id12" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>问题</p></th>
+<th class="head"><p>解决方案</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">$BASE</span></code> 变量不替换</p></td>
+<td><p>使用绝对路径，Labgrid YAML 不支持 <code class="docutils literal notranslate"><span class="pre">$BASE</span></code> 等环境变量</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ShellDriver.timeout</span></code> 报 unsupported</p></td>
+<td><p>该属性在 v25 中不存在，使用 <code class="docutils literal notranslate"><span class="pre">await_login_timeout</span></code> 和 <code class="docutils literal notranslate"><span class="pre">login_timeout</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">display:</span> <span class="pre">'none'</span></code> 不生效</p></td>
+<td><p>实际效果是 <code class="docutils literal notranslate"><span class="pre">-nographic</span></code>，Labgrid 会自动处理</p></td>
+</tr>
+<tr class="row-odd"><td><p>缺少 initrd 导致 kernel panic</p></td>
+<td><p>通过 <code class="docutils literal notranslate"><span class="pre">extra_args</span></code> 传入 <code class="docutils literal notranslate"><span class="pre">-initrd</span> <span class="pre">/path/to/rootfs.cpio</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="driver">
+<h3><span class="section-number">23.1.2. </span>Driver 激活顺序<a class="headerlink" href="#driver" title="链接到此标题。"></a></h3>
+<p>QEMUDriver 和 ShellDriver 的激活顺序必须正确，否则会出现 <code class="docutils literal notranslate"><span class="pre">_clientsocket</span> <span class="pre">is</span> <span class="pre">None</span></code> 错误。</p>
+<p>正确顺序：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qemu</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_driver</span><span class="p">(</span><span class="n">QEMUDriver</span><span class="p">,</span> <span class="n">activate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">shell</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_driver</span><span class="p">(</span><span class="n">ShellDriver</span><span class="p">,</span> <span class="n">activate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">target</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">qemu</span><span class="p">)</span>   <span class="c1"># 1. 创建 unix socket</span>
+<span class="n">qemu</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>               <span class="c1"># 2. 启动 QEMU 进程，建立 socket 连接</span>
+<span class="n">target</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span>  <span class="c1"># 3. ShellDriver 绑定 console（此时 socket 已就绪）</span>
+<span class="n">shell</span><span class="o">.</span><span class="n">_await_login</span><span class="p">()</span>    <span class="c1"># 4. 等待 shell prompt</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>如果先 <code class="docutils literal notranslate"><span class="pre">activate(shell)</span></code> 再 <code class="docutils literal notranslate"><span class="pre">qemu.on()</span></code>，ShellDriver 会尝试读取尚未创建的
+socket，抛出 <code class="docutils literal notranslate"><span class="pre">TypeError:</span> <span class="pre">argument</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">an</span> <span class="pre">int,</span> <span class="pre">or</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">fileno()</span> <span class="pre">method</span></code>。</p>
+</div>
+</section>
+</section>
+<section id="id2">
+<h2><span class="section-number">23.2. </span>测试时间优化<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p>从 82 秒优化到 15 秒的关键调整。</p>
+<section id="id3">
+<h3><span class="section-number">23.2.1. </span>问题定位<a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>初始版本的 fixture 中有两段硬编码等待：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>    <span class="c1"># 等内核 boot</span>
+<span class="c1"># drain output...</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>   <span class="c1"># 等 init 脚本</span>
+
+<span class="n">总计</span><span class="err">：</span><span class="mi">15</span> <span class="n">秒静态等待</span> <span class="o">+</span> <span class="n">await_login</span> <span class="n">内部超时</span> <span class="o">=</span> <span class="n">约</span> <span class="mi">82</span> <span class="n">秒</span>
+</pre></div>
+</div>
+<p>根本原因不是 sleep 本身，而是 <code class="docutils literal notranslate"><span class="pre">_await_login</span></code> 的 <code class="docutils literal notranslate"><span class="pre">await_login_timeout</span></code> 参数。</p>
+</section>
+<section id="await-login-timeout">
+<h3><span class="section-number">23.2.2. </span>await_login_timeout 的影响<a class="headerlink" href="#await-login-timeout" title="链接到此标题。"></a></h3>
+<p>ShellDriver 的 <code class="docutils literal notranslate"><span class="pre">_await_login</span></code> 方法通过循环 expect 等待 shell prompt，每次 expect
+的超时由 <code class="docutils literal notranslate"><span class="pre">await_login_timeout</span></code> 控制（默认 2 秒）。</p>
+<p>工作原理：</p>
+<ol class="arabic simple">
+<li><p>每次 expect 超时后，检查 <code class="docutils literal notranslate"><span class="pre">before</span></code> 内容是否与上次相同</p></li>
+<li><p>如果相同（说明 console 空闲），发送空行探测 prompt</p></li>
+<li><p>如果不同（说明有新输出），继续下一轮 expect</p></li>
+</ol>
+<p>Boot 期间串口持续输出，所以 <code class="docutils literal notranslate"><span class="pre">before</span></code> 一直变化，&quot;静默检测&quot;永远不触发。
+<code class="docutils literal notranslate"><span class="pre">await_login_timeout=30</span></code> 时，每次循环等 30 秒才超时，导致白白等待。</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">23.2.3. </span>优化方案<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<table class="docutils align-default" id="id13">
+<caption><span class="caption-text">优化措施</span><a class="headerlink" href="#id13" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>措施</p></th>
+<th class="head"><p>优化前</p></th>
+<th class="head"><p>优化后</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">await_login_timeout</span></code></p></td>
+<td><p>30s（默认）</p></td>
+<td><p>3s</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">time.sleep(5)</span></code></p></td>
+<td><p>有</p></td>
+<td><p>删除</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">time.sleep(10)</span></code></p></td>
+<td><p>有</p></td>
+<td><p>删除</p></td>
+</tr>
+<tr class="row-odd"><td><p>总耗时</p></td>
+<td><p>~82s</p></td>
+<td><p>~15s</p></td>
+</tr>
+</tbody>
+</table>
+<p>将 <code class="docutils literal notranslate"><span class="pre">await_login_timeout</span></code> 设为 3 秒，让静默检测快速触发空行探测。
+Boot 过程中只要有短暂的输出间隙（超过 3 秒），就会发空行并匹配到 <a href="#id5"><span class="problematic" id="id6">``</span></a># `` prompt。</p>
+<p>优化后的 conftest.py：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;session&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">qemu_env</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+    <span class="n">qemu</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_driver</span><span class="p">(</span><span class="n">QEMUDriver</span><span class="p">,</span> <span class="n">activate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">shell</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_driver</span><span class="p">(</span><span class="n">ShellDriver</span><span class="p">,</span> <span class="n">activate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">target</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">qemu</span><span class="p">)</span>
+    <span class="n">qemu</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+
+    <span class="c1"># drain boot output until console is idle</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">ready</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">qemu</span><span class="o">.</span><span class="n">_clientsocket</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ready</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">qemu</span><span class="o">.</span><span class="n">_clientsocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+
+    <span class="n">target</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span>
+    <span class="n">shell</span><span class="o">.</span><span class="n">_await_login</span><span class="p">()</span>
+
+    <span class="k">yield</span> <span class="n">target</span>
+    <span class="n">qemu</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">23.3. </span>多文件测试组织<a class="headerlink" href="#id7" title="链接到此标题。"></a></h2>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> + 多个 <code class="docutils literal notranslate"><span class="pre">test_*.py</span></code> 的标准 pytest 结构。
+pytest 自动发现所有测试文件，session 级 fixture 确保只启动一次 QEMU。</p>
+<p>目录结构：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>labgrid/
+├── conftest.py          # 共享 fixture（qemu_env）
+├── labgrid-env.yaml     # 环境配置
+├── run_report.sh        # 报告生成脚本
+├── test_monitor.py      # QMP Monitor 测试（3 cases）
+├── test_system.py       # 系统信息测试（7 cases）
+├── test_filesystem.py   # 文件系统测试（4 cases）
+└── test_process.py      # 进程服务测试（6 cases）
+</pre></div>
+</div>
+<section id="conftest-py">
+<h3><span class="section-number">23.3.1. </span>conftest.py 核心<a class="headerlink" href="#conftest-py" title="链接到此标题。"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">qemu_env</span></code> fixture 使用 <code class="docutils literal notranslate"><span class="pre">scope=&quot;session&quot;</span></code>，所有测试用例共享同一个 QEMU 实例。</p>
+<p>同时通过 Python logging 记录 console 输出，用于 boot 日志排查：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;labgrid.console&quot;</span><span class="p">)</span>
+
+<span class="c1"># drain boot output</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">ready</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">qemu</span><span class="o">.</span><span class="n">_clientsocket</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ready</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">qemu</span><span class="o">.</span><span class="n">_clientsocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4096</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="busybox">
+<h3><span class="section-number">23.3.2. </span>BusyBox 兼容性<a class="headerlink" href="#busybox" title="链接到此标题。"></a></h3>
+<p>Buildroot 的 BusyBox 与 GNU 工具有命令差异，编写测试用例时需注意：</p>
+<table class="docutils align-default" id="id14">
+<caption><span class="caption-text">BusyBox 与 GNU 工具差异</span><a class="headerlink" href="#id14" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>GNU 用法</p></th>
+<th class="head"><p>BusyBox 限制</p></th>
+<th class="head"><p>替代方案</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ps</span> <span class="pre">-p</span> <span class="pre">1</span> <span class="pre">-o</span> <span class="pre">comm=</span></code></p></td>
+<td><p>不支持 <code class="docutils literal notranslate"><span class="pre">-p</span></code> 和 <code class="docutils literal notranslate"><span class="pre">-o</span></code> 参数</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ps</span> <span class="pre">|</span> <span class="pre">head</span> <span class="pre">-2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mount</span> <span class="pre">-t</span> <span class="pre">tmpfs</span> <span class="pre">none</span> <span class="pre">/dir</span></code></p></td>
+<td><p>可能未编译 tmpfs 支持</p></td>
+<td><p>直接写 <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> 测试读写</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="linux">
+<h2><span class="section-number">23.4. </span>查看 Linux 启动日志<a class="headerlink" href="#linux" title="链接到此标题。"></a></h2>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">--log-cli-level=INFO</span></code> 让 pytest 输出 <code class="docutils literal notranslate"><span class="pre">labgrid.console</span></code> logger 的内容：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-v<span class="w"> </span>--lg-env<span class="w"> </span>labgrid-env.yaml<span class="w"> </span>-s<span class="w"> </span>--log-cli-level<span class="o">=</span>INFO<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>console.log
+</pre></div>
+</div>
+<p>同时保存到文件和显示在终端，方便实时观察 boot 过程。</p>
+</section>
+<section id="id8">
+<h2><span class="section-number">23.5. </span>测试报告生成<a class="headerlink" href="#id8" title="链接到此标题。"></a></h2>
+<p>使用 pytest-html 生成自包含的 HTML 报告。</p>
+<p>安装依赖：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pytest-html<span class="w"> </span>pytest-json-report
+</pre></div>
+</div>
+<p>报告脚本 <code class="docutils literal notranslate"><span class="pre">run_report.sh</span></code> 同时生成三种产物：</p>
+<table class="docutils align-default" id="id15">
+<caption><span class="caption-text">报告产物</span><a class="headerlink" href="#id15" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>文件</p></th>
+<th class="head"><p>用途</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">report.html</span></code></p></td>
+<td><p>浏览器打开的交互式看板，包含通过/失败统计、耗时</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">report.json</span></code></p></td>
+<td><p>机器可读的结构化结果，适合 CI/CD pipeline 解析</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">console.log</span></code></p></td>
+<td><p>完整控制台输出，包含 QEMU boot 日志</p></td>
+</tr>
+</tbody>
+</table>
+<p>脚本核心逻辑：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-v<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--lg-env<span class="w"> </span>labgrid-env.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--html<span class="o">=</span>report/report.html<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--self-contained-html<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--json-report<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--json-report-file<span class="o">=</span>report/report.json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tb<span class="o">=</span>short<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-s<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>report/console.log
+
+<span class="c1"># 从 JSON 提取摘要</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">import json</span>
+<span class="s2">with open(&#39;report/report.json&#39;) as f:</span>
+<span class="s2">    data = json.load(f)</span>
+<span class="s2">summary = data.get(&#39;summary&#39;, {})</span>
+<span class="s2">duration = data.get(&#39;duration&#39;, 0)</span>
+<span class="s2">print(f&#39;Total: {summary[\&quot;total\&quot;]}, Passed: {summary[\&quot;passed\&quot;]}, Time: {duration:.2f}s&#39;)</span>
+<span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>运行方式：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>labgrid
+./run_report.sh
+xdg-open<span class="w"> </span>report/report.html
+</pre></div>
+</div>
+</section>
+<section id="qmp-monitor">
+<h2><span class="section-number">23.6. </span>QMP Monitor 测试<a class="headerlink" href="#qmp-monitor" title="链接到此标题。"></a></h2>
+<p>QEMUDriver 内置了 QMP（QEMU Machine Protocol）支持，可以发送 monitor 命令。
+QMP 通过 <code class="docutils literal notranslate"><span class="pre">qemu._child.stdin/stdout</span></code> 通信（<code class="docutils literal notranslate"><span class="pre">-qmp</span> <span class="pre">stdio</span></code>），串口通过 unix socket。</p>
+<p>常用 QMP 命令：</p>
+<table class="docutils align-default" id="id16">
+<caption><span class="caption-text">QMP 命令</span><a class="headerlink" href="#id16" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>命令</p></th>
+<th class="head"><p>用途</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">query-version</span></code></p></td>
+<td><p>查询 QEMU 版本号</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">query-status</span></code></p></td>
+<td><p>查询 VM 运行状态（running/paused）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">query-cpus-fast</span></code></p></td>
+<td><p>查询 CPU 拓扑信息</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">human-monitor-command</span></code></p></td>
+<td><p>执行 HMP 命令（如 <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">registers</span></code>）</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">qemu</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_driver</span><span class="p">(</span><span class="n">QEMUDriver</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">qemu</span><span class="o">.</span><span class="n">monitor_command</span><span class="p">(</span><span class="s2">&quot;query-version&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;QEMU </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;qemu&#39;</span><span class="p">][</span><span class="s1">&#39;major&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;qemu&#39;</span><span class="p">][</span><span class="s1">&#39;minor&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">qemu</span><span class="o">.</span><span class="n">monitor_command</span><span class="p">(</span><span class="s2">&quot;query-status&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;running&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h2><span class="section-number">23.7. </span>经验总结<a class="headerlink" href="#id9" title="链接到此标题。"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>驱动激活顺序是 Labgrid 的核心逻辑</strong>，QEMUDriver 必须先 <code class="docutils literal notranslate"><span class="pre">on()</span></code> 再激活 ShellDriver，
+否则 console 读取会失败。</p></li>
+<li><p><strong>测试耗时的瓶颈往往不是 sleep，而是 await_login 的超时参数</strong>。
+理解其内部&quot;静默检测&quot;机制，通过调整 <code class="docutils literal notranslate"><span class="pre">await_login_timeout</span></code> 让 prompt 探测更积极。</p></li>
+<li><p><strong>BusyBox 环境下编写测试用例要避免 GNU 特有的命令参数</strong>，
+编写后先在 QEMU shell 中手动验证命令可用性。</p></li>
+<li><p><a href="#id10"><span class="problematic" id="id11">**</span></a>使用 <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> 的 session fixture 管理全局资源**（QEMU 进程），
+多个 test 文件自动共享，避免重复启动。</p></li>
+<li><p><strong>报告生成与测试解耦</strong>，<code class="docutils literal notranslate"><span class="pre">run_report.sh</span></code> 封装了 pytest 参数和报告路径，
+一条命令产出 HTML + JSON + console log 三种格式，满足人工查看和 CI/CD 自动化两种场景。</p></li>
+<li><p><strong>Console 日志通过 Python logging 而非直接 print</strong>，
+可以用 pytest 的 <code class="docutils literal notranslate"><span class="pre">--log-cli-level</span></code> 统一控制，在需要时开启，不需要时静默。</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="labgrid_for_qemu.html" class="btn btn-neutral float-left" title="22. Labgrid for QEMU 环境搭建经验总结" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="ttyd_setup.html" class="btn btn-neutral float-right" title="24. ttyd Web SSH 服务配置" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

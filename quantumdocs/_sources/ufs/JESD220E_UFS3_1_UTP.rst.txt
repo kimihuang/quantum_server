@@ -1,0 +1,1268 @@
+JESD220E UFS 3.1 UTP 传输协议层深度分析
+========================================
+
+本文档基于 JEDEC Universal Flash Storage (UFS) Version 3.1 规范 (JESD220E, January 2020) 第 10 章，
+深入分析 UFS 传输协议 (UTP) 层的架构、事务处理、UPIU 格式和关键数据通路。
+
+参考文档：``docs/pdf/UFS/JESD220E_UFS3_1.md``
+
+.. contents::
+   :depth: 3
+   :local:
+
+UTP 层概述
+==========
+
+UTP 架构定位 [Section 10.1]_
+------------------------------
+
+UFS 传输协议 (UTP) 层位于 UFS 架构的传输层，建立在 MIPI UniPro(数据链路层) 和 MIPI M-PHY(物理层) 之上。
+UTP 采用 SCSI 架构模型 [SAM] 作为通用架构模型，使用 SAM 任务管理函数进行任务管理。
+
+**核心特性**:
+
+- **客户端 - 服务器模型**: Initiator(发起方，主机) 发送命令请求，Target(目标方，UFS 设备) 执行请求
+- **任务队列管理**: 每个逻辑单元 (LU) 包含任务队列，支持并发处理多个任务
+- **UPIU 事务**: 设备间通信通过 UFS 协议信息单元 (UPIU) 消息实现
+- **Task Tag 机制**: 唯一标识每个任务，支持多任务并发追踪
+
+UTP 在 UFS 架构中的位置
+-------------------------
+
+::
+
+   +----------------------------------+
+   |    UFS Application Layer (UAP)   |  <- SCSI 命令层、设备管理器
+   +----------------------------------+
+                  |
+                  v
+   +----------------------------------+
+   |  UFS Transport Protocol (UTP)    |  <- 本文档分析核心
+   |        (传输协议层)               |
+   +----------------------------------+
+                  |
+                  v
+   +----------------------------------+
+   |      UFS InterConnect (UIC)      |  <- UniPro 数据链路层
+   +----------------------------------+
+                  |
+                  v
+   +----------------------------------+
+   |         MIPI M-PHY               |  <- 物理层
+   +----------------------------------+
+
+UTP 服务交付子系统 [Section 10.4]_
+----------------------------------
+
+服务交付子系统是在 Initiator 和 Target 设备之间传输服务请求和响应的 I/O 系统。
+UTP 定义为独立于服务交付子系统的协议，便于移植到不同的 I/O 系统。
+
+**当前实现**:
+
+- 使用 MIPI UniPro 总线作为传输载体
+- 使用 MIPI M-PHY 作为物理层
+- UPIU 结构作为 UniPro 服务数据单元 (T_SDU) 传递
+- T_SDU 大小与 UPIU 大小完全相同
+
+**尺寸限制**:
+
+- 最小 T_SDU: 32 字节 (基本头格式)
+- 最大 T_SDU: 65600 字节 (包含头、扩展头和数据段)
+
+UPIU 事务类型
+==============
+
+事务代码定义 [Section 10.5, Table 10.1-10.2]_
+-----------------------------------------------
+
+每个 UPIU 数据结构包含一个事务代码，定义其内容和功能。
+
+.. list-table:: UPIU 事务代码表
+   :header-rows: 1
+   :widths: 25 20 25 20
+
+   * - Initiator 到 Target
+     - 事务代码
+     - Target 到 Initiator
+     - 事务代码
+   * - NOP OUT
+     - 00 0000b
+     - NOP IN
+     - 10 0000b
+   * - COMMAND
+     - 00 0001b
+     - RESPONSE
+     - 10 0001b
+   * - DATA OUT
+     - 00 0010b
+     - DATA IN
+     - 10 0010b
+   * - TASK MANAGEMENT REQUEST
+     - 00 0100b
+     - TASK MANAGEMENT RESPONSE
+     - 10 0100b
+   * - Reserved
+     - 01 0001b
+     - READY TO TRANSFER
+     - 11 0001b
+   * - QUERY REQUEST
+     - 01 0110b
+     - QUERY RESPONSE
+     - 11 0110b
+   * - Reserved
+     - 01 1111b
+     - REJECT UPIU
+     - 11 1111b
+
+**方向位规则**: 事务代码的 Bit 5 表示流向和发起方:
+- '0': Initiator 设备发起
+- '1': Target 设备发起
+
+事务类型详解
+--------------
+
+**NOP OUT/NOP IN**: 连接探测 ping 操作，检查设备连接路径
+
+**COMMAND**: Initiator 发送到 LU 的命令请求，包含 CDB(命令描述块)
+
+**RESPONSE**: Target 返回的命令执行状态和响应信息
+
+**DATA OUT**: Initiator 到 Target 的数据传输 (写操作)
+
+**DATA IN**: Target 到 Initiator 的数据传输 (读操作)
+
+**TASK MANAGEMENT REQUEST**: 携带 SAM 任务管理函数请求
+
+**TASK MANAGEMENT RESPONSE**: 携带任务管理函数响应
+
+**READY TO TRANSFER**: Target 准备好接收下一个 DATA OUT UPIU 时发送，包含 DMA 上下文
+
+**QUERY REQUEST**: 读取/写入设备描述符、属性、标志等配置数据
+
+**QUERY RESPONSE**: 响应查询请求，返回请求的描述符信息
+
+**REJECT**: Target 无法解析或执行收到的 UPIU 时发送
+
+UPIU 通用格式
+==============
+
+基本头格式 [Section 10.6, Table 10.3-10.4]_
+---------------------------------------------
+
+所有 UPIU 都包含固定位置和大小的基本头 (12 字节)。
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | Transaction Type  | Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | Initiator ID      |CSetType | Query/TMF Func| Resp/Stat |
+            +-------+-------+-------+-------+
+      8     | Total EHS Length      | Device Info     |
+            +-------+-------+-------+-------+
+     12     | Data Segment Length                 |
+            +-------+-------+-------+-------+
+     16     | Transaction Specific Fields (20 bytes)    |
+            +-------+-------+-------+-------+
+            :                       :
+            +-------+-------+-------+-------+
+     32     | Extra Header Segment (可选，本版本未使用)   |
+            +-------+-------+-------+-------+
+            :                       :
+            +-------+-------+-------+-------+
+      k     | Data Segment (可选，DWORD 对齐)             |
+            +-------+-------+-------+-------+
+
+基本头字段详解 [Section 10.6.2]_
+---------------------------------
+
+**Transaction Type (字节 0)**:
+
+::
+
+   Bit 7: HD (Header CRC 使能，本版本固定为 0)
+   Bit 6: DD (Data CRC 使能，本版本固定为 0)
+   Bit 5-0: Transaction Code (事务代码)
+
+**Flags (字节 1)**: 根据事务类型变化
+
+对于 COMMAND UPIU:
+
+::
+
+   Bit 7: 保留
+   Bit 6: R (Read，数据从 Target 到 Initiator)
+   Bit 5: W (Write，数据从 Initiator 到 Target)
+   Bit 4: 保留
+   Bit 3: 保留
+   Bit 2: CP (Command Priority，命令优先级)
+   Bit 1-0: ATTR (Task Attribute，任务属性)
+
+任务属性定义 [Table 10.7]_:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 20 20
+
+   * - 任务属性
+     - Bit 1
+     - Bit 0
+   * - Simple (简单)
+     - 0
+     - 0
+   * - Ordered (有序)
+     - 0
+     - 1
+   * - Head of Queue (队列头)
+     - 1
+     - 0
+   * - ACA (未使用)
+     - 1
+     - 1
+
+**LUN (字节 2)**: 逻辑单元号，目标 LU 的地址
+
+**Task Tag (字节 3)**: 由 Initiator 生成的唯一任务标识符，用于关联同一任务的所有 UPIU
+
+**Initiator ID (字节 4, Bit 7-4)**: Initiator 设备标识 (4 位宽，支持 16 个 Initiator)
+
+**Command Set Type (字节 4, Bit 3-0)** [Table 10.10]_:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - 值
+     - 描述
+   * - 0h
+     - SCSI 命令集 (SPC, SBC)
+   * - 1h
+     - UFS 专用命令集 (保留)
+   * - 2h-7h
+     - 保留
+   * - 8h-Fh
+     - 厂商专用
+
+**Response (字节 5)**: Target 响应码，指示成功或失败
+
+**Status (字节 5)**: SCSI 状态码 (仅 RESPONSE UPIU)
+
+**Total EHS Length (字节 8-9)**: 额外头段总长度 (DWORD 单位)，本版本固定为 0
+
+**Device Information (字节 10)**: 设备级信息
+
+.. list-table:: Device Information 字段定义
+   :header-rows: 1
+   :widths: 15 20 65
+
+   * - Bit
+     - 名称
+     - 描述
+   * - bit 0
+     - EVENT_ALERT
+     - 异常事件警报 (0: 无激活源，1: 至少一个源激活)
+   * - bit 1
+     - 保留
+     - 为 HPB(Host Performance Booster) 保留
+   * - Others
+     - 保留
+     - 固定为 0
+
+**Data Segment Length (字节 12-15)**: 数据段中有效字节数 (最大 65535 字节)
+
+**Expected Data Transfer Length (COMMAND UPIU 特有)**: 期望传输的数据量
+
+COMMAND UPIU 详解
+=================
+
+COMMAND UPIU 格式 [Section 10.7.1, Table 10.11]_
+-------------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx00 0001b| Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | IID       |00h      | Reserved        | Reserved      |
+            +-------+-------+-------+-------+
+      8     | 00h             | Reserved          |
+            +-------+-------+-------+-------+
+     12     | Expected Data Transfer Length       |
+            +-------+-------+-------+-------+
+     16     | CDB[0]  | CDB[1]  | CDB[2]  | CDB[3]  |
+            +-------+-------+-------+-------+
+     20     | CDB[4]  | CDB[5]  | CDB[6]  | CDB[7]  |
+            +-------+-------+-------+-------+
+     24     | CDB[8]  | CDB[9]  | CDB[10] | CDB[11] |
+            +-------+-------+-------+-------+
+     28     | CDB[12] | CDB[13] | CDB[14] | CDB[15] |
+            +-------+-------+-------+-------+
+
+COMMAND UPIU 关键字段 [Section 10.7.1.1]_
+------------------------------------------
+
+**Flags.R (Bit 6)**: 
+- '1': 命令需要从 Target 到 Initiator 的数据传输 (读)
+- .R='1' 时.W 必须='0'
+- .R=.W='0' 时无需数据传输
+
+**Flags.W (Bit 5)**:
+- '1': 命令需要从 Initiator 到 Target 的数据传输 (写)
+- .W='1' 时.R 必须='0'
+
+**Expected Data Transfer Length (字节 12-15)**:
+- 表示完成 SCSI 命令所需传输的字节数
+- 仅当 Flags.W 或 Flags.R 为'1'时有效
+- 对于 SCSI READ/WRITE 命令，值为：逻辑块大小 × TRANSFER LENGTH
+
+**CDB (字节 16-31)**: 16 字节命令描述块
+- 包含标准 SCSI CDB
+- CDB 大小由 CDB[0] 的操作码组位隐式指示
+- 小于 16 字节的 CDB，未用字节保留
+
+RESPONSE UPIU 详解
+==================
+
+RESPONSE UPIU 格式 [Section 10.7.2, Table 10.13]_
+--------------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx10 0001b| Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | IID       |CSetType | Response      | Status        |
+            +-------+-------+-------+-------+
+      8     | 00h             | Device Info     |
+            +-------+-------+-------+-------+
+     12     | Residual Transfer Count           |
+            +-------+-------+-------+-------+
+     16     | Reserved                          |
+            +-------+-------+-------+-------+
+     20     | Reserved                          |
+            +-------+-------+-------+-------+
+     24     | Reserved                          |
+            +-------+-------+-------+-------+
+     28     | Reserved                          |
+            +-------+-------+-------+-------+
+      k     | Sense Data Length | Sense Data... |
+            +-------+-------+-------+-------+
+
+RESPONSE UPIU Flags [Section 10.7.2.1, Table 10.14]_
+-----------------------------------------------------
+
+**Flags.O (Overflow, Bit 6)**:
+- '1': 数据溢出，Target 有更多数据要传输
+- Residual Transfer Count 表示未传输的字节数
+
+**Flags.U (Underflow, Bit 5)**:
+- '1': 数据下溢，Target 数据少于请求
+- Residual Transfer Count 表示未传输的字节数
+
+**Flags.D (Data Out Mismatch, Bit 4)**:
+- '1': UTP 数据输出不匹配错误
+- Data Out UPIU 中的数据缓冲区偏移/计数与 RTT 请求不匹配
+
+Residual Transfer Count 关系 [Table 10.16]_
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 20 40
+
+   * - Flags.O
+     - Flags.U
+     - Residual Count
+     - 描述
+   * - 0
+     - 0
+     - 0
+     - 传输了预期的数据长度
+   * - 1
+     - 0
+     - N
+     - Target 期望再发送 N 字节给 Initiator
+   * - 0
+     - 1
+     - N
+     - Initiator 期望从 Target 再接收 N 字节
+   * - 1
+     - 1
+     - X
+     - 非法条件
+
+SCSI 状态值 [Table 10.15]_
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 20
+
+   * - 值
+     - 描述
+     - UFS 实现
+   * - 00h
+     - GOOD (良好，命令成功完成)
+     - 强制 (M)
+   * - 02h
+     - CHECK CONDITION (检查条件，需要 Sense Data)
+     - 强制 (M)
+   * - 08h
+     - BUSY (忙，LU 无法接受命令)
+     - 强制 (M)
+   * - 18h
+     - RESERVATION CONFLICT (保留冲突)
+     - 可选 (O)
+   * - 28h
+     - TASK SET FULL (任务集满，资源不足)
+     - 强制 (M)
+
+Sense Data 格式 [Table 10.17]_
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CHECK CONDITION 状态时返回 18 字节固定格式 Sense Data:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 15 30 20
+
+   * - 字节
+     - 字段
+     - 描述
+     - 实现
+   * - 0
+     - VALID + RESPONSE CODE
+     - 70h(固定格式)
+     - 强制
+   * - 2
+     - SENSE KEY
+     - 错误类别 (见下表)
+     - 强制
+   * - 7
+     - ADDITIONAL SENSE LENGTH
+     - 固定为 10 (0Ah)
+     - 强制
+   * - 12
+     - ASC
+     - 附加 Sense 代码
+     - 强制
+   * - 13
+     - ASCQ
+     - ASC 限定符
+     - 强制
+
+Sense Key 定义 [Table 10.18]_
+"""""""""""""""""""""""""""""
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - 值
+     - 描述
+   * - 00h
+     - NO SENSE (无错误信息，成功完成)
+   * - 01h
+     - RECOVERED ERROR (恢复的错误，经纠错后成功)
+   * - 02h
+     - NOT READY (未就绪，LU 暂时无法访问)
+   * - 03h
+     - MEDIUM ERROR (介质错误，不可恢复的介质缺陷)
+   * - 04h
+     - HARDWARE ERROR (硬件错误，不可恢复的硬件故障)
+   * - 05h
+     - ILLEGAL REQUEST (非法请求，CDB 参数非法)
+   * - 06h
+     - UNIT ATTENTION (单元注意，设备复位或介质更换)
+   * - 07h
+     - DATA PROTECT (数据保护，写保护阻止操作)
+   * - 0Bh
+     - ABORTED COMMAND (命令中止，可重试恢复)
+
+DATA OUT UPIU 详解
+==================
+
+DATA OUT UPIU 格式 [Section 10.7.3, Table 10.19]_
+-------------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx00 0010b| Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | IID       | Reserved        | Reserved        |
+            +-------+-------+-------+-------+
+      8     | 00h             | Reserved          |
+            +-------+-------+-------+-------+
+     12     | Data Buffer Offset                |
+            +-------+-------+-------+-------+
+     16     | Data Transfer Count               |
+            +-------+-------+-------+-------+
+     20     | Reserved                          |
+            +-------+-------+-------+-------+
+     24     | Reserved                          |
+            +-------+-------+-------+-------+
+     28     | Reserved                          |
+            +-------+-------+-------+-------+
+      k     | Data Payload...                   |
+            +-------+-------+-------+-------+
+
+DATA OUT 关键字段 [Section 10.7.3.1]_
+--------------------------------------
+
+**Data Buffer Offset (字节 12-15)**:
+- 表示此 UPIU 数据载荷在完整传输区中的偏移
+- Data Buffer Offset + Data Segment Length ≤ Expected Data Transfer Length
+- 支持乱序传输 (需设备支持并启用)
+- 对于 SCSI WRITE 命令，必须是逻辑块大小的整数倍
+
+**Data Transfer Count (字节 16-19)**:
+- 表示此 UPIU 中传输的字节数
+- 最大值：65535 字节/UPIU
+- 必须与 Data Segment Length 字段值相同
+- 与 Data Buffer Offset 一起构成 DMA 上下文
+
+**Data Segment (从字节 32 开始)**:
+- 包含实际数据载荷
+- 始终 DWORD 对齐
+- 最后一个 UPIU 可能需要填充到 DWORD 边界
+
+DATA OUT 传输规则 [Section 10.7.13]_
+-------------------------------------
+
+**基本规则**:
+
+1. Initiator 在收到 READY TO TRANSFER UPIU 之前不得发送 DATA OUT UPIU
+2. Target 通过发送多个 READY TO TRANSFER UPIU 来 pacing 大数据传输
+3. 每个 DATA OUT UPIU 对应一个 READY TO TRANSFER UPIU
+4. Data Buffer Offset 和 Data Transfer Count 必须与 RTT 请求匹配
+
+DATA IN UPIU 详解
+=================
+
+DATA IN UPIU 格式 [Section 10.7.4, Table 10.20]_
+------------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx10 0010b| Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | IID       | Reserved        | Reserved        |
+            +-------+-------+-------+-------+
+      8     | 00h             | Reserved          |
+            +-------+-------+-------+-------+
+     12     | Data Buffer Offset                |
+            +-------+-------+-------+-------+
+     16     | Data Transfer Count               |
+            +-------+-------+-------+-------+
+     20     | Reserved                          |
+            +-------+-------+-------+-------+
+     24     | Reserved                          |
+            +-------+-------+-------+-------+
+     28     | Reserved                          |
+            +-------+-------+-------+-------+
+      k     | Data Payload...                   |
+            +-------+-------+-------+-------+
+
+DATA IN 特性 [Section 10.7.4.1]_
+--------------------------------
+
+**与 DATA OUT 的区别**:
+
+- 数据流向：Target → Initiator (读操作)
+- 无需 READY TO TRANSFER 握手
+- Host 预先分配足够的缓冲区接收全部数据
+- 支持乱序传输 (如果设备支持)
+
+**Data Buffer Offset**:
+- 表示此 UPIU 数据在完整传输区中的偏移
+- 允许非顺序传输 DATA IN UPIU
+- 对于 SCSI READ 命令，必须是逻辑块大小的整数倍
+
+**Data Transfer Count**:
+- Target 放置在 Data Segment 中的有效字节数
+- 最大值：65535 字节/UPIU
+- 必须与 Data Segment Length 相同
+
+READY TO TRANSFER UPIU 详解
+============================
+
+RTT UPIU 格式 [Section 10.7.5, Table 10-21]_
+---------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx11 0001b| Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | IID       | Reserved        | Reserved        |
+            +-------+-------+-------+-------+
+      8     | 00h             | Reserved          |
+            +-------+-------+-------+-------+
+     12     | Data Buffer Offset                |
+            +-------+-------+-------+-------+
+     16     | Data Transfer Count               |
+            +-------+-------+-------+-------+
+     20     | Reserved                          |
+            +-------+-------+-------+-------+
+     24     | Reserved                          |
+            +-------+-------+-------+-------+
+     28     | Reserved                          |
+            +-------+-------+-------+-------+
+
+RTT UPIU 功能 [Section 10.7.5.1]_
+----------------------------------
+
+**用途**:
+- Target 在处理需要 Data Out 传输的 SCSI 命令 (如写命令) 时发出
+- 表示 Target 已准备好接收数据块
+- 可顺序或乱序请求数据
+
+**关键约束**:
+
+1. **Data Buffer Offset**:
+   - 指示 Initiator 发送数据的起始位置
+   - 必须是 4 的整数倍
+   - 对于 SCSI WRITE 命令，必须是逻辑块大小的整数倍
+
+2. **Data Transfer Count**:
+   - 表示 Target 请求的字节数
+   - 必须是 4 字节的整数倍 (最后一个 RTT 除外)
+   - 不得超过 bMaxDataOutSize 属性值
+   - 对于 SCSI WRITE 命令，必须是逻辑块大小的整数倍
+
+3. **序列规则**:
+   - Target 可发送一个或多个 RTT UPIU 满足 Expected Data Transfer Length
+   - Initiator 对每个 RTT 回复一个 DATA OUT UPIU
+   - 支持乱序请求 (reverse order 等)
+
+任务管理 UPIU
+==============
+
+TASK MANAGEMENT REQUEST UPIU [Section 10.7.6, Table 10.22]_
+-----------------------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx00 0100b| Flags   | LUN     | Task Tag        |
+            +-------+-------+-------+-------+
+      4     | IID       | Reserved        | TM Function     |
+            +-------+-------+-------+-------+
+      8     | 00h             | Reserved          |
+            +-------+-------+-------+-------+
+     12     | Input Parameter 1 (LUN)           |
+            +-------+-------+-------+-------+
+     16     | Input Parameter 2 (Task Tag)      |
+            +-------+-------+-------+-------+
+     20     | Input Parameter 3 (IID)           |
+            +-------+-------+-------+-------+
+     24     | Reserved                          |
+            +-------+-------+-------+-------+
+     28     | Reserved                          |
+            +-------+-------+-------+-------+
+
+任务管理函数 [Table 10.23]_
+----------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 15 60
+
+   * - 函数
+     - 值
+     - 描述
+   * - Abort Task
+     - 01h
+     - 中止特定 LU 队列中的指定任务 (通过 IID、LUN、Task Tag 识别)
+   * - Abort Task Set
+     - 02h
+     - 中止特定 LU 的任务队列列表 (通过 IID 和 LUN 识别)
+   * - Clear Task Set
+     - 04h
+     - 清除特定 LU 的任务队列列表 (通过 LUN 识别)
+   * - Logical Unit Reset
+     - 08h
+     - 复位指定的 LU (通过 LUN 识别)
+   * - Query Task
+     - 80h
+     - 查询特定 LU 队列中的指定任务是否存在
+   * - Query Task Set
+     - 81h
+     - 查询特定 LU 是否有任务在队列中
+
+输入参数 [Table 10.24]_
+------------------------
+
+- **Input Parameter 1**: LSB 为操作的 LUN
+- **Input Parameter 2**: LSB 为操作的任务标签 (Task Tag)
+- **Input Parameter 3**: Bit 3-0 为任务的 IID
+
+TASK MANAGEMENT RESPONSE UPIU [Section 10.7.7, Table 10.25]_
+------------------------------------------------------------
+
+输出参数 [Table 10.26-10.27]_
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**Output Parameter 1**: LSB 为任务管理服务响应码
+
+.. list-table:: 任务管理服务响应
+   :header-rows: 1
+   :widths: 40 20
+
+   * - 响应
+     - 值
+   * - Task Management Function Complete
+     - 00h
+   * - Task Management Function Not Supported
+     - 04h
+   * - Task Management Function Failed
+     - 05h (TMR 处理能力超限时返回)
+   * - Task Management Function Succeeded
+     - 08h
+   * - Incorrect Logical Unit Number
+     - 09h
+
+查询 UPIU
+==========
+
+QUERY REQUEST UPIU [Section 10.7.8, Table 10.28]_
+-------------------------------------------------
+
+::
+
+   字节偏移：  0       1       2       3
+            +-------+-------+-------+-------+
+      0     | xx01 0110b| Flags   | Reserved| Task Tag        |
+            +-------+-------+-------+-------+
+      4     | Reserved        | Query Function    |
+            +-------+-------+-------+-------+
+      8     | 00h             | Reserved          |
+            +-------+-------+-------+-------+
+     12     | OPCODE  | OSF[0]  | OSF[1]  | OSF[2]  |
+            +-------+-------+-------+-------+
+     16     | OSF[3]  | OSF[4]  | OSF[5]  | OSF[6]  |
+            +-------+-------+-------+-------+
+     20     | OSF[7]  | Reserved        |
+            +-------+-------+-------+-------+
+     24     | Reserved                          |
+            +-------+-------+-------+-------+
+     28     | Reserved                          |
+            +-------+-------+-------+-------+
+      k     | Data Segment (可选)...            |
+            +-------+-------+-------+-------+
+
+查询功能 [Section 10.7.8.2, Table 10.29]_
+------------------------------------------
+
+**Standard Read Request (01h)**: 从 Target 读取信息
+
+**Standard Write Request (81h)**: 向 Target 写入信息
+
+**Vendor Specific Functions**: 
+- Read: 40h-7Fh
+- Write: C0h-FFh
+
+查询操作码 [Table 10.31]_
+--------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 15 35 25
+
+   * - OPCODE
+     - 操作
+     - QUERY FUNCTION
+   * - 00h
+     - NOP
+     - 任意值
+   * - 01h
+     - READ DESCRIPTOR
+     - STANDARD READ REQUEST
+   * - 02h
+     - WRITE DESCRIPTOR
+     - STANDARD WRITE REQUEST
+   * - 03h
+     - READ ATTRIBUTE
+     - STANDARD READ REQUEST
+   * - 04h
+     - WRITE ATTRIBUTE
+     - STANDARD WRITE REQUEST
+   * - 05h
+     - READ FLAG
+     - STANDARD READ REQUEST
+   * - 06h
+     - SET FLAG
+     - STANDARD WRITE REQUEST
+   * - 07h
+     - CLEAR FLAG
+     - STANDARD WRITE REQUEST
+   * - 08h
+     - TOGGLE FLAG
+     - STANDARD WRITE REQUEST
+
+READ DESCRIPTOR 操作码 [Section 10.7.8.4, Table 10.32]_
+-------------------------------------------------------
+
+OSF 字段定义:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 40 35
+
+   * - 字段
+     - 描述
+     - 说明
+   * - DESCRIPTOR IDN
+     - 描述符类型标识
+     - 如 Device Descriptor、Unit Descriptor 等
+   * - INDEX
+     - 索引
+     - 选择特定描述符 (0-255)
+   * - SELECTOR
+     - 选择器
+     - 进一步识别描述符
+   * - LENGTH
+     - 读取长度
+     - 请求读取的字节数
+
+WRITE DESCRIPTOR 操作码 [Section 10.7.8.5, Table 10.33]_
+-------------------------------------------------------
+
+类似 READ DESCRIPTOR，但 Data Segment 包含要写入的数据
+
+查询对象类型 [Section 10.7.8.1]_
+----------------------------------
+
+**Descriptors (描述符)**:
+- 描述设备某方面的参数块
+- 如 Device Descriptor、Configuration Descriptor、Unit Descriptor 等
+
+**Attributes (属性)**:
+- 单个参数，代表可设置或读取的数值范围
+- 大小可从 1-bit 到 32-bit
+- 可组织成数组，通过索引识别
+- 如波特率、块大小
+
+**Flags (标志)**:
+- 单个布尔值 (TRUE/FALSE, 0/1, ON/OFF)
+- 可清除、设置、翻转或读取
+- 用于启用/禁用特定功能或模式
+
+逻辑单元寻址
+============
+
+UFS SCSI 域模型 [Section 10.8.1, Figure 10.8]_
+-----------------------------------------------
+
+::
+
+   +------------------+              +------------------+
+   |  Initiator Port  |              |  Target Port     |
+   |  (UFS Host)      |              |  (UFS Device)    |
+   +--------+---------+              +--------+---------+
+            |                                 |
+            +------------ UniPro -------------+
+                         Bus
+
+            |<---- I_T Nexus ---->|
+
+逻辑单元定义 [Section 10.8.2]_
+------------------------------
+
+**Logical Unit (LU)**:
+- Target 设备内的独立处理实体
+- 包含任务队列，支持并发处理多个任务
+- 每个 LU 有唯一的逻辑单元号 (LUN)
+
+**Well Known Logical Units**:
+- 特殊功能的预定义 LU
+- 如 RPMB LU、Boot LU 等
+
+LU 寻址 [Section 10.8.4, Figure 10.9]_
+---------------------------------------
+
+::
+
+   Target Device
+   +----------------------------------+
+   |  LU 0    LU 1    LU 2   ... LU n |
+   |   |       |       |          |    |
+   |   v       v       v          v    |
+   |  LUN=0   LUN=1   LUN=2     LUN=n  |
+   +----------------------------------+
+
+**8-bit UFS LUN 到 64-bit SCSI LUN 转换** [Section 10.8.6]:
+- UFS 使用 8 位 LUN 寻址 (0-255)
+- 转换为 SCSI 64 位 LUN 地址
+
+典型事务流程
+==============
+
+SCSI 写命令流程 [Figure 10.10]_
+--------------------------------
+
+::
+
+   Host                                  Device
+    |                                      |
+    |--- COMMAND UPIU (WRITE) -----------> |  Flags.W=1
+    |                                      |  Expected Data Length=N
+    |<-- READY TO TRANSFER UPIU ---------- |  Data Buffer Offset=0
+    |                                      |  Data Transfer Count=M1
+    |--- DATA OUT UPIU ------------------> |  Offset=0, Count=M1
+    |<-- READY TO TRANSFER UPIU ---------- |  Data Buffer Offset=M1
+    |                                      |  Data Transfer Count=M2
+    |--- DATA OUT UPIU ------------------> |  Offset=M1, Count=M2
+    |           ...                        |
+    |<-- RESPONSE UPIU ------------------- |  Status=GOOD
+
+SCSI 读命令流程 [Figure 10.11]_
+--------------------------------
+
+::
+
+   Host                                  Device
+    |                                      |
+    |--- COMMAND UPIU (READ) ------------> |  Flags.R=1
+    |                                      |  Expected Data Length=N
+    |<-- DATA IN UPIU ------------------- |  Offset=0, Count=M1
+    |<-- DATA IN UPIU ------------------- |  Offset=M1, Count=M2
+    |           ...                        |
+    |<-- RESPONSE UPIU ------------------- |  Status=GOOD
+
+无数据阶段命令流程 [Figure 10.12]_
+------------------------------------
+
+::
+
+   Host                                  Device
+    |                                      |
+    |--- COMMAND UPIU -------------------> |  Flags.R=0, Flags.W=0
+    |<-- RESPONSE UPIU ------------------- |  Status=GOOD
+
+任务管理函数流程 [Figure 10.17]_
+----------------------------------
+
+::
+
+   Host                                  Device
+    |                                      |
+    |--- TM REQUEST UPIU ---------------> |  Function=ABORT_TASK
+    |                                      |  LUN, Task Tag, IID
+    |<-- TM RESPONSE UPIU ---------------- |  Response=SUCCESS
+
+查询函数流程 [Figure 10.18]_
+------------------------------
+
+::
+
+   Host                                  Device
+    |                                      |
+    |--- QUERY REQUEST UPIU ------------> |  Opcode=READ_DESC
+    |                                      |  Desc IDN, Index
+    |<-- QUERY RESPONSE UPIU ------------- |  Response=SUCCESS
+    |                                      |  Descriptor Data
+
+应用层传输协议服务
+==================
+
+SCSI 命令传输协议服务 [Section 10.9.3-10.9.7]_
+------------------------------------------------
+
+**Send SCSI Command**:
+- 从应用客户端到 UTP 的服务原语
+- 传递 CDB 和执行参数
+
+**SCSI Command Received**:
+- 从 UTP 到设备任务管理器的指示
+- 触发命令执行
+
+**Send Command Complete**:
+- 从设备任务管理器到 UTP 的响应
+- 包含命令执行状态和 Sense Data
+
+**Data Transfer Services**:
+- Send Data-In: 从设备到主机的数据传输
+- Receive Data-Out: 从主机到设备的数据接收
+
+任务管理过程调用 [Section 10.9.8]_
+------------------------------------
+
+**Send Task Management Request**:
+- 从应用客户端到 UTP_TM_SAP
+- 传递 TM 函数代码和参数
+
+**Task Management Function Executed**:
+- 从设备 LU 任务管理器返回执行结果
+
+查询函数传输协议服务 [Section 10.9.9]_
+----------------------------------------
+
+**Send Query Request**:
+- 从设备管理器到 UTP
+- 传递查询操作码和参数
+
+**Query Function Executed**:
+- 从设备返回查询结果
+
+关键设计特性
+============
+
+数据 pacing 机制 [Section 10.2.2]_
+-----------------------------------
+
+**问题**: 设备可能有有限的缓冲资源或处理吞吐量
+
+**解决方案**: READY TO TRANSFER UPIU
+
+- Target 在准备好接收下一个 DATA OUT UPIU 时发送 RTT
+- RTT 包含嵌入式传输上下文，用于在每个包基础上启动 DMA 传输
+- 允许 Target 控制数据流速率，避免缓冲区溢出
+
+**Data In 阶段**:
+- 无需 RTT 握手
+- 主机可预先指定 Data In 传输大小
+- 提前分配适当的内存资源
+
+Task Tag 关联机制 [Section 10.1, Table 10.9]_
+-----------------------------------------------
+
+同一任务的所有相关 UPIU 使用相同的 Task Tag:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 40
+
+   * - Initiator UPIU
+     - Target UPIU
+   * - NOP Out
+     - NOP In
+   * - Command, Data Out
+     - Ready to Transfer, Response
+   * - Command
+     - Data In, Response
+   * - Task Management Request
+     - Task Management Response
+   * - Query Request
+     - Query Response
+
+端到端 CRC 支持 (本版本未启用) [Section 10.6.2]_
+--------------------------------------------------
+
+**HD Bit (Header CRC)**:
+- '1': 包含所有头段的端到端 CRC
+- 本版本不支持，HD 固定为'0'
+
+**DD Bit (Data CRC)**:
+- '1': 包含数据段的端到端 CRC
+- 本版本不支持，DD 固定为'0'
+
+UPIU 尺寸灵活性 [Section 10.2.3, 10.3]_
+-----------------------------------------
+
+**最小尺寸**: 32 字节
+- 12 字节基本头
+- 20 字节事务特定字段
+
+**最大尺寸**: 65600 字节
+- 包含基本头、可选扩展头、数据段
+- Data Segment 最大 65535 字节
+
+**对齐要求**:
+- 所有 UPIU 尺寸为 32 位 (4 字节) 的整数倍
+- 数据段需要填充到最近的 DWORD 边界
+
+表格索引
+========
+
+.. list-table:: 本文档引用的关键表格
+   :header-rows: 1
+   :widths: 20 60
+
+   * - 表格编号
+     - 内容描述
+   * - Table 10.1
+     - UPIU 事务代码
+   * - Table 10.2
+     - UPIU 事务代码定义
+   * - Table 10.3
+     - UPIU 通用格式
+   * - Table 10.4
+     - 基本头格式
+   * - Table 10.5
+     - 事务类型格式
+   * - Table 10.6
+     - UPIU Flags 定义
+   * - Table 10.7
+     - 任务属性定义
+   * - Table 10.8
+     - UTP 响应值
+   * - Table 10.9
+     - 与单个任务关联的 UPIU
+   * - Table 10.10
+     - 命令集类型
+   * - Table 10.11
+     - COMMAND UPIU 格式
+   * - Table 10.12
+     - COMMAND UPIU Flags 定义
+   * - Table 10.13
+     - RESPONSE UPIU 格式
+   * - Table 10.14
+     - RESPONSE UPIU Flags 定义
+   * - Table 10.15
+     - SCSI 状态值
+   * - Table 10.16
+     - Flags 和剩余传输计数关系
+   * - Table 10.17
+     - SCSI 固定格式 Sense Data
+   * - Table 10.18
+     - Sense Key 定义
+   * - Table 10.19
+     - DATA OUT UPIU 格式
+   * - Table 10.20
+     - DATA IN UPIU 格式
+   * - Table 10-21
+     - READY TO TRANSFER UPIU 格式
+   * - Table 10.22
+     - Task Management Request UPIU
+   * - Table 10.23
+     - Task Management 函数值
+   * - Table 10.24
+     - Task Management 输入参数
+   * - Table 10.25
+     - Task Management Response UPIU
+   * - Table 10.26
+     - Task Management 输出参数
+   * - Table 10.27
+     - Task Management 服务响应
+   * - Table 10.28
+     - QUERY REQUEST UPIU 格式
+   * - Table 10.29
+     - Query Function 字段值
+   * - Table 10.30
+     - 事务特定字段
+   * - Table 10.31
+     - Query Function 操作码值
+   * - Table 10.32
+     - Read Descriptor 格式
+   * - Table 10.33
+     - Write Descriptor 格式
+
+图形索引
+========
+
+.. list-table:: 本文档引用的关键图形
+   :header-rows: 1
+   :widths: 20 60
+
+   * - 图形编号
+     - 内容描述
+   * - Figure 5.1
+     - UFS 顶层架构
+   * - Figure 10.1
+     - Data Out 传输示例
+   * - Figure 10.2
+     - Data In 传输示例
+   * - Figure 10.3
+     - READY TO TRANSFER UPIU 序列示例
+   * - Figure 10.8
+     - UFS SCSI 域
+   * - Figure 10.9
+     - 逻辑单元寻址
+   * - Figure 10.10
+     - SCSI 写操作流程
+   * - Figure 10.11
+     - SCSI 读操作流程
+   * - Figure 10.12
+     - 无数据阶段命令
+   * - Figure 10.17
+     - 任务管理函数流程
+   * - Figure 10.18
+     - UFS 查询函数流程
+
+.. [Section 10.1] JESD220E Section 10.1 "Overview"
+.. [Section 10.2] JESD220E Section 10.2 "UTP and UniPro Specific Overview"
+.. [Section 10.3] JESD220E Section 10.3 "UFS Transport Protocol Transactions Overview"
+.. [Section 10.4] JESD220E Section 10.4 "Service Delivery Subsystem"
+.. [Section 10.5] JESD220E Section 10.5 "UPIU Transactions"
+.. [Section 10.6] JESD220E Section 10.6 "General UFS Protocol Information Unit Format"
+.. [Section 10.6.2] JESD220E Section 10.6.2 "Basic Header Format"
+.. [Section 10.7] JESD220E Section 10.7 "UFS Protocol Information Units"
+.. [Section 10.7.1] JESD220E Section 10.7.1 "COMMAND UPIU"
+.. [Section 10.7.1.1] JESD220E Section 10.7.1.1 "Basic Header"
+.. [Section 10.7.2] JESD220E Section 10.7.2 "RESPONSE UPIU"
+.. [Section 10.7.2.1] JESD220E Section 10.7.2.1 "Basic Header"
+.. [Section 10.7.3] JESD220E Section 10.7.3 "DATA OUT UPIU"
+.. [Section 10.7.3.1] JESD220E Section 10.7.3.1 "Basic Header"
+.. [Section 10.7.4] JESD220E Section 10.7.4 "DATA IN UPIU"
+.. [Section 10.7.4.1] JESD220E Section 10.7.4.1 "Basic Header"
+.. [Section 10.7.5] JESD220E Section 10.7.5 "READY TO TRANSFER UPIU"
+.. [Section 10.7.5.1] JESD220E Section 10.7.5.1 "Basic Header"
+.. [Section 10.7.6] JESD220E Section 10.7.6 "TASK MANAGEMENT REQUEST UPIU"
+.. [Section 10.7.7] JESD220E Section 10.7.7 "TASK MANAGEMENT RESPONSE UPIU"
+.. [Section 10.7.8] JESD220E Section 10.7.8 "QUERY REQUEST UPIU"
+.. [Section 10.7.8.1] JESD220E Section 10.7.8.1 "Overview"
+.. [Section 10.7.8.2] JESD220E Section 10.7.8.2 "Query Function"
+.. [Section 10.7.8.4] JESD220E Section 10.7.8.4 "Read Descriptor Opcode"
+.. [Section 10.7.8.5] JESD220E Section 10.7.8.5 "Write Descriptor Opcode"
+.. [Section 10.7.13] JESD220E Section 10.7.13 "Data out transfer rules"
+.. [Section 10.8.1] JESD220E Section 10.8.1 "UFS SCSI Domain"
+.. [Section 10.8.2] JESD220E Section 10.8.2 "UFS Logical Unit Definition"
+.. [Section 10.8.4] JESD220E Section 10.8.4 "Logical Unit Addressing"
+.. [Section 10.8.6] JESD220E Section 10.8.6 "Translation of 8-bit UFS LUN to 64-bit SCSI LUN Address"
+.. [Section 10.9.3-10.9.7] JESD220E Section 10.9.3-10.9.7 "SCSI Command transport protocol service"
+.. [Section 10.9.8] JESD220E Section 10.9.8 "Task Management Function procedure calls"
+.. [Section 10.9.9] JESD220E Section 10.9.9 "Query Function transport protocol services"
+.. [Table 10.1] JESD220E Table 10.1 "UPIU Transaction Codes"
+.. [Table 10.2] JESD220E Table 10.2 "UPIU Transaction Code Definitions"
+.. [Table 10.3] JESD220E Table 10.3 "General format of the UFS Protocol Information Unit"
+.. [Table 10.4] JESD220E Table 10.4 "Basic Header Format"
+.. [Table 10.5] JESD220E Table 10.5 "Transaction Type Format"
+.. [Table 10.6] JESD220E Table 10.6 "UPIU Flags"
+.. [Table 10.7] JESD220E Table 10.7 "Task Attribute definition"
+.. [Table 10.8] JESD220E Table 10.8 "UTP Response Values"
+.. [Table 10.9] JESD220E Table 10.9 "UPIU associated to a single task"
+.. [Table 10.10] JESD220E Table 10.10 "Command Set Type"
+.. [Table 10.11] JESD220E Table 10.11 "COMMAND UPIU"
+.. [Table 10.12] JESD220E Table 10.12 "Flags definition for COMMAND UPIU"
+.. [Table 10.13] JESD220E Table 10.13 "RESPONSE UPIU"
+.. [Table 10.14] JESD220E Table 10.14 "Flags definition for RESPONSE UPIU"
+.. [Table 10.15] JESD220E Table 10.15 "SCSI Status Values"
+.. [Table 10.16] JESD220E Table 10.16 "Flags and Residual Count Relationship"
+.. [Table 10.17] JESD220E Table 10.17 "SCSI fixed format sense data"
+.. [Table 10.18] JESD220E Table 10.18 "Sense Key"
+.. [Table 10.19] JESD220E Table 10.19 "DATA OUT UPIU"
+.. [Table 10.20] JESD220E Table 10.20 "DATA IN UPIU"
+.. [Table 10-21] JESD220E Table 10-21 "READY TO TRANSFER UPIU"
+.. [Table 10.22] JESD220E Table 10.22 "Task Management Request UPIU"
+.. [Table 10.23] JESD220E Table 10.23 "Task Management Function values"
+.. [Table 10.24] JESD220E Table 10.24 "Task Management Input Parameters"
+.. [Table 10.25] JESD220E Table 10.25 "Task Management Response UPIU"
+.. [Table 10.26] JESD220E Table 10.26 "Task Management Output Parameters"
+.. [Table 10.27] JESD220E Table 10.27 "Task Management Service Response"
+.. [Table 10.28] JESD220E Table 10.28 "QUERY REQUEST UPIU"
+.. [Table 10.29] JESD220E Table 10.29 "Query Function field values"
+.. [Table 10.30] JESD220E Table 10.30 "Transaction specific fields"
+.. [Table 10.31] JESD220E Table 10.31 "Query Function opcode values"
+.. [Table 10.32] JESD220E Table 10.32 "Read descriptor"
+.. [Table 10.33] JESD220E Table 10.33 "Write Descriptor"
+.. [Figure 5.1] JESD220E Figure 5.1 "UFS Top Level Architecture"
+.. [Figure 10.1] JESD220E Figure 10.1 "Data out transfer example"
+.. [Figure 10.2] JESD220E Figure 10.2 "Data in transfer example"
+.. [Figure 10.3] JESD220E Figure 10.3 "READY TO TRANSFER UPIU sequence example"
+.. [Figure 10.8] JESD220E Figure 10.8 "UFS SCSI domain"
+.. [Figure 10.9] JESD220E Figure 10.9 "Logical Unit Addressing"
+.. [Figure 10.10] JESD220E Figure 10.10 "SCSI Write"
+.. [Figure 10.11] JESD220E Figure 10.11 "SCSI Read"
+.. [Figure 10.12] JESD220E Figure 10.12 "Command without Data Phase"
+.. [Figure 10.17] JESD220E Figure 10.17 "Task Management Function"
+.. [Figure 10.18] JESD220E Figure 10.18 "UFS Query Function"

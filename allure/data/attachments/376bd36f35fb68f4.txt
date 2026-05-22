@@ -1,0 +1,1 @@
+$$SEQ_TEST_0001 -v -c "echo first" -p "first" -t 3000^^

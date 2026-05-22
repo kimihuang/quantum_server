@@ -1,0 +1,1 @@
+   93 root     /usr/bin/slt_daemon -c /etc/slt/config.yaml

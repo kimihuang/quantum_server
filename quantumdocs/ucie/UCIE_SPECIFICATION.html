@@ -1,0 +1,1269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>13. UCIe 规范 2.0 文档结构概览 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="14. PCI Express Base 5.0 规范文档结构概览" href="../pcie/PCI_Express_Base_5_0.html" />
+    <link rel="prev" title="12. dma_alloc_coherent 完整实现分析" href="../dma_alloc_coherent_iommu_path_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">13. UCIe 规范 2.0 文档结构概览</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-1-0-introduction">13.1. 引言 (Chapter 1.0 Introduction)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ucie">13.1.1. UCIe 组件架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">13.1.2. 接口定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">13.1.3. UCIe 配置类型</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">13.1.4. 三种封装技术</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">13.1.5. 关键性能指标</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ucie-retimers">13.1.6. UCIe 重定时器 (Retimers)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-2-0-protocol-layer">13.2. 协议层 (Chapter 2.0 Protocol Layer)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id16">13.2.1. 支持的协议映射</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flit">13.2.2. Flit 格式类型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-3-0-die-to-die-adapter">13.3. 裸芯间适配器 (Chapter 3.0 Die-to-Die Adapter)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id17">13.3.1. 核心功能</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">13.3.2. 链路初始化阶段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">13.3.3. 操作格式决策</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">13.3.4. 电源管理链路状态</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-4-0-logical-physical-layer">13.4. 逻辑物理层 (Chapter 4.0 Logical Physical Layer)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id23">13.4.1. 数据和边带传输流程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lane-reversal">13.4.2. 通道反转 (Lane Reversal)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">13.4.3. 互连冗余重映射</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">13.4.4. 链路初始化和训练</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">13.4.5. 多模块链路</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">13.4.6. 运行时重校准</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-5-0-electrical-layer">13.5. 电气层 (Chapter 5.0 Electrical Layer)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id38">13.5.1. 互操作性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">13.5.2. 发送器规范</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">13.5.3. 接收器规范</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bump-map">13.5.4. 凸点布局 (Bump Map)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id61">13.5.5. 边带信号</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ucie-3d-chapter-6-0">13.6. UCIe-3D (Chapter 6.0)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id62">13.6.1. 概述</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id65">13.6.2. 模块和凸点布局</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id66">13.6.3. 修复策略</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id67">13.6.4. 时序预算</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#esd">13.6.5. ESD 和能效</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-7-0-sideband">13.7. 边带 (Chapter 7.0 Sideband)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id68">13.7.1. 协议规范</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id71">13.7.2. 数据包格式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id78">13.7.3. 流控和数据完整性</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-8-0-system-architecture">13.8. 系统架构 (Chapter 8.0 System Architecture)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id85">13.8.1. UCIe 可管理性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id90">13.8.2. 管理传输协议</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id95">13.8.3. 封装架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ucie-uda">13.8.4. UCIe 调试和测试架构 (UDA)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-9-0-configuration-and-parameters">13.9. 配置和参数 (Chapter 9.0 Configuration and Parameters)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id102">13.9.1. 软件视图</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id105">13.9.2. 寄存器定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id112">13.9.3. 测试/合规寄存器块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ucie-uedt">13.9.4. UCIe 早期发现表 (UEDT)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-10-0-interface-definitions">13.10. 接口定义 (Chapter 10.0 Interface Definitions)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rdi-raw-die-to-die-interface">13.10.1. RDI (Raw Die-to-Die Interface)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fdi-flit-aware-die-to-die-interface">13.10.2. FDI (Flit-Aware Die-to-Die Interface)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id129">13.10.3. 通用规则</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chapter-11-0-compliance">13.11. 合规性 (Chapter 11.0 Compliance)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id134">13.11.1. 协议层合规</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id135">13.11.2. 适配器合规</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#phy">13.11.3. PHY 合规</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id136">13.12. 附录</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id137">13.13. 术语表</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id138">13.14. 修订历史</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">13. </span>UCIe 规范 2.0 文档结构概览</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ucie/UCIE_SPECIFICATION.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ucie-2-0">
+<h1><span class="section-number">13. </span>UCIe 规范 2.0 文档结构概览<a class="headerlink" href="#ucie-2-0" title="链接到此标题。"></a></h1>
+<p>本文档基于 UCIe (Universal Chiplet Interconnect Express) Specification 2.0 进行结构化梳理，
+参考文档：<code class="docutils literal notranslate"><span class="pre">docs/pdf/ucie/UCIE_SPECIFICATION_2.0.md</span></code></p>
+<p>UCIe 是一种开放的多协议芯片间互连标准，用于连接同一封装内的多个裸芯（Die），
+支持 PCIe、CXL、Streaming 等多种协议，旨在实现裸芯架构的生态系统。</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#chapter-1-0-introduction" id="id139">引言 (Chapter 1.0 Introduction)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ucie" id="id140">UCIe 组件架构</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id141">接口定义</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id142">UCIe 配置类型</a></p></li>
+<li><p><a class="reference internal" href="#id10" id="id143">三种封装技术</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id144">关键性能指标</a></p></li>
+<li><p><a class="reference internal" href="#ucie-retimers" id="id145">UCIe 重定时器 (Retimers)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-2-0-protocol-layer" id="id146">协议层 (Chapter 2.0 Protocol Layer)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id16" id="id147">支持的协议映射</a></p></li>
+<li><p><a class="reference internal" href="#flit" id="id148">Flit 格式类型</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-3-0-die-to-die-adapter" id="id149">裸芯间适配器 (Chapter 3.0 Die-to-Die Adapter)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id17" id="id150">核心功能</a></p></li>
+<li><p><a class="reference internal" href="#id18" id="id151">链路初始化阶段</a></p></li>
+<li><p><a class="reference internal" href="#id21" id="id152">操作格式决策</a></p></li>
+<li><p><a class="reference internal" href="#id22" id="id153">电源管理链路状态</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-4-0-logical-physical-layer" id="id154">逻辑物理层 (Chapter 4.0 Logical Physical Layer)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id23" id="id155">数据和边带传输流程</a></p></li>
+<li><p><a class="reference internal" href="#lane-reversal" id="id156">通道反转 (Lane Reversal)</a></p></li>
+<li><p><a class="reference internal" href="#id28" id="id157">互连冗余重映射</a></p></li>
+<li><p><a class="reference internal" href="#id33" id="id158">链路初始化和训练</a></p></li>
+<li><p><a class="reference internal" href="#id36" id="id159">多模块链路</a></p></li>
+<li><p><a class="reference internal" href="#id37" id="id160">运行时重校准</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-5-0-electrical-layer" id="id161">电气层 (Chapter 5.0 Electrical Layer)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id38" id="id162">互操作性</a></p></li>
+<li><p><a class="reference internal" href="#id43" id="id163">发送器规范</a></p></li>
+<li><p><a class="reference internal" href="#id48" id="id164">接收器规范</a></p></li>
+<li><p><a class="reference internal" href="#bump-map" id="id165">凸点布局 (Bump Map)</a></p></li>
+<li><p><a class="reference internal" href="#id61" id="id166">边带信号</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ucie-3d-chapter-6-0" id="id167">UCIe-3D (Chapter 6.0)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id62" id="id168">概述</a></p></li>
+<li><p><a class="reference internal" href="#id65" id="id169">模块和凸点布局</a></p></li>
+<li><p><a class="reference internal" href="#id66" id="id170">修复策略</a></p></li>
+<li><p><a class="reference internal" href="#id67" id="id171">时序预算</a></p></li>
+<li><p><a class="reference internal" href="#esd" id="id172">ESD 和能效</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-7-0-sideband" id="id173">边带 (Chapter 7.0 Sideband)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id68" id="id174">协议规范</a></p></li>
+<li><p><a class="reference internal" href="#id71" id="id175">数据包格式</a></p></li>
+<li><p><a class="reference internal" href="#id78" id="id176">流控和数据完整性</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-8-0-system-architecture" id="id177">系统架构 (Chapter 8.0 System Architecture)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id85" id="id178">UCIe 可管理性</a></p></li>
+<li><p><a class="reference internal" href="#id90" id="id179">管理传输协议</a></p></li>
+<li><p><a class="reference internal" href="#id95" id="id180">封装架构</a></p></li>
+<li><p><a class="reference internal" href="#ucie-uda" id="id181">UCIe 调试和测试架构 (UDA)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-9-0-configuration-and-parameters" id="id182">配置和参数 (Chapter 9.0 Configuration and Parameters)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id102" id="id183">软件视图</a></p></li>
+<li><p><a class="reference internal" href="#id105" id="id184">寄存器定义</a></p></li>
+<li><p><a class="reference internal" href="#id112" id="id185">测试/合规寄存器块</a></p></li>
+<li><p><a class="reference internal" href="#ucie-uedt" id="id186">UCIe 早期发现表 (UEDT)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-10-0-interface-definitions" id="id187">接口定义 (Chapter 10.0 Interface Definitions)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rdi-raw-die-to-die-interface" id="id188">RDI (Raw Die-to-Die Interface)</a></p></li>
+<li><p><a class="reference internal" href="#fdi-flit-aware-die-to-die-interface" id="id189">FDI (Flit-Aware Die-to-Die Interface)</a></p></li>
+<li><p><a class="reference internal" href="#id129" id="id190">通用规则</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chapter-11-0-compliance" id="id191">合规性 (Chapter 11.0 Compliance)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id134" id="id192">协议层合规</a></p></li>
+<li><p><a class="reference internal" href="#id135" id="id193">适配器合规</a></p></li>
+<li><p><a class="reference internal" href="#phy" id="id194">PHY 合规</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id136" id="id195">附录</a></p></li>
+<li><p><a class="reference internal" href="#id137" id="id196">术语表</a></p></li>
+<li><p><a class="reference internal" href="#id138" id="id197">修订历史</a></p></li>
+</ul>
+</nav>
+<section id="chapter-1-0-introduction">
+<h2><a class="toc-backref" href="#id139" role="doc-backlink"><span class="section-number">13.1. </span>引言 (Chapter 1.0 Introduction)</a><a class="headerlink" href="#chapter-1-0-introduction" title="链接到此标题。"></a></h2>
+<p>本章提供 UCIe 架构的概述。</p>
+<section id="ucie">
+<h3><a class="toc-backref" href="#id140" role="doc-backlink"><span class="section-number">13.1.1. </span>UCIe 组件架构</a><a class="headerlink" href="#ucie" title="链接到此标题。"></a></h3>
+<p>UCIe 采用分层协议架构，包含三个主要组件（参考 1.1 节）：</p>
+<dl class="simple">
+<dt><strong>协议层 (Protocol Layer)</strong></dt><dd><ul class="simple">
+<li><p>支持协议：PCIe、CXL、Streaming、Management Transport</p></li>
+<li><p>协议层可与应用相关，UCIe 规范提供了在 UCIe 链路上传输 CXL 或 PCIe 协议的示例</p></li>
+</ul>
+</dd>
+<dt><strong>裸芯间适配器 (Die-to-Die Adapter, D2D Adapter)</strong></dt><dd><ul class="simple">
+<li><p>协调协议层和物理层确保数据成功传输</p></li>
+<li><p>提供低延迟、优化的数据通路</p></li>
+<li><p>实现多协议复用时的 ARB/MUX 功能</p></li>
+<li><p>提供 CRC 和重试机制（当原始误码率 &gt; 1e-27 时）</p></li>
+</ul>
+</dd>
+<dt><strong>物理层 (Physical Layer, PHY)</strong></dt><dd><ul class="simple">
+<li><p>三个子组件：PHY 逻辑、边带/全局控制、电气/模拟前端(AFE)</p></li>
+<li><p>负责链路训练、通道修复、加扰/解扰、时钟转发等</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h3><a class="toc-backref" href="#id141" role="doc-backlink"><span class="section-number">13.1.2. </span>接口定义</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h3>
+<p>UCIe 定义了两个关键接口（参考 1.1.4 节）：</p>
+<ul class="simple">
+<li><p><strong>RDI (Raw Die-to-Die Interface)</strong>：物理层与 D2D 适配器之间的接口</p></li>
+<li><p><strong>FDI (Flit-Aware Die-to-Die Interface)</strong>：D2D 适配器与协议层之间的接口</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3><a class="toc-backref" href="#id142" role="doc-backlink"><span class="section-number">13.1.3. </span>UCIe 配置类型</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p><a href="#id4"><span class="problematic" id="id5">**</span></a>单模块配置 (Single Module Configuration)**（参考 1.2.1 节）：</p>
+<ul class="simple">
+<li><p>Advanced Package：x64 或 x32 数据接口</p></li>
+<li><p>Standard Package：x16 或 x8 数据接口</p></li>
+</ul>
+<p><a href="#id6"><span class="problematic" id="id7">**</span></a>多模块配置 (Multi-module Configurations)**（参考 1.2.2 节）：</p>
+<ul class="simple">
+<li><p>支持双模块和四模块配置</p></li>
+<li><p>共享适配器时，模块必须以相同数据速率和宽度运行</p></li>
+</ul>
+<p><a href="#id8"><span class="problematic" id="id9">**</span></a>仅边带配置 (Sideband-only Configurations)**（参考 1.2.3 节）：</p>
+<ul class="simple">
+<li><p>用于测试或可管理性目的</p></li>
+<li><p>支持 1、2 或 4 个仅边带端口</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3><a class="toc-backref" href="#id143" role="doc-backlink"><span class="section-number">13.1.4. </span>三种封装技术</a><a class="headerlink" href="#id10" title="链接到此标题。"></a></h3>
+<dl class="simple">
+<dt><strong>Standard Package（标准封装）</strong></dt><dd><ul class="simple">
+<li><p>低成本、长距离互连</p></li>
+<li><p>使用有机封装/基板上的走线</p></li>
+<li><p>支持速度：4-32 GT/s</p></li>
+<li><p>凸点间距：110-135um</p></li>
+</ul>
+</dd>
+<dt><strong>Advanced Package（高级封装）</strong></dt><dd><ul class="simple">
+<li><p>性能优化、短距离互连</p></li>
+<li><p>使用硅桥或硅中介层</p></li>
+<li><p>支持速度：4-32 GT/s</p></li>
+<li><p>凸点间距：25-55um</p></li>
+</ul>
+</dd>
+<dt><strong>UCIe-3D（三维堆叠）</strong></dt><dd><ul class="simple">
+<li><p>使用二维阵列互连凸点进行裸芯间垂直数据传输</p></li>
+<li><p>支持速度：最高 4 GT/s</p></li>
+<li><p>凸点间距：&lt;10um（优化）或 10-25um（功能）</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h3><a class="toc-backref" href="#id144" role="doc-backlink"><span class="section-number">13.1.5. </span>关键性能指标</a><a class="headerlink" href="#id11" title="链接到此标题。"></a></h3>
+<p><a href="#id12"><span class="problematic" id="id13">**</span></a>2D/2.5D 封装性能目标**（参考表 1-4）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>指标</p></th>
+<th class="head"><p>Advanced Package (x64)</p></th>
+<th class="head"><p>Standard Package</p></th>
+<th class="head"><p>备注</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>边缘带宽密度 (32 GT/s)</p></td>
+<td><p>1317 GB/s/mm</p></td>
+<td><p>224 GB/s/mm</p></td>
+<td><p>45um/110um 凸点间距</p></td>
+</tr>
+<tr class="row-odd"><td><p>能效 (0.7V)</p></td>
+<td><p>0.5-0.6 pJ/bit</p></td>
+<td><p>0.5-1.25 pJ/bit</p></td>
+<td><p>含所有适配器和 PHY 电路</p></td>
+</tr>
+<tr class="row-even"><td><p>延迟目标</p></td>
+<td><p>≤2ns</p></td>
+<td><p>≤2ns</p></td>
+<td><p>基于 16 GT/s</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id14"><span class="problematic" id="id15">**</span></a>UCIe-3D 性能目标**（参考表 1-5）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>指标</p></th>
+<th class="head"><p>UCIe-3D</p></th>
+<th class="head"><p>备注</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>带宽密度 (4 GT/s)</p></td>
+<td><p>4000 GB/s/mm²</p></td>
+<td><p>9um 凸点间距</p></td>
+</tr>
+<tr class="row-odd"><td><p>能效 (0.65V)</p></td>
+<td><p>0.05 pJ/bit</p></td>
+<td><p>含所有 Tx/Rx 电路</p></td>
+</tr>
+<tr class="row-even"><td><p>延迟目标</p></td>
+<td><p>≤125 ps</p></td>
+<td><p>Tx + Rx 延迟</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ucie-retimers">
+<h3><a class="toc-backref" href="#id145" role="doc-backlink"><span class="section-number">13.1.6. </span>UCIe 重定时器 (Retimers)</a><a class="headerlink" href="#ucie-retimers" title="链接到此标题。"></a></h3>
+<p>UCIe 重定时器用于扩展通道距离，实现不同封装间裸芯的互连（参考 1.3 节）。</p>
+<p><strong>主要职责</strong>：</p>
+<ul class="simple">
+<li><p>跨离封装互连的可靠 Flit 传输</p></li>
+<li><p>与远端重定时器伙伴解析链路和协议参数</p></li>
+<li><p>解析适配器链路状态机的链路状态</p></li>
+<li><p>流控和背压处理</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-2-0-protocol-layer">
+<h2><a class="toc-backref" href="#id146" role="doc-backlink"><span class="section-number">13.2. </span>协议层 (Chapter 2.0 Protocol Layer)</a><a class="headerlink" href="#chapter-2-0-protocol-layer" title="链接到此标题。"></a></h2>
+<p>UCIe 映射 PCIe、CXL 以及 Streaming 协议（参考 2.0 节）。</p>
+<section id="id16">
+<h3><a class="toc-backref" href="#id147" role="doc-backlink"><span class="section-number">13.2.1. </span>支持的协议映射</a><a class="headerlink" href="#id16" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>协议</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PCIe Flit Mode</p></td>
+<td><p>PCIe 基本规范定义的 Flit Mode</p></td>
+</tr>
+<tr class="row-odd"><td><p>PCIe Non-Flit Mode</p></td>
+<td><p>使用 CXL.io 68B Flit Format 作为传输机制</p></td>
+</tr>
+<tr class="row-even"><td><p>CXL 68B Flit Mode</p></td>
+<td><p>CXL 规范定义的 68B Flit 模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>CXL 256B Flit Mode</p></td>
+<td><p>CXL 规范定义的 256B Flit 模式</p></td>
+</tr>
+<tr class="row-even"><td><p>Streaming Protocol</p></td>
+<td><p>用户定义协议的通用传输模式</p></td>
+</tr>
+<tr class="row-odd"><td><p>Management Transport</p></td>
+<td><p>管理网络上的端到端媒体无关协议</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="flit">
+<h3><a class="toc-backref" href="#id148" role="doc-backlink"><span class="section-number">13.2.2. </span>Flit 格式类型</a><a class="headerlink" href="#flit" title="链接到此标题。"></a></h3>
+<p>UCIe 支持多种 Flit 格式以适应不同需求（参考 2.1-2.5 节）：</p>
+<dl class="simple">
+<dt><strong>格式 1：Raw Format（原始格式）</strong></dt><dd><ul class="simple">
+<li><p>所有字节由协议层填充</p></li>
+<li><p>用于 UCIe 重定时器传输 PCIe 协议</p></li>
+<li><p>重试、CRC 和 FEC 由协议层处理</p></li>
+</ul>
+</dd>
+<dt><strong>格式 2：68B Flit Format</strong></dt><dd><ul class="simple">
+<li><p>用于 PCIe non-Flit mode 和 CXL.io</p></li>
+<li><p>支持标准 PCIe/CXL 数据包传输</p></li>
+</ul>
+</dd>
+<dt><strong>格式 3：Standard 256B End Header Flit Format</strong></dt><dd><ul class="simple">
+<li><p>PCIe Flit Mode 支持时强制要求</p></li>
+<li><p>与仅支持标准 PCIe Flit 格式的厂商互操作</p></li>
+</ul>
+</dd>
+<dt><strong>格式 4：Standard 256B Start Header Flit Format</strong></dt><dd><ul class="simple">
+<li><p>用于 CXL.cachemem 或 Streaming 协议</p></li>
+</ul>
+</dd>
+<dt><strong>格式 5：Latency-Optimized 256B without Optional Bytes</strong></dt><dd><ul class="simple">
+<li><p>延迟优化的 256B 格式</p></li>
+</ul>
+</dd>
+<dt><strong>格式 6：Latency-Optimized 256B with Optional Bytes</strong></dt><dd><ul class="simple">
+<li><p>支持可选字节的延迟优化格式</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="chapter-3-0-die-to-die-adapter">
+<h2><a class="toc-backref" href="#id149" role="doc-backlink"><span class="section-number">13.3. </span>裸芯间适配器 (Chapter 3.0 Die-to-Die Adapter)</a><a class="headerlink" href="#chapter-3-0-die-to-die-adapter" title="链接到此标题。"></a></h2>
+<p>D2D 适配器协调协议层和物理层确保成功数据传输（参考 3.0 节）。</p>
+<section id="id17">
+<h3><a class="toc-backref" href="#id150" role="doc-backlink"><span class="section-number">13.3.1. </span>核心功能</a><a class="headerlink" href="#id17" title="链接到此标题。"></a></h3>
+<ul class="simple">
+<li><p><strong>栈复用 (Stack Multiplexing)</strong>：支持多协议动态复用</p></li>
+<li><p><strong>链路初始化</strong>：三阶段初始化流程</p></li>
+<li><p><strong>参数交换</strong>：与远端链路伙伴协商能力参数</p></li>
+<li><p><strong>CRC 计算</strong>：基于 CRC-16 或 CRC-24</p></li>
+<li><p><strong>重试机制</strong>：当原始 BER &gt; 1e-27 时启用</p></li>
+</ul>
+</section>
+<section id="id18">
+<h3><a class="toc-backref" href="#id151" role="doc-backlink"><span class="section-number">13.3.2. </span>链路初始化阶段</a><a class="headerlink" href="#id18" title="链接到此标题。"></a></h3>
+<p>链路初始化分为三个阶段（参考 3.2 节）：</p>
+<p><strong>阶段 1-2</strong>：由物理层完成</p>
+<p><a href="#id19"><span class="problematic" id="id20">**</span></a>阶段 3：适配器初始化**（参考 3.2.1 节）</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Part 1：确定本地能力</p></li>
+<li><p>Part 2：与远端链路伙伴进行参数交换</p></li>
+<li><p>Part 3：FDI 建立连接</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="id21">
+<h3><a class="toc-backref" href="#id152" role="doc-backlink"><span class="section-number">13.3.3. </span>操作格式决策</a><a class="headerlink" href="#id21" title="链接到此标题。"></a></h3>
+<p>Flit 格式和协议的决策表参考 3.4 节，根据协商的能力和物理层状态决定。</p>
+</section>
+<section id="id22">
+<h3><a class="toc-backref" href="#id153" role="doc-backlink"><span class="section-number">13.3.4. </span>电源管理链路状态</a><a class="headerlink" href="#id22" title="链接到此标题。"></a></h3>
+<p>支持的电源管理状态（参考 3.6 节）：</p>
+<ul class="simple">
+<li><p><strong>L1</strong>：轻量级低功耗状态</p></li>
+<li><p><strong>L2</strong>：深度低功耗状态</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-4-0-logical-physical-layer">
+<h2><a class="toc-backref" href="#id154" role="doc-backlink"><span class="section-number">13.4. </span>逻辑物理层 (Chapter 4.0 Logical Physical Layer)</a><a class="headerlink" href="#chapter-4-0-logical-physical-layer" title="链接到此标题。"></a></h2>
+<section id="id23">
+<h3><a class="toc-backref" href="#id155" role="doc-backlink"><span class="section-number">13.4.1. </span>数据和边带传输流程</a><a class="headerlink" href="#id23" title="链接到此标题。"></a></h3>
+<p><a href="#id24"><span class="problematic" id="id25">**</span></a>字节到通道映射**（参考 4.1.1 节）：</p>
+<ul class="simple">
+<li><p>x64 接口：64 字节数据映射到 64 个通道</p></li>
+<li><p>x32 接口：32 字节数据映射到 32 个通道</p></li>
+<li><p>x16 接口：16 字节数据映射到 16 个通道</p></li>
+</ul>
+<p><a href="#id26"><span class="problematic" id="id27">**</span></a>有效帧 (Valid Framing)**（参考 4.1.2 节）：</p>
+<ul class="simple">
+<li><p>用于数据有效标记和流控</p></li>
+<li><p>支持重定时器的特殊帧规则</p></li>
+</ul>
+</section>
+<section id="lane-reversal">
+<h3><a class="toc-backref" href="#id156" role="doc-backlink"><span class="section-number">13.4.2. </span>通道反转 (Lane Reversal)</a><a class="headerlink" href="#lane-reversal" title="链接到此标题。"></a></h3>
+<p>支持通道 ID 重映射以处理物理连接差异（参考 4.2 节）。</p>
+</section>
+<section id="id28">
+<h3><a class="toc-backref" href="#id157" role="doc-backlink"><span class="section-number">13.4.3. </span>互连冗余重映射</a><a class="headerlink" href="#id28" title="链接到此标题。"></a></h3>
+<p><a href="#id29"><span class="problematic" id="id30">**</span></a>数据通道修复**（参考 4.3.1 节）：</p>
+<ul class="simple">
+<li><p>Advanced Package 提供额外的修复通道</p></li>
+<li><p>支持单通道和双通道修复</p></li>
+<li><p>支持带通道反转的修复</p></li>
+</ul>
+<p><a href="#id31"><span class="problematic" id="id32">**</span></a>时钟和跟踪通道重映射**（参考 4.3.4 节）：</p>
+<ul class="simple">
+<li><p>时钟通道修复机制</p></li>
+<li><p>跟踪通道修复机制</p></li>
+</ul>
+</section>
+<section id="id33">
+<h3><a class="toc-backref" href="#id158" role="doc-backlink"><span class="section-number">13.4.4. </span>链路初始化和训练</a><a class="headerlink" href="#id33" title="链接到此标题。"></a></h3>
+<p><strong>链路训练状态机 (LTSM)</strong> 状态（参考 4.5.3 节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>状态</p></th>
+<th class="head"><p>功能描述</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RESET</p></td>
+<td><p>复位状态</p></td>
+</tr>
+<tr class="row-odd"><td><p>SBINIT</p></td>
+<td><p>边带初始化</p></td>
+</tr>
+<tr class="row-even"><td><p>MBINIT</p></td>
+<td><p>主带初始化和修复</p></td>
+</tr>
+<tr class="row-odd"><td><p>MBTRAIN</p></td>
+<td><p>主带训练</p></td>
+</tr>
+<tr class="row-even"><td><p>LINKINIT</p></td>
+<td><p>链路初始化</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACTIVE</p></td>
+<td><p>活动状态</p></td>
+</tr>
+<tr class="row-even"><td><p>PHYRETRAIN</p></td>
+<td><p>PHY 重训练</p></td>
+</tr>
+<tr class="row-odd"><td><p>TRAINERROR</p></td>
+<td><p>训练错误</p></td>
+</tr>
+<tr class="row-even"><td><p>L1/L2</p></td>
+<td><p>电源管理状态</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id34"><span class="problematic" id="id35">**</span></a>MBINIT 子状态**（参考 4.5.3.3 节）：</p>
+<ul class="simple">
+<li><p>PARAM：参数交换</p></li>
+<li><p>CAL：校准</p></li>
+<li><p>REPAIRCLK：时钟修复</p></li>
+<li><p>REPAIRVAL：有效信号修复</p></li>
+<li><p>REVERSALMB：主带反转</p></li>
+<li><p>REPAIRMB：主带修复</p></li>
+</ul>
+</section>
+<section id="id36">
+<h3><a class="toc-backref" href="#id159" role="doc-backlink"><span class="section-number">13.4.5. </span>多模块链路</a><a class="headerlink" href="#id36" title="链接到此标题。"></a></h3>
+<p>多模块配置的初始化和同步机制（参考 4.7 节）。</p>
+</section>
+<section id="id37">
+<h3><a class="toc-backref" href="#id160" role="doc-backlink"><span class="section-number">13.4.6. </span>运行时重校准</a><a class="headerlink" href="#id37" title="链接到此标题。"></a></h3>
+<p>支持运行期间的链路重校准以维持链路健康（参考 4.6 节）。</p>
+</section>
+</section>
+<section id="chapter-5-0-electrical-layer">
+<h2><a class="toc-backref" href="#id161" role="doc-backlink"><span class="section-number">13.5. </span>电气层 (Chapter 5.0 Electrical Layer)</a><a class="headerlink" href="#chapter-5-0-electrical-layer" title="链接到此标题。"></a></h2>
+<p>本章定义 2D 和 2.5D 封装的电气规范。</p>
+<section id="id38">
+<h3><a class="toc-backref" href="#id162" role="doc-backlink"><span class="section-number">13.5.1. </span>互操作性</a><a class="headerlink" href="#id38" title="链接到此标题。"></a></h3>
+<p><a href="#id39"><span class="problematic" id="id40">**</span></a>数据速率**（参考 5.1.1 节）：</p>
+<ul class="simple">
+<li><p>支持 4、8、12、16、24、32 GT/s</p></li>
+</ul>
+<p><a href="#id41"><span class="problematic" id="id42">**</span></a>参考时钟 (REFCLK)**（参考 5.1.2 节）：</p>
+<ul class="simple">
+<li><p>支持公共参考时钟架构</p></li>
+</ul>
+</section>
+<section id="id43">
+<h3><a class="toc-backref" href="#id163" role="doc-backlink"><span class="section-number">13.5.2. </span>发送器规范</a><a class="headerlink" href="#id43" title="链接到此标题。"></a></h3>
+<p><a href="#id44"><span class="problematic" id="id45">**</span></a>驱动器拓扑**（参考 5.3.1 节）：</p>
+<ul class="simple">
+<li><p>可配置输出阻抗</p></li>
+<li><p>支持 de-emphasis 均衡</p></li>
+</ul>
+<p><a href="#id46"><span class="problematic" id="id47">**</span></a>电气参数**（参考 5.3.2 节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>参数</p></th>
+<th class="head"><p>Advanced Package</p></th>
+<th class="head"><p>Standard Package</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TX 电压摆幅</p></td>
+<td><p>0.4V 或 0.85V</p></td>
+<td><p>0.4V 或 0.85V</p></td>
+</tr>
+<tr class="row-odd"><td><p>均衡 (24/32 GT/s)</p></td>
+<td><p>支持 de-emphasis</p></td>
+<td><p>支持 de-emphasis</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id48">
+<h3><a class="toc-backref" href="#id164" role="doc-backlink"><span class="section-number">13.5.3. </span>接收器规范</a><a class="headerlink" href="#id48" title="链接到此标题。"></a></h3>
+<p><a href="#id49"><span class="problematic" id="id50">**</span></a>接收端接**（参考 5.4.2 节）：</p>
+<ul class="simple">
+<li><p>支持可配置端接电阻</p></li>
+<li><p>不同 TX 摆幅对应不同端接配置</p></li>
+</ul>
+<p><a href="#id51"><span class="problematic" id="id52">**</span></a>均衡**（参考 5.4.3 节）：</p>
+<ul class="simple">
+<li><p>24/32 GT/s 支持接收器均衡（CTLE）</p></li>
+</ul>
+</section>
+<section id="bump-map">
+<h3><a class="toc-backref" href="#id165" role="doc-backlink"><span class="section-number">13.5.4. </span>凸点布局 (Bump Map)</a><a class="headerlink" href="#bump-map" title="链接到此标题。"></a></h3>
+<p><a href="#id53"><span class="problematic" id="id54">**</span></a>Advanced Package x64 模块**（参考 5.7.2.2 节）：</p>
+<ul class="simple">
+<li><p>支持 8、10、16 列配置</p></li>
+<li><p>包含数据、时钟、有效、跟踪和边带通道</p></li>
+<li><p>额外修复通道</p></li>
+</ul>
+<p><a href="#id55"><span class="problematic" id="id56">**</span></a>Advanced Package x32 模块**（参考 5.7.2.3 节）：</p>
+<ul class="simple">
+<li><p>x64 的一半带宽</p></li>
+<li><p>与 x64 模块可互操作</p></li>
+</ul>
+<p><a href="#id57"><span class="problematic" id="id58">**</span></a>Standard Package x16 模块**（参考 5.7.3.1 节）：</p>
+<ul class="simple">
+<li><p>16 通道配置</p></li>
+<li><p>无额外修复通道</p></li>
+</ul>
+<p><a href="#id59"><span class="problematic" id="id60">**</span></a>Standard Package x8 模块**（参考 5.7.3.2 节）：</p>
+<ul class="simple">
+<li><p>仅用于单模块配置</p></li>
+<li><p>主要用于预绑定测试</p></li>
+</ul>
+</section>
+<section id="id61">
+<h3><a class="toc-backref" href="#id166" role="doc-backlink"><span class="section-number">13.5.5. </span>边带信号</a><a class="headerlink" href="#id61" title="链接到此标题。"></a></h3>
+<p>边带电气参数（参考 5.13 节）：</p>
+<ul class="simple">
+<li><p>固定时钟频率：800 MHz</p></li>
+<li><p>必须在辅助电源域</p></li>
+</ul>
+</section>
+</section>
+<section id="ucie-3d-chapter-6-0">
+<h2><a class="toc-backref" href="#id167" role="doc-backlink"><span class="section-number">13.6. </span>UCIe-3D (Chapter 6.0)</a><a class="headerlink" href="#ucie-3d-chapter-6-0" title="链接到此标题。"></a></h2>
+<section id="id62">
+<h3><a class="toc-backref" href="#id168" role="doc-backlink"><span class="section-number">13.6.1. </span>概述</a><a class="headerlink" href="#id62" title="链接到此标题。"></a></h3>
+<p>UCIe-3D 是针对三维堆叠封装的互连规范（参考 6.1 节）。</p>
+<p><a href="#id63"><span class="problematic" id="id64">**</span></a>特性总结**（参考 6.2 节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>特性</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>最高速度</p></td>
+<td><p>4 GT/s</p></td>
+</tr>
+<tr class="row-odd"><td><p>凸点间距</p></td>
+<td><p>&lt;10um（优化）/ 10-25um（功能）</p></td>
+</tr>
+<tr class="row-even"><td><p>通道类型</p></td>
+<td><p>3D 垂直</p></td>
+</tr>
+<tr class="row-odd"><td><p>原始 BER</p></td>
+<td><p>1e-27</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id65">
+<h3><a class="toc-backref" href="#id169" role="doc-backlink"><span class="section-number">13.6.2. </span>模块和凸点布局</a><a class="headerlink" href="#id65" title="链接到此标题。"></a></h3>
+<p>UCIe-3D 模块采用 bundle 结构（参考 6.4.3 节）：</p>
+<ul class="simple">
+<li><p>Tx bundle：包含数据、时钟、电源和地</p></li>
+<li><p>Rx bundle：包含数据、时钟、电源和地</p></li>
+<li><p>x70 模块标准配置</p></li>
+</ul>
+</section>
+<section id="id66">
+<h3><a class="toc-backref" href="#id170" role="doc-backlink"><span class="section-number">13.6.3. </span>修复策略</a><a class="headerlink" href="#id66" title="链接到此标题。"></a></h3>
+<p>Bundle 级别的修复机制（参考 6.4.4 节）。</p>
+</section>
+<section id="id67">
+<h3><a class="toc-backref" href="#id171" role="doc-backlink"><span class="section-number">13.6.4. </span>时序预算</a><a class="headerlink" href="#id67" title="链接到此标题。"></a></h3>
+<p>Dtx 和 Drx 规格范围定义（参考 6.4.1 节）。</p>
+</section>
+<section id="esd">
+<h3><a class="toc-backref" href="#id172" role="doc-backlink"><span class="section-number">13.6.5. </span>ESD 和能效</a><a class="headerlink" href="#esd" title="链接到此标题。"></a></h3>
+<p>ESD 保护和能效设计考量（参考 6.4.2 节）。</p>
+</section>
+</section>
+<section id="chapter-7-0-sideband">
+<h2><a class="toc-backref" href="#id173" role="doc-backlink"><span class="section-number">13.7. </span>边带 (Chapter 7.0 Sideband)</a><a class="headerlink" href="#chapter-7-0-sideband" title="链接到此标题。"></a></h2>
+<section id="id68">
+<h3><a class="toc-backref" href="#id174" role="doc-backlink"><span class="section-number">13.7.1. </span>协议规范</a><a class="headerlink" href="#id68" title="链接到此标题。"></a></h3>
+<p><a href="#id69"><span class="problematic" id="id70">**</span></a>数据包类型**（参考 7.1.1 节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>类型</p></th>
+<th class="head"><p>用途</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>寄存器访问包</p></td>
+<td><p>远程寄存器读写</p></td>
+</tr>
+<tr class="row-odd"><td><p>无数据消息</p></td>
+<td><p>链路管理、电源管理等</p></td>
+</tr>
+<tr class="row-even"><td><p>带数据负载消息</p></td>
+<td><p>传输数据负载</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id71">
+<h3><a class="toc-backref" href="#id175" role="doc-backlink"><span class="section-number">13.7.2. </span>数据包格式</a><a class="headerlink" href="#id71" title="链接到此标题。"></a></h3>
+<p><a href="#id72"><span class="problematic" id="id73">**</span></a>寄存器访问请求**（参考 7.1.2.1 节）：</p>
+<ul class="simple">
+<li><p>地址、长度、字节使能等字段</p></li>
+</ul>
+<p><a href="#id74"><span class="problematic" id="id75">**</span></a>寄存器访问完成**（参考 7.1.2.1 节）：</p>
+<ul class="simple">
+<li><p>完成状态、数据等字段</p></li>
+</ul>
+<p><a href="#id76"><span class="problematic" id="id77">**</span></a>管理端口消息 (MPM)**（参考 7.1.2.4-7.1.2.5 节）：</p>
+<ul class="simple">
+<li><p>带数据 MPM</p></li>
+<li><p>无数据 MPM</p></li>
+</ul>
+</section>
+<section id="id78">
+<h3><a class="toc-backref" href="#id176" role="doc-backlink"><span class="section-number">13.7.3. </span>流控和数据完整性</a><a class="headerlink" href="#id78" title="链接到此标题。"></a></h3>
+<p><a href="#id79"><span class="problematic" id="id80">**</span></a>FDI 和 RDI 上的流控**（参考 7.1.3.1 节）</p>
+<p><a href="#id81"><span class="problematic" id="id82">**</span></a>UCIe 边带链路上的流控**（参考 7.1.3.2 节）</p>
+<p><a href="#id83"><span class="problematic" id="id84">**</span></a>端到端流控和前向进度**（参考 7.1.3.3 节）</p>
+</section>
+</section>
+<section id="chapter-8-0-system-architecture">
+<h2><a class="toc-backref" href="#id177" role="doc-backlink"><span class="section-number">13.8. </span>系统架构 (Chapter 8.0 System Architecture)</a><a class="headerlink" href="#chapter-8-0-system-architecture" title="链接到此标题。"></a></h2>
+<section id="id85">
+<h3><a class="toc-backref" href="#id178" role="doc-backlink"><span class="section-number">13.8.1. </span>UCIe 可管理性</a><a class="headerlink" href="#id85" title="链接到此标题。"></a></h3>
+<p><a href="#id86"><span class="problematic" id="id87">**</span></a>概述**（参考 8.1.1 节）：</p>
+<p>UCIe 可管理性架构是可选机制，用于管理基于 UCIe 的 SiP（系统级封装）。</p>
+<p><a href="#id88"><span class="problematic" id="id89">**</span></a>管理实体类型**（参考 8.1.2 节）：</p>
+<ul class="simple">
+<li><p><strong>Management Director</strong>：发现、配置和协调整体管理</p></li>
+<li><p><strong>Management Element</strong>：执行一个或多个管理功能</p></li>
+<li><p><strong>Management Bridge</strong>：桥接 SiP 内的管理网络到外部网络</p></li>
+<li><p><strong>Management Port</strong>：促进裸芯间的管理通信</p></li>
+</ul>
+</section>
+<section id="id90">
+<h3><a class="toc-backref" href="#id179" role="doc-backlink"><span class="section-number">13.8.2. </span>管理传输协议</a><a class="headerlink" href="#id90" title="链接到此标题。"></a></h3>
+<p><a href="#id91"><span class="problematic" id="id92">**</span></a>MTP (Management Transport Packet)**（参考 8.1.3 节）：</p>
+<ul class="simple">
+<li><p>流量类别和包排序要求</p></li>
+<li><p>包长度限制</p></li>
+<li><p>管理协议定义</p></li>
+</ul>
+<p><a href="#id93"><span class="problematic" id="id94">**</span></a>管理网络 ID**（参考 8.1.3.2 节）：</p>
+<ul class="simple">
+<li><p>网络标识符格式</p></li>
+<li><p>路由机制</p></li>
+</ul>
+</section>
+<section id="id95">
+<h3><a class="toc-backref" href="#id180" role="doc-backlink"><span class="section-number">13.8.3. </span>封装架构</a><a class="headerlink" href="#id95" title="链接到此标题。"></a></h3>
+<p><a href="#id96"><span class="problematic" id="id97">**</span></a>边带管理路径**（参考 8.2.3.1 节）：</p>
+<ul class="simple">
+<li><p>协商阶段</p></li>
+<li><p>初始化阶段</p></li>
+</ul>
+<p><a href="#id98"><span class="problematic" id="id99">**</span></a>主带管理路径**（参考 8.2.3.2 节）：</p>
+<ul class="simple">
+<li><p>协商阶段</p></li>
+<li><p>初始化阶段</p></li>
+</ul>
+</section>
+<section id="ucie-uda">
+<h3><a class="toc-backref" href="#id181" role="doc-backlink"><span class="section-number">13.8.4. </span>UCIe 调试和测试架构 (UDA)</a><a class="headerlink" href="#ucie-uda" title="链接到此标题。"></a></h3>
+<p><a href="#id100"><span class="problematic" id="id101">**</span></a>概述**（参考 8.3.1 节）：</p>
+<ul class="simple">
+<li><p><strong>DFx Management Hub (DMH)</strong>：DFx 实体，提供枚举/全局控制/状态</p></li>
+<li><p><strong>DFx Management Spoke (DMS)</strong>：实现特定测试/调试功能</p></li>
+</ul>
+<p><strong>支持的协议</strong>：</p>
+<ul class="simple">
+<li><p>UCIe Memory Access Protocol (UMAP)</p></li>
+<li><p>Vendor-defined Test and Debug Protocol</p></li>
+</ul>
+<p><strong>测试场景</strong>：</p>
+<ul class="simple">
+<li><p>Sort/Pre-bond 裸芯测试（参考 8.3.2 节）</p></li>
+<li><p>SiP 级裸芯测试（参考 8.3.3 节）</p></li>
+<li><p>系统调试（参考 8.3.4 节）</p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-9-0-configuration-and-parameters">
+<h2><a class="toc-backref" href="#id182" role="doc-backlink"><span class="section-number">13.9. </span>配置和参数 (Chapter 9.0 Configuration and Parameters)</a><a class="headerlink" href="#chapter-9-0-configuration-and-parameters" title="链接到此标题。"></a></h2>
+<section id="id102">
+<h3><a class="toc-backref" href="#id183" role="doc-backlink"><span class="section-number">13.9.1. </span>软件视图</a><a class="headerlink" href="#id102" title="链接到此标题。"></a></h3>
+<p><a href="#id103"><span class="problematic" id="id104">**</span></a>UCIe 链路的软件发现**（参考 9.2 节）：</p>
+<ul class="simple">
+<li><p>通过 DVSEC 能力发现</p></li>
+<li><p>寄存器位置和访问机制</p></li>
+</ul>
+</section>
+<section id="id105">
+<h3><a class="toc-backref" href="#id184" role="doc-backlink"><span class="section-number">13.9.2. </span>寄存器定义</a><a class="headerlink" href="#id105" title="链接到此标题。"></a></h3>
+<p><a href="#id106"><span class="problematic" id="id107">**</span></a>UCIe Link DVSEC**（参考 9.5.1 节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器</p></th>
+<th class="head"><p>功能</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Capability Descriptor</p></td>
+<td><p>能力描述</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIe Link Capability</p></td>
+<td><p>链路能力</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIe Link Control</p></td>
+<td><p>链路控制</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIe Link Status</p></td>
+<td><p>链路状态</p></td>
+</tr>
+<tr class="row-even"><td><p>Link Event Notification Control</p></td>
+<td><p>链路事件通知控制</p></td>
+</tr>
+<tr class="row-odd"><td><p>Error Notification Control</p></td>
+<td><p>错误通知控制</p></td>
+</tr>
+<tr class="row-even"><td><p>Register Locator</p></td>
+<td><p>寄存器定位器</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id108"><span class="problematic" id="id109">**</span></a>D2D/PHY 寄存器块**（参考 9.5.3 节）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器组</p></th>
+<th class="head"><p>功能</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Error Status/Mask Registers</p></td>
+<td><p>错误状态/屏蔽寄存器</p></td>
+</tr>
+<tr class="row-odd"><td><p>PHY Capability/Control/Status</p></td>
+<td><p>PHY 能力/控制/状态</p></td>
+</tr>
+<tr class="row-even"><td><p>Training Setup</p></td>
+<td><p>训练设置</p></td>
+</tr>
+<tr class="row-odd"><td><p>Current Lane Map</p></td>
+<td><p>当前通道映射</p></td>
+</tr>
+<tr class="row-even"><td><p>Error Log</p></td>
+<td><p>错误日志</p></td>
+</tr>
+<tr class="row-odd"><td><p>Runtime Link Test</p></td>
+<td><p>运行时链路测试</p></td>
+</tr>
+<tr class="row-even"><td><p>Mainband Data Repair</p></td>
+<td><p>主带数据修复</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id110"><span class="problematic" id="id111">**</span></a>UCIe Link Health Monitor (UHM)**（参考 9.5.3.40 节）：</p>
+<ul class="simple">
+<li><p>眼图裕量监控</p></li>
+<li><p>链路健康状态</p></li>
+</ul>
+</section>
+<section id="id112">
+<h3><a class="toc-backref" href="#id185" role="doc-backlink"><span class="section-number">13.9.3. </span>测试/合规寄存器块</a><a class="headerlink" href="#id112" title="链接到此标题。"></a></h3>
+<p><a href="#id113"><span class="problematic" id="id114">**</span></a>适配器测试/合规**（参考 9.5.4.4 节）：</p>
+<ul class="simple">
+<li><p>合规控制</p></li>
+<li><p>Flit 注入控制</p></li>
+<li><p>链路状态注入控制</p></li>
+<li><p>重试注入控制</p></li>
+</ul>
+<p><a href="#id115"><span class="problematic" id="id116">**</span></a>PHY 测试/合规**（参考 9.5.4.5 节）：</p>
+<ul class="simple">
+<li><p>物理层合规控制</p></li>
+<li><p>合规状态</p></li>
+</ul>
+</section>
+<section id="ucie-uedt">
+<h3><a class="toc-backref" href="#id186" role="doc-backlink"><span class="section-number">13.9.4. </span>UCIe 早期发现表 (UEDT)</a><a class="headerlink" href="#ucie-uedt" title="链接到此标题。"></a></h3>
+<p>用于系统启动时的早期发现机制（参考 9.8 节）。</p>
+</section>
+</section>
+<section id="chapter-10-0-interface-definitions">
+<h2><a class="toc-backref" href="#id187" role="doc-backlink"><span class="section-number">13.10. </span>接口定义 (Chapter 10.0 Interface Definitions)</a><a class="headerlink" href="#chapter-10-0-interface-definitions" title="链接到此标题。"></a></h2>
+<section id="rdi-raw-die-to-die-interface">
+<h3><a class="toc-backref" href="#id188" role="doc-backlink"><span class="section-number">13.10.1. </span>RDI (Raw Die-to-Die Interface)</a><a class="headerlink" href="#rdi-raw-die-to-die-interface" title="链接到此标题。"></a></h3>
+<p><a href="#id117"><span class="problematic" id="id118">**</span></a>信号列表**（参考 10-1 表）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>信号类别</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>数据信号</p></td>
+<td><p>lp_data, pl_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>有效信号</p></td>
+<td><p>lp_valid, pl_valid</p></td>
+</tr>
+<tr class="row-even"><td><p>时钟信号</p></td>
+<td><p>pl_clk</p></td>
+</tr>
+<tr class="row-odd"><td><p>状态信号</p></td>
+<td><p>lp_state_req, pl_state_sts</p></td>
+</tr>
+<tr class="row-even"><td><p>唤醒信号</p></td>
+<td><p>lp_wake_req, pl_wake_ack</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id119"><span class="problematic" id="id120">**</span></a>状态机**（参考 10.1.5 节）：</p>
+<ul class="simple">
+<li><p>Reset → Active → PM (L1/L2) → Retrain → LinkReset → LinkError → Disabled</p></li>
+</ul>
+<p><a href="#id121"><span class="problematic" id="id122">**</span></a>时钟要求**（参考 10.1.2 节）：</p>
+<ul class="simple">
+<li><p>动态时钟门控支持</p></li>
+<li><p>lp_wake_req/pl_wake_ack 握手机制</p></li>
+</ul>
+</section>
+<section id="fdi-flit-aware-die-to-die-interface">
+<h3><a class="toc-backref" href="#id189" role="doc-backlink"><span class="section-number">13.10.2. </span>FDI (Flit-Aware Die-to-Die Interface)</a><a class="headerlink" href="#fdi-flit-aware-die-to-die-interface" title="链接到此标题。"></a></h3>
+<p><a href="#id123"><span class="problematic" id="id124">**</span></a>信号列表**（参考 10-3 表）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>信号类别</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Flit 数据</p></td>
+<td><p>pl_flit, lp_flit</p></td>
+</tr>
+<tr class="row-odd"><td><p>Flit 控制</p></td>
+<td><p>pl_flit_valid, lp_flit_valid</p></td>
+</tr>
+<tr class="row-even"><td><p>CRC 状态</p></td>
+<td><p>pl_crc_error</p></td>
+</tr>
+<tr class="row-odd"><td><p>取消信号</p></td>
+<td><p>pl_flit_cancel</p></td>
+</tr>
+</tbody>
+</table>
+<p><a href="#id125"><span class="problematic" id="id126">**</span></a>状态机**（参考 10.2.6 节）：</p>
+<p>与 RDI 类似的状态转换流程</p>
+<p><a href="#id127"><span class="problematic" id="id128">**</span></a>DLLP 传输规则**（参考 10.2.4 节）：</p>
+<ul class="simple">
+<li><p>256B Flit Mode 的 DLLP 传输规则</p></li>
+</ul>
+</section>
+<section id="id129">
+<h3><a class="toc-backref" href="#id190" role="doc-backlink"><span class="section-number">13.10.3. </span>通用规则</a><a class="headerlink" href="#id129" title="链接到此标题。"></a></h3>
+<p><a href="#id130"><span class="problematic" id="id131">**</span></a>字节映射**（参考 10.3.1 节）：</p>
+<ul class="simple">
+<li><p>64B 数据通路到 256B Flit 的映射</p></li>
+<li><p>128B 数据通路到 256B Flit 的映射</p></li>
+</ul>
+<p><a href="#id132"><span class="problematic" id="id133">**</span></a>Stallreq/Ack 机制**（参考 10.3.2 节）：</p>
+<p>用于流控和背压处理</p>
+</section>
+</section>
+<section id="chapter-11-0-compliance">
+<h2><a class="toc-backref" href="#id191" role="doc-backlink"><span class="section-number">13.11. </span>合规性 (Chapter 11.0 Compliance)</a><a class="headerlink" href="#chapter-11-0-compliance" title="链接到此标题。"></a></h2>
+<section id="id134">
+<h3><a class="toc-backref" href="#id192" role="doc-backlink"><span class="section-number">13.11.1. </span>协议层合规</a><a class="headerlink" href="#id134" title="链接到此标题。"></a></h3>
+<p>协议层合规性测试要求（参考 11.1 节）。</p>
+</section>
+<section id="id135">
+<h3><a class="toc-backref" href="#id193" role="doc-backlink"><span class="section-number">13.11.2. </span>适配器合规</a><a class="headerlink" href="#id135" title="链接到此标题。"></a></h3>
+<p>D2D 适配器合规性测试要求（参考 11.2 节）。</p>
+</section>
+<section id="phy">
+<h3><a class="toc-backref" href="#id194" role="doc-backlink"><span class="section-number">13.11.3. </span>PHY 合规</a><a class="headerlink" href="#phy" title="链接到此标题。"></a></h3>
+<p>物理层合规性测试要求（参考 11.3 节）。</p>
+</section>
+</section>
+<section id="id136">
+<h2><a class="toc-backref" href="#id195" role="doc-backlink"><span class="section-number">13.12. </span>附录</a><a class="headerlink" href="#id136" title="链接到此标题。"></a></h2>
+<dl class="simple">
+<dt><strong>附录 A：CXL/PCIe 寄存器对 UCIe 的适用性</strong></dt><dd><ul class="simple">
+<li><p>CXL 寄存器映射</p></li>
+<li><p>PCIe 寄存器映射</p></li>
+</ul>
+</dd>
+<dt><strong>附录 B：AIB 互操作性</strong></dt><dd><ul class="simple">
+<li><p>AIB 信号映射</p></li>
+<li><p>初始化流程</p></li>
+<li><p>凸点布局</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="id137">
+<h2><a class="toc-backref" href="#id196" role="doc-backlink"><span class="section-number">13.13. </span>术语表</a><a class="headerlink" href="#id137" title="链接到此标题。"></a></h2>
+<p>关键术语定义（参考 Table 1）：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>术语</p></th>
+<th class="head"><p>定义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Chiplet</p></td>
+<td><p>包含定义良好功能子集的集成电路裸芯，设计用于与同一封装中的其他裸芯组合</p></td>
+</tr>
+<tr class="row-odd"><td><p>Module</p></td>
+<td><p>UCIe 主数据通路上的一组通道，Advanced Package 为 64/32 通道，Standard Package 为 16 通道</p></td>
+</tr>
+<tr class="row-even"><td><p>Sideband</p></td>
+<td><p>用于参数交换、调试/合规寄存器访问以及链路训练和管理的协调</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mainband</p></td>
+<td><p>UCIe 主数据通路，包含转发时钟、数据有效引脚和 N 个数据通道</p></td>
+</tr>
+<tr class="row-even"><td><p>FDI</p></td>
+<td><p>Flit 感知裸芯间接口，D2D 适配器与协议层之间的接口</p></td>
+</tr>
+<tr class="row-odd"><td><p>RDI</p></td>
+<td><p>原始裸芯间接口，物理层与 D2D 适配器之间的接口</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id138">
+<h2><a class="toc-backref" href="#id197" role="doc-backlink"><span class="section-number">13.14. </span>修订历史</a><a class="headerlink" href="#id138" title="链接到此标题。"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>版本</p></th>
+<th class="head"><p>日期</p></th>
+<th class="head"><p>主要变更</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2.0</p></td>
+<td><p>2024-08-06</p></td>
+<td><p>添加 UCIe-3D；系统架构（可管理性、MTP 封装、UDA）；di/dt 风险缓解</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.1</p></td>
+<td><p>2023-07-10</p></td>
+<td><p>Streaming Flit 格式能力；增强多协议复用；x32 Advanced Package；链路健康监控；合规硬件能力</p></td>
+</tr>
+<tr class="row-even"><td><p>1.0</p></td>
+<td><p>2022-02-17</p></td>
+<td><p>初始发布</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../dma_alloc_coherent_iommu_path_analysis.html" class="btn btn-neutral float-left" title="12. dma_alloc_coherent 完整实现分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../pcie/PCI_Express_Base_5_0.html" class="btn btn-neutral float-right" title="14. PCI Express Base 5.0 规范文档结构概览" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

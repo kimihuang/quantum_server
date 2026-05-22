@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5. AMBA CHI 一致性协议深度分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/translations.js?v=540d3cec"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link rel="next" title="6. SMMU 学习笔记" href="../smmu_arch.html" />
+    <link rel="prev" title="4. AMBA® CHI 一致性协议深度分析" href="amba_chi_architecture_coherency.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. AMBA CHI 一致性协议深度分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">5.1. 一致性协议总览</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">5.1.1. 1 设计目标</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write-invalidate">5.1.2. 2 Write-Invalidate 协议</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">5.1.3. 3 缓存状态模型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">5.2. 缓存行状态详解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">5.2.1. 1 七状态定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">5.2.2. 2 空行所有权</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">5.2.3. 3 静默缓存状态转换</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id27">5.3. 请求类型深度分析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#read">5.3.1. 1 Read 事务</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataless">5.3.2. 2 Dataless 事务</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#write">5.3.3. 3 Write 事务</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#atomic">5.3.4. 4 Atomic 事务</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#snoop">5.4. Snoop 请求类型深度分析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id36">5.4.1. 1 Snoop 类型总览</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpmakeinvalid">5.4.2. 2 SnpMakeInvalid 的使用限制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#request-snoop">5.4.3. 3 Request/Snoop 对应规则</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id47">5.5. 响应类型深度分析</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#completion-response">5.5.1. 1 Completion Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snoop-response">5.5.2. 2 Snoop Response</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#requester">5.6. Requester 端缓存状态转换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id48">5.6.1. 1 Read 事务状态转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id49">5.6.2. 2 Dataless 事务状态转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">5.6.3. 3 Write 事务状态转换</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id51">5.6.4. 4 Atomic 事务状态转换</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#snoopee">5.7. Snoopee 端缓存状态转换</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#snponce-snponcefwd">5.7.1. 1 SnpOnce / SnpOnceFwd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpclean-snpcleanfwd">5.7.2. 2 SnpClean / SnpCleanFwd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpshared-snpsharedfwd">5.7.3. 3 SnpShared / SnpSharedFwd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpunique-snpuniquefwd">5.7.4. 4 SnpUnique / SnpUniqueFwd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpcleanshared">5.7.5. 5 SnpCleanShared</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpcleaninvalid">5.7.6. 6 SnpCleanInvalid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">5.7.7. 7 SnpMakeInvalid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snpquery">5.7.8. 8 SnpQuery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snppreferunique-snppreferuniquefwd">5.7.9. 9 SnpPreferUnique / SnpPreferUniqueFwd</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rettosrc-data-pull">5.8. RetToSrc 与 Data Pull 规则</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rettosrc">5.8.1. 1 RetToSrc 字段</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sc-rettosrc">5.8.2. 2 SC 状态的 RetToSrc 行为</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-pull">5.8.3. 3 Data Pull</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#donotgotosd">5.9. DoNotGoToSD 规则</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id57">5.9.1. 1 强制转换禁止</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id58">5.9.2. 2 非强制转换限制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">5.9.3. 3 例外情况</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id60">5.10. 多拷贝原子性与排序</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multi-copy-atomicity">5.10.1. 1 Multi-copy atomicity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id61">5.10.2. 2 Completion Response 的排序保证</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compack">5.10.3. 3 CompAck 机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#order">5.10.4. 4 Order 字段编码</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streaming-ordered-write-owo">5.10.5. 5 Streaming Ordered Write (OWO)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hazard-conditions">5.11. Hazard Conditions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rn-f-hazard">5.11.1. 1 RN-F Hazard 场景</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hn-f-hazard">5.11.2. 2 HN-F Hazard 场景</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id62">5.12. 协议设计总结</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id63">5.12.1. 1 一致性协议的核心机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id64">5.12.2. 2 性能优化特性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id65">5.12.3. 3 事务类型与缓存状态的关系图谱</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">5. </span>AMBA CHI 一致性协议深度分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/arm/chi/amba_chi_architecture_coherency_codebuddy.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="amba-chi">
+<h1><span class="section-number">5. </span>AMBA CHI 一致性协议深度分析<a class="headerlink" href="#amba-chi" title="链接到此标题。"></a></h1>
+<p>本文档基于 <strong>IHI0050G (Issue G, Mar 2024)</strong> -- AMBA CHI Architecture Specification，
+深入分析 CHI 一致性协议的完整设计，从整体架构到细节规则。</p>
+<p>参考文档：docs/pdf/arm/IHI0050G_amba_chi_architecture_spec.md</p>
+<nav class="contents local" id="id1">
+<ul class="simple">
+<li><p><a class="reference internal" href="#id2" id="id66">一致性协议总览</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id3" id="id67">1 设计目标</a></p></li>
+<li><p><a class="reference internal" href="#write-invalidate" id="id68">2 Write-Invalidate 协议</a></p></li>
+<li><p><a class="reference internal" href="#id4" id="id69">3 缓存状态模型</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id5" id="id70">缓存行状态详解</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id6" id="id71">1 七状态定义</a></p></li>
+<li><p><a class="reference internal" href="#id23" id="id72">2 空行所有权</a></p></li>
+<li><p><a class="reference internal" href="#id24" id="id73">3 静默缓存状态转换</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id27" id="id74">请求类型深度分析</a></p>
+<ul>
+<li><p><a class="reference internal" href="#read" id="id75">1 Read 事务</a></p></li>
+<li><p><a class="reference internal" href="#dataless" id="id76">2 Dataless 事务</a></p></li>
+<li><p><a class="reference internal" href="#write" id="id77">3 Write 事务</a></p></li>
+<li><p><a class="reference internal" href="#atomic" id="id78">4 Atomic 事务</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#snoop" id="id79">Snoop 请求类型深度分析</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id36" id="id80">1 Snoop 类型总览</a></p></li>
+<li><p><a class="reference internal" href="#snpmakeinvalid" id="id81">2 SnpMakeInvalid 的使用限制</a></p></li>
+<li><p><a class="reference internal" href="#request-snoop" id="id82">3 Request/Snoop 对应规则</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id47" id="id83">响应类型深度分析</a></p>
+<ul>
+<li><p><a class="reference internal" href="#completion-response" id="id84">1 Completion Response</a></p></li>
+<li><p><a class="reference internal" href="#snoop-response" id="id85">2 Snoop Response</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#requester" id="id86">Requester 端缓存状态转换</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id48" id="id87">1 Read 事务状态转换</a></p></li>
+<li><p><a class="reference internal" href="#id49" id="id88">2 Dataless 事务状态转换</a></p></li>
+<li><p><a class="reference internal" href="#id50" id="id89">3 Write 事务状态转换</a></p></li>
+<li><p><a class="reference internal" href="#id51" id="id90">4 Atomic 事务状态转换</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#snoopee" id="id91">Snoopee 端缓存状态转换</a></p>
+<ul>
+<li><p><a class="reference internal" href="#snponce-snponcefwd" id="id92">1 SnpOnce / SnpOnceFwd</a></p></li>
+<li><p><a class="reference internal" href="#snpclean-snpcleanfwd" id="id93">2 SnpClean / SnpCleanFwd</a></p></li>
+<li><p><a class="reference internal" href="#snpshared-snpsharedfwd" id="id94">3 SnpShared / SnpSharedFwd</a></p></li>
+<li><p><a class="reference internal" href="#snpunique-snpuniquefwd" id="id95">4 SnpUnique / SnpUniqueFwd</a></p></li>
+<li><p><a class="reference internal" href="#snpcleanshared" id="id96">5 SnpCleanShared</a></p></li>
+<li><p><a class="reference internal" href="#snpcleaninvalid" id="id97">6 SnpCleanInvalid</a></p></li>
+<li><p><a class="reference internal" href="#id52" id="id98">7 SnpMakeInvalid</a></p></li>
+<li><p><a class="reference internal" href="#snpquery" id="id99">8 SnpQuery</a></p></li>
+<li><p><a class="reference internal" href="#snppreferunique-snppreferuniquefwd" id="id100">9 SnpPreferUnique / SnpPreferUniqueFwd</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#rettosrc-data-pull" id="id101">RetToSrc 与 Data Pull 规则</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rettosrc" id="id102">1 RetToSrc 字段</a></p></li>
+<li><p><a class="reference internal" href="#sc-rettosrc" id="id103">2 SC 状态的 RetToSrc 行为</a></p></li>
+<li><p><a class="reference internal" href="#data-pull" id="id104">3 Data Pull</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#donotgotosd" id="id105">DoNotGoToSD 规则</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id57" id="id106">1 强制转换禁止</a></p></li>
+<li><p><a class="reference internal" href="#id58" id="id107">2 非强制转换限制</a></p></li>
+<li><p><a class="reference internal" href="#id59" id="id108">3 例外情况</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id60" id="id109">多拷贝原子性与排序</a></p>
+<ul>
+<li><p><a class="reference internal" href="#multi-copy-atomicity" id="id110">1 Multi-copy atomicity</a></p></li>
+<li><p><a class="reference internal" href="#id61" id="id111">2 Completion Response 的排序保证</a></p></li>
+<li><p><a class="reference internal" href="#compack" id="id112">3 CompAck 机制</a></p></li>
+<li><p><a class="reference internal" href="#order" id="id113">4 Order 字段编码</a></p></li>
+<li><p><a class="reference internal" href="#streaming-ordered-write-owo" id="id114">5 Streaming Ordered Write (OWO)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#hazard-conditions" id="id115">Hazard Conditions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#rn-f-hazard" id="id116">1 RN-F Hazard 场景</a></p></li>
+<li><p><a class="reference internal" href="#hn-f-hazard" id="id117">2 HN-F Hazard 场景</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id62" id="id118">协议设计总结</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id63" id="id119">1 一致性协议的核心机制</a></p></li>
+<li><p><a class="reference internal" href="#id64" id="id120">2 性能优化特性</a></p></li>
+<li><p><a class="reference internal" href="#id65" id="id121">3 事务类型与缓存状态的关系图谱</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="id2">
+<h2><a class="toc-backref" href="#id66" role="doc-backlink"><span class="section-number">5.1. </span>一致性协议总览</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p><em>源文档: B1.5 Coherence overview, B4 Coherence Protocol</em></p>
+<section id="id3">
+<h3><a class="toc-backref" href="#id67" role="doc-backlink"><span class="section-number">5.1.1. </span>1 设计目标</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<p>CHI 一致性协议的核心目标：</p>
+<ul class="simple">
+<li><p><strong>多拷贝原子性 (Multi-copy atomicity)</strong>: 所有写入同一位置的操作被序列化，所有 Requester 以相同顺序观察</p></li>
+<li><p><strong>对同一位置的读不返回尚未被所有 Requester 观察到的写值</strong></p></li>
+<li><p><strong>缓存一致性粒度</strong>: 64 字节对齐的缓存行</p></li>
+<li><p><strong>主内存不需要在所有时刻保持最新</strong>: 仅在缓存行不再被任何缓存持有时才需要更新</p></li>
+</ul>
+</section>
+<section id="write-invalidate">
+<h3><a class="toc-backref" href="#id68" role="doc-backlink"><span class="section-number">5.1.2. </span>2 Write-Invalidate 协议</a><a class="headerlink" href="#write-invalidate" title="链接到此标题。"></a></h3>
+<p>CHI 采用 <strong>Write-Invalidate</strong> 协议：当 Requester 写入共享缓存行时，必须先使所有其他副本无效化，然后才能进行写操作。</p>
+</section>
+<section id="id4">
+<h3><a class="toc-backref" href="#id69" role="doc-backlink"><span class="section-number">5.1.3. </span>3 缓存状态模型</a><a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p>缓存行状态由三个维度的组合定义：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>维度</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Valid / Invalid</p></td>
+<td><p>Valid: 缓存行存在; Invalid: 不在缓存中</p></td>
+</tr>
+<tr class="row-odd"><td><p>Unique / Shared</p></td>
+<td><p>Unique: 仅在本缓存; Shared: 可存在于多个缓存</p></td>
+</tr>
+<tr class="row-even"><td><p>Clean / Dirty</p></td>
+<td><p>Clean: 无需更新主内存; Dirty: 已修改，驱逐时必须写回</p></td>
+</tr>
+<tr class="row-odd"><td><p>Full / Partial / Empty</p></td>
+<td><p>Full: 所有字节有效; Partial: 部分有效; Empty: 无有效字节</p></td>
+</tr>
+</tbody>
+</table>
+<p>由此组合产生 <strong>7 种协议定义的缓存行状态</strong>。</p>
+</section>
+</section>
+<section id="id5">
+<h2><a class="toc-backref" href="#id70" role="doc-backlink"><span class="section-number">5.2. </span>缓存行状态详解</a><a class="headerlink" href="#id5" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.1 Cache line states</em></p>
+<section id="id6">
+<h3><a class="toc-backref" href="#id71" role="doc-backlink"><span class="section-number">5.2.1. </span>1 七状态定义</a><a class="headerlink" href="#id6" title="链接到此标题。"></a></h3>
+</section>
+<section id="id23">
+<h3><a class="toc-backref" href="#id72" role="doc-backlink"><span class="section-number">5.2.2. </span>2 空行所有权</a><a class="headerlink" href="#id23" title="链接到此标题。"></a></h3>
+<p><strong>UCE (Unique Clean Empty)</strong>:</p>
+<ul class="simple">
+<li><p>持有缓存行的唯一所有权，但无有效数据字节</p></li>
+<li><p>Requester 可在写入前获取空行以**节省系统带宽**</p></li>
+<li><p>典型场景：Requester 预期要写入某行，先获取空行和写权限，而非获取完整副本</p></li>
+</ul>
+<p><strong>UDP (Unique Dirty Partial)</strong>:</p>
+<ul class="simple">
+<li><p>持有唯一所有权，部分字节已修改</p></li>
+<li><p>驱逐时必须与下层缓存/内存**合并**数据</p></li>
+<li><p>从 UCE 或 UD 经部分写入可进入此状态</p></li>
+</ul>
+</section>
+<section id="id24">
+<h3><a class="toc-backref" href="#id73" role="doc-backlink"><span class="section-number">5.2.3. </span>3 静默缓存状态转换</a><a class="headerlink" href="#id24" title="链接到此标题。"></a></h3>
+<p>缓存可以因内部事件改变状态而不通知系统其余部分。合法的静默转换：</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<ul class="simple">
+<li><p>UC -&gt; UCE <a href="#id25"><span class="problematic" id="id26">**</span></a>不允许**作为静默转换</p></li>
+<li><p>静默转换可以级联：任何导致 UD、UDP 或 SC 的静默转换可以继续进一步转换</p></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="id27">
+<h2><a class="toc-backref" href="#id74" role="doc-backlink"><span class="section-number">5.3. </span>请求类型深度分析</a><a class="headerlink" href="#id27" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.2 Request types</em></p>
+<section id="read">
+<h3><a class="toc-backref" href="#id75" role="doc-backlink"><span class="section-number">5.3.1. </span>1 Read 事务</a><a class="headerlink" href="#read" title="链接到此标题。"></a></h3>
+<p>Read 事务的共同特征：</p>
+<ul class="simple">
+<li><p>必须向 Requester 提供数据（MakeReadUnique 除外，数据可选）</p></li>
+<li><p>数据可来自 Home Node、Peer RN-F 或 Subordinate Node</p></li>
+<li><p>Allocating Read 获得的数据必须以系统一致方式缓存</p></li>
+<li><p>Non-allocating Read（ReadNoSnp, ReadOnce*）不期望被缓存</p></li>
+</ul>
+<p>### 3.1.1 Non-allocating Read</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>ReadOnceMakeInvalid 的关键约束：Invalidation 在读数据响应前提交，确保后续写事务不会被此 invalidation 影响。但可导致 Dirty 缓存行丢失，使用场景需严格限制。</p>
+</div>
+<p>### 3.1.2 Allocating Read</p>
+<p>### 3.1.3 MakeReadUnique 深度分析</p>
+<p>MakeReadUnique 是一个**特殊的事务类型**，用于在 Requester 已有缓存行副本的情况下获取 Unique 写权限：</p>
+<p><strong>核心特点</strong>:</p>
+<ul class="simple">
+<li><p>数据响应是**可选的**（如果 Requester 仍持有副本，无需重新获取数据）</p></li>
+<li><p>初始状态限于 <a href="#id30"><span class="problematic" id="id31">**</span></a>SC 或 SD**（Requester 已有共享副本）</p></li>
+<li><p>如果事务过程中副本被 Snoop 失效，Home 必须提供数据</p></li>
+</ul>
+<p><strong>响应类型</strong>:</p>
+<p><strong>Exclusive 变体 (MakeReadUnique Excl)</strong> 的额外响应：</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>如果 Requester 在收到响应时仍持有 SD 状态的副本，<a href="#id32"><span class="problematic" id="id33">**</span></a>必须使用自身副本而非响应中的数据**（因为响应中的数据可能是过时的）。</p>
+</div>
+<p><strong>Snoop Filter 对响应的影响</strong>:</p>
+<ul class="simple">
+<li><p><strong>精确 Snoop Filter</strong>: Home 知道 Requester 是否仍持有副本，可精确选择是否附带数据</p></li>
+<li><p><strong>非精确/无 Snoop Filter</strong>: Home 必须假设 Requester 已丢失副本，始终提供数据</p></li>
+</ul>
+</section>
+<section id="dataless">
+<h3><a class="toc-backref" href="#id76" role="doc-backlink"><span class="section-number">5.3.2. </span>2 Dataless 事务</a><a class="headerlink" href="#dataless" title="链接到此标题。"></a></h3>
+<p>### 3.2.1 所有权获取事务</p>
+<p>### 3.2.2 缓存维护操作 (CMO)</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<ul class="simple">
+<li><p>CMO 前允许状态为 UC/UCE/SC，但**必须在发出事务前转换为 I 状态**</p></li>
+<li><p>MakeInvalid 是唯一允许**丢弃脏数据**的 CMO，使用场景需严格限制</p></li>
+<li><p>CleanShared* 不会改变缓存状态（Comp 的 Resp 字段被忽略）</p></li>
+</ul>
+</div>
+<p>### 3.2.3 驱逐与 Stash</p>
+</section>
+<section id="write">
+<h3><a class="toc-backref" href="#id77" role="doc-backlink"><span class="section-number">5.3.3. </span>3 Write 事务</a><a class="headerlink" href="#write" title="链接到此标题。"></a></h3>
+<p>### 3.3.1 Immediate Write（立即写入）</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<ul class="simple">
+<li><p>DWT 流**禁止**用于 WriteNoSnpZero 和 WriteUniqueZero</p></li>
+<li><p>所有 Immediate Write 最终状态为 <a href="#id34"><span class="problematic" id="id35">**</span></a>I**（WriteClean 除外）</p></li>
+<li><p>WriteUnique* 要求所有 Peer 的最终状态为 <strong>I</strong></p></li>
+</ul>
+</div>
+<p>### 3.3.2 CopyBack Write（写回）</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p><strong>WriteCleanFull 是唯一一个最终状态不是 I 的 Write 事务</strong>。它允许 Requester 在写回后仍持有 Clean 副本，减少后续重新读取的延迟。</p>
+</div>
+<p>### 3.3.3 Combined Write（组合写入）</p>
+<p>组合写入将 Write 操作与 CMO 合并，减少事务数量。支持的组合：</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>组合写入的完成响应使用 <strong>CompCMO</strong> 操作码，而非 Comp。PoPA CMO 的 CompCMO 语义跨越所有物理地址空间。</p>
+</div>
+<p>### 3.3.4 WriteNoSnpDef 特殊响应</p>
+<p>WriteNoSnpDef 支持一种特殊的完成语义，Completer 可以推迟写入：</p>
+</section>
+<section id="atomic">
+<h3><a class="toc-backref" href="#id78" role="doc-backlink"><span class="section-number">5.3.4. </span>4 Atomic 事务</a><a class="headerlink" href="#atomic" title="链接到此标题。"></a></h3>
+<p>Atomic 事务的关键约束：</p>
+<ul class="simple">
+<li><p>返回的数据必须是**原始值**（操作前）</p></li>
+<li><p>数据不能在 Requester 缓存</p></li>
+<li><p>所有 Peer 最终状态必须为 <strong>I</strong></p></li>
+<li><p><strong>不能使用 DMT/DWT</strong></p></li>
+<li><p><strong>SnoopMe</strong>: 当 Requester 无法确定缓存为 I 时**必须**置 1，导致 Home 向 Requester 发 Snoop</p></li>
+</ul>
+</section>
+</section>
+<section id="snoop">
+<h2><a class="toc-backref" href="#id79" role="doc-backlink"><span class="section-number">5.4. </span>Snoop 请求类型深度分析</a><a class="headerlink" href="#snoop" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.3 Snoop request types, B4.4 Request/Snoop correspondence</em></p>
+<section id="id36">
+<h3><a class="toc-backref" href="#id80" role="doc-backlink"><span class="section-number">5.4.1. </span>1 Snoop 类型总览</a><a class="headerlink" href="#id36" title="链接到此标题。"></a></h3>
+</section>
+<section id="snpmakeinvalid">
+<h3><a class="toc-backref" href="#id81" role="doc-backlink"><span class="section-number">5.4.2. </span>2 SnpMakeInvalid 的使用限制</a><a class="headerlink" href="#snpmakeinvalid" title="链接到此标题。"></a></h3>
+<p>SnpMakeInvalid 是唯一允许**丢弃脏数据**的 Snoop，因此其使用受到严格限制：</p>
+</section>
+<section id="request-snoop">
+<h3><a class="toc-backref" href="#id82" role="doc-backlink"><span class="section-number">5.4.3. </span>3 Request/Snoop 对应规则</a><a class="headerlink" href="#request-snoop" title="链接到此标题。"></a></h3>
+<p>关键规则：</p>
+<ol class="arabic simple">
+<li><p><strong>转发 Snoop 只能发给 1 个 RN-F</strong>；非转发 Snoop 可发多个</p></li>
+<li><p><a href="#id39"><span class="problematic" id="id40">**</span></a>&lt;64B 请求禁止使用 Forwarding Snoop**（因为无法保证原子性）</p></li>
+<li><p>Home <a href="#id41"><span class="problematic" id="id42">**</span></a>允许**将 invalidating snoop 替换为 SnpUnique 或 SnpCleanInvalid</p></li>
+<li><p>Home <a href="#id43"><span class="problematic" id="id44">**</span></a>允许**将 forwarding snoop 替换为非 forwarding 类型</p></li>
+<li><p>Home <a href="#id45"><span class="problematic" id="id46">**</span></a>允许自发产生 snoop**（如 backward invalidation）</p></li>
+</ol>
+</section>
+</section>
+<section id="id47">
+<h2><a class="toc-backref" href="#id83" role="doc-backlink"><span class="section-number">5.5. </span>响应类型深度分析</a><a class="headerlink" href="#id47" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.5 Response types</em></p>
+<section id="completion-response">
+<h3><a class="toc-backref" href="#id84" role="doc-backlink"><span class="section-number">5.5.1. </span>1 Completion Response</a><a class="headerlink" href="#completion-response" title="链接到此标题。"></a></h3>
+<p>完成响应是每个事务（除 PCrdReturn 和 PrefetchTgt）必须的最终消息，保证请求已到达 PoS 或 PoC。</p>
+<p>### 5.1.1 Read 完成响应</p>
+<p>Read 完成可以是**合并式**（CompData）或**分离式**（RespSepData + DataSepResp）。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>Pass Dirty (_PD) 表示内存更新责任从 Home/其他缓存转移到 Requester。Requester 获得了脏数据，未来驱逐时必须写回。</p>
+</div>
+<p>### 5.1.2 Dataless 完成响应</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>对于 CMO 事务（Comp, CompCMO, CompPersist），<strong>缓存状态字段被忽略</strong>，缓存行状态保持不变。</p>
+</div>
+<p>### 5.1.3 Write 完成响应</p>
+<p>Write 完成响应**不包含缓存状态信息**（Resp 必须为 0，WriteNoSnpDef 除外）：</p>
+<ul class="simple">
+<li><p><strong>Comp</strong>: 完成响应与 DBIDResp 分离</p></li>
+<li><p><strong>CompDBIDResp</strong>: 完成响应与 DBIDResp 合并（所有 CopyBack 必须使用）</p></li>
+</ul>
+<p>### 5.1.4 WriteData 响应</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>WriteData 的缓存状态反映的是**发送数据时的状态**，可能与原始请求发送时不同（期间可能收到 Snoop）。</p>
+</div>
+</section>
+<section id="snoop-response">
+<h3><a class="toc-backref" href="#id85" role="doc-backlink"><span class="section-number">5.5.2. </span>2 Snoop Response</a><a class="headerlink" href="#snoop-response" title="链接到此标题。"></a></h3>
+<p>Snoop 响应有 5 种形式：</p>
+<p>### 5.2.1 Non-forward Snoop 响应（无数据）</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>SnpResp_UC 和 SnpResp_UD 使用**相同的 Resp 编码 (0b010)**，区别在于缓存行实际状态。</p>
+</div>
+<p>### 5.2.2 Forward Snoop 响应（无数据 + DCT）</p>
+<p>Forward Snoop 无数据响应包含 <strong>FwdState</strong> 字段，指示转发给 Requester 的缓存行状态：</p>
+<p>### 5.2.3 Snoop 响应（有数据）</p>
+<p>有数据的 Snoop 响应中，<strong>Pass Dirty 只能在有数据时断言</strong>：</p>
+<p>Non-forward 有数据：</p>
+<p>### 5.2.4 Stash DataPull 响应</p>
+<p>对 Stash Snoop，Snoopee 可通过 <strong>DataPull</strong> 位发送隐含的 Read 请求：</p>
+</section>
+</section>
+<section id="requester">
+<h2><a class="toc-backref" href="#id86" role="doc-backlink"><span class="section-number">5.6. </span>Requester 端缓存状态转换</a><a class="headerlink" href="#requester" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.7 Cache state transitions at a Requester</em></p>
+<section id="id48">
+<h3><a class="toc-backref" href="#id87" role="doc-backlink"><span class="section-number">5.6.1. </span>1 Read 事务状态转换</a><a class="headerlink" href="#id48" title="链接到此标题。"></a></h3>
+<p>### 6.1.1 ReadClean</p>
+<p>### 6.1.2 ReadNotSharedDirty / ReadShared</p>
+<p>### 6.1.3 ReadUnique</p>
+<p>### 6.1.4 MakeReadUnique</p>
+<p>MakeReadUnique 的状态转换取决于响应时刻的缓存行状态（可能已因 Snoop 改变）：</p>
+<p>Exclusive 变体额外状态转换：</p>
+</section>
+<section id="id49">
+<h3><a class="toc-backref" href="#id88" role="doc-backlink"><span class="section-number">5.6.2. </span>2 Dataless 事务状态转换</a><a class="headerlink" href="#id49" title="链接到此标题。"></a></h3>
+</section>
+<section id="id50">
+<h3><a class="toc-backref" href="#id89" role="doc-backlink"><span class="section-number">5.6.3. </span>3 Write 事务状态转换</a><a class="headerlink" href="#id50" title="链接到此标题。"></a></h3>
+</section>
+<section id="id51">
+<h3><a class="toc-backref" href="#id90" role="doc-backlink"><span class="section-number">5.6.4. </span>4 Atomic 事务状态转换</a><a class="headerlink" href="#id51" title="链接到此标题。"></a></h3>
+<p>所有 Atomic 事务的最终状态均为 <strong>I</strong>。Requester 不缓存返回的数据。</p>
+</section>
+</section>
+<section id="snoopee">
+<h2><a class="toc-backref" href="#id91" role="doc-backlink"><span class="section-number">5.7. </span>Snoopee 端缓存状态转换</a><a class="headerlink" href="#snoopee" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.8 Cache state transitions at a Snoopee</em></p>
+<section id="snponce-snponcefwd">
+<h3><a class="toc-backref" href="#id92" role="doc-backlink"><span class="section-number">5.7.1. </span>1 SnpOnce / SnpOnceFwd</a><a class="headerlink" href="#snponce-snponcefwd" title="链接到此标题。"></a></h3>
+</section>
+<section id="snpclean-snpcleanfwd">
+<h3><a class="toc-backref" href="#id93" role="doc-backlink"><span class="section-number">5.7.2. </span>2 SnpClean / SnpCleanFwd</a><a class="headerlink" href="#snpclean-snpcleanfwd" title="链接到此标题。"></a></h3>
+</section>
+<section id="snpshared-snpsharedfwd">
+<h3><a class="toc-backref" href="#id94" role="doc-backlink"><span class="section-number">5.7.3. </span>3 SnpShared / SnpSharedFwd</a><a class="headerlink" href="#snpshared-snpsharedfwd" title="链接到此标题。"></a></h3>
+</section>
+<section id="snpunique-snpuniquefwd">
+<h3><a class="toc-backref" href="#id95" role="doc-backlink"><span class="section-number">5.7.4. </span>4 SnpUnique / SnpUniqueFwd</a><a class="headerlink" href="#snpunique-snpuniquefwd" title="链接到此标题。"></a></h3>
+</section>
+<section id="snpcleanshared">
+<h3><a class="toc-backref" href="#id96" role="doc-backlink"><span class="section-number">5.7.5. </span>5 SnpCleanShared</a><a class="headerlink" href="#snpcleanshared" title="链接到此标题。"></a></h3>
+</section>
+<section id="snpcleaninvalid">
+<h3><a class="toc-backref" href="#id97" role="doc-backlink"><span class="section-number">5.7.6. </span>6 SnpCleanInvalid</a><a class="headerlink" href="#snpcleaninvalid" title="链接到此标题。"></a></h3>
+</section>
+<section id="id52">
+<h3><a class="toc-backref" href="#id98" role="doc-backlink"><span class="section-number">5.7.7. </span>7 SnpMakeInvalid</a><a class="headerlink" href="#id52" title="链接到此标题。"></a></h3>
+<div class="admonition danger">
+<p class="admonition-title">危险</p>
+<p>SnpMakeInvalid 是**唯一允许丢弃脏数据的 Snoop**，使用必须极其谨慎。</p>
+</div>
+</section>
+<section id="snpquery">
+<h3><a class="toc-backref" href="#id99" role="doc-backlink"><span class="section-number">5.7.8. </span>8 SnpQuery</a><a class="headerlink" href="#snpquery" title="链接到此标题。"></a></h3>
+</section>
+<section id="snppreferunique-snppreferuniquefwd">
+<h3><a class="toc-backref" href="#id100" role="doc-backlink"><span class="section-number">5.7.9. </span>9 SnpPreferUnique / SnpPreferUniqueFwd</a><a class="headerlink" href="#snppreferunique-snppreferuniquefwd" title="链接到此标题。"></a></h3>
+<p>SnpPreferUnique 的最终状态取决于是否存在活跃的独占序列：</p>
+</section>
+</section>
+<section id="rettosrc-data-pull">
+<h2><a class="toc-backref" href="#id101" role="doc-backlink"><span class="section-number">5.8. </span>RetToSrc 与 Data Pull 规则</a><a class="headerlink" href="#rettosrc-data-pull" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.9 Returning Data with Snoop response</em></p>
+<section id="rettosrc">
+<h3><a class="toc-backref" href="#id102" role="doc-backlink"><span class="section-number">5.8.1. </span>1 RetToSrc 字段</a><a class="headerlink" href="#rettosrc" title="链接到此标题。"></a></h3>
+<p>RetToSrc 指示 Snoop 接收方在 Snoop 响应中返回数据：</p>
+</section>
+<section id="sc-rettosrc">
+<h3><a class="toc-backref" href="#id103" role="doc-backlink"><span class="section-number">5.8.2. </span>2 SC 状态的 RetToSrc 行为</a><a class="headerlink" href="#sc-rettosrc" title="链接到此标题。"></a></h3>
+<p>当缓存行处于 SC 状态时：</p>
+<ul class="simple">
+<li><p><strong>RetToSrc = 0</strong>: Snoopee <a href="#id53"><span class="problematic" id="id54">**</span></a>禁止**返回数据（即使 Snoop 请求了数据）</p></li>
+<li><p><strong>RetToSrc = 1</strong>: Snoopee <a href="#id55"><span class="problematic" id="id56">**</span></a>期望**返回数据</p></li>
+</ul>
+</section>
+<section id="data-pull">
+<h3><a class="toc-backref" href="#id104" role="doc-backlink"><span class="section-number">5.8.3. </span>3 Data Pull</a><a class="headerlink" href="#data-pull" title="链接到此标题。"></a></h3>
+<p>Data Pull 允许 Snoopee 在 Snoop 响应中**隐含发送 Read 请求**。Data Pull 的 Read 请求被视作：</p>
+</section>
+</section>
+<section id="donotgotosd">
+<h2><a class="toc-backref" href="#id105" role="doc-backlink"><span class="section-number">5.9. </span>DoNotGoToSD 规则</a><a class="headerlink" href="#donotgotosd" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.10 Do not transition to SD</em></p>
+<p><strong>DoNotGoToSD</strong> 字段控制 Snoopee 是否可以转换到 SD 状态：</p>
+<section id="id57">
+<h3><a class="toc-backref" href="#id106" role="doc-backlink"><span class="section-number">5.9.1. </span>1 强制转换禁止</a><a class="headerlink" href="#id57" title="链接到此标题。"></a></h3>
+<p>当 DoNotGoToSD = 1 时：</p>
+</section>
+<section id="id58">
+<h3><a class="toc-backref" href="#id107" role="doc-backlink"><span class="section-number">5.9.2. </span>2 非强制转换限制</a><a class="headerlink" href="#id58" title="链接到此标题。"></a></h3>
+<p>DoNotGoToSD 不影响以下转换：</p>
+<ul class="simple">
+<li><p>静默的 UC -&gt; SC 转换（Local sharing）</p></li>
+<li><p>SnpShared 的 SC -&gt; SC 转换</p></li>
+</ul>
+</section>
+<section id="id59">
+<h3><a class="toc-backref" href="#id108" role="doc-backlink"><span class="section-number">5.9.3. </span>3 例外情况</a><a class="headerlink" href="#id59" title="链接到此标题。"></a></h3>
+<p>当 DoNotGoToSD = 1 且缓存行处于 UD 状态，如果 Snoopee 无法保留数据（如资源限制），则**不允许**返回数据，事务必须被 Retry 或以其他方式处理。</p>
+</section>
+</section>
+<section id="id60">
+<h2><a class="toc-backref" href="#id109" role="doc-backlink"><span class="section-number">5.10. </span>多拷贝原子性与排序</a><a class="headerlink" href="#id60" title="链接到此标题。"></a></h2>
+<p><em>源文档: B2.6 Ordering</em></p>
+<section id="multi-copy-atomicity">
+<h3><a class="toc-backref" href="#id110" role="doc-backlink"><span class="section-number">5.10.1. </span>1 Multi-copy atomicity</a><a class="headerlink" href="#multi-copy-atomicity" title="链接到此标题。"></a></h3>
+<p>所有合规组件必须确保所有写请求满足多拷贝原子性：</p>
+<ul class="simple">
+<li><p>对同一位置的所有写入被**序列化**，所有 Requester 以相同顺序观察</p></li>
+<li><p>对某位置的读**不返回**尚未被所有 Requester 观察到的写值</p></li>
+</ul>
+</section>
+<section id="id61">
+<h3><a class="toc-backref" href="#id111" role="doc-backlink"><span class="section-number">5.10.2. </span>2 Completion Response 的排序保证</a><a class="headerlink" href="#id61" title="链接到此标题。"></a></h3>
+</section>
+<section id="compack">
+<h3><a class="toc-backref" href="#id112" role="doc-backlink"><span class="section-number">5.10.3. </span>3 CompAck 机制</a><a class="headerlink" href="#compack" title="链接到此标题。"></a></h3>
+<p>CompAck (Completion Acknowledgment) 控制同一 Requester 发出的多个事务与由不同 Requester 的事务导致的 Snoop 之间的相对排序。</p>
+<p><strong>时序保证</strong>:</p>
+<ol class="arabic simple">
+<li><p>RN-F 在收到 Comp/RespSepData/CompData 后发送 CompAck</p></li>
+<li><p>HN-F（除 ReadNoSnp/ReadOnce* 外）**等待 CompAck** 后才发送后续同地址 Snoop</p></li>
+<li><p>对于 CopyBack 事务，WriteData 作为隐式 CompAck</p></li>
+</ol>
+<p><strong>这意味着</strong>: RN-F 收到完成和同一缓存行的 Snoop 的顺序与 HN-F 发送它们的顺序相同。</p>
+<p><strong>CompAck 需求表</strong>:</p>
+</section>
+<section id="order">
+<h3><a class="toc-backref" href="#id113" role="doc-backlink"><span class="section-number">5.10.4. </span>4 Order 字段编码</a><a class="headerlink" href="#order" title="链接到此标题。"></a></h3>
+</section>
+<section id="streaming-ordered-write-owo">
+<h3><a class="toc-backref" href="#id114" role="doc-backlink"><span class="section-number">5.10.5. </span>5 Streaming Ordered Write (OWO)</a><a class="headerlink" href="#streaming-ordered-write-owo" title="链接到此标题。"></a></h3>
+<p>OWO 是一种高效流式有序写入机制：</p>
+<ul class="simple">
+<li><p>Requester 设置 <strong>Order=0b10 + ExpCompAck</strong></p></li>
+<li><p>请求者等待 DBIDResp/DBIDRespOrd 后发送下一个有序写入</p></li>
+<li><p>HN-F 在收到 CompAck 后才使写入对其他 Observer 可见</p></li>
+<li><p><strong>优化的 OWO</strong>: 如果写入到不同目标，Requester 不需等待 DBIDResp*</p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>OWO 的关键约束：写入的完成**不依赖于**后续写入的完成。HN-F 可以乱序完成 OWO 写入，但通过 CompAck 机制保证观察顺序。</p>
+</div>
+</section>
+</section>
+<section id="hazard-conditions">
+<h2><a class="toc-backref" href="#id115" role="doc-backlink"><span class="section-number">5.11. </span>Hazard Conditions</a><a class="headerlink" href="#hazard-conditions" title="链接到此标题。"></a></h2>
+<p><em>源文档: B4.11 Hazard conditions</em></p>
+<section id="rn-f-hazard">
+<h3><a class="toc-backref" href="#id116" role="doc-backlink"><span class="section-number">5.11.1. </span>1 RN-F Hazard 场景</a><a class="headerlink" href="#rn-f-hazard" title="链接到此标题。"></a></h3>
+<p>当 RN-F 同时有同一缓存行的多个事务进行时可能产生 Hazard：</p>
+<ol class="arabic simple">
+<li><p><strong>CopyBack 进行中 + 同行 Read 被发出</strong>: Atomic (SnoopMe=1) 可以在 CopyBack 完成前发出；CopyBack 也可以在 Atomic 完成前发出</p></li>
+<li><p><strong>CopyBack 进行中 + Snoop 到达</strong>: Home 必须正确处理</p></li>
+<li><p><strong>Read 进行中 + Snoop 到达</strong>: 通过 CompAck 机制保证正确排序</p></li>
+</ol>
+</section>
+<section id="hn-f-hazard">
+<h3><a class="toc-backref" href="#id117" role="doc-backlink"><span class="section-number">5.11.2. </span>2 HN-F Hazard 场景</a><a class="headerlink" href="#hn-f-hazard" title="链接到此标题。"></a></h3>
+<p>Home Node 作为 PoC 和 PoS 必须处理以下场景：</p>
+<ol class="arabic simple">
+<li><p><strong>同一地址多个 Snoop 进行中</strong>: 必须正确合并 Snoop 响应</p></li>
+<li><p><strong>Snoop 与 Dataless 冲突</strong>: 静默状态转换可能导致不一致</p></li>
+<li><p><strong>Backward Invalidation</strong>: Home 自发产生 Snoop 时的时序</p></li>
+</ol>
+<p>HN-F 的关键处理规则：</p>
+<ul class="simple">
+<li><p>必须在所有 Snoop 响应收集后才发送 Comp 给 Requester</p></li>
+<li><p>被无效化的缓存行的脏数据必须正确写回或传递</p></li>
+<li><p>Forwarding Snoop 与非 Forwarding Snoop 的响应必须正确合并</p></li>
+</ul>
+</section>
+</section>
+<section id="id62">
+<h2><a class="toc-backref" href="#id118" role="doc-backlink"><span class="section-number">5.12. </span>协议设计总结</a><a class="headerlink" href="#id62" title="链接到此标题。"></a></h2>
+<section id="id63">
+<h3><a class="toc-backref" href="#id119" role="doc-backlink"><span class="section-number">5.12.1. </span>1 一致性协议的核心机制</a><a class="headerlink" href="#id63" title="链接到此标题。"></a></h3>
+<p>CHI 一致性协议通过以下核心机制实现硬件一致性：</p>
+</section>
+<section id="id64">
+<h3><a class="toc-backref" href="#id120" role="doc-backlink"><span class="section-number">5.12.2. </span>2 性能优化特性</a><a class="headerlink" href="#id64" title="链接到此标题。"></a></h3>
+</section>
+<section id="id65">
+<h3><a class="toc-backref" href="#id121" role="doc-backlink"><span class="section-number">5.12.3. </span>3 事务类型与缓存状态的关系图谱</a><a class="headerlink" href="#id65" title="链接到此标题。"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Non-snoopable:
+  ReadNoSnp ──────────────────&gt; I
+  WriteNoSnp* ────────────────&gt; I
+
+Non-allocating Snoopable Read:
+  ReadOnce* ──────────────────&gt; I
+
+Allocating Read:
+  ReadClean ──────────────────&gt; SC, UC
+  ReadNotSharedDirty ────────&gt; SC, UC, UD (no SD)
+  ReadShared ────────────────&gt; SC, UC, UD, SD
+  ReadUnique ────────────────&gt; UC, UD
+  ReadPreferUnique ──────────&gt; UC, UD, SC, SD
+  MakeReadUnique ─────────────&gt; UC, UD (special)
+
+Dataless:
+  CleanUnique ────────────────&gt; UC, UCE
+  MakeUnique ─────────────────&gt; UC
+  Evict ──────────────────────&gt; I
+  CleanShared* ──────────────&gt; (no change)
+  CleanInvalid* ──────────────&gt; I
+  MakeInvalid ────────────────&gt; I
+
+Write:
+  Immediate Write ─────────────&gt; I
+  WriteCleanFull ──────────────&gt; UC, SC (unique!)
+  CopyBack Write ──────────────&gt; I
+  Combined Write ──────────────&gt; I
+
+Atomic:
+  All ─────────────────────────&gt; I (no caching)
+
+Stash:
+  StashOnce* ──────────────────&gt; I
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="amba_chi_architecture_coherency.html" class="btn btn-neutral float-left" title="4. AMBA® CHI 一致性协议深度分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../smmu_arch.html" class="btn btn-neutral float-right" title="6. SMMU 学习笔记" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,2017 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10. ARM SMMUv3 驱动深度分析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=540d3cec"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="11. dma_alloc_coherent 完整实现分析" href="dma_alloc_coherent_analysis.html" />
+    <link rel="prev" title="9. MMU-600AE RAS 与 PMU 深入分析" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu_arch.html">2. ARM AArch64 MMU (VMSA) 架构深度解析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">10. ARM SMMUv3 驱动深度分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">10.1. 1. 驱动功能概述</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">10.2. 2. 核心数据结构及其关系</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">10.2.1. 2.1 结构体关系图</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">10.2.2. 2.2 核心结构体字段详表</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">10.2.3. 2.3 枚举与标志位定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">10.2.4. 2.4 关键宏定义表</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">10.3. 3. 初始化/注册流程 (从入口到硬件可用)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">10.3.1. 3.1 入口与平台驱动注册</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">10.3.2. 3.2 完整调用链</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">10.3.3. 3.3 关键初始化函数详解</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">10.3.4. 3.4 初始化流程汇总表</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">10.4. 4. 操作函数集（回调表）</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#struct-iommu-ops-arm-smmu-ops-2841-2868">10.4.1. 4.1 struct iommu_ops arm_smmu_ops (行 2841-2868)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#struct-iommu-domain-ops-default-domain-ops-2858-2867">10.4.2. 4.2 struct iommu_domain_ops (default_domain_ops, 行 2858-2867)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmu-notifier-ops-sva-sva-c">10.4.3. 4.3 mmu_notifier_ops 回调 (SVA, sva.c)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">10.4.4. 4.4 关键回调函数实现</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">10.5. 5. 中断处理流程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">10.5.1. 5.1 中断注册汇总</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">10.5.2. 5.2 中断源获取</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">10.5.3. 5.3 处理链图</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">10.5.4. 5.4 各中断触发条件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">10.5.5. 5.5 中断线程化分析</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">10.5.6. 5.6 关键中断处理函数实现</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">10. </span>ARM SMMUv3 驱动深度分析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/smmu_code_analysis.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arm-smmuv3">
+<h1><span class="section-number">10. </span>ARM SMMUv3 驱动深度分析<a class="headerlink" href="#arm-smmuv3" title="链接到此标题。"></a></h1>
+<p><strong>文件</strong>: <code class="docutils literal notranslate"><span class="pre">src/linux-6.1-rc6/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c</span></code> (3888 行)</p>
+<p><strong>头文件</strong>: <code class="docutils literal notranslate"><span class="pre">src/linux-6.1-rc6/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h</span></code> (808 行)</p>
+<p><strong>SVA 文件</strong>: <code class="docutils literal notranslate"><span class="pre">src/linux-6.1-rc6/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c</span></code></p>
+<section id="id1">
+<h2><span class="section-number">10.1. </span>1. 驱动功能概述<a class="headerlink" href="#id1" title="链接到此标题。"></a></h2>
+<p>ARM 架构 SMMUv3 (System Memory Management Unit version 3) 的 IOMMU 驱动，
+为 DMA 设备提供地址转换、TLB 管理、ATS/PRI/SVA 支持，通过 <code class="docutils literal notranslate"><span class="pre">iommu_ops</span></code>
+回调注册到 Linux IOMMU 子系统。</p>
+<ul class="simple">
+<li><p><strong>所属子系统</strong>: <code class="docutils literal notranslate"><span class="pre">drivers/iommu/</span></code> -- Linux IOMMU 子系统</p></li>
+<li><p><strong>驱动类型</strong>: Platform driver，匹配 OF <code class="docutils literal notranslate"><span class="pre">compatible</span> <span class="pre">=</span> <span class="pre">&quot;arm,smmu-v3&quot;</span></code> 和 ACPI IORT 节点</p></li>
+<li><p><strong>入口</strong>: <code class="docutils literal notranslate"><span class="pre">module_driver()</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">platform_driver_register(&amp;arm_smmu_driver)</span></code> (行 3882)</p></li>
+<li><p><strong>模块参数</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">disable_bypass</span></code> (bool, 默认 true): 禁用 bypass 流，未挂载到 IOMMU domain
+的设备事务将被中止</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">disable_msipolling</span></code> (bool, 默认 false): 禁用基于 MSI 的 CMD_SYNC 完成轮询</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2><span class="section-number">10.2. </span>2. 核心数据结构及其关系<a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<section id="id3">
+<h3><span class="section-number">10.2.1. </span>2.1 结构体关系图<a class="headerlink" href="#id3" title="链接到此标题。"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>arm_smmu_device (核心设备实例, .h:618-677)
++-- *dev (struct device)
++-- *base / *page1 (MMIO 寄存器空间)
++-- features (u32, 19个特性位: S1/S2/PRI/ATS/MSI/SVA/STALL...)
++-- options (u32, 3个驱动选项位)
+|
++-- cmdq : arm_smmu_cmdq (.h:542)
+|   +-- q : arm_smmu_queue (.h:521)
+|   |   +-- llq : arm_smmu_ll_queue (.h:505)
+|   |       + *base (DMA一致性内存)
+|   + *valid_map (原子位图, 命令有效性)
+|
++-- evtq : arm_smmu_evtq (.h:554)
+|   +-- q : arm_smmu_queue
+|   + *iopf (IO Page Fault 队列)
+|
++-- priq : arm_smmu_priq (.h:560)
+|   +-- q : arm_smmu_queue
+|
++-- strtab_cfg : arm_smmu_strtab_cfg (.h:607)
+|   +-- *strtab (DMA一致性内存)
+|   + *l1_desc[] -&gt; *l2ptr (DMA, 两级流表)
+|
++-- iommu : struct iommu_device (IOMMU核心句柄)
+|
++-- streams : rb_root (红黑树)
+    +-- arm_smmu_stream (.h:679)
+        +-- *master -&gt; arm_smmu_master (.h:686)
+            +-- *smmu -&gt; (回指 arm_smmu_device)
+            +-- *dev (Linux 设备)
+            +-- *domain -&gt; arm_smmu_domain (.h:709)
+            |   +-- *smmu -&gt; (回指)
+            |   +-- *pgtbl_ops (struct io_pgtable_ops, 页表操作)
+            |   +-- s1_cfg : arm_smmu_s1_cfg (.h:594)
+            |   |   +-- cdcfg : arm_smmu_ctx_desc_cfg (.h:587) -&gt; *cdtab (DMA)
+            |   |   +-- cd : arm_smmu_ctx_desc (.h:572) -&gt; *mm (进程地址空间)
+            |   +-- s2_cfg : arm_smmu_s2_cfg (.h:601) (vmid/vttbr/vtcr)
+            |   +-- devices : list_head -&gt; master-&gt;domain_head
+            |   +-- domain : struct iommu_domain (嵌入)
+            +-- *streams[] (流数组)
+</pre></div>
+</div>
+<p>关键关系:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_device</span></code> 1:N <code class="docutils literal notranslate"><span class="pre">arm_smmu_master</span></code> (通过红黑树 streams)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_master</span></code> N:1 <code class="docutils literal notranslate"><span class="pre">arm_smmu_domain</span></code> (通过 domain 指针 + devices 链表)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_domain</span></code> 1:1 <code class="docutils literal notranslate"><span class="pre">arm_smmu_device</span></code> (通过 smmu 指针)</p></li>
+<li><p>三个队列 (cmdq/evtq/priq) 继承自 <code class="docutils literal notranslate"><span class="pre">arm_smmu_queue</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">arm_smmu_ll_queue</span></code></p></li>
+</ul>
+</section>
+<section id="id4">
+<h3><span class="section-number">10.2.2. </span>2.2 核心结构体字段详表<a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p><strong>struct arm_smmu_device</strong> (.h:618-677) -- SMMUv3 设备实例</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.3%" />
+<col style="width: 15.8%" />
+<col style="width: 57.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>类型</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dev</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span> <span class="pre">*</span></code></p></td>
+<td><p>关联的 Linux 设备</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">base</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span></code></p></td>
+<td><p>MMIO 页0 基地址 (64KB)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">page1</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span></code></p></td>
+<td><p>MMIO 页1 基地址 (64KB, EVTQ/PRIQ 寄存器)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">features</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">u32</span></code></p></td>
+<td><p>硬件特性位图 (19位, 见 2.3 特性标志表)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">options</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">u32</span></code></p></td>
+<td><p>驱动选项位图 (3位, 见 2.3 选项标志表)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmdq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_cmdq</span></code></p></td>
+<td><p>命令队列</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">evtq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_evtq</span></code></p></td>
+<td><p>事件队列</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">priq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_priq</span></code></p></td>
+<td><p>PRI 队列</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gerr_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>全局错误中断号</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">combined_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></td>
+<td><p>合并中断号 (Cavium ThunderX2 等)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ias</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span></code></p></td>
+<td><p>输入地址宽度 (IPA bits)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">oas</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span></code></p></td>
+<td><p>输出地址宽度 (PA bits)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pgsize_bitmap</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span></code></p></td>
+<td><p>支持的页大小位图</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">asid_bits</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code></p></td>
+<td><p>ASID 位数 (8 或 16)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vmid_bits</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code></p></td>
+<td><p>VMID 位数 (8 或 16)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vmid_map</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DECLARE_BITMAP</span></code></p></td>
+<td><p>VMID 分配位图 (最大 65536)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ssid_bits</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code></p></td>
+<td><p>Substream ID 位数</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sid_bits</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code></p></td>
+<td><p>Stream ID 位数</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">strtab_cfg</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_strtab_cfg</span></code></p></td>
+<td><p>流表配置</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iommu</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">iommu_device</span></code></p></td>
+<td><p>IOMMU 核心设备句柄 (嵌入)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">streams</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rb_root</span></code></p></td>
+<td><p>流的红黑树根</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">streams_mutex</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">mutex</span></code></p></td>
+<td><p>流操作互斥锁</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>struct arm_smmu_master</strong> (.h:686-699) -- Master 设备</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.3%" />
+<col style="width: 15.8%" />
+<col style="width: 57.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>类型</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">smmu</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_device</span> <span class="pre">*</span></code></p></td>
+<td><p>所属 SMMU 设备</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dev</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span> <span class="pre">*</span></code></p></td>
+<td><p>Linux 设备指针</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">domain</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_domain</span> <span class="pre">*</span></code></p></td>
+<td><p>当前 attached 的 domain</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">domain_head</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">list_head</span></code></p></td>
+<td><p>domain-&gt;devices 链表节点</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">streams</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_stream</span> <span class="pre">*</span></code></p></td>
+<td><p>流数组</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_streams</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code></p></td>
+<td><p>流数量</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ats_enabled</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p>ATS 是否启用</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">stall_enabled</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p>Stall 是否启用</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sva_enabled</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p>SVA 是否启用</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iopf_enabled</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p>IO Page Fault 是否启用</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bonds</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">list_head</span></code></p></td>
+<td><p>SVA 绑定链表</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ssid_bits</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code></p></td>
+<td><p>Substream ID 位数</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>struct arm_smmu_domain</strong> (.h:709-729) -- IOMMU Domain</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.3%" />
+<col style="width: 15.8%" />
+<col style="width: 57.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>字段</p></th>
+<th class="head"><p>类型</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">smmu</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">arm_smmu_device</span> <span class="pre">*</span></code></p></td>
+<td><p>所属 SMMU 设备</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">init_mutex</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">mutex</span></code></p></td>
+<td><p>保护 smmu 指针</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pgtbl_ops</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">io_pgtable_ops</span> <span class="pre">*</span></code></p></td>
+<td><p>页表操作回调</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">stall_enabled</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p>stall 是否启用</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nr_ats_masters</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">atomic_t</span></code></p></td>
+<td><p>ATS master 计数</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">stage</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">arm_smmu_domain_stage</span></code></p></td>
+<td><p>转换阶段 (S1/S2/NESTED/BYPASS)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">s1_cfg</span></code> / <code class="docutils literal notranslate"><span class="pre">s2_cfg</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">union</span></code></p></td>
+<td><p>Stage 1 或 Stage 2 配置 (union)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">domain</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">iommu_domain</span></code></p></td>
+<td><p>IOMMU core domain (嵌入)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">devices</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">list_head</span></code></p></td>
+<td><p>挂载的 master 列表</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">devices_lock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">spinlock_t</span></code></p></td>
+<td><p>devices 列表锁</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mmu_notifiers</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">list_head</span></code></p></td>
+<td><p>MMU 通知器列表</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>队列继承层次</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31.6%" />
+<col style="width: 68.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>结构体</p></th>
+<th class="head"><p>关键字段</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_ll_queue</span></code> (.h:505)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">val``(u64),</span> <span class="pre">``prod``(u32),</span> <span class="pre">``cons``(u32),</span> <span class="pre">``atomic.prod/cons</span></code>, <code class="docutils literal notranslate"><span class="pre">max_n_shift</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_queue</span></code> (.h:521)</p></td>
+<td><p>继承 <code class="docutils literal notranslate"><span class="pre">llq</span></code>, <code class="docutils literal notranslate"><span class="pre">irq</span></code>, <code class="docutils literal notranslate"><span class="pre">*base</span></code>, <code class="docutils literal notranslate"><span class="pre">base_dma</span></code>, <code class="docutils literal notranslate"><span class="pre">q_base</span></code>, <code class="docutils literal notranslate"><span class="pre">ent_dwords</span></code>, <code class="docutils literal notranslate"><span class="pre">*prod_reg</span></code>, <code class="docutils literal notranslate"><span class="pre">*cons_reg</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_cmdq</span></code> (.h:542)</p></td>
+<td><p>继承 <code class="docutils literal notranslate"><span class="pre">q</span></code>, <code class="docutils literal notranslate"><span class="pre">*valid_map</span></code>, <code class="docutils literal notranslate"><span class="pre">owner_prod</span></code>, <code class="docutils literal notranslate"><span class="pre">lock</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_evtq</span></code> (.h:554)</p></td>
+<td><p>继承 <code class="docutils literal notranslate"><span class="pre">q</span></code>, <code class="docutils literal notranslate"><span class="pre">*iopf</span></code>, <code class="docutils literal notranslate"><span class="pre">max_stalls</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_priq</span></code> (.h:560)</p></td>
+<td><p>继承 <code class="docutils literal notranslate"><span class="pre">q</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id5">
+<h3><span class="section-number">10.2.3. </span>2.3 枚举与标志位定义<a class="headerlink" href="#id5" title="链接到此标题。"></a></h3>
+<p><strong>enum arm_smmu_domain_stage</strong> (.h:702-707):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 38.9%" />
+<col style="width: 61.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>枚举值</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_DOMAIN_S1</span> <span class="pre">=</span> <span class="pre">0</span></code></p></td>
+<td><p>Stage 1 转换 (VA -&gt; PA 或 VA -&gt; IPA)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_DOMAIN_S2</span></code></p></td>
+<td><p>Stage 2 转换 (IPA -&gt; PA)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_DOMAIN_NESTED</span></code></p></td>
+<td><p>嵌套转换 (S1 + S2)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_DOMAIN_BYPASS</span></code></p></td>
+<td><p>旁路 (无地址转换)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>enum pri_resp</strong> (.h:423-427):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 38.9%" />
+<col style="width: 61.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>枚举值</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRI_RESP_DENY</span> <span class="pre">=</span> <span class="pre">0</span></code></p></td>
+<td><p>拒绝 Page Request</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRI_RESP_FAIL</span> <span class="pre">=</span> <span class="pre">1</span></code></p></td>
+<td><p>Page Request 失败</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRI_RESP_SUCC</span> <span class="pre">=</span> <span class="pre">2</span></code></p></td>
+<td><p>Page Request 成功</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>enum arm_smmu_msi_index</strong> (.c:44-49):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 38.9%" />
+<col style="width: 61.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>枚举值</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EVTQ_MSI_INDEX</span></code></p></td>
+<td><p>事件队列 MSI 索引 (0)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_MSI_INDEX</span></code></p></td>
+<td><p>全局错误 MSI 索引 (1)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PRIQ_MSI_INDEX</span></code></p></td>
+<td><p>PRI 队列 MSI 索引 (2)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>特性标志位</strong> (<code class="docutils literal notranslate"><span class="pre">arm_smmu_device.features</span></code>, .h:623-641):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43.0%" />
+<col style="width: 8.6%" />
+<col style="width: 48.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>位</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_2_LVL_STRTAB</span></code></p></td>
+<td><p>0</p></td>
+<td><p>两级流表</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_2_LVL_CDTAB</span></code></p></td>
+<td><p>1</p></td>
+<td><p>两级上下文描述符表</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_TT_LE</span></code></p></td>
+<td><p>2</p></td>
+<td><p>小端转换表</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_TT_BE</span></code></p></td>
+<td><p>3</p></td>
+<td><p>大端转换表</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_PRI</span></code></p></td>
+<td><p>4</p></td>
+<td><p>Page Request Interface 支持</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_ATS</span></code></p></td>
+<td><p>5</p></td>
+<td><p>Address Translation Service 支持</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_SEV</span></code></p></td>
+<td><p>6</p></td>
+<td><p>SEV 同步事件支持</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_MSI</span></code></p></td>
+<td><p>7</p></td>
+<td><p>MSI 支持 (CMDQ 完成通知)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_COHERENCY</span></code></p></td>
+<td><p>8</p></td>
+<td><p>硬件 DMA 一致性</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_TRANS_S1</span></code></p></td>
+<td><p>9</p></td>
+<td><p>Stage 1 地址转换支持</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_TRANS_S2</span></code></p></td>
+<td><p>10</p></td>
+<td><p>Stage 2 地址转换支持</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_STALLS</span></code></p></td>
+<td><p>11</p></td>
+<td><p>Stall 模型支持</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_HYP</span></code></p></td>
+<td><p>12</p></td>
+<td><p>Hypervisor 模式支持</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_STALL_FORCE</span></code></p></td>
+<td><p>13</p></td>
+<td><p>强制 Stall</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_VAX</span></code></p></td>
+<td><p>14</p></td>
+<td><p>52-bit VA 支持</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_RANGE_INV</span></code></p></td>
+<td><p>15</p></td>
+<td><p>Range Invalidation 支持</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_BTM</span></code></p></td>
+<td><p>16</p></td>
+<td><p>Broadcast TLB Maintenance</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_SVA</span></code></p></td>
+<td><p>17</p></td>
+<td><p>Shared Virtual Addressing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_FEAT_E2H</span></code></p></td>
+<td><p>18</p></td>
+<td><p>EL2 Host 扩展</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>驱动选项位</strong> (<code class="docutils literal notranslate"><span class="pre">arm_smmu_device.options</span></code>, .h:644-646):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43.0%" />
+<col style="width: 8.6%" />
+<col style="width: 48.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>位</p></th>
+<th class="head"><p>含义</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_OPT_SKIP_PREFETCH</span></code></p></td>
+<td><p>0</p></td>
+<td><p>跳过预取命令 (华为 HiSilicon)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_OPT_PAGE0_REGS_ONLY</span></code></p></td>
+<td><p>1</p></td>
+<td><p>仅使用页0寄存器空间 (Cavium CN9900)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_OPT_MSIPOLL</span></code></p></td>
+<td><p>2</p></td>
+<td><p>启用 MSI polling (CMD_SYNC 完成检测)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id6">
+<h3><span class="section-number">10.2.4. </span>2.4 关键宏定义表<a class="headerlink" href="#id6" title="链接到此标题。"></a></h3>
+<p><strong>MMIO 寄存器偏移</strong> (.h):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41.2%" />
+<col style="width: 12.4%" />
+<col style="width: 46.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>偏移</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_IDR0</span></code></p></td>
+<td><p>0x0</p></td>
+<td><p>ID 寄存器 0 (特性描述)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_IDR1</span></code></p></td>
+<td><p>0x4</p></td>
+<td><p>ID 寄存器 1 (队列/ID 尺寸)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_IDR3</span></code></p></td>
+<td><p>0xc</p></td>
+<td><p>ID 寄存器 3 (RIL)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_IDR5</span></code></p></td>
+<td><p>0x14</p></td>
+<td><p>ID 寄存器 5 (页大小/OAS/VAX)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_CR0</span></code></p></td>
+<td><p>0x20</p></td>
+<td><p>控制 0 (SMMUEN/CMDQEN/EVTQEN/PRIQEN)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_CR0ACK</span></code></p></td>
+<td><p>0x24</p></td>
+<td><p>CR0 确认寄存器</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_CR1</span></code></p></td>
+<td><p>0x28</p></td>
+<td><p>控制 1 (缓存属性)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_CR2</span></code></p></td>
+<td><p>0x2c</p></td>
+<td><p>控制 2 (PTM/RECINVSID/E2H)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_GBPA</span></code></p></td>
+<td><p>0x44</p></td>
+<td><p>全局旁路属性</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_IRQ_CTRL</span></code></p></td>
+<td><p>0x50</p></td>
+<td><p>中断控制</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_IRQ_CTRLACK</span></code></p></td>
+<td><p>0x54</p></td>
+<td><p>中断控制确认</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_GERROR</span></code></p></td>
+<td><p>0x60</p></td>
+<td><p>全局错误状态</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_GERRORN</span></code></p></td>
+<td><p>0x64</p></td>
+<td><p>全局错误确认</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_STRTAB_BASE</span></code></p></td>
+<td><p>0x80</p></td>
+<td><p>流表基地址</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_STRTAB_BASE_CFG</span></code></p></td>
+<td><p>0x88</p></td>
+<td><p>流表基地址配置</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_CMDQ_BASE</span></code></p></td>
+<td><p>0x90</p></td>
+<td><p>命令队列基地址</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_CMDQ_PROD/CONS</span></code></p></td>
+<td><p>0x98/0x9c</p></td>
+<td><p>命令队列生产者/消费者</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_EVTQ_BASE</span></code></p></td>
+<td><p>0xa0</p></td>
+<td><p>事件队列基地址 (页1)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_EVTQ_PROD/CONS</span></code></p></td>
+<td><p>0xa8/0xac</p></td>
+<td><p>事件队列生产者/消费者 (页1)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_PRIQ_BASE</span></code></p></td>
+<td><p>0xc0</p></td>
+<td><p>PRI 队列基地址 (页1)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_PRIQ_PROD/CONS</span></code></p></td>
+<td><p>0xc8/0xcc</p></td>
+<td><p>PRI 队列生产者/消费者 (页1)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_REG_SZ</span></code></p></td>
+<td><p>0xe00</p></td>
+<td><p>单页寄存器空间大小</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>CR0 控制位</strong> (.h:72-77):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 34.1%" />
+<col style="width: 9.1%" />
+<col style="width: 56.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>位</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CR0_SMMUEN</span></code></p></td>
+<td><p>0</p></td>
+<td><p>SMMU 全局使能</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CR0_PRIQEN</span></code></p></td>
+<td><p>1</p></td>
+<td><p>PRI 队列使能</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CR0_EVTQEN</span></code></p></td>
+<td><p>2</p></td>
+<td><p>事件队列使能</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CR0_CMDQEN</span></code></p></td>
+<td><p>3</p></td>
+<td><p>命令队列使能</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CR0_ATSCHK</span></code></p></td>
+<td><p>4</p></td>
+<td><p>ATS 检查使能</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>GERROR 错误位</strong> (.h:109-118):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43.0%" />
+<col style="width: 8.6%" />
+<col style="width: 48.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>位</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_CMDQ_ERR</span></code></p></td>
+<td><p>0</p></td>
+<td><p>命令队列错误</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_EVTQ_ABT_ERR</span></code></p></td>
+<td><p>2</p></td>
+<td><p>事件队列写入中止</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_PRIQ_ABT_ERR</span></code></p></td>
+<td><p>3</p></td>
+<td><p>PRI 队列写入中止</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_MSI_CMDQ_ABT_ERR</span></code></p></td>
+<td><p>4</p></td>
+<td><p>CMDQ MSI 写入中止</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_MSI_EVTQ_ABT_ERR</span></code></p></td>
+<td><p>5</p></td>
+<td><p>EVTQ MSI 写入中止</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_MSI_PRIQ_ABT_ERR</span></code></p></td>
+<td><p>6</p></td>
+<td><p>PRIQ MSI 写入中止</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_MSI_GERROR_ABT_ERR</span></code></p></td>
+<td><p>7</p></td>
+<td><p>GERROR MSI 写入中止</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">GERROR_SFM_ERR</span></code></p></td>
+<td><p>8</p></td>
+<td><p>Service Failure Mode (致命)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>STE 配置字段</strong> (.h:203-257):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42.1%" />
+<col style="width: 15.8%" />
+<col style="width: 42.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_V</span></code></p></td>
+<td><p>1UL &lt;&lt; 0</p></td>
+<td><p>Valid 位</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_CFG_ABORT</span></code></p></td>
+<td><p>0</p></td>
+<td><p>Abort 配置</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_CFG_BYPASS</span></code></p></td>
+<td><p>4</p></td>
+<td><p>Bypass 配置</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_CFG_S1_TRANS</span></code></p></td>
+<td><p>5</p></td>
+<td><p>Stage 1 转换</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_CFG_S2_TRANS</span></code></p></td>
+<td><p>6</p></td>
+<td><p>Stage 2 转换</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_S1FMT_LINEAR</span></code></p></td>
+<td><p>0</p></td>
+<td><p>线性 CD 表</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_0_S1FMT_64K_L2</span></code></p></td>
+<td><p>2</p></td>
+<td><p>64K 两级 CD 表</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_1_S1DSS_TERMINATE</span></code></p></td>
+<td><p>0x0</p></td>
+<td><p>终止</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_1_S1DSS_BYPASS</span></code></p></td>
+<td><p>0x1</p></td>
+<td><p>Bypass</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_1_S1DSS_SSID0</span></code></p></td>
+<td><p>0x2</p></td>
+<td><p>SSID0 模式</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_1_EATS_ABT</span></code></p></td>
+<td><p>0</p></td>
+<td><p>EATS 中止</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_1_EATS_TRANS</span></code></p></td>
+<td><p>1</p></td>
+<td><p>EATS 转换</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_1_EATS_S1CHK</span></code></p></td>
+<td><p>2</p></td>
+<td><p>EATS S1 检查</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>命令队列操作码</strong> (.h:436-501):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36.8%" />
+<col style="width: 10.5%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_PREFETCH_CFG</span></code></p></td>
+<td><p>0x1</p></td>
+<td><p>预取配置</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_CFGI_STE</span></code></p></td>
+<td><p>0x3</p></td>
+<td><p>配置单个 STE</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_CFGI_ALL</span></code></p></td>
+<td><p>0x4</p></td>
+<td><p>配置所有 STE</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_CFGI_CD</span></code></p></td>
+<td><p>0x5</p></td>
+<td><p>配置单个 CD</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_CFGI_CD_ALL</span></code></p></td>
+<td><p>0x6</p></td>
+<td><p>配置所有 CD</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_NH_ASID</span></code></p></td>
+<td><p>0x11</p></td>
+<td><p>TLB 无效 (Non-secure, Hyp, ASID)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_NH_VA</span></code></p></td>
+<td><p>0x12</p></td>
+<td><p>TLB 无效 (Non-secure, Hyp, VA)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_EL2_ALL</span></code></p></td>
+<td><p>0x20</p></td>
+<td><p>EL2 全部 TLB 无效</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_EL2_ASID</span></code></p></td>
+<td><p>0x21</p></td>
+<td><p>EL2 TLB 无效 (ASID)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_EL2_VA</span></code></p></td>
+<td><p>0x22</p></td>
+<td><p>EL2 TLB 无效 (VA)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_S12_VMALL</span></code></p></td>
+<td><p>0x28</p></td>
+<td><p>S12 全部 VM TLB 无效</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_S2_IPA</span></code></p></td>
+<td><p>0x2a</p></td>
+<td><p>S2 IPA TLB 无效</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_TLBI_NSNH_ALL</span></code></p></td>
+<td><p>0x30</p></td>
+<td><p>Non-secure Non-Hyp 全部无效</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_ATC_INV</span></code></p></td>
+<td><p>0x40</p></td>
+<td><p>ATC 无效</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_PRI_RESP</span></code></p></td>
+<td><p>0x41</p></td>
+<td><p>PRI 响应</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_RESUME</span></code></p></td>
+<td><p>0x44</p></td>
+<td><p>恢复 stalled 事务</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_OP_CMD_SYNC</span></code></p></td>
+<td><p>0x46</p></td>
+<td><p>命令同步 (屏障)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>事件队列事件 ID</strong> (.h:378-397):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36.8%" />
+<col style="width: 10.5%" />
+<col style="width: 52.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EVT_ID_TRANSLATION_FAULT</span></code></p></td>
+<td><p>0x10</p></td>
+<td><p>转换错误 (页表遍历失败)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EVT_ID_ADDR_SIZE_FAULT</span></code></p></td>
+<td><p>0x11</p></td>
+<td><p>地址大小错误</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EVT_ID_ACCESS_FAULT</span></code></p></td>
+<td><p>0x12</p></td>
+<td><p>访问错误</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EVT_ID_PERMISSION_FAULT</span></code></p></td>
+<td><p>0x13</p></td>
+<td><p>权限错误</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>CMDQ 错误索引</strong> (.h:308-312):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43.0%" />
+<col style="width: 8.6%" />
+<col style="width: 48.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_ERR_CERROR_NONE_IDX</span></code></p></td>
+<td><p>0</p></td>
+<td><p>无错误</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_ERR_CERROR_ILL_IDX</span></code></p></td>
+<td><p>1</p></td>
+<td><p>非法命令</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_ERR_CERROR_ABT_IDX</span></code></p></td>
+<td><p>2</p></td>
+<td><p>命令获取中止</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_ERR_CERROR_ATC_INV_IDX</span></code></p></td>
+<td><p>3</p></td>
+<td><p>ATC 无效超时</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>其他关键常量</strong> (.h):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42.1%" />
+<col style="width: 15.8%" />
+<col style="width: 42.1%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>宏名</p></th>
+<th class="head"><p>值</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_SPLIT</span></code></p></td>
+<td><p>8</p></td>
+<td><p>L1/L2 流表分裂值</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CTXDESC_SPLIT</span></code></p></td>
+<td><p>10</p></td>
+<td><p>L1/L2 CD 表分裂值</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CTXDESC_L2_ENTRIES</span></code></p></td>
+<td><p>1024</p></td>
+<td><p>L2 CD 表条目数</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">STRTAB_STE_DWORDS</span></code></p></td>
+<td><p>8</p></td>
+<td><p>STE 大小 (8 DW = 64B)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CTXDESC_CD_DWORDS</span></code></p></td>
+<td><p>8</p></td>
+<td><p>CD 大小 (8 DW = 64B)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CMDQ_ENT_DWORDS</span></code></p></td>
+<td><p>2</p></td>
+<td><p>CMDQ 条目大小 (2 DW = 16B)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EVTQ_ENT_DWORDS</span></code></p></td>
+<td><p>4</p></td>
+<td><p>EVTQ 条目大小 (4 DW = 32B)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PRIQ_ENT_DWORDS</span></code></p></td>
+<td><p>2</p></td>
+<td><p>PRIQ 条目大小 (2 DW = 16B)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_MAX_ASIDS</span></code></p></td>
+<td><p>1 &lt;&lt; 16</p></td>
+<td><p>最大 ASID 数</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_MAX_VMIDS</span></code></p></td>
+<td><p>1 &lt;&lt; 16</p></td>
+<td><p>最大 VMID 数</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MSI_IOVA_BASE</span></code></p></td>
+<td><p>0x8000000</p></td>
+<td><p>MSI IOVA 基地址</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MSI_IOVA_LENGTH</span></code></p></td>
+<td><p>0x100000</p></td>
+<td><p>MSI IOVA 长度</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_POLL_TIMEOUT_US</span></code></p></td>
+<td><p>1000000</p></td>
+<td><p>轮询超时 (1秒)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ARM_SMMU_POLL_SPIN_COUNT</span></code></p></td>
+<td><p>10</p></td>
+<td><p>轮询自旋次数</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">10.3. </span>3. 初始化/注册流程 (从入口到硬件可用)<a class="headerlink" href="#id7" title="链接到此标题。"></a></h2>
+<section id="id8">
+<h3><span class="section-number">10.3.1. </span>3.1 入口与平台驱动注册<a class="headerlink" href="#id8" title="链接到此标题。"></a></h3>
+<p>该驱动使用 <code class="docutils literal notranslate"><span class="pre">module_driver</span></code> 宏注册，等价于 <code class="docutils literal notranslate"><span class="pre">module_init</span></code> / <code class="docutils literal notranslate"><span class="pre">module_exit</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// .c:3872-3883</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">platform_driver</span><span class="w"> </span><span class="n">arm_smmu_driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">name</span><span class="w">                   </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;arm-smmu-v3&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">of_match_table</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_of_match</span><span class="p">,</span><span class="w">  </span><span class="c1">// &quot;arm,smmu-v3&quot;</span>
+<span class="w">        </span><span class="p">.</span><span class="n">suppress_bind_attrs</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">.</span><span class="n">probe</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_probe</span><span class="p">,</span><span class="w">       </span><span class="c1">// 行 3736</span>
+<span class="w">    </span><span class="p">.</span><span class="n">remove</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_remove</span><span class="p">,</span><span class="w">      </span><span class="c1">// 行 3843</span>
+<span class="w">    </span><span class="p">.</span><span class="n">shutdown</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_shutdown</span><span class="p">,</span><span class="w">  </span><span class="c1">// 行 3855</span>
+<span class="p">};</span>
+
+<span class="n">module_driver</span><span class="p">(</span><span class="n">arm_smmu_driver</span><span class="p">,</span><span class="w"> </span><span class="n">platform_driver_register</span><span class="p">,</span>
+<span class="w">              </span><span class="n">arm_smmu_driver_unregister</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>该驱动没有独立的 <code class="docutils literal notranslate"><span class="pre">acpi_driver</span></code>。ACPI 平台下通过 IORT (I/O Remapping Table)
+将 ACPI IORT 节点转换成 <code class="docutils literal notranslate"><span class="pre">platform_device</span></code>，统一走 <code class="docutils literal notranslate"><span class="pre">platform_driver</span></code> 的
+<code class="docutils literal notranslate"><span class="pre">.probe</span></code> 回调。</p>
+</section>
+<section id="id9">
+<h3><span class="section-number">10.3.2. </span>3.2 完整调用链<a class="headerlink" href="#id9" title="链接到此标题。"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>module_init
+  +-&gt; platform_driver_register(&amp;arm_smmu_driver)         [行 3882]
+       | [内核 platform bus 匹配设备后自动调用 .probe]
+       v
+     arm_smmu_device_probe()                            [行 3736]
+       +-(1) arm_smmu_device_dt_probe()  / _acpi_probe()  [行 3668/3641]
+       |       +-- parse_driver_options() + 一致性检测
+       +-(2) arm_smmu_ioremap() x2 (base + page1)      [行 3698]
+       +-(3) platform_get_irq_byname_optional() x4       [行 3788]
+       |       (combined 或 eventq/priq/gerror)
+       +-(4) arm_smmu_device_hw_probe()                  [行 3413]
+       |       +-- 读 IDR0/IDR1/IDR3/IDR5 寄存器
+       |       +-- dma_set_mask_and_coherent()            [行 3612]
+       |       +-- arm_smmu_sva_supported()               [SVA检测]
+       +-(5) arm_smmu_init_structures()                  [行 3076]
+       |       +-- mutex_init + RB_ROOT
+       |       +-- arm_smmu_init_queues()                 [行 2930]
+       |       |   +-- arm_smmu_init_one_queue(cmdq) + cmdq_init
+       |       |   +-- arm_smmu_init_one_queue(evtq) + iopf_queue_alloc
+       |       |   +-- arm_smmu_init_one_queue(priq)
+       |       +-- arm_smmu_init_strtab()                 [行 3053]
+       |           +-- [两级] arm_smmu_init_strtab_2lvl() -&gt; dmam_alloc_coherent
+       |           +-- [线性] arm_smmu_init_strtab_linear() -&gt; dmam_alloc_coherent
+       +-(6) arm_smmu_rmr_install_bypass_ste()           [行 3706]
+       |       +-- ACPI RMR 区域 bypass STE 安装
+       +-(7) arm_smmu_device_reset()                     [行 3278]
+       |       +-- arm_smmu_device_disable() (清 CR0)
+       |       +-- 写 CR1/CR2 (缓存属性/PTM/RECINVSID/E2H)
+       |       +-- 写 STRTAB_BASE / CMDQ_BASE / EVTQ_BASE / PRIQ_BASE
+       |       +-- CMD_SYNC 使能 CMDQ -&gt; CFGI_ALL -&gt; TLBI 全刷
+       |       +-- 使能 EVTQ / PRIQ / ATSCHK
+       |       +-- arm_smmu_setup_irqs()                  [行 3226]
+       |       |   +-- [combined] devm_request_threaded_irq(硬+线程)
+       |       |   +-- [unique] arm_smmu_setup_unique_irqs()
+       |       |       +-- arm_smmu_setup_msis() -&gt; platform_msi_domain_alloc_irqs
+       |       |       +-- devm_request_threaded_irq(evtq, 纯线程)
+       |       |       +-- devm_request_irq(gerror, 硬中断)
+       |       |       +-- devm_request_threaded_irq(priq, 纯线程)
+       |       +-- 写 CR0_SMMUEN 使能 SMMU
+       +-(8) iommu_device_sysfs_add()                    [行 3828]
+       +-(9) iommu_device_register(&amp;arm_smmu_ops)       [行 3833]
+               -&gt; 硬件完全可用，可接受设备 attach
+</pre></div>
+</div>
+<p>注意: 该驱动无显式时钟操作 (<code class="docutils literal notranslate"><span class="pre">clk_*</span></code>)，SMMUv3 时钟由固件/电源域管理。</p>
+</section>
+<section id="id10">
+<h3><span class="section-number">10.3.3. </span>3.3 关键初始化函数详解<a class="headerlink" href="#id10" title="链接到此标题。"></a></h3>
+<p><strong>arm_smmu_device_probe()</strong> (.c:3736-3841) -- probe 入口</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_device_probe</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">platform_device</span><span class="w"> </span><span class="o">*</span><span class="n">pdev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 1. kzalloc 分配 smmu 设备结构</span>
+<span class="w">    </span><span class="n">smmu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">devm_kzalloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">smmu</span><span class="p">),</span><span class="w"> </span><span class="n">GFP_KERNEL</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 2. DT/ACPI 固件探测</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">of_node</span><span class="p">)</span>
+<span class="w">        </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_dt_probe</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_acpi_probe</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 3. MMIO 映射 (page0 + page1)</span>
+<span class="w">    </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_ioremap</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">ioaddr</span><span class="p">,</span><span class="w"> </span><span class="n">ARM_SMMU_REG_SZ</span><span class="p">);</span>
+<span class="w">    </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">page1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_ioremap</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">ioaddr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">SZ_64K</span><span class="p">,</span><span class="w"> </span><span class="n">ARM_SMMU_REG_SZ</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 4. 中断线获取</span>
+<span class="w">    </span><span class="n">irq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">platform_get_irq_byname_optional</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;combined&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 5. 硬件能力探测</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_hw_probe</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 6. 数据结构初始化</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_init_structures</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 7. RMR bypass STE 安装</span>
+<span class="w">    </span><span class="n">arm_smmu_rmr_install_bypass_ste</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 8. 设备复位</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_reset</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="n">bypass</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 9. 注册到 IOMMU 子系统</span>
+<span class="w">    </span><span class="n">iommu_device_sysfs_add</span><span class="p">(</span><span class="o">&amp;</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">iommu</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;smmu3.%pa&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ioaddr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">iommu_device_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">iommu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arm_smmu_ops</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_device_hw_probe()</strong> (.c:3413-3624) -- 硬件能力探测</p>
+<p>依次读取 IDR0/IDR1/IDR3/IDR5 寄存器，解析硬件能力:</p>
+<ul class="simple">
+<li><p><strong>IDR0</strong>: 流表级别、Stall 模型、转换表端序、CD2L、VMID16、PRI、ATS、SEV、MSI、
+ASID16、HYP、COHACC、TTF、S1P、S2P</p></li>
+<li><p><strong>IDR1</strong>: 队列大小 (CMDQS/EVTQS/PRIQS)、SSID 位数、SID 位数</p></li>
+<li><p><strong>IDR3</strong>: Range Invalidation (RIL)</p></li>
+<li><p><strong>IDR5</strong>: Stall 最大数、页粒度 (4K/16K/64K)、输出地址宽度 (OAS)、VAX</p></li>
+</ul>
+<p>关键操作: <code class="docutils literal notranslate"><span class="pre">dma_set_mask_and_coherent()</span></code> 设置 DMA 掩码为 <code class="docutils literal notranslate"><span class="pre">oas</span></code> 位宽。</p>
+<p><strong>arm_smmu_init_structures()</strong> (.c:3076-3088) -- 数据结构初始化</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_init_structures</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">streams_mutex</span><span class="p">);</span>
+<span class="w">    </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">streams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RB_ROOT</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_init_queues</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span><span class="w">   </span><span class="c1">// cmdq + evtq + priq</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">arm_smmu_init_strtab</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span><span class="w">  </span><span class="c1">// 两级或线性流表</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_init_queues()</strong> (.c:2930-2966) -- 队列初始化</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_init_queues</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// cmdq: dmam_alloc_coherent + valid_map 位图</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_init_one_queue</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">cmdq</span><span class="p">.</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_cmdq_init</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span><span class="w">   </span><span class="c1">// owner_prod + lock + valid_map</span>
+
+<span class="w">    </span><span class="c1">// evtq: dmam_alloc_coherent + iopf_queue (SVA+STALL 时)</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_init_one_queue</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">evtq</span><span class="p">.</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">page1</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="w">    </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">evtq</span><span class="p">.</span><span class="n">iopf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iopf_queue_alloc</span><span class="p">(</span><span class="n">dev_name</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// priq: 仅 PRI 特性可用时分配</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_init_one_queue</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">priq</span><span class="p">.</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">page1</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>每个队列通过 <code class="docutils literal notranslate"><span class="pre">dmam_alloc_coherent()</span></code> 分配 DMA 一致性内存，自动对齐。</p>
+<p><strong>arm_smmu_device_reset()</strong> (.c:3278-3411) -- 设备复位与使能</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_device_reset</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">bypass</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. 禁用 SMMU (清 CR0)</span>
+<span class="w">    </span><span class="n">arm_smmu_device_disable</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 2. 设置缓存属性 (CR1: WB+ISH)</span>
+<span class="w">    </span><span class="n">writel_relaxed</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_CR1</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 3. CR2: PTM + RECINVSID + E2H</span>
+<span class="w">    </span><span class="n">writel_relaxed</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_CR2</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 4. 配置流表基地址</span>
+<span class="w">    </span><span class="n">writeq_relaxed</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">strtab_cfg</span><span class="p">.</span><span class="n">strtab_base</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_STRTAB_BASE</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 5. 使能命令队列 -&gt; CFGI_ALL -&gt; TLBI 全刷</span>
+<span class="w">    </span><span class="n">writeq_relaxed</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">cmdq</span><span class="p">.</span><span class="n">q</span><span class="p">.</span><span class="n">q_base</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_CMDQ_BASE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">arm_smmu_write_reg_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="n">CR0_CMDQEN</span><span class="p">,</span><span class="w"> </span><span class="n">ARM_SMMU_CR0</span><span class="p">,</span><span class="w"> </span><span class="n">ARM_SMMU_CR0ACK</span><span class="p">);</span>
+<span class="w">    </span><span class="n">arm_smmu_cmdq_issue_cmd_with_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cmd</span><span class="p">);</span><span class="w"> </span><span class="c1">// CFGI_ALL</span>
+<span class="w">    </span><span class="n">arm_smmu_cmdq_issue_cmd_with_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cmd</span><span class="p">);</span><span class="w"> </span><span class="c1">// TLBI_NSNH_ALL</span>
+<span class="w">    </span><span class="c1">// 6. 使能事件队列</span>
+<span class="w">    </span><span class="n">writeq_relaxed</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">evtq</span><span class="p">.</span><span class="n">q</span><span class="p">.</span><span class="n">q_base</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_EVTQ_BASE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">arm_smmu_write_reg_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="n">enables</span><span class="o">|</span><span class="n">CR0_EVTQEN</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="w">    </span><span class="c1">// 7. 使能 PRI 队列 (可选)</span>
+<span class="w">    </span><span class="c1">// 8. 使能 ATS 检查 (可选)</span>
+<span class="w">    </span><span class="c1">// 9. 申请中断</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_setup_irqs</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 10. 使能 SMMUEN (或 bypass)</span>
+<span class="w">    </span><span class="n">arm_smmu_write_reg_sync</span><span class="p">(</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="n">enables</span><span class="o">|</span><span class="n">CR0_SMMUEN</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3><span class="section-number">10.3.4. </span>3.4 初始化流程汇总表<a class="headerlink" href="#id11" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5.3%" />
+<col style="width: 10.5%" />
+<col style="width: 26.3%" />
+<col style="width: 57.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>序号</p></th>
+<th class="head"><p>阶段</p></th>
+<th class="head"><p>函数</p></th>
+<th class="head"><p>关键操作</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>模块加载</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">module_driver</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">platform_driver_register(&amp;arm_smmu_driver)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>设备匹配</p></td>
+<td><p>内核 platform bus</p></td>
+<td><p>OF: <code class="docutils literal notranslate"><span class="pre">&quot;arm,smmu-v3&quot;</span></code>; ACPI: IORT</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>probe 入口</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_device_probe</span></code> :3736</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kzalloc</span></code> 分配 smmu</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>固件探测</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">_dt_probe</span></code> :3668 / <code class="docutils literal notranslate"><span class="pre">_acpi_probe</span></code> :3641</p></td>
+<td><p>DT 属性 / IORT 数据</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>MMIO 映射</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_ioremap</span></code> :3698</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">devm_ioremap_resource</span></code>, 64K+64K</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>中断获取</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">platform_get_irq_byname_optional</span></code></p></td>
+<td><p>combined / eventq / priq / gerror</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>HW 探测</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_device_hw_probe</span></code> :3413</p></td>
+<td><p>读 IDR0/IDR1/IDR3/IDR5</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>DMA 掩码</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dma_set_mask_and_coherent</span></code></p></td>
+<td><p>在 hw_probe 中调用, 掩码 = oas 位宽</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>结构初始化</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_init_structures</span></code> :3076</p></td>
+<td><p>mutex + RB 树</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>队列分配</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_init_queues</span></code> :2930</p></td>
+<td><p>cmdq + evtq + priq (DMA 一致性内存)</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>流表分配</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_init_strtab</span></code> :3053</p></td>
+<td><p>2 级或线性 (DMA 一致性内存)</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>RMR bypass</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_rmr_install_bypass_ste</span></code> :3706</p></td>
+<td><p>ACPI RMR 区域 bypass STE</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>设备复位</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_device_reset</span></code> :3278</p></td>
+<td><p>CR0/CR1/CR2 + 队列使能 + TLB 刷</p></td>
+</tr>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p>中断申请</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_setup_irqs</span></code> :3226</p></td>
+<td><p>MSI / wired + request_irq</p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p>SMMU 使能</p></td>
+<td><p>写 <code class="docutils literal notranslate"><span class="pre">CR0_SMMUEN</span></code></p></td>
+<td><p>硬件开始工作</p></td>
+</tr>
+<tr class="row-odd"><td><p>16</p></td>
+<td><p>IOMMU 注册</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">iommu_device_register</span></code> :3833</p></td>
+<td><p>对外暴露 IOMMU 接口</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id12">
+<h2><span class="section-number">10.4. </span>4. 操作函数集（回调表）<a class="headerlink" href="#id12" title="链接到此标题。"></a></h2>
+<section id="struct-iommu-ops-arm-smmu-ops-2841-2868">
+<h3><span class="section-number">10.4.1. </span>4.1 struct iommu_ops arm_smmu_ops (行 2841-2868)<a class="headerlink" href="#struct-iommu-ops-arm-smmu-ops-2841-2868" title="链接到此标题。"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iommu_ops</span><span class="w"> </span><span class="n">arm_smmu_ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">capable</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_capable</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">domain_alloc</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_domain_alloc</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">probe_device</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_probe_device</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">release_device</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_release_device</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">device_group</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_device_group</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">of_xlate</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_of_xlate</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">get_resv_regions</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_get_resv_regions</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">dev_enable_feat</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_dev_enable_feature</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">dev_disable_feat</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_dev_disable_feature</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">sva_bind</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_sva_bind</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">sva_unbind</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_sva_unbind</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">sva_get_pasid</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_sva_get_pasid</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">page_response</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_page_response</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">def_domain_type</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_def_domain_type</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">pgsize_bitmap</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">-1UL</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">owner</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="n">THIS_MODULE</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">default_domain_ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">iommu_domain_ops</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">attach_dev</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_attach_dev</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">map_pages</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_map_pages</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">unmap_pages</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_unmap_pages</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">flush_iotlb_all</span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_flush_iotlb_all</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">iotlb_sync</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_iotlb_sync</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">iova_to_phys</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_iova_to_phys</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">enable_nesting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_enable_nesting</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">free</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_domain_free</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>该驱动**没有** <code class="docutils literal notranslate"><span class="pre">arm_smmu_impl</span></code> 结构体或中间抽象层（与 SMMUv2 不同），
+直接通过函数指针注册回调。SVA 功能通过 <code class="docutils literal notranslate"><span class="pre">CONFIG_ARM_SMMU_V3_SVA</span></code> 编译条件控制。</p>
+<p><strong>iommu_ops 回调函数表</strong>:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36.8%" />
+<col style="width: 52.6%" />
+<col style="width: 10.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>函数名</p></th>
+<th class="head"><p>职责</p></th>
+<th class="head"><p>行号</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_capable</span></code></p></td>
+<td><p>查询设备能力 (CACHE_COHERENCY/NOEXEC)</p></td>
+<td><p>:1993</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_domain_alloc</span></code></p></td>
+<td><p>分配 iommu_domain (DMA/UNMANAGED/IDENTITY)</p></td>
+<td><p>:2008</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_probe_device</span></code></p></td>
+<td><p>探测设备，创建 master，插入红黑树</p></td>
+<td><p>:2644</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_release_device</span></code></p></td>
+<td><p>释放 master，从红黑树移除</p></td>
+<td><p>:2704</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_device_group</span></code></p></td>
+<td><p>获取 IOMMU group (PCI-&gt;pci_device_group, else-&gt;generic)</p></td>
+<td><p>:2716</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_of_xlate</span></code></p></td>
+<td><p>解析 DT iommu-cells，添加 Stream ID</p></td>
+<td><p>:2748</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_get_resv_regions</span></code></p></td>
+<td><p>获取保留区域 (MSI IOVA + DMA 保留区)</p></td>
+<td><p>:2753</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_dev_enable_feature</span></code></p></td>
+<td><p>使能设备特性 (IOPF/SVA)</p></td>
+<td><p>:2769</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_dev_disable_feature</span></code></p></td>
+<td><p>禁用设备特性 (IOPF/SVA)</p></td>
+<td><p>:2796</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_page_response</span></code></p></td>
+<td><p>恢复 stalled 事务 (RESUME 命令)</p></td>
+<td><p>:906</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_def_domain_type</span></code></p></td>
+<td><p>默认 domain 类型 (华为 PTT-&gt;IDENTITY)</p></td>
+<td><p>:2829</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_sva_bind</span></code></p></td>
+<td><p>SVA 绑定设备与进程地址空间</p></td>
+<td><p>sva.c:370</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_sva_unbind</span></code></p></td>
+<td><p>SVA 解绑</p></td>
+<td><p>sva.c:386</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_sva_get_pasid</span></code></p></td>
+<td><p>获取 PASID</p></td>
+<td><p>sva.c:399</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="struct-iommu-domain-ops-default-domain-ops-2858-2867">
+<h3><span class="section-number">10.4.2. </span>4.2 struct iommu_domain_ops (default_domain_ops, 行 2858-2867)<a class="headerlink" href="#struct-iommu-domain-ops-default-domain-ops-2858-2867" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36.8%" />
+<col style="width: 52.6%" />
+<col style="width: 10.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>函数名</p></th>
+<th class="head"><p>职责</p></th>
+<th class="head"><p>行号</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_attach_dev</span></code></p></td>
+<td><p>设备挂载到 domain，安装 STE，使能 ATS</p></td>
+<td><p>:2396</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_map_pages</span></code></p></td>
+<td><p>IOVA-&gt;PA 映射 (委托 io_pgtable_ops)</p></td>
+<td><p>:2472</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_unmap_pages</span></code></p></td>
+<td><p>IOVA-&gt;PA 解映射 (委托 io_pgtable_ops)</p></td>
+<td><p>:2484</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_flush_iotlb_all</span></code></p></td>
+<td><p>全量 TLB 刷 (TLBI all contexts)</p></td>
+<td><p>:2497</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_iotlb_sync</span></code></p></td>
+<td><p>增量 TLB 刷 (TLBI range by gather)</p></td>
+<td><p>:2505</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_iova_to_phys</span></code></p></td>
+<td><p>IOVA-&gt;物理地址查询</p></td>
+<td><p>:2519</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_enable_nesting</span></code></p></td>
+<td><p>使能嵌套转换 (S1+S2)</p></td>
+<td><p>:2733</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_domain_free</span></code></p></td>
+<td><p>释放 domain (页表/CD 表/ASID/VMID)</p></td>
+<td><p>:2053</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mmu-notifier-ops-sva-sva-c">
+<h3><span class="section-number">10.4.3. </span>4.3 mmu_notifier_ops 回调 (SVA, sva.c)<a class="headerlink" href="#mmu-notifier-ops-sva-sva-c" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 36.8%" />
+<col style="width: 52.6%" />
+<col style="width: 10.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>函数名</p></th>
+<th class="head"><p>职责</p></th>
+<th class="head"><p>行号</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_mm_invalidate_range</span></code></p></td>
+<td><p>MMU 地址空间失效时同步 ATC/TLB</p></td>
+<td><p>sva.c:189</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_mm_release</span></code></p></td>
+<td><p>进程退出时清理 CD 和 TLB</p></td>
+<td><p>sva.c:210</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">arm_smmu_mmu_notifier_free</span></code></p></td>
+<td><p>释放 mmu_notifier</p></td>
+<td><p>sva.c:234</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id13">
+<h3><span class="section-number">10.4.4. </span>4.4 关键回调函数实现<a class="headerlink" href="#id13" title="链接到此标题。"></a></h3>
+<p><strong>arm_smmu_attach_dev()</strong> (.c:2396-2470) -- 设备挂载</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_attach_dev</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">iommu_domain</span><span class="w"> </span><span class="o">*</span><span class="n">domain</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. 验证 SVA 未启用</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arm_smmu_master_sva_enabled</span><span class="p">(</span><span class="n">master</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EBUSY</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 2. 先 detach 旧 domain</span>
+<span class="w">    </span><span class="n">arm_smmu_detach_dev</span><span class="p">(</span><span class="n">master</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 3. 首次 attach 时 finalise domain (分配页表/CD/VMID/ASID)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">smmu_domain</span><span class="o">-&gt;</span><span class="n">smmu</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">smmu_domain</span><span class="o">-&gt;</span><span class="n">smmu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smmu</span><span class="p">;</span>
+<span class="w">        </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arm_smmu_domain_finalise</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span><span class="w"> </span><span class="n">master</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// 4. 检查 smmu 一致性、SSID 匹配、stall 一致性</span>
+<span class="w">    </span><span class="c1">// 5. 安装 STE，使能 ATS</span>
+<span class="w">    </span><span class="n">master</span><span class="o">-&gt;</span><span class="n">domain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smmu_domain</span><span class="p">;</span>
+<span class="w">    </span><span class="n">arm_smmu_install_ste_for_dev</span><span class="p">(</span><span class="n">master</span><span class="p">);</span>
+<span class="w">    </span><span class="n">list_add</span><span class="p">(</span><span class="o">&amp;</span><span class="n">master</span><span class="o">-&gt;</span><span class="n">domain_head</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">smmu_domain</span><span class="o">-&gt;</span><span class="n">devices</span><span class="p">);</span>
+<span class="w">    </span><span class="n">arm_smmu_enable_ats</span><span class="p">(</span><span class="n">master</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_page_response()</strong> (.c:906-942) -- Stall 恢复</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_page_response</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span>
+<span class="w">                                  </span><span class="k">struct</span><span class="w"> </span><span class="nc">iommu_fault_event</span><span class="w"> </span><span class="o">*</span><span class="n">unused</span><span class="p">,</span>
+<span class="w">                                  </span><span class="k">struct</span><span class="w"> </span><span class="nc">iommu_page_response</span><span class="w"> </span><span class="o">*</span><span class="n">resp</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// stall 模式: 发送 RESUME 命令</span>
+<span class="w">    </span><span class="n">cmd</span><span class="p">.</span><span class="n">opcode</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">CMDQ_OP_RESUME</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cmd</span><span class="p">.</span><span class="n">resume</span><span class="p">.</span><span class="n">sid</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">sid</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cmd</span><span class="p">.</span><span class="n">resume</span><span class="p">.</span><span class="n">stag</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">resp</span><span class="o">-&gt;</span><span class="n">grpid</span><span class="p">;</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">resp</span><span class="o">-&gt;</span><span class="n">code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IOMMU_PAGE_RESP_INVALID</span><span class="p">:</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IOMMU_PAGE_RESP_FAILURE</span><span class="p">:</span>
+<span class="w">        </span><span class="n">cmd</span><span class="p">.</span><span class="n">resume</span><span class="p">.</span><span class="n">resp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CMDQ_RESUME_0_RESP_ABORT</span><span class="p">;</span><span class="w">  </span><span class="c1">// 中止事务</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IOMMU_PAGE_RESP_SUCCESS</span><span class="p">:</span>
+<span class="w">        </span><span class="n">cmd</span><span class="p">.</span><span class="n">resume</span><span class="p">.</span><span class="n">resp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CMDQ_RESUME_0_RESP_RETRY</span><span class="p">;</span><span class="w">  </span><span class="c1">// 重试事务</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">arm_smmu_cmdq_issue_cmd</span><span class="p">(</span><span class="n">master</span><span class="o">-&gt;</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cmd</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_map_pages()</strong> (.c:2472-2482) -- 页映射</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_map_pages</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">iommu_domain</span><span class="w"> </span><span class="o">*</span><span class="n">domain</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">iova</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">phys_addr_t</span><span class="w"> </span><span class="n">paddr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">pgsize</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">pgcount</span><span class="p">,</span>
+<span class="w">                              </span><span class="kt">int</span><span class="w"> </span><span class="n">prot</span><span class="p">,</span><span class="w"> </span><span class="n">gfp_t</span><span class="w"> </span><span class="n">gfp</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="o">*</span><span class="n">mapped</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 委托给 io_pgtable_ops (arm64_lpae_ops 或 arm_v7s_ops)</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">io_pgtable_ops</span><span class="w"> </span><span class="o">*</span><span class="n">ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_smmu_domain</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">pgtbl_ops</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ops</span><span class="o">-&gt;</span><span class="n">map_pages</span><span class="p">(</span><span class="n">ops</span><span class="p">,</span><span class="w"> </span><span class="n">iova</span><span class="p">,</span><span class="w"> </span><span class="n">paddr</span><span class="p">,</span><span class="w"> </span><span class="n">pgsize</span><span class="p">,</span><span class="w"> </span><span class="n">pgcount</span><span class="p">,</span><span class="w"> </span><span class="n">prot</span><span class="p">,</span><span class="w"> </span><span class="n">gfp</span><span class="p">,</span><span class="w"> </span><span class="n">mapped</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>DMA 映射说明</strong>: 该驱动**不直接实现** <code class="docutils literal notranslate"><span class="pre">dma_map_ops</span></code>，通过
+<code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;../../dma-iommu.h&quot;</span></code> 间接使用内核通用 IOMMU DMA 框架。
+实际的 <code class="docutils literal notranslate"><span class="pre">map</span></code> / <code class="docutils literal notranslate"><span class="pre">unmap</span></code> / <code class="docutils literal notranslate"><span class="pre">map_sg</span></code> 等操作由 <code class="docutils literal notranslate"><span class="pre">drivers/iommu/dma-iommu.c</span></code>
+自动使用 <code class="docutils literal notranslate"><span class="pre">default_domain_ops</span></code> 回调执行。</p>
+<p>调用者: IOMMU 核心层 (<code class="docutils literal notranslate"><span class="pre">drivers/iommu/iommu.c</span></code>) 和 DMA-IOMMU 子系统
+(<code class="docutils literal notranslate"><span class="pre">drivers/iommu/dma-iommu.c</span></code>) 通过 <code class="docutils literal notranslate"><span class="pre">iommu_ops</span></code> / <code class="docutils literal notranslate"><span class="pre">iommu_domain_ops</span></code>
+函数指针间接调用。</p>
+</section>
+</section>
+<section id="id14">
+<h2><span class="section-number">10.5. </span>5. 中断处理流程<a class="headerlink" href="#id14" title="链接到此标题。"></a></h2>
+<section id="id15">
+<h3><span class="section-number">10.5.1. </span>5.1 中断注册汇总<a class="headerlink" href="#id15" title="链接到此标题。"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 11.1%" />
+<col style="width: 25.9%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+<col style="width: 11.1%" />
+<col style="width: 7.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>中断类型</p></th>
+<th class="head"><p>注册调用</p></th>
+<th class="head"><p>硬中断handler</p></th>
+<th class="head"><p>线程handler</p></th>
+<th class="head"><p>IRQF</p></th>
+<th class="head"><p>行号</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Combined</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">devm_request_threaded_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">combined_irq_handler</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">combined_irq_thread</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ONESHOT</span></code></p></td>
+<td><p>:3245</p></td>
+</tr>
+<tr class="row-odd"><td><p>EVTQ</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">devm_request_threaded_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">evtq_thread</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ONESHOT</span></code></p></td>
+<td><p>:3189</p></td>
+</tr>
+<tr class="row-even"><td><p>GERROR</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">devm_request_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gerror_handler</span></code></p></td>
+<td><p>无</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p></td>
+<td><p>:3201</p></td>
+</tr>
+<tr class="row-odd"><td><p>PRIQ</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">devm_request_threaded_irq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">priq_thread</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ONESHOT</span></code></p></td>
+<td><p>:3212</p></td>
+</tr>
+</tbody>
+</table>
+<p>优先级: combined &gt; 独立中断线 &gt; MSI 自动分配</p>
+</section>
+<section id="id16">
+<h3><span class="section-number">10.5.2. </span>5.2 中断源获取<a class="headerlink" href="#id16" title="链接到此标题。"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// .c:3788-3805</span>
+<span class="n">irq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">platform_get_irq_byname_optional</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;combined&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">irq</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">combined_irq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">irq</span><span class="p">;</span><span class="w">     </span><span class="c1">// Cavium ThunderX2: 合并中断</span>
+<span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 分别获取独立中断线</span>
+<span class="w">    </span><span class="n">irq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">platform_get_irq_byname_optional</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;eventq&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">irq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">platform_get_irq_byname_optional</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;priq&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">irq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">platform_get_irq_byname_optional</span><span class="p">(</span><span class="n">pdev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gerror&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id17">
+<h3><span class="section-number">10.5.3. </span>5.3 处理链图<a class="headerlink" href="#id17" title="链接到此标题。"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>硬件中断触发
+    |
+    +-- [Combined 模式]
+    |   +-- 硬中断: arm_smmu_combined_irq_handler()       [行 1704]
+    |   |   +-- arm_smmu_gerror_handler()                 [行 1647]
+    |   +-- 线程: arm_smmu_combined_irq_thread()           [行 1693]
+    |       +-- arm_smmu_evtq_thread()                     [行 1545]
+    |       +-- arm_smmu_priq_thread()                     [行 1623]
+    |
+    +-- [Unique 模式]
+        +-- EVTQ: 纯线程 arm_smmu_evtq_thread()            [行 1545]
+        |   +-- 循环: queue_remove_raw() -&gt; arm_smmu_handle_evt()  [行 1451]
+        |       +-- [STALL=1] -&gt; iommu_report_device_fault(PAGE_REQ)
+        |       +-- [STALL=0] -&gt; iommu_report_device_fault(DMA_UNRECOV)
+        |       +-- [无人处理] -&gt; arm_smmu_page_response(FAILURE/ABORT)
+        |
+        +-- PRIQ: 纯线程 arm_smmu_priq_thread()            [行 1623]
+        |   +-- 循环: queue_remove_raw() -&gt; arm_smmu_handle_ppr()    [行 1585]
+        |       +-- [last=1] -&gt; CMDQ_OP_PRI_RESP(DENY) 回复
+        |
+        +-- GERROR: 硬中断 arm_smmu_gerror_handler()       [行 1647]
+            +-- SFM_ERR -&gt; arm_smmu_device_disable() (致命)
+            +-- MSI_ABORT -&gt; dev_warn
+            +-- PRIQ/EVTQ_ABORT -&gt; dev_err (事件丢失)
+            +-- CMDQ_ERR -&gt; __arm_smmu_cmdq_skip_err()      [行 360]
+                +-- CERROR_NONE/ABT -&gt; 直接返回
+                +-- CERROR_ATC_INV -&gt; 返回 (重发SYNC恢复)
+                +-- CERROR_ILL -&gt; 原地替换为CMD_SYNC跳过
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h3><span class="section-number">10.5.4. </span>5.4 各中断触发条件<a class="headerlink" href="#id18" title="链接到此标题。"></a></h3>
+</section>
+<section id="id19">
+<h3><span class="section-number">10.5.5. </span>5.5 中断线程化分析<a class="headerlink" href="#id19" title="链接到此标题。"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                  硬件中断触发
+                      |
+        +-------------+-------------+
+        |                           |
+ [Combined 模式]              [Unique 模式]
+        |                           |
+combined_irq_handler()         (无硬中断 handler)
+(处理GERROR, 唤醒线程)              |
+        |                   +------+------+------+
+combined_irq_thread()       |      |      |      |
+(处理EVTQ+PRIQ)         [NULL]  [NULL]  gerror  [NULL]
+                        |      |      handler  |
+                 evtq_thread  priq_thread    |
+                        |      |             |
+                   处理EVTQ  处理PRIQ      处理GERROR
+                   (纯线程)   (纯线程)    (硬中断上下文)
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 12.0%" />
+<col style="width: 28.0%" />
+<col style="width: 28.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>特性</p></th>
+<th class="head"><p>EVTQ</p></th>
+<th class="head"><p>PRIQ</p></th>
+<th class="head"><p>GERROR</p></th>
+<th class="head"><p>Combined</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>硬中断 handler</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gerror_handler</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">combined_irq_handler</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>线程 handler</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">evtq_thread</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">priq_thread</span></code></p></td>
+<td><p>无</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">combined_irq_thread</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>IRQF_ONESHOT</p></td>
+<td><p>是</p></td>
+<td><p>是</p></td>
+<td><p>否</p></td>
+<td><p>是</p></td>
+</tr>
+<tr class="row-odd"><td><p>执行上下文</p></td>
+<td><p>纯线程</p></td>
+<td><p>纯线程</p></td>
+<td><p>硬中断</p></td>
+<td><p>硬中断 + 线程</p></td>
+</tr>
+</tbody>
+</table>
+<p>设计原因:</p>
+<ul class="simple">
+<li><p><strong>EVTQ/PRIQ</strong>: 需要遍历队列、调用 <code class="docutils literal notranslate"><span class="pre">iommu_report_device_fault()</span></code> 等可能休眠的操作，
+因此 handler 传 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>，所有处理在线程中完成</p></li>
+<li><p><strong>GERROR</strong>: 处理较快 (仅读写寄存器 + 打印日志)，可在硬中断上下文中完成</p></li>
+<li><p><strong>Combined</strong>: GERROR 放在硬中断中快速处理，EVTQ/PRIQ 放在线程中处理</p></li>
+</ul>
+<p>所有线程化中断使用 <code class="docutils literal notranslate"><span class="pre">IRQF_ONESHOT</span></code> 确保在线程函数执行完毕后才重新启用
+硬件中断线，防止同一线程中重复触发。</p>
+</section>
+<section id="id20">
+<h3><span class="section-number">10.5.6. </span>5.6 关键中断处理函数实现<a class="headerlink" href="#id20" title="链接到此标题。"></a></h3>
+<p><strong>arm_smmu_handle_evt()</strong> (.c:1451-1543) -- EVTQ 事件分类处理</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">arm_smmu_handle_evt</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="p">,</span><span class="w"> </span><span class="n">u64</span><span class="w"> </span><span class="o">*</span><span class="n">evt</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">FIELD_GET</span><span class="p">(</span><span class="n">EVTQ_0_ID</span><span class="p">,</span><span class="w"> </span><span class="n">evt</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">EVT_ID_TRANSLATION_FAULT</span><span class="p">:</span><span class="w"> </span><span class="n">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IOMMU_FAULT_REASON_PTE_FETCH</span><span class="p">;</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">EVT_ID_ADDR_SIZE_FAULT</span><span class="p">:</span><span class="w">   </span><span class="n">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IOMMU_FAULT_REASON_OOR_ADDRESS</span><span class="p">;</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">EVT_ID_ACCESS_FAULT</span><span class="p">:</span><span class="w">      </span><span class="n">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IOMMU_FAULT_REASON_ACCESS</span><span class="p">;</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">EVT_ID_PERMISSION_FAULT</span><span class="p">:</span><span class="w">  </span><span class="n">reason</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IOMMU_FAULT_REASON_PERMISSION</span><span class="p">;</span><span class="w"> </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EOPNOTSUPP</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// Stage-2 fault 不支持恢复</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">evt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EVTQ_1_S2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EFAULT</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 根据 STALL 标志区分为可恢复/不可恢复 fault</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">evt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EVTQ_1_STALL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">flt</span><span class="o">-&gt;</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IOMMU_FAULT_PAGE_REQ</span><span class="p">;</span><span class="w">       </span><span class="c1">// 可恢复 Page Request</span>
+<span class="w">        </span><span class="n">flt</span><span class="o">-&gt;</span><span class="n">prm</span><span class="p">.</span><span class="n">grpid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIELD_GET</span><span class="p">(</span><span class="n">EVTQ_1_STAG</span><span class="p">,</span><span class="w"> </span><span class="n">evt</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">flt</span><span class="o">-&gt;</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">IOMMU_FAULT_DMA_UNRECOV</span><span class="p">;</span><span class="w">     </span><span class="c1">// 不可恢复 DMA Fault</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// 上报 IOMMU fault 框架</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iommu_report_device_fault</span><span class="p">(</span><span class="n">master</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fault_evt</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 无人处理 Page Request 则回复 FAILURE</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">flt</span><span class="o">-&gt;</span><span class="n">type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">IOMMU_FAULT_PAGE_REQ</span><span class="p">)</span>
+<span class="w">        </span><span class="n">arm_smmu_page_response</span><span class="p">(</span><span class="n">master</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fault_evt</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">resp</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_gerror_handler()</strong> (.c:1647-1691) -- GERROR 中断处理</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">irqreturn_t</span><span class="w"> </span><span class="nf">arm_smmu_gerror_handler</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">gerror</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readl_relaxed</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_GERROR</span><span class="p">);</span>
+<span class="w">    </span><span class="n">gerrorn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readl_relaxed</span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_GERRORN</span><span class="p">);</span>
+<span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gerror</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="n">gerrorn</span><span class="p">;</span><span class="w">    </span><span class="c1">// XOR 获取活跃错误</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">active</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">GERROR_ERR_MASK</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">IRQ_NONE</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">active</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">GERROR_SFM_ERR</span><span class="p">)</span>
+<span class="w">        </span><span class="n">arm_smmu_device_disable</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span><span class="w">     </span><span class="c1">// 致命: 禁用设备</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">active</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">GERROR_CMDQ_ERR</span><span class="p">)</span>
+<span class="w">        </span><span class="n">arm_smmu_cmdq_skip_err</span><span class="p">(</span><span class="n">smmu</span><span class="p">);</span><span class="w">      </span><span class="c1">// CMDQ 错误恢复</span>
+
+<span class="w">    </span><span class="n">writel</span><span class="p">(</span><span class="n">gerror</span><span class="p">,</span><span class="w"> </span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ARM_SMMU_GERRORN</span><span class="p">);</span><span class="w">  </span><span class="c1">// 确认清除</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">IRQ_HANDLED</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>__arm_smmu_cmdq_skip_err()</strong> (.c:360-413) -- CMDQ 错误恢复</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">__arm_smmu_cmdq_skip_err</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="p">,</span>
+<span class="w">                                     </span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_queue</span><span class="w"> </span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">u32</span><span class="w"> </span><span class="n">cons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readl_relaxed</span><span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">cons_reg</span><span class="p">);</span>
+<span class="w">    </span><span class="n">u32</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIELD_GET</span><span class="p">(</span><span class="n">CMDQ_CONS_ERR</span><span class="p">,</span><span class="w"> </span><span class="n">cons</span><span class="p">);</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">CMDQ_ERR_CERROR_ABT_IDX</span><span class="p">:</span><span class="w">    </span><span class="c1">// 命令获取中止 -&gt; 重试</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">CMDQ_ERR_CERROR_NONE_IDX</span><span class="p">:</span><span class="w">   </span><span class="c1">// 无错误 -&gt; 返回</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">CMDQ_ERR_CERROR_ATC_INV_IDX</span><span class="p">:</span><span class="w"> </span><span class="c1">// ATC 无效超时 -&gt; 返回 (重发SYNC恢复)</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">CMDQ_ERR_CERROR_ILL_IDX</span><span class="p">:</span><span class="w">    </span><span class="c1">// 非法命令 -&gt; 原地替换为CMD_SYNC跳过</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// 将出错槽位原地替换为 CMD_SYNC</span>
+<span class="w">    </span><span class="n">queue_read</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="n">Q_ENT</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">cons</span><span class="p">),</span><span class="w"> </span><span class="n">q</span><span class="o">-&gt;</span><span class="n">ent_dwords</span><span class="p">);</span>
+<span class="w">    </span><span class="n">arm_smmu_cmdq_build_cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cmd_sync</span><span class="p">);</span>
+<span class="w">    </span><span class="n">queue_write</span><span class="p">(</span><span class="n">Q_ENT</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">cons</span><span class="p">),</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="o">-&gt;</span><span class="n">ent_dwords</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_combined_irq_handler()</strong> (.c:1704-1708) -- 合并中断硬中断</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">irqreturn_t</span><span class="w"> </span><span class="nf">arm_smmu_combined_irq_handler</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">arm_smmu_gerror_handler</span><span class="p">(</span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">);</span><span class="w">   </span><span class="c1">// 硬中断中仅处理 GERROR</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">IRQ_WAKE_THREAD</span><span class="p">;</span><span class="w">              </span><span class="c1">// 唤醒线程处理 EVTQ+PRIQ</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>arm_smmu_combined_irq_thread()</strong> (.c:1693-1702) -- 合并中断线程</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">irqreturn_t</span><span class="w"> </span><span class="nf">arm_smmu_combined_irq_thread</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">arm_smmu_device</span><span class="w"> </span><span class="o">*</span><span class="n">smmu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dev</span><span class="p">;</span>
+<span class="w">    </span><span class="n">arm_smmu_evtq_thread</span><span class="p">(</span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">smmu</span><span class="o">-&gt;</span><span class="n">features</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ARM_SMMU_FEAT_PRI</span><span class="p">)</span>
+<span class="w">        </span><span class="n">arm_smmu_priq_thread</span><span class="p">(</span><span class="n">irq</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">IRQ_HANDLED</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="arm/mmu600ae/corelink_mmu600ae_ras_pmu.html" class="btn btn-neutral float-left" title="9. MMU-600AE RAS 与 PMU 深入分析" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="dma_alloc_coherent_analysis.html" class="btn btn-neutral float-right" title="11. dma_alloc_coherent 完整实现分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

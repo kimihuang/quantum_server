@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. ARM AArch64 MMU (VMSA) 架构深度解析 &mdash; quantum 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=540d3cec"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="3. AMBA CHI Architecture Specification 结构梳理" href="chi/amba_chi_architecture_spec.html" />
+    <link rel="prev" title="1. reStructuredText 语法参考手册" href="../rst_format.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            quantum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../rst_format.html">1. reStructuredText 语法参考手册</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. ARM AArch64 MMU (VMSA) 架构深度解析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.1. 模块架构框图</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">2.2. 模块协作关系</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.2.1. 1 翻译体制与异常级别的关系</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stage-1-stage-2">2.2.2. 2 Stage 1 与 Stage 2 翻译协作时序</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">2.3. 关键流程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#translation-table-walk">2.3.1. 1 核心流程一：地址翻译 (Translation Table Walk)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#break-before-make">2.3.2. 2 核心流程二：Break-before-Make 翻译表更新</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mmu-fault">2.3.3. 3 核心流程三：MMU Fault 检查序列</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">2.4. 数据/控制流关键路径</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">2.4.1. 1 地址翻译数据流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">2.4.2. 2 权限检查控制流</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">2.4.3. 3 内存属性合并数据流</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">2.5. 重要知识点深入讲解</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#translation-granule">2.5.1. 1 翻译粒度 (Translation Granule) 的选择与影响</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">2.5.2. 2 两阶段翻译中的权限与属性合并机制</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tlb">2.5.3. 3 TLB 维护的正确性要求</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vmsav8-64-vmsav9-128">2.5.4. 4 VMSAv8-64 与 VMSAv9-128 翻译系统的关键差异</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">2.5.5. 5 安全状态对翻译表查找的影响</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#access-flag-dirty-state">2.5.6. 6 硬件管理的 Access Flag 和 Dirty State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#address-tagging-pointer-authentication">2.5.7. 7 Address Tagging 与 Pointer Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vhe-nv">2.5.8. 8 虚拟化对翻译的影响 (VHE / NV)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">2.6. 关键寄存器速查表</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id16">2.7. 附录：章节与原文位置映射</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chi/amba_chi_architecture_spec.html">3. AMBA CHI Architecture Specification 结构梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chi/amba_chi_architecture_coherency.html">4. AMBA® CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chi/amba_chi_architecture_coherency_codebuddy.html">5. AMBA CHI 一致性协议深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smmu_arch.html">6. SMMU 学习笔记</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mmu600ae/corelink_mmu600ae_trm.html">7. CoreLink MMU-600AE TCU 与 TBU 架构分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mmu600ae/corelink_mmu600ae_coherency.html">8. TCU 和 TBU 一致性维护机制深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mmu600ae/corelink_mmu600ae_ras_pmu.html">9. MMU-600AE RAS 与 PMU 深入分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../smmu_code_analysis.html">10. ARM SMMUv3 驱动深度分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_analysis.html">11. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dma_alloc_coherent_iommu_path_analysis.html">12. dma_alloc_coherent 完整实现分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucie/UCIE_SPECIFICATION.html">13. UCIe 规范 2.0 文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0.html">14. PCI Express Base 5.0 规范文档结构概览</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcie/PCI_Express_Base_5_0_ATS.html">15. PCI Express 地址翻译与中断机制分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cxl/CXL_Spec.html">16. Compute Express Link (CXL) 规范分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5.html">17. LPDDR5 SDRAM 规范知识点梳理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lpddr5_dvfs.html">18. LPDDR5 DVFS（动态电压频率调整）机制</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install_rst.html">19. 安装 reStructuredText</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tmux_usage.html">20. tmux 常用操作方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_server.html">21. Python 快速搭建简易服务器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_for_qemu.html">22. Labgrid for QEMU 环境搭建经验总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labgrid_qemu_practice.html">23. Labgrid 自动化测试 QEMU 实践经验</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ttyd_setup.html">24. ttyd Web SSH 服务配置</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../macos_remotedesktop_to_ubuntu.html">25. macOS 使用 Windows App 远程访问 Ubuntu 桌面</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../opendataloader_pdf_usage.html">26. opendataloader-pdf 使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/build_reStructedText_task.html">27. reStructuredText 搭建任务过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_task_summary/qemu_boot_linux_process.html">28. QEMU 启动 Linux 内核过程记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../buildroot_autologin_troubleshooting.html">29. Buildroot 自动登录配置排障记录</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd_enable.html">30. 使能 systemd init 及 systemd-journald</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html">31. Linux 内核源码分析 — 提示词编写指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id1">32. 1. 基本分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id2">33. 2. 跨文件追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id3">34. 3. 机制对比模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id4">35. 4. 数据流追踪模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id5">36. 5. 硬件交互分析模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id6">37. 6. 提示词编写原则</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id12">38. 7. 常用追问模板</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prompt_guide_kernel_source_analysis.html#id13">39. 8. 实战示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html">40. Linux 驱动代码阅读分析指南 — 以 arm_pmu.c 为例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id3">41. 1. 驱动概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id4">42. 2. 头文件依赖与核心数据结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id5">43. 3. 驱动初始化与注册流程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#callbacks">44. 4. 操作函数集（ callbacks ）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id8">45. 5. 中断处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#cpu">46. 6. CPU 热插拔处理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id9">47. 7. 并发与锁</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id10">48. 8. 硬件资源管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#sysfs">49. 9. Sysfs 接口</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id11">50. 10. 与具体驱动的接口关系</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id12">51. 11. 事件生命周期</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../driver_analysis_arm_pmu.html#id13">52. 12. 代码阅读自检清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html">53. CodeBuddy CLI 用户问题处理流程与高效使用指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id1">54. 1. 处理流程分析</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id10">55. 2. 高效使用策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../codebuddy_cli_usage_guide.html#id15">56. 3. Token 消耗优化速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../systemd/systemd_log_annotated.html">57. systemd 日志说明（带注释版）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html">58. QEMU Linux Ramdump Parser (ramparse) 调试指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id1">59. 环境概述</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse">60. ramparse 简介</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id2">61. 调试过程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#ramparse-sh">62. 最终的 ramparse.sh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id3">63. 运行前准备步骤</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id4">64. 子解析器兼容性总结</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id5">65. 关键地址参考</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#id6">66. 代码修改清单</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ramparse_qemu_debugging.html#api">67. 内核 API 变更参考</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">quantum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>ARM AArch64 MMU (VMSA) 架构深度解析</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/arm/mmu_arch.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arm-aarch64-mmu-vmsa">
+<h1><span class="section-number">2. </span>ARM AArch64 MMU (VMSA) 架构深度解析<a class="headerlink" href="#arm-aarch64-mmu-vmsa" title="链接到此标题。"></a></h1>
+<p>本文档基于 <em>DDI0487K_a — ARM Architecture Reference Manual</em> Chapter D8 &quot;The AArch64 Virtual Memory System Architecture&quot; 撰写。
+所有结论均标注原文锚点（架构约束 ID 及行号），禁止编造文档中未出现的内容。</p>
+<nav class="contents local" id="id1">
+<p class="topic-title">目录</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#id2" id="id25">模块架构框图</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id26">模块协作关系</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id4" id="id27">1 翻译体制与异常级别的关系</a></p></li>
+<li><p><a class="reference internal" href="#stage-1-stage-2" id="id28">2 Stage 1 与 Stage 2 翻译协作时序</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id5" id="id29">关键流程</a></p>
+<ul>
+<li><p><a class="reference internal" href="#translation-table-walk" id="id30">1 核心流程一：地址翻译 (Translation Table Walk)</a></p></li>
+<li><p><a class="reference internal" href="#break-before-make" id="id31">2 核心流程二：Break-before-Make 翻译表更新</a></p></li>
+<li><p><a class="reference internal" href="#mmu-fault" id="id32">3 核心流程三：MMU Fault 检查序列</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id6" id="id33">数据/控制流关键路径</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id7" id="id34">1 地址翻译数据流</a></p></li>
+<li><p><a class="reference internal" href="#id8" id="id35">2 权限检查控制流</a></p></li>
+<li><p><a class="reference internal" href="#id9" id="id36">3 内存属性合并数据流</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id10" id="id37">重要知识点深入讲解</a></p>
+<ul>
+<li><p><a class="reference internal" href="#translation-granule" id="id38">1 翻译粒度 (Translation Granule) 的选择与影响</a></p></li>
+<li><p><a class="reference internal" href="#id11" id="id39">2 两阶段翻译中的权限与属性合并机制</a></p></li>
+<li><p><a class="reference internal" href="#tlb" id="id40">3 TLB 维护的正确性要求</a></p></li>
+<li><p><a class="reference internal" href="#vmsav8-64-vmsav9-128" id="id41">4 VMSAv8-64 与 VMSAv9-128 翻译系统的关键差异</a></p></li>
+<li><p><a class="reference internal" href="#id12" id="id42">5 安全状态对翻译表查找的影响</a></p></li>
+<li><p><a class="reference internal" href="#access-flag-dirty-state" id="id43">6 硬件管理的 Access Flag 和 Dirty State</a></p></li>
+<li><p><a class="reference internal" href="#address-tagging-pointer-authentication" id="id44">7 Address Tagging 与 Pointer Authentication</a></p></li>
+<li><p><a class="reference internal" href="#vhe-nv" id="id45">8 虚拟化对翻译的影响 (VHE / NV)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id15" id="id46">关键寄存器速查表</a></p></li>
+<li><p><a class="reference internal" href="#id16" id="id47">附录：章节与原文位置映射</a></p></li>
+</ul>
+</nav>
+<section id="id2">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink"><span class="section-number">2.1. </span>模块架构框图</a><a class="headerlink" href="#id2" title="链接到此标题。"></a></h2>
+<p>ARM AArch64 MMU 是一个基于翻译表 (Translation Table) 的地址翻译系统，
+负责将指令使用的虚拟地址 (VA) 转换为物理内存系统使用的物理地址 (PA)，
+同时执行内存访问权限检查和内存属性确定。 [ICCTQS, L225570; RJTYJP, L225610]</p>
+</section>
+<section id="id3">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink"><span class="section-number">2.2. </span>模块协作关系</a><a class="headerlink" href="#id3" title="链接到此标题。"></a></h2>
+<section id="id4">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink"><span class="section-number">2.2.1. </span>1 翻译体制与异常级别的关系</a><a class="headerlink" href="#id4" title="链接到此标题。"></a></h3>
+<p>翻译体制由当前安全状态 (Security state)、异常级别 (Exception level)、
+已启用的异常级别和 HCR_EL2 设置共同决定。 [ICJMWY, L225668; IHLQTD, L225670]</p>
+</section>
+<section id="stage-1-stage-2">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink"><span class="section-number">2.2.2. </span>2 Stage 1 与 Stage 2 翻译协作时序</a><a class="headerlink" href="#stage-1-stage-2" title="链接到此标题。"></a></h3>
+<p>当 EL2 启用时，EL1&amp;0 翻译体制使用两阶段翻译：
+Stage 1 将 VA 翻译为 IPA，Stage 2 将 IPA 翻译为 PA。 [RKXSMJ, L225583]</p>
+</section>
+</section>
+<section id="id5">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink"><span class="section-number">2.3. </span>关键流程</a><a class="headerlink" href="#id5" title="链接到此标题。"></a></h2>
+<section id="translation-table-walk">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink"><span class="section-number">2.3.1. </span>1 核心流程一：地址翻译 (Translation Table Walk)</a><a class="headerlink" href="#translation-table-walk" title="链接到此标题。"></a></h3>
+<p>地址翻译从读取翻译表基地址寄存器开始，通过逐级遍历翻译表完成。 [IGDSWV, L226276]</p>
+</section>
+<section id="break-before-make">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink"><span class="section-number">2.3.2. </span>2 核心流程二：Break-before-Make 翻译表更新</a><a class="headerlink" href="#break-before-make" title="链接到此标题。"></a></h3>
+<p>当修改翻译表条目的内存类型、OA、块大小时，
+必须使用 break-before-make (BBM) 序列以确保一致性。 [RWHZWS, L226179; RDDMVT, L226208]</p>
+</section>
+<section id="mmu-fault">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink"><span class="section-number">2.3.3. </span>3 核心流程三：MMU Fault 检查序列</a><a class="headerlink" href="#mmu-fault" title="链接到此标题。"></a></h3>
+<p>IA 翻译到 OA 过程中按固定优先级执行 15 步检查。 [IPTYRT, L232646]</p>
+</section>
+</section>
+<section id="id6">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink"><span class="section-number">2.4. </span>数据/控制流关键路径</a><a class="headerlink" href="#id6" title="链接到此标题。"></a></h2>
+<section id="id7">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink"><span class="section-number">2.4.1. </span>1 地址翻译数据流</a><a class="headerlink" href="#id7" title="链接到此标题。"></a></h3>
+</section>
+<section id="id8">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink"><span class="section-number">2.4.2. </span>2 权限检查控制流</a><a class="headerlink" href="#id8" title="链接到此标题。"></a></h3>
+</section>
+<section id="id9">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink"><span class="section-number">2.4.3. </span>3 内存属性合并数据流</a><a class="headerlink" href="#id9" title="链接到此标题。"></a></h3>
+</section>
+</section>
+<section id="id10">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink"><span class="section-number">2.5. </span>重要知识点深入讲解</a><a class="headerlink" href="#id10" title="链接到此标题。"></a></h2>
+<section id="translation-granule">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink"><span class="section-number">2.5.1. </span>1 翻译粒度 (Translation Granule) 的选择与影响</a><a class="headerlink" href="#translation-granule" title="链接到此标题。"></a></h3>
+<p><strong>核心概念：</strong> 翻译粒度大小决定了每次查找级别解析的地址位数和
+翻译表的最大大小。 [IGZDPY, L225630; RZVQXW, L225632]</p>
+<p>VMSA 支持三种翻译粒度：4KB、16KB、64KB。每种粒度对查找级别数、
+页表大小、页大小有直接影响。 [RZVQXW, L225634]</p>
+<table class="docutils align-default" id="id17">
+<caption><span class="caption-text">三种翻译粒度的关键参数对比</span><a class="headerlink" href="#id17" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>粒度</p></th>
+<th class="head"><p>每级索引位数</p></th>
+<th class="head"><p>每级表项数</p></th>
+<th class="head"><p>页大小 (Level 3)</p></th>
+<th class="head"><p>最大 Block 大小</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4KB</p></td>
+<td><p>9</p></td>
+<td><p>512</p></td>
+<td><p>4KB</p></td>
+<td><p>1GB (L1) / 512GB (L0, DS=1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>16KB</p></td>
+<td><p>11</p></td>
+<td><p>2048</p></td>
+<td><p>16KB</p></td>
+<td><p>32MB (L2) / 64GB (L1, DS=1)</p></td>
+</tr>
+<tr class="row-even"><td><p>64KB</p></td>
+<td><p>13</p></td>
+<td><p>8192</p></td>
+<td><p>64KB</p></td>
+<td><p>512MB (L2) / 4TB (L1, LPA)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note: [RVMRQS, L226822; ITDTCY, L227357; IVDPWL, L227806]</p>
+<p><strong>设计权衡：</strong></p>
+<p>较大的粒度使用更大的翻译表（更多表项），单次查找可解析更多 IA 位，
+从而减少查找级别数。但这意味着更大的页大小，页面管理粒度更粗。
+[IKZLYC, L225649]</p>
+<p><strong>关键约束：</strong> Arm 建议将内存映射外设按最大粒度大小的整数倍分隔，
+以便独立管理每个外设。 [IQRLDB, L225656]</p>
+</section>
+<section id="id11">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink"><span class="section-number">2.5.2. </span>2 两阶段翻译中的权限与属性合并机制</a><a class="headerlink" href="#id11" title="链接到此标题。"></a></h3>
+<p><strong>Stage 1 权限系统：</strong> 支持 Direct permissions 和 Indirect permissions 两种机制。 [IPJNLQ, L225646]</p>
+<ul class="simple">
+<li><p><strong>Direct permissions：</strong> 使用描述符中的 AP[2:1]、UXN、PXN 字段直接定义权限。
+支持 hierarchical permissions（APTable、XNTable、PXNTable）逐级限制后续级别的权限。
+[RCBNKR, L225660; RYTXKB, L225688]</p></li>
+<li><p><strong>Indirect permissions (FEAT_S1PIE)：</strong> 使用描述符中的 PIIndex 索引 PIR_ELx 寄存器
+获取 Base permissions。VMSAv9-128 仅支持 Indirect permissions。
+[RJJWXH, L225821; IBSXJT, L225655]</p></li>
+</ul>
+<p><strong>WXN 机制：</strong> SCTLR_ELx.WXN=1 时，若内存区域可写则强制不可执行。
+这引入了 &quot;可写内存不可执行&quot; 的不变量，缩减代码注入攻击的内存面。
+[IKDRYB, L225718; IXLDPQ, L225742]</p>
+<p><strong>Cacheability 合并规则（关键结论）：</strong></p>
+<table class="docutils align-default" id="id18">
+<caption><span class="caption-text">Stage 1 + Stage 2 Cacheability 合并结果 [RGQFSF, L231257]</span><a class="headerlink" href="#id18" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Stage 1 Cacheability</p></th>
+<th class="head"><p>Stage 2 Cacheability</p></th>
+<th class="head"><p>合并结果</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Non-cacheable</p></td>
+<td><p>Any</p></td>
+<td><p>Non-cacheable</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write-Through</p></td>
+<td><p>Non-cacheable</p></td>
+<td><p>Non-cacheable</p></td>
+</tr>
+<tr class="row-even"><td><p>Write-Through</p></td>
+<td><p>Write-Through / Write-Back</p></td>
+<td><p>Write-Through</p></td>
+</tr>
+<tr class="row-odd"><td><p>Write-Back</p></td>
+<td><p>Non-cacheable / Write-Through</p></td>
+<td><p>Non-cacheable / Write-Through</p></td>
+</tr>
+<tr class="row-even"><td><p>Write-Back</p></td>
+<td><p>Write-Back</p></td>
+<td><p>Write-Back</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键结论：Stage 2 可以降低但不能提升 Stage 1 的 Cacheability。</strong>
+这允许 Hypervisor 限制 Guest OS 的缓存行为。 [RGQFSF, L231257]</p>
+<p><strong>Shareability 合并规则（关键结论）：</strong></p>
+<table class="docutils align-default" id="id19">
+<caption><span class="caption-text">Stage 1 + Stage 2 Shareability 合并结果 [ILTFXF, L231360]</span><a class="headerlink" href="#id19" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Stage 1 Shareability</p></th>
+<th class="head"><p>Stage 2 Shareability</p></th>
+<th class="head"><p>合并结果</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Outer Shareable</p></td>
+<td><p>Any</p></td>
+<td><p>Outer Shareable</p></td>
+</tr>
+<tr class="row-odd"><td><p>Inner Shareable</p></td>
+<td><p>Outer Shareable</p></td>
+<td><p>Outer Shareable</p></td>
+</tr>
+<tr class="row-even"><td><p>Inner Shareable</p></td>
+<td><p>Inner Shareable / Non-shareable</p></td>
+<td><p>Inner Shareable</p></td>
+</tr>
+<tr class="row-odd"><td><p>Non-shareable</p></td>
+<td><p>Outer Shareable / Inner Shareable</p></td>
+<td><p>Outer Shareable / Inner Shareable</p></td>
+</tr>
+<tr class="row-even"><td><p>Non-shareable</p></td>
+<td><p>Non-shareable</p></td>
+<td><p>Non-shareable</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键结论：Stage 2 可以提升但不能降低 Stage 1 的 Shareability。</strong>
+方向与 Cacheability 合并恰好相反。 [ILTFXF, L231360]</p>
+</section>
+<section id="tlb">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink"><span class="section-number">2.5.3. </span>3 TLB 维护的正确性要求</a><a class="headerlink" href="#tlb" title="链接到此标题。"></a></h3>
+<p><strong>核心原则：</strong> TLB 与翻译表的更改不自动保持一致，
+软件必须显式执行 TLB 维护操作。 [RFFWJK, L233133]</p>
+<p><strong>Fault 条目不缓存规则：</strong> 以下类型的描述符从不缓存到 TLB，
+因此当它们被改为有效条目时，不需要 TLB 维护（但需要 Context 同步事件）： [RXCLRD, L225967]</p>
+<ul class="simple">
+<li><p>Translation fault 描述符</p></li>
+<li><p>Address size fault 描述符</p></li>
+<li><p>Access flag fault 描述符</p></li>
+</ul>
+<p><strong>Permission fault 条目可缓存（易错点）：</strong>
+Permission fault 的描述符 <strong>允许被缓存到 TLB</strong>。
+若软件因 Permission fault 更新翻译表以授予权限，
+<strong>必须执行 TLB 无效化</strong> 以防止后续访问使用过期信息。 [RJVXRH, L232502; IWJLXV, L232503]</p>
+<p><strong>ASID 与 VMID 机制：</strong> ASID 允许软件在进程切换时避免无效化整个 TLB。
+Non-global TLB 条目与特定 ASID 关联；VMID 与特定虚拟机关联。
+[ILHWHR, L233028; RQGKGF, L233043]</p>
+<p><strong>TLB 维护指令排序（关键）：</strong>
+TLB 维护指令与其他 load/store/cache 维护指令之间无排序保证，
+必须使用 DSB 指令来确保排序。 [RTGVWD, L233868]</p>
+<table class="docutils align-default" id="id20">
+<caption><span class="caption-text">TLB 维护的完整同步序列</span><a class="headerlink" href="#id20" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 60.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>步骤</p></th>
+<th class="head"><p>目的</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><ol class="arabic simple">
+<li><p>修改翻译表条目</p></li>
+</ol>
+</td>
+<td><p>更新映射信息</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="arabic simple" start="2">
+<li><p>DSB</p></li>
+</ol>
+</td>
+<td><p>确保写操作对翻译表遍历可见</p></td>
+</tr>
+<tr class="row-even"><td><ol class="arabic simple" start="3">
+<li><p>TLBI 指令</p></li>
+</ol>
+</td>
+<td><p>无效化受影响的 TLB 条目</p></td>
+</tr>
+<tr class="row-odd"><td><ol class="arabic simple" start="4">
+<li><p>DSB ISH</p></li>
+</ol>
+</td>
+<td><p>确保 TLB 无效化在 Inner Shareable 域内完成</p></td>
+</tr>
+<tr class="row-even"><td><ol class="arabic simple" start="5">
+<li><p>ISB</p></li>
+</ol>
+</td>
+<td><p>Context 同步，确保后续指令使用新翻译</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note: [RPSMWS, L233915; RBLDZX, L233924]</p>
+</section>
+<section id="vmsav8-64-vmsav9-128">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink"><span class="section-number">2.5.4. </span>4 VMSAv8-64 与 VMSAv9-128 翻译系统的关键差异</a><a class="headerlink" href="#vmsav8-64-vmsav9-128" title="链接到此标题。"></a></h3>
+<table class="docutils align-default" id="id21">
+<caption><span class="caption-text">两种翻译系统对比</span><a class="headerlink" href="#id21" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 26.3%" />
+<col style="width: 36.8%" />
+<col style="width: 36.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>特性</p></th>
+<th class="head"><p>VMSAv8-64</p></th>
+<th class="head"><p>VMSAv9-128</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>描述符大小</p></td>
+<td><p>8 字节 (64-bit) [RYKQTS, L226288]</p></td>
+<td><p>16 字节 (128-bit) [RYKQTS, L226288]</p></td>
+</tr>
+<tr class="row-odd"><td><p>Skip Level (SKL)</p></td>
+<td><p>不支持</p></td>
+<td><p>描述符和基地址寄存器中的 SKL 字段允许跳过查找级别 [IHFBGP, L226321]</p></td>
+</tr>
+<tr class="row-even"><td><p>权限模型</p></td>
+<td><p>支持 Direct 和 Indirect permissions [IVYHZC, L225649]</p></td>
+<td><p>仅支持 Indirect permissions [IBSXJT, L225655]</p></td>
+</tr>
+<tr class="row-odd"><td><p>AIE</p></td>
+<td><p>可选</p></td>
+<td><p>始终启用 [IVYHZC, L225649]</p></td>
+</tr>
+<tr class="row-even"><td><p>最大 VA 宽度（双范围）</p></td>
+<td><p>48/52 位</p></td>
+<td><p>55 位 [ISMKBQ, L226520]</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hierarchical permissions</p></td>
+<td><p>支持 (HPDn 控制)</p></td>
+<td><p>不支持 (HPDn 为 RES1) [IQPHCD, L226306]</p></td>
+</tr>
+<tr class="row-even"><td><p>PBHA</p></td>
+<td><p>支持 (FEAT_HPDS2)</p></td>
+<td><p>不支持 [IRHDNL, L231506]</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>设计意图：</strong> VMSAv9-128 通过更大的描述符和 SKL 机制提供更灵活的翻译配置，
+支持更大的 VA 空间和更少的查找级别，同时统一使用 Indirect permissions 简化权限管理。</p>
+</section>
+<section id="id12">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink"><span class="section-number">2.5.5. </span>5 安全状态对翻译表查找的影响</a><a class="headerlink" href="#id12" title="链接到此标题。"></a></h3>
+<p><strong>Non-secure 体制：</strong> 所有翻译表查找在 Non-secure IPA/PA 空间。 [RPXRPP, L225644]</p>
+<p><strong>Secure 体制 Stage 1：</strong> 初始查找在 Secure OA 空间。后续由 Table descriptor 的
+NSTable bit 控制：NSTable=0 继续在 Secure，NSTable=1 切换到 Non-secure。
+一旦切换到 Non-secure，后续所有查找都在 Non-secure（不可逆转）。
+[RSCHHQ, L225648]</p>
+<p><strong>Realm 体制：</strong> 所有翻译表查找在 Realm PA 空间。 [RDVGRP, L225666]</p>
+<p><strong>EL3 体制 (FEAT_RME)：</strong> 所有翻译表查找在 Root PA 空间。
+[RCFPDJ, L225669]</p>
+</section>
+<section id="access-flag-dirty-state">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink"><span class="section-number">2.5.6. </span>6 硬件管理的 Access Flag 和 Dirty State</a><a class="headerlink" href="#access-flag-dirty-state" title="链接到此标题。"></a></h3>
+<p><strong>Access Flag (AF) 硬件管理 (FEAT_HAFDBS)：</strong></p>
+<p>当 TCR_ELx.HA=1 时启用。硬件在首次访问使用描述符时，通过原子读-修改-写
+将 AF 从 0 设置为 1。这消除了软件管理的 Access flag fault 处理开销。
+[RHDHQG, L225648; RLFTXR, L225646]</p>
+<p><strong>Dirty State 硬件管理 (FEAT_HAFDBS)：</strong></p>
+<p>当 TCR_ELx.HA=1 且 TCR_ELx.HD=1 时启用。描述符存在三种状态：
+[writable-clean → writable-dirty]
+硬件在首次写访问 writable-clean 描述符时，原子地将其更新为 writable-dirty。
+[IHTJWZ, L225733; RPZFQC, L225772]</p>
+<table class="docutils align-default" id="id22">
+<caption><span class="caption-text">Dirty State 描述符状态（Direct permissions）</span><a class="headerlink" href="#id22" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>状态</p></th>
+<th class="head"><p>条件</p></th>
+<th class="head"><p>写访问行为</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Non-writable</p></td>
+<td><p>AP[2]=1 或 DBM=0</p></td>
+<td><p>Permission fault</p></td>
+</tr>
+<tr class="row-odd"><td><p>Writable-clean</p></td>
+<td><p>DBM=1 且 AP[2]=1</p></td>
+<td><p>硬件更新为 writable-dirty（不 fault）</p></td>
+</tr>
+<tr class="row-even"><td><p>Writable-dirty</p></td>
+<td><p>DBM=1 且 AP[2]=0</p></td>
+<td><p>正常写访问</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note: [RBRFGY, L225782]</p>
+<p><strong>易错点：</strong> 当同时使用 AF 和 dirty state 硬件管理时，
+修改翻译表条目必须严格遵循 break-before-make 序列，
+否则可能导致 AF 不被设置或 dirty state 位错误更新。 [IGXGZY, L226218; RRTBRL, L226224]</p>
+</section>
+<section id="address-tagging-pointer-authentication">
+<h3><a class="toc-backref" href="#id44" role="doc-backlink"><span class="section-number">2.5.7. </span>7 Address Tagging 与 Pointer Authentication</a><a class="headerlink" href="#address-tagging-pointer-authentication" title="链接到此标题。"></a></h3>
+<p><strong>Address Tagging (TBI)：</strong> 当 TCR_ELx.TBI{n}=1 时，VA 的 bits[63:56]
+被作为 address tag 在翻译中被忽略。这允许软件使用高 8 位存储元数据。
+[IXWNGB, L225571; ICKLSG, L225583]</p>
+<p><strong>Pointer Authentication (PAuth)：</strong> 对 64-bit 通用寄存器中的地址签名（PAC），
+并在用作间接分支目标或 load/store 基址前验证。PAC 位于指针高位部分，
+精确位置由 TCR_ELx.TnSZ 决定。TnSZ 越小，PAC 字段越小，保护效果越弱。
+[IXDNDT, L225686; D8.10.1, L225692]</p>
+<p><strong>关键交互：</strong> 若同时使用 TBI 和 PAuth，address tag（bits[63:56]）
+可能限制 PAC 的可用空间。TBID{n}=1 可将 tagging 限制为仅数据地址，
+为指令地址的 PAC 腾出空间。 [IHLQVM, L225754]</p>
+</section>
+<section id="vhe-nv">
+<h3><a class="toc-backref" href="#id45" role="doc-backlink"><span class="section-number">2.5.8. </span>8 虚拟化对翻译的影响 (VHE / NV)</a><a class="headerlink" href="#vhe-nv" title="链接到此标题。"></a></h3>
+<p><strong>Virtualization Host Extensions (VHE)：</strong></p>
+<p>HCR_EL2.E2H=1 时，Host OS 在 EL2 运行，使用 EL2&amp;0 翻译体制，
+其行为与 EL1&amp;0 Stage 1 完全相同，包括支持 TTBR1_EL2 翻译高地址范围。
+[IQJTJN, L225971; RMNWSS, L232004]</p>
+<p><strong>Nested Virtualization (FEAT_NV)：</strong></p>
+<p>HCR_EL2.{NV, NV1} 控制嵌套虚拟化。NV=1 时，EL1 访问 <a href="#id13"><span class="problematic" id="id14">*</span></a>_EL2 寄存器
+被 trap 到 EL2。NV1=1 时，描述符语义发生变化（bit[54] 变为 PXN 而非 UXN），
+实现更深层的嵌套虚拟化。FEAT_NV2 可将系统寄存器访问转换为内存访问。
+[IFDMLZ, L232150; IZMLPV, L232160]</p>
+</section>
+</section>
+<section id="id15">
+<h2><a class="toc-backref" href="#id46" role="doc-backlink"><span class="section-number">2.6. </span>关键寄存器速查表</a><a class="headerlink" href="#id15" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id23">
+<caption><span class="caption-text">MMU 关键寄存器</span><a class="headerlink" href="#id23" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 21.1%" />
+<col style="width: 26.3%" />
+<col style="width: 15.8%" />
+<col style="width: 36.8%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>寄存器</p></th>
+<th class="head"><p>用途</p></th>
+<th class="head"><p>原文锚点</p></th>
+<th class="head"><p>关键字段</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SCTLR_ELx</p></td>
+<td><p>系统控制寄存器</p></td>
+<td><p>[L225922]</p></td>
+<td><p>M=MMU使能, EE=字节序, WXN=写不可执行</p></td>
+</tr>
+<tr class="row-odd"><td><p>TCR_ELx</p></td>
+<td><p>翻译控制寄存器</p></td>
+<td><p>[L225922]</p></td>
+<td><p>T0SZ/T1SZ=IA大小, TG0/TG1=粒度, EPDn=禁用, HPDn=分层权限</p></td>
+</tr>
+<tr class="row-even"><td><p>TCR2_ELx</p></td>
+<td><p>翻译控制扩展寄存器</p></td>
+<td><p>[L226679]</p></td>
+<td><p>PIE=Indirect权限, PnCH=Protected, AIE=AIE使能</p></td>
+</tr>
+<tr class="row-odd"><td><p>TTBR0_ELx</p></td>
+<td><p>低地址范围翻译表基地址</p></td>
+<td><p>[ITLWRN, L226427]</p></td>
+<td><p>BADDR=基地址, ASID=地址空间ID, SKL=Skip Level</p></td>
+</tr>
+<tr class="row-even"><td><p>TTBR1_ELx</p></td>
+<td><p>高地址范围翻译表基地址</p></td>
+<td><p>[RDXLKR, L226429]</p></td>
+<td><p>BADDR=基地址, ASID=地址空间ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>MAIR_ELx</p></td>
+<td><p>内存属性间接寄存器</p></td>
+<td><p>[RHHGNL, L231039]</p></td>
+<td><p>Attr&lt;n&gt;=8-bit属性编码, 由AttrIndx索引</p></td>
+</tr>
+<tr class="row-even"><td><p>VTCR_EL2</p></td>
+<td><p>Stage 2 翻译控制</p></td>
+<td><p>[IGVFLG, L227048]</p></td>
+<td><p>SL0/SL2=起始级别, PS=PA大小, DS=52位使能</p></td>
+</tr>
+<tr class="row-odd"><td><p>VTTBR_EL2</p></td>
+<td><p>Stage 2 翻译表基地址</p></td>
+<td><p>[ITDMHR, L226400]</p></td>
+<td><p>BADDR=基地址, VMID=虚拟机ID</p></td>
+</tr>
+<tr class="row-even"><td><p>HCR_EL2</p></td>
+<td><p>Hypervisor控制寄存器</p></td>
+<td><p>[L225694]</p></td>
+<td><p>E2H=VHE, TGE=Host直接执行, PTW=保护表遍历, VM=虚拟化</p></td>
+</tr>
+<tr class="row-odd"><td><p>FAR_ELx</p></td>
+<td><p>Fault Address 寄存器</p></td>
+<td><p>[IDHWPX, L232389]</p></td>
+<td><p>记录产生fault的地址</p></td>
+</tr>
+<tr class="row-even"><td><p>ESR_ELx</p></td>
+<td><p>Exception Syndrome 寄存器</p></td>
+<td><p>[IDHWPX, L232390]</p></td>
+<td><p>DFSC/IFSC=Fault Status Code</p></td>
+</tr>
+<tr class="row-odd"><td><p>PAR_EL1</p></td>
+<td><p>地址翻译结果寄存器</p></td>
+<td><p>[RNHWXL, L232559]</p></td>
+<td><p>F=1表示fault, 含fault syndrome</p></td>
+</tr>
+<tr class="row-even"><td><p>PIR_ELx</p></td>
+<td><p>Permission Indirection 寄存器</p></td>
+<td><p>[IBSMJB, L225832]</p></td>
+<td><p>由PIIndex索引获取Indirect权限</p></td>
+</tr>
+<tr class="row-odd"><td><p>POR_ELx</p></td>
+<td><p>Permission Overlay 寄存器</p></td>
+<td><p>[RSHZSG, L225612]</p></td>
+<td><p>由POIndex索引进一步限制权限</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id16">
+<h2><a class="toc-backref" href="#id47" role="doc-backlink"><span class="section-number">2.7. </span>附录：章节与原文位置映射</a><a class="headerlink" href="#id16" title="链接到此标题。"></a></h2>
+<table class="docutils align-default" id="id24">
+<caption><span class="caption-text">Chapter D8 章节结构</span><a class="headerlink" href="#id24" title="链接到此表格。"></a></caption>
+<colgroup>
+<col style="width: 52.6%" />
+<col style="width: 15.8%" />
+<col style="width: 31.6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>章节标题</p></th>
+<th class="head"><p>行号</p></th>
+<th class="head"><p>内容概要</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>D8.1 Address translation</p></td>
+<td><p>L225560</p></td>
+<td><p>地址翻译概述、翻译粒度、翻译体制</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.2 Translation process</p></td>
+<td><p>L226274</p></td>
+<td><p>翻译表遍历、地址拼接、两级VA范围</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.3 Translation table descriptor formats</p></td>
+<td><p>L228460</p></td>
+<td><p>Table/Block/Page描述符格式</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.4 Memory access control</p></td>
+<td><p>L229605</p></td>
+<td><p>Direct/Indirect/Overlay权限</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.5 Hardware updates to the translation tables</p></td>
+<td><p>L230618</p></td>
+<td><p>AF和dirty state硬件管理</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.6 Memory region attributes</p></td>
+<td><p>L230999</p></td>
+<td><p>内存类型、Cacheability、Shareability</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.7 Other descriptor fields</p></td>
+<td><p>L231380</p></td>
+<td><p>Contiguous、PBHA、nT、XS</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.8 Address tagging</p></td>
+<td><p>L231569</p></td>
+<td><p>TBI机制</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.10 Pointer authentication</p></td>
+<td><p>L231684</p></td>
+<td><p>PAC签名与认证</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.11 Memory Encryption Contexts</p></td>
+<td><p>L231888</p></td>
+<td><p>MEC加密上下文</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.12 Virtualization Host Extensions</p></td>
+<td><p>L231969</p></td>
+<td><p>VHE对翻译的影响</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.13 Nested virtualization</p></td>
+<td><p>L232148</p></td>
+<td><p>嵌套虚拟化</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.14 Memory aborts</p></td>
+<td><p>L232367</p></td>
+<td><p>MMU fault类型、检查序列、优先级</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.15 Translation Lookaside Buffers</p></td>
+<td><p>L232963</p></td>
+<td><p>TLB结构、ASID/VMID</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.16 TLB maintenance</p></td>
+<td><p>L233122</p></td>
+<td><p>TLBI指令、BBM序列</p></td>
+</tr>
+<tr class="row-odd"><td><p>D8.17 Caches</p></td>
+<td><p>L233938</p></td>
+<td><p>数据/指令cache与翻译一致性</p></td>
+</tr>
+<tr class="row-even"><td><p>D8.18 Pseudocode</p></td>
+<td><p>L234005</p></td>
+<td><p>VMSAv8-64翻译伪代码</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../rst_format.html" class="btn btn-neutral float-left" title="1. reStructuredText 语法参考手册" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="chi/amba_chi_architecture_spec.html" class="btn btn-neutral float-right" title="3. AMBA CHI Architecture Specification 结构梳理" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2026, Quantum Team。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

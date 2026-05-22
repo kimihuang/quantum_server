@@ -1,0 +1,2483 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Memory Doxygen Docs: scp_firmware/module/cmn600/src/cmn600.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-zephyr.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Quantum Memory Doxygen Docs
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','搜索');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cmn600_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">结构体</a> &#124;
+<a href="#define-members">宏定义</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">cmn600.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>CMN-600 互连控制器硬件寄存器定义和工具函数声明  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;fwk_macros.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+</div>
+<p><a href="cmn600_8h_source.html">浏览源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+结构体</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnode__header.html">node_header</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">通用节点头寄存器  <a href="structnode__header.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcluster__mapping.html">cluster_mapping</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">集群映射结构  <a href="structcluster__mapping.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__rnsam__reg.html">cmn600_rnsam_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM（请求节点系统地址映射）寄存器  <a href="structcmn600__rnsam__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__dt__reg.html">cmn600_dt_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">DTC（调试和跟踪控制器）寄存器  <a href="structcmn600__dt__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__dn__reg.html">cmn600_dn_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">设备节点 (DN) 寄存器  <a href="structcmn600__dn__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__qos__reg.html">cmn600_qos_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">QoS（服务质量）寄存器  <a href="structcmn600__qos__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__rnd__reg.html">cmn600_rnd_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-D（请求节点设备）寄存器  <a href="structcmn600__rnd__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__hnf__reg.html">cmn600_hnf_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F（全一致性主节点/系统缓存）寄存器  <a href="structcmn600__hnf__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__sbsx__reg.html">cmn600_sbsx_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">SBSX（AMBA 5 CHI 到 AXI 桥接）寄存器  <a href="structcmn600__sbsx__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configuration Manager (CFGM) 寄存器  <a href="structcmn600__cfgm__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__mxp__reg.html">cmn600_mxp_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">XP（交叉点）寄存器  <a href="structcmn600__mxp__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__rni__reg.html">cmn600_rni_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-I（I/O 请求节点）寄存器  <a href="structcmn600__rni__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcmn600__hni__reg.html">cmn600_hni_reg</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-I（I/O 主节点）寄存器  <a href="structcmn600__hni__reg.html#details">更多...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:a862fa76fd0cd0f61a535b7233c5277f0" id="r_a862fa76fd0cd0f61a535b7233c5277f0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a862fa76fd0cd0f61a535b7233c5277f0">CMN600_MAX_NUM_RNF</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a862fa76fd0cd0f61a535b7233c5277f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统中 RN-F（全一致性请求节点）的最大数量  <br /></td></tr>
+<tr class="separator:a862fa76fd0cd0f61a535b7233c5277f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ba3a1204744639b50eccf3391d16e80" id="r_a9ba3a1204744639b50eccf3391d16e80"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a9ba3a1204744639b50eccf3391d16e80">CMN600_MAX_NUM_HNF</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a9ba3a1204744639b50eccf3391d16e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统中 HN-F（全一致性主节点/系统缓存节点）的最大数量  <br /></td></tr>
+<tr class="separator:a9ba3a1204744639b50eccf3391d16e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1f03b3fa1c92c512dc11fa00ac9b0a6" id="r_af1f03b3fa1c92c512dc11fa00ac9b0a6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#af1f03b3fa1c92c512dc11fa00ac9b0a6">CMN600_MAX_NUM_SCG</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:af1f03b3fa1c92c512dc11fa00ac9b0a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统缓存分组 (System Cache Group) 的最大数量  <br /></td></tr>
+<tr class="separator:af1f03b3fa1c92c512dc11fa00ac9b0a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6673210144583a977c80ac8f4a42fd00" id="r_a6673210144583a977c80ac8f4a42fd00"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a6673210144583a977c80ac8f4a42fd00">SAM_GRANULARITY</a>&#160;&#160;&#160;(64 * FWK_MIB)</td></tr>
+<tr class="memdesc:a6673210144583a977c80ac8f4a42fd00"><td class="mdescLeft">&#160;</td><td class="mdescRight">SAM（系统地址映射）粒度，64MB  <br /></td></tr>
+<tr class="separator:a6673210144583a977c80ac8f4a42fd00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11577ebff9bb011ecd1dded8f63492fb" id="r_a11577ebff9bb011ecd1dded8f63492fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a11577ebff9bb011ecd1dded8f63492fb">CMN600_NODE_INFO_TYPE</a>&#160;&#160;&#160;UINT64_C(0x000000000000FFFF)</td></tr>
+<tr class="memdesc:a11577ebff9bb011ecd1dded8f63492fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">NODE_INFO 寄存器中节点类型字段的掩码（bits [15:0]）  <br /></td></tr>
+<tr class="separator:a11577ebff9bb011ecd1dded8f63492fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71819fb5ccd29c8f860b3b9fce8b1e2d" id="r_a71819fb5ccd29c8f860b3b9fce8b1e2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a71819fb5ccd29c8f860b3b9fce8b1e2d">CMN600_NODE_INFO_ID</a>&#160;&#160;&#160;UINT64_C(0x00000000FFFF0000)</td></tr>
+<tr class="memdesc:a71819fb5ccd29c8f860b3b9fce8b1e2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">NODE_INFO 寄存器中节点 ID 字段的掩码（bits [31:16]）  <br /></td></tr>
+<tr class="separator:a71819fb5ccd29c8f860b3b9fce8b1e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a0a5e65a78ef97b0b264612f0139425" id="r_a6a0a5e65a78ef97b0b264612f0139425"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a6a0a5e65a78ef97b0b264612f0139425">CMN600_NODE_INFO_ID_POS</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memdesc:a6a0a5e65a78ef97b0b264612f0139425"><td class="mdescLeft">&#160;</td><td class="mdescRight">NODE_INFO 寄存器中节点 ID 字段的位移值  <br /></td></tr>
+<tr class="separator:a6a0a5e65a78ef97b0b264612f0139425"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a459f80677cf140a30d8d635ebb624395" id="r_a459f80677cf140a30d8d635ebb624395"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a459f80677cf140a30d8d635ebb624395">CMN600_NODE_INFO_LOGICAL_ID</a>&#160;&#160;&#160;UINT64_C(0x0000FFFF00000000)</td></tr>
+<tr class="memdesc:a459f80677cf140a30d8d635ebb624395"><td class="mdescLeft">&#160;</td><td class="mdescRight">NODE_INFO 寄存器中逻辑 ID 字段的掩码（bits [47:32]）  <br /></td></tr>
+<tr class="separator:a459f80677cf140a30d8d635ebb624395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa667c0871243345cef2ebf6f5e626dda" id="r_aa667c0871243345cef2ebf6f5e626dda"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#aa667c0871243345cef2ebf6f5e626dda">CMN600_NODE_INFO_LOGICAL_ID_POS</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:aa667c0871243345cef2ebf6f5e626dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">NODE_INFO 寄存器中逻辑 ID 字段的位移值  <br /></td></tr>
+<tr class="separator:aa667c0871243345cef2ebf6f5e626dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6df436b38edb5952b32dc13f72652cb4" id="r_a6df436b38edb5952b32dc13f72652cb4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a6df436b38edb5952b32dc13f72652cb4">CMN600_CHILD_INFO_COUNT</a>&#160;&#160;&#160;UINT64_C(0x000000000000FFFF)</td></tr>
+<tr class="memdesc:a6df436b38edb5952b32dc13f72652cb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">CHILD_INFO 寄存器中子节点数量字段的掩码  <br /></td></tr>
+<tr class="separator:a6df436b38edb5952b32dc13f72652cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a298f81ef02d2b0f14903fcc98afb60db" id="r_a298f81ef02d2b0f14903fcc98afb60db"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a298f81ef02d2b0f14903fcc98afb60db">CMN600_CHILD_POINTER</a>&#160;&#160;&#160;UINT64_C(0x00000000FFFFFFFF)</td></tr>
+<tr class="memdesc:a298f81ef02d2b0f14903fcc98afb60db"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点指针寄存器中有效数据的掩码  <br /></td></tr>
+<tr class="separator:a298f81ef02d2b0f14903fcc98afb60db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c3394e0c2306b0ea6d91e1dfbd60735" id="r_a2c3394e0c2306b0ea6d91e1dfbd60735"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a2c3394e0c2306b0ea6d91e1dfbd60735">CMN600_CHILD_POINTER_OFFSET</a>&#160;&#160;&#160;UINT64_C(0x000000000FFFFFFF)</td></tr>
+<tr class="memdesc:a2c3394e0c2306b0ea6d91e1dfbd60735"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点指针中偏移地址字段的掩码  <br /></td></tr>
+<tr class="separator:a2c3394e0c2306b0ea6d91e1dfbd60735"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47dc2c047062a530b167c8dedc080003" id="r_a47dc2c047062a530b167c8dedc080003"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a47dc2c047062a530b167c8dedc080003">CMN600_CHILD_POINTER_EXT</a>&#160;&#160;&#160;UINT64_C(0x0000000080000000)</td></tr>
+<tr class="memdesc:a47dc2c047062a530b167c8dedc080003"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点指针中外部节点标志位的掩码（bit 31）  <br /></td></tr>
+<tr class="separator:a47dc2c047062a530b167c8dedc080003"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfefb34c673eb70ae9701660a3990463" id="r_abfefb34c673eb70ae9701660a3990463"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#abfefb34c673eb70ae9701660a3990463">CMN600_CHILD_POINTER_EXT_REGISTER_OFFSET</a>&#160;&#160;&#160;UINT64_C(0x0000000000003FFF)</td></tr>
+<tr class="memdesc:abfefb34c673eb70ae9701660a3990463"><td class="mdescLeft">&#160;</td><td class="mdescRight">外部子节点指针中寄存器偏移字段的掩码  <br /></td></tr>
+<tr class="separator:abfefb34c673eb70ae9701660a3990463"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78164d80fb9be438a2762b309eedfe76" id="r_a78164d80fb9be438a2762b309eedfe76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a78164d80fb9be438a2762b309eedfe76">CMN600_CHILD_POINTER_EXT_NODE_POINTER</a>&#160;&#160;&#160;UINT64_C(0x000000000FFFC000)</td></tr>
+<tr class="memdesc:a78164d80fb9be438a2762b309eedfe76"><td class="mdescLeft">&#160;</td><td class="mdescRight">外部子节点指针中节点指针字段的掩码  <br /></td></tr>
+<tr class="separator:a78164d80fb9be438a2762b309eedfe76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a043cfda0d8db463c97dcbea2db247114" id="r_a043cfda0d8db463c97dcbea2db247114"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a043cfda0d8db463c97dcbea2db247114">CMN600_CHILD_POINTER_EXT_NODE_POINTER_POS</a>&#160;&#160;&#160;14</td></tr>
+<tr class="memdesc:a043cfda0d8db463c97dcbea2db247114"><td class="mdescLeft">&#160;</td><td class="mdescRight">外部子节点指针中节点指针字段的位移值  <br /></td></tr>
+<tr class="separator:a043cfda0d8db463c97dcbea2db247114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8ab07e236fcf63bdbf794660280f3fd" id="r_ac8ab07e236fcf63bdbf794660280f3fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac8ab07e236fcf63bdbf794660280f3fd">CMN600_RNSAM_REGION_ENTRY_VALID_POS</a>&#160;&#160;&#160;0</td></tr>
+<tr class="memdesc:ac8ab07e236fcf63bdbf794660280f3fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 区域条目中有效位的位移  <br /></td></tr>
+<tr class="separator:ac8ab07e236fcf63bdbf794660280f3fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af54f3b8ab0f25308909be55da2696b59" id="r_af54f3b8ab0f25308909be55da2696b59"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#af54f3b8ab0f25308909be55da2696b59">CMN600_RNSAM_REGION_ENTRY_EN_POS</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memdesc:af54f3b8ab0f25308909be55da2696b59"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 区域条目中使能位的位移（部分区域类型不支持）  <br /></td></tr>
+<tr class="separator:af54f3b8ab0f25308909be55da2696b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a038701b11e47fa8a135b3c8901f42302" id="r_a038701b11e47fa8a135b3c8901f42302"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a038701b11e47fa8a135b3c8901f42302">CMN600_RNSAM_REGION_ENTRY_TYPE_POS</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memdesc:a038701b11e47fa8a135b3c8901f42302"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 区域条目中目标节点类型字段的位移  <br /></td></tr>
+<tr class="separator:a038701b11e47fa8a135b3c8901f42302"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46f05a997fb1f7fd64eafcc0dc2d93d" id="r_ac46f05a997fb1f7fd64eafcc0dc2d93d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac46f05a997fb1f7fd64eafcc0dc2d93d">CMN600_RNSAM_REGION_ENTRY_SIZE_POS</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:ac46f05a997fb1f7fd64eafcc0dc2d93d"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 区域条目中大小编码字段的位移  <br /></td></tr>
+<tr class="separator:ac46f05a997fb1f7fd64eafcc0dc2d93d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a134adad9b0072c8668efc312aa14075a" id="r_a134adad9b0072c8668efc312aa14075a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a134adad9b0072c8668efc312aa14075a">CMN600_RNSAM_REGION_ENTRY_BASE_POS</a>&#160;&#160;&#160;9</td></tr>
+<tr class="memdesc:a134adad9b0072c8668efc312aa14075a"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 区域条目中基地址字段的位移  <br /></td></tr>
+<tr class="separator:a134adad9b0072c8668efc312aa14075a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e74af60185e5f5dbe1cf8cfe928173f" id="r_a1e74af60185e5f5dbe1cf8cfe928173f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a1e74af60185e5f5dbe1cf8cfe928173f">CMN600_RNSAM_REGION_ENTRY_BITS_WIDTH</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a1e74af60185e5f5dbe1cf8cfe928173f"><td class="mdescLeft">&#160;</td><td class="mdescRight">每个 RN-SAM 区域条目的位宽（32 位）  <br /></td></tr>
+<tr class="separator:a1e74af60185e5f5dbe1cf8cfe928173f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a710cdb1bb1e66b494a24c08c01272c76" id="r_a710cdb1bb1e66b494a24c08c01272c76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a710cdb1bb1e66b494a24c08c01272c76">CMN600_RNSAM_REGION_ENTRY_VALID</a>&#160;&#160;&#160;UINT64_C(0x0000000000000001)</td></tr>
+<tr class="memdesc:a710cdb1bb1e66b494a24c08c01272c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 区域条目有效位的掩码  <br /></td></tr>
+<tr class="separator:a710cdb1bb1e66b494a24c08c01272c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72cebd1fff8f6973924ea8c2139362a4" id="r_a72cebd1fff8f6973924ea8c2139362a4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a72cebd1fff8f6973924ea8c2139362a4">CMN600_RNSAM_REGION_ENTRY_MASK</a>&#160;&#160;&#160;UINT64_C(0xFFFFFFFF)</td></tr>
+<tr class="memdesc:a72cebd1fff8f6973924ea8c2139362a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">单个 RN-SAM 区域条目的完整掩码  <br /></td></tr>
+<tr class="separator:a72cebd1fff8f6973924ea8c2139362a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6958ee1d40b7dd12bd4c7eb2f069e2d" id="r_ad6958ee1d40b7dd12bd4c7eb2f069e2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ad6958ee1d40b7dd12bd4c7eb2f069e2d">CMN600_RNSAM_REGION_ENTRIES_PER_GROUP</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memdesc:ad6958ee1d40b7dd12bd4c7eb2f069e2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">每个 64 位寄存器组中可容纳的区域条目数（2 个）  <br /></td></tr>
+<tr class="separator:ad6958ee1d40b7dd12bd4c7eb2f069e2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad659ee7058442cfe275cf3154a9a16a9" id="r_ad659ee7058442cfe275cf3154a9a16a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ad659ee7058442cfe275cf3154a9a16a9">CMN600_RNSAM_MAX_HASH_MEM_REGION_ENTRIES</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:ad659ee7058442cfe275cf3154a9a16a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">哈希内存区域的最大条目数  <br /></td></tr>
+<tr class="separator:ad659ee7058442cfe275cf3154a9a16a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2391ad16f9b72dc1c7a3ad79a2dabcb2" id="r_a2391ad16f9b72dc1c7a3ad79a2dabcb2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a2391ad16f9b72dc1c7a3ad79a2dabcb2">CMN600_RNSAM_SCG_HNF_CAL_MODE_EN</a>&#160;&#160;&#160;UINT64_C(0x01)</td></tr>
+<tr class="memdesc:a2391ad16f9b72dc1c7a3ad79a2dabcb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统缓存分组 CAL 模式使能位的掩码  <br /></td></tr>
+<tr class="separator:a2391ad16f9b72dc1c7a3ad79a2dabcb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01488d991b2123394200d20ee017d37c" id="r_a01488d991b2123394200d20ee017d37c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a01488d991b2123394200d20ee017d37c">CMN600_RNSAM_SCG_HNF_CAL_MODE_SHIFT</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memdesc:a01488d991b2123394200d20ee017d37c"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统缓存分组 CAL 模式使能位的位移基数  <br /></td></tr>
+<tr class="separator:a01488d991b2123394200d20ee017d37c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad91162c866adf48448d60537d6efe628" id="r_ad91162c866adf48448d60537d6efe628"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ad91162c866adf48448d60537d6efe628">CMN600_RNSAM_STATUS_UNSTALL</a>&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td></tr>
+<tr class="memdesc:ad91162c866adf48448d60537d6efe628"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-SAM 状态寄存器中 UNSTALL（取消停顿/使能）位的掩码  <br /></td></tr>
+<tr class="separator:ad91162c866adf48448d60537d6efe628"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb626a672a7c3b6945b8a4ede0906ad8" id="r_abb626a672a7c3b6945b8a4ede0906ad8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#abb626a672a7c3b6945b8a4ede0906ad8">CMN600_HNF_SAM_MEMREGION_SIZE_POS</a>&#160;&#160;&#160;12</td></tr>
+<tr class="memdesc:abb626a672a7c3b6945b8a4ede0906ad8"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F SAM_MEMREGION 寄存器中大小编码字段的位移  <br /></td></tr>
+<tr class="separator:abb626a672a7c3b6945b8a4ede0906ad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab34a1f6228de964ee0ccb913463ae19b" id="r_ab34a1f6228de964ee0ccb913463ae19b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ab34a1f6228de964ee0ccb913463ae19b">CMN600_HNF_SAM_MEMREGION_BASE_POS</a>&#160;&#160;&#160;26</td></tr>
+<tr class="memdesc:ab34a1f6228de964ee0ccb913463ae19b"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F SAM_MEMREGION 寄存器中基地址字段的位移  <br /></td></tr>
+<tr class="separator:ab34a1f6228de964ee0ccb913463ae19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0597722a4be325144efad529653f864f" id="r_a0597722a4be325144efad529653f864f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a0597722a4be325144efad529653f864f">CMN600_HNF_SAM_MEMREGION_VALID</a>&#160;&#160;&#160;UINT64_C(0x8000000000000000)</td></tr>
+<tr class="memdesc:a0597722a4be325144efad529653f864f"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F SAM_MEMREGION 寄存器中有效位的掩码  <br /></td></tr>
+<tr class="separator:a0597722a4be325144efad529653f864f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75487701db2fad0d50b4b92f40b94392" id="r_a75487701db2fad0d50b4b92f40b94392"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a75487701db2fad0d50b4b92f40b94392">CMN600_HNF_CACHE_GROUP_ENTRIES_MAX</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a75487701db2fad0d50b4b92f40b94392"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-F 缓存分组的最大条目数  <br /></td></tr>
+<tr class="separator:a75487701db2fad0d50b4b92f40b94392"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b117cd5fe81871692c54998df7ce163" id="r_a2b117cd5fe81871692c54998df7ce163"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a2b117cd5fe81871692c54998df7ce163">CMN600_HNF_CACHE_GROUP_ENTRIES_PER_GROUP</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:a2b117cd5fe81871692c54998df7ce163"><td class="mdescLeft">&#160;</td><td class="mdescRight">每个缓存分组寄存器中的条目数（4 个）  <br /></td></tr>
+<tr class="separator:a2b117cd5fe81871692c54998df7ce163"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a962968b48bc38643d30e3d700e7e0f2e" id="r_a962968b48bc38643d30e3d700e7e0f2e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a962968b48bc38643d30e3d700e7e0f2e">CMN600_HNF_CACHE_GROUP_ENTRY_BITS_WIDTH</a>&#160;&#160;&#160;12</td></tr>
+<tr class="memdesc:a962968b48bc38643d30e3d700e7e0f2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">每个缓存分组条目的位宽（12 位）  <br /></td></tr>
+<tr class="separator:a962968b48bc38643d30e3d700e7e0f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6082baa23354250113a583eb6de0e4a" id="r_af6082baa23354250113a583eb6de0e4a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#af6082baa23354250113a583eb6de0e4a">CMN600_HNI_SAM_REGION_CFG_SER_DEVNE_WR</a>&#160;&#160;&#160;UINT64_C(0x1000000000000000)</td></tr>
+<tr class="memdesc:af6082baa23354250113a583eb6de0e4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">HN-I SAM 地址区域配置中安全设备非安全写使能位的掩码  <br /></td></tr>
+<tr class="separator:af6082baa23354250113a583eb6de0e4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a270d3bf5d3de6b9ec97830a1256dd3c2" id="r_a270d3bf5d3de6b9ec97830a1256dd3c2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a270d3bf5d3de6b9ec97830a1256dd3c2">CMN600_RND_CFG_CTL_PCIE_MSTR_PRESENT</a>&#160;&#160;&#160;UINT64_C(0x0000000000000020)</td></tr>
+<tr class="memdesc:a270d3bf5d3de6b9ec97830a1256dd3c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">RN-D 配置控制寄存器中 PCIe 主设备存在标志的掩码  <br /></td></tr>
+<tr class="separator:a270d3bf5d3de6b9ec97830a1256dd3c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa90b58e08a040fe680f305cf09705e80" id="r_aa90b58e08a040fe680f305cf09705e80"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#aa90b58e08a040fe680f305cf09705e80">CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRY_BITS_WIDTH</a>&#160;&#160;&#160;12</td></tr>
+<tr class="memdesc:aa90b58e08a040fe680f305cf09705e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">非哈希目标节点 ID 条目的位宽（12 位）  <br /></td></tr>
+<tr class="separator:aa90b58e08a040fe680f305cf09705e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a921af02ad6927f557ce3215cb7115e3c" id="r_a921af02ad6927f557ce3215cb7115e3c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a921af02ad6927f557ce3215cb7115e3c">CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRY_MASK</a>&#160;&#160;&#160;UINT64_C(0xFFF)</td></tr>
+<tr class="memdesc:a921af02ad6927f557ce3215cb7115e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">非哈希目标节点 ID 条目的掩码  <br /></td></tr>
+<tr class="separator:a921af02ad6927f557ce3215cb7115e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9116a4646930c318ef31129c8701cef" id="r_af9116a4646930c318ef31129c8701cef"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#af9116a4646930c318ef31129c8701cef">CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRIES_PER_GROUP</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:af9116a4646930c318ef31129c8701cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">每个目标节点 ID 寄存器组中的条目数（4 个）  <br /></td></tr>
+<tr class="separator:af9116a4646930c318ef31129c8701cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24507cc712627f12e5f0a03969c3adbb" id="r_a24507cc712627f12e5f0a03969c3adbb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a24507cc712627f12e5f0a03969c3adbb">CMN600_RNSAM_MAX_NON_HASH_MEM_REGION_ENTRIES</a>(nr_reg)&#160;&#160;&#160;    ((nr_reg)*<a class="el" href="cmn600_8h.html#af9116a4646930c318ef31129c8701cef">CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRIES_PER_GROUP</a>)</td></tr>
+<tr class="memdesc:a24507cc712627f12e5f0a03969c3adbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">计算非哈希内存区域的最大条目数  <br /></td></tr>
+<tr class="separator:a24507cc712627f12e5f0a03969c3adbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8fc52ede2f41c7a2f5b1ffa9f9896cc" id="r_ac8fc52ede2f41c7a2f5b1ffa9f9896cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac8fc52ede2f41c7a2f5b1ffa9f9896cc">CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_2</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memdesc:ac8fc52ede2f41c7a2f5b1ffa9f9896cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">r1p0、r1p1、r1p3 版本的 CMN-600 有 2 个 NON_HASH_TGT_NODEID 寄存器  <br /></td></tr>
+<tr class="separator:ac8fc52ede2f41c7a2f5b1ffa9f9896cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1064191019555dc945caf73c11939d9" id="r_ad1064191019555dc945caf73c11939d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ad1064191019555dc945caf73c11939d9">CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_3</a>&#160;&#160;&#160;3</td></tr>
+<tr class="memdesc:ad1064191019555dc945caf73c11939d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">r1p2、r2p0 版本的 CMN-600 有 3 个 NON_HASH_TGT_NODEID 寄存器  <br /></td></tr>
+<tr class="separator:ad1064191019555dc945caf73c11939d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3486179e66557a65a2816e8529e59ac" id="r_aa3486179e66557a65a2816e8529e59ac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#aa3486179e66557a65a2816e8529e59ac">CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_5</a>&#160;&#160;&#160;5</td></tr>
+<tr class="memdesc:aa3486179e66557a65a2816e8529e59ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">r3p0 及以上版本的 CMN-600 有 5 个 NON_HASH_TGT_NODEID 寄存器  <br /></td></tr>
+<tr class="separator:aa3486179e66557a65a2816e8529e59ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7f9f9ca396524289d2ab7521027b1bb" id="r_ae7f9f9ca396524289d2ab7521027b1bb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ae7f9f9ca396524289d2ab7521027b1bb">CMN600_PPU_PWPR_POLICY_OFF</a>&#160;&#160;&#160;UINT64_C(0x0000000000000000)</td></tr>
+<tr class="memdesc:ae7f9f9ca396524289d2ab7521027b1bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 电源策略：关闭（OFF）  <br /></td></tr>
+<tr class="separator:ae7f9f9ca396524289d2ab7521027b1bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42b1c155824e4c1770017e527cc763e5" id="r_a42b1c155824e4c1770017e527cc763e5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a42b1c155824e4c1770017e527cc763e5">CMN600_PPU_PWPR_POLICY_MEM_RET</a>&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td></tr>
+<tr class="memdesc:a42b1c155824e4c1770017e527cc763e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 电源策略：内存保持（MEM_RET）  <br /></td></tr>
+<tr class="separator:a42b1c155824e4c1770017e527cc763e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ee2db040ff931c62e64282d31e0bd1f" id="r_a8ee2db040ff931c62e64282d31e0bd1f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a8ee2db040ff931c62e64282d31e0bd1f">CMN600_PPU_PWPR_POLICY_FUNC_RET</a>&#160;&#160;&#160;UINT64_C(0x000000000000007)</td></tr>
+<tr class="memdesc:a8ee2db040ff931c62e64282d31e0bd1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 电源策略：功能保持（FUNC_RET）  <br /></td></tr>
+<tr class="separator:a8ee2db040ff931c62e64282d31e0bd1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15256abe394a9932f7d75f9b2d8e7574" id="r_a15256abe394a9932f7d75f9b2d8e7574"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a15256abe394a9932f7d75f9b2d8e7574">CMN600_PPU_PWPR_POLICY_ON</a>&#160;&#160;&#160;UINT64_C(0x0000000000000008)</td></tr>
+<tr class="memdesc:a15256abe394a9932f7d75f9b2d8e7574"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 电源策略：开启（ON）  <br /></td></tr>
+<tr class="separator:a15256abe394a9932f7d75f9b2d8e7574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7cf1af5f3a2119122a46233e97e7ad7" id="r_ac7cf1af5f3a2119122a46233e97e7ad7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac7cf1af5f3a2119122a46233e97e7ad7">CMN600_PPU_PWPR_OPMODE_NOSFSLC</a>&#160;&#160;&#160;UINT64_C(0x0000000000000000)</td></tr>
+<tr class="memdesc:ac7cf1af5f3a2119122a46233e97e7ad7"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 操作模式：无 Snoop Filter / SLC  <br /></td></tr>
+<tr class="separator:ac7cf1af5f3a2119122a46233e97e7ad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abec0948d64bd749c68b2845f87fe3e68" id="r_abec0948d64bd749c68b2845f87fe3e68"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#abec0948d64bd749c68b2845f87fe3e68">CMN600_PPU_PWPR_OPMODE_SFONLY</a>&#160;&#160;&#160;UINT64_C(0x0000000000000010)</td></tr>
+<tr class="memdesc:abec0948d64bd749c68b2845f87fe3e68"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 操作模式：仅 Snoop Filter  <br /></td></tr>
+<tr class="separator:abec0948d64bd749c68b2845f87fe3e68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e95db3d8f538022fd8beb54028a43cf" id="r_a3e95db3d8f538022fd8beb54028a43cf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a3e95db3d8f538022fd8beb54028a43cf">CMN600_PPU_PWPR_OPMODE_HAM</a>&#160;&#160;&#160;UINT64_C(0x0000000000000020)</td></tr>
+<tr class="memdesc:a3e95db3d8f538022fd8beb54028a43cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 操作模式：半关联模式 (HAM)  <br /></td></tr>
+<tr class="separator:a3e95db3d8f538022fd8beb54028a43cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5320f13035484ce31d8de3ea183abc67" id="r_a5320f13035484ce31d8de3ea183abc67"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a5320f13035484ce31d8de3ea183abc67">CMN600_PPU_PWPR_OPMODE_FAM</a>&#160;&#160;&#160;UINT64_C(0x0000000000000030)</td></tr>
+<tr class="memdesc:a5320f13035484ce31d8de3ea183abc67"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 操作模式：全关联模式 (FAM)  <br /></td></tr>
+<tr class="separator:a5320f13035484ce31d8de3ea183abc67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54bdecf232feea437116c4ff847b5272" id="r_a54bdecf232feea437116c4ff847b5272"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a54bdecf232feea437116c4ff847b5272">CMN600_PPU_PWPR_DYN_EN</a>&#160;&#160;&#160;UINT64_C(0x0000000000000100)</td></tr>
+<tr class="memdesc:a54bdecf232feea437116c4ff847b5272"><td class="mdescLeft">&#160;</td><td class="mdescRight">PPU 动态电源门控使能位  <br /></td></tr>
+<tr class="separator:a54bdecf232feea437116c4ff847b5272"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1deecdd96773b8d61968a432afac71ad" id="r_a1deecdd96773b8d61968a432afac71ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a1deecdd96773b8d61968a432afac71ad">CMN600_MESH_X_MAX</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a1deecdd96773b8d61968a432afac71ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mesh X 轴最大尺寸  <br /></td></tr>
+<tr class="separator:a1deecdd96773b8d61968a432afac71ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a891b69c95bbcff0d3181b8743ed3b1de" id="r_a891b69c95bbcff0d3181b8743ed3b1de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a891b69c95bbcff0d3181b8743ed3b1de">CMN600_MESH_Y_MAX</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a891b69c95bbcff0d3181b8743ed3b1de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mesh Y 轴最大尺寸  <br /></td></tr>
+<tr class="separator:a891b69c95bbcff0d3181b8743ed3b1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad7949ab3a88c42dfca40800f28c1e8a" id="r_aad7949ab3a88c42dfca40800f28c1e8a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#aad7949ab3a88c42dfca40800f28c1e8a">CMN600_NODE_ID_PORT_POS</a>&#160;&#160;&#160;2</td></tr>
+<tr class="memdesc:aad7949ab3a88c42dfca40800f28c1e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">节点 ID 中端口号字段的位移  <br /></td></tr>
+<tr class="separator:aad7949ab3a88c42dfca40800f28c1e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a981f7cd21515e7b1be8fef237ddb00c5" id="r_a981f7cd21515e7b1be8fef237ddb00c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a981f7cd21515e7b1be8fef237ddb00c5">CMN600_NODE_ID_PORT_MASK</a>&#160;&#160;&#160;0x1</td></tr>
+<tr class="memdesc:a981f7cd21515e7b1be8fef237ddb00c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">节点 ID 中端口号字段的掩码  <br /></td></tr>
+<tr class="separator:a981f7cd21515e7b1be8fef237ddb00c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a318507105e7d99b14f531b5a85f7a622" id="r_a318507105e7d99b14f531b5a85f7a622"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a318507105e7d99b14f531b5a85f7a622">CMN600_NODE_ID_Y_POS</a>&#160;&#160;&#160;3</td></tr>
+<tr class="memdesc:a318507105e7d99b14f531b5a85f7a622"><td class="mdescLeft">&#160;</td><td class="mdescRight">节点 ID 中 Y 坐标字段的位移  <br /></td></tr>
+<tr class="separator:a318507105e7d99b14f531b5a85f7a622"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20dca8d219aa2e955df0ec8b1b4daf8e" id="r_a20dca8d219aa2e955df0ec8b1b4daf8e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a20dca8d219aa2e955df0ec8b1b4daf8e">CMN600_MXP_PORT_CONNECT_INFO_DEVICE_TYPE_MASK</a>&#160;&#160;&#160;UINT64_C(0x1F)</td></tr>
+<tr class="memdesc:a20dca8d219aa2e955df0ec8b1b4daf8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">XP 端口连接信息寄存器中设备类型字段的掩码（bits [4:0]）  <br /></td></tr>
+<tr class="separator:a20dca8d219aa2e955df0ec8b1b4daf8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac47e4b7c0002c79cfa4421de92808b5e" id="r_ac47e4b7c0002c79cfa4421de92808b5e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac47e4b7c0002c79cfa4421de92808b5e">CMN600_ROOT_NODE_OFFSET_PORT_POS</a>&#160;&#160;&#160;14</td></tr>
+<tr class="memdesc:ac47e4b7c0002c79cfa4421de92808b5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">根节点偏移中端口号字段的位移  <br /></td></tr>
+<tr class="separator:ac47e4b7c0002c79cfa4421de92808b5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a510f25267f88141d9600afee75c5af48" id="r_a510f25267f88141d9600afee75c5af48"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a510f25267f88141d9600afee75c5af48">CMN600_ROOT_NODE_OFFSET_Y_POS</a>&#160;&#160;&#160;20</td></tr>
+<tr class="memdesc:a510f25267f88141d9600afee75c5af48"><td class="mdescLeft">&#160;</td><td class="mdescRight">根节点偏移中 Y 坐标字段的位移  <br /></td></tr>
+<tr class="separator:a510f25267f88141d9600afee75c5af48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac864fe1ef0086cf256349ce5240ff8dd" id="r_ac864fe1ef0086cf256349ce5240ff8dd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac864fe1ef0086cf256349ce5240ff8dd">CMN600_PERIPH_ID_2_MASK</a>&#160;&#160;&#160;UINT64_C(0xFF)</td></tr>
+<tr class="memdesc:ac864fe1ef0086cf256349ce5240ff8dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">PERIPH_ID[1] 寄存器中修订号字段的掩码  <br /></td></tr>
+<tr class="separator:ac864fe1ef0086cf256349ce5240ff8dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e09cf1341640c50d8e5f53d870d71d2" id="r_a2e09cf1341640c50d8e5f53d870d71d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a2e09cf1341640c50d8e5f53d870d71d2">CMN600_PERIPH_ID_2_REV_POS</a>&#160;&#160;&#160;4</td></tr>
+<tr class="memdesc:a2e09cf1341640c50d8e5f53d870d71d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">PERIPH_ID[1] 寄存器中修订号字段的位移值  <br /></td></tr>
+<tr class="separator:a2e09cf1341640c50d8e5f53d870d71d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a24b468de285ac8edec6090b731593674" id="r_a24b468de285ac8edec6090b731593674"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a24b468de285ac8edec6090b731593674">node_id_size</a> { <a class="el" href="cmn600_8h.html#a24b468de285ac8edec6090b731593674abe3833058f3d55d2355cfd09ce790c0a">NODE_ID_SIZE_7BITS</a>
+, <a class="el" href="cmn600_8h.html#a24b468de285ac8edec6090b731593674a686cb420e4b43eb85c04f406acd60307">NODE_ID_SIZE_9BITS</a>
+ }</td></tr>
+<tr class="memdesc:a24b468de285ac8edec6090b731593674"><td class="mdescLeft">&#160;</td><td class="mdescRight">节点 ID 宽度枚举  <a href="cmn600_8h.html#a24b468de285ac8edec6090b731593674">更多...</a><br /></td></tr>
+<tr class="separator:a24b468de285ac8edec6090b731593674"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a276b85e2da28c5f9c3dbce61c55682" id="r_a6a276b85e2da28c5f9c3dbce61c55682"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a> { <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a55395370fcd419b23b92525f565467be">NODE_TYPE_INVALID</a> = 0x0
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a787309a59e315d084ad3a88e23bc44b1">NODE_TYPE_DVM</a> = 0x1
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682aec6125b696164f5470452ccd834155de">NODE_TYPE_CFG</a> = 0x2
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a10e0cb0d07128014e9bf98dfc417027a">NODE_TYPE_DTC</a> = 0x3
+, <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682ac78749695e399ca800b8dbe853012aa5">NODE_TYPE_HN_I</a> = 0x4
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a9416fc1992b557591f98da9c7d2586ec">NODE_TYPE_HN_F</a> = 0x5
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a0dd7d7232a586b0a16223a91f5e745c2">NODE_TYPE_XP</a> = 0x6
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a7c37e83d89221f41ff09410f53c9c259">NODE_TYPE_SBSX</a> = 0x7
+, <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682ae1d246677b1c31affb98b24e755fe212">NODE_TYPE_RN_I</a> = 0xA
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a49c42f0da9e65656456b0dd892d21eb3">NODE_TYPE_RN_D</a> = 0xD
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a0b62e06288891f9838ac1d8301062f24">NODE_TYPE_RN_SAM</a> = 0xF
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682ac26797ef17551113aad387bdf2c1b6ed">NODE_TYPE_CML_BASE</a> = 0x100
+, <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a54b0ba92d151bd2b5c2dceccbee783d7">NODE_TYPE_CXRA</a> = 0x100
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682a6e955d544ffbd8f78fa70968300fc313">NODE_TYPE_CXHA</a> = 0x101
+, <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682abcb5bc529f9a6ff76f45eb9b9c8f4350">NODE_TYPE_CXLA</a> = 0x102
+<br />
+ }</td></tr>
+<tr class="memdesc:a6a276b85e2da28c5f9c3dbce61c55682"><td class="mdescLeft">&#160;</td><td class="mdescRight">CMN-600 节点类型枚举  <a href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">更多...</a><br /></td></tr>
+<tr class="separator:a6a276b85e2da28c5f9c3dbce61c55682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2b559cc2ee2eaee47fe1f15cc99f49e" id="r_af2b559cc2ee2eaee47fe1f15cc99f49e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#af2b559cc2ee2eaee47fe1f15cc99f49e">device_type</a> { <a class="el" href="cmn600_8h.html#af2b559cc2ee2eaee47fe1f15cc99f49eadf0914fdbd9b51bb0401f9e5967784ea">DEVICE_TYPE_CXHA</a> = 0x11
+, <a class="el" href="cmn600_8h.html#af2b559cc2ee2eaee47fe1f15cc99f49ea0040eb920e224dbbfcce66f1c55de921">DEVICE_TYPE_CXRA</a> = 0x12
+, <a class="el" href="cmn600_8h.html#af2b559cc2ee2eaee47fe1f15cc99f49ea67d287addd3b1bf2ff25a7e1de3132b1">DEVICE_TYPE_CXRH</a> = 0x13
+ }</td></tr>
+<tr class="memdesc:af2b559cc2ee2eaee47fe1f15cc99f49e"><td class="mdescLeft">&#160;</td><td class="mdescRight">CCIX CML 设备类型枚举  <a href="cmn600_8h.html#af2b559cc2ee2eaee47fe1f15cc99f49e">更多...</a><br /></td></tr>
+<tr class="separator:af2b559cc2ee2eaee47fe1f15cc99f49e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8515ee51f7fa920ba641672f37ec9c19" id="r_a8515ee51f7fa920ba641672f37ec9c19"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19">sam_node_type</a> { <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19a62b6e1c06c18251e7abb3fee1c204c83">SAM_NODE_TYPE_HN_F</a> = 0
+, <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19a7800bf3a4db7cdb2b1226757e49f1dcc">SAM_NODE_TYPE_HN_I</a> = 1
+, <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19a616f4e238a4f6a28d8aa0c195710d6cc">SAM_NODE_TYPE_CXRA</a> = 2
+, <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19acb9261e7ca4f354113978a7e520241a0">SAM_NODE_TYPE_COUNT</a>
+ }</td></tr>
+<tr class="memdesc:a8515ee51f7fa920ba641672f37ec9c19"><td class="mdescLeft">&#160;</td><td class="mdescRight">SAM 目标节点类型枚举  <a href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19">更多...</a><br /></td></tr>
+<tr class="separator:a8515ee51f7fa920ba641672f37ec9c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8957929b2f7ed4ca7478b967d2c29b7" id="r_ad8957929b2f7ed4ca7478b967d2c29b7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7">peripheral_id_revision</a> { <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7a2c74f4a47a8343adc88c3420da478b92">CMN600_PERIPH_ID_2_REV_R1_P0</a>
+, <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7aa291822bab6f5d1b277acd5388e3ad9d">CMN600_PERIPH_ID_2_REV_R1_P1</a>
+, <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7a021fdf183b39d74a39e0890be384d1af">CMN600_PERIPH_ID_2_REV_R1_P2</a>
+, <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7a1e330881d07be2ade8bf81179e0c9071">CMN600_PERIPH_ID_2_REV_R1_P3</a>
+, <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7abbf00908dbd66a75e678866742e04d56">CMN600_PERIPH_ID_2_REV_R2_P0</a>
+, <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7a12693313f29a83d0fa1aa530d4648164">CMN600_PERIPH_ID_2_REV_R3_P0</a>
+, <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7aaa7ef14b2a0e898db263649847bfcf72">CMN600_PERIPH_ID_2_REV_R3_P1</a>
+, <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7a699ab51002f2b87549a8b558ad40f596">CMN600_PERIPH_ID_2_REV_R3_P2</a>
+, <br />
+&#160;&#160;<a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7ace62eb9fe20ed43889a333fd11443436">CMN600_PERIPH_ID_UNKNOWN_REV</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:ad8957929b2f7ed4ca7478b967d2c29b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">外设 ID 修订版本枚举  <a href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7">更多...</a><br /></td></tr>
+<tr class="separator:ad8957929b2f7ed4ca7478b967d2c29b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ac036e4559f51086bdd951792aa6ba619" id="r_ac036e4559f51086bdd951792aa6ba619"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac036e4559f51086bdd951792aa6ba619">get_node_child_count</a> (void *node_base)</td></tr>
+<tr class="memdesc:ac036e4559f51086bdd951792aa6ba619"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取指定节点的子节点数量  <br /></td></tr>
+<tr class="separator:ac036e4559f51086bdd951792aa6ba619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17aaf7ca89307dd25ebe981a0f08ceaf" id="r_a17aaf7ca89307dd25ebe981a0f08ceaf"><td class="memItemLeft" align="right" valign="top">enum <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a17aaf7ca89307dd25ebe981a0f08ceaf">get_node_type</a> (void *node_base)</td></tr>
+<tr class="memdesc:a17aaf7ca89307dd25ebe981a0f08ceaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取节点类型标识符  <br /></td></tr>
+<tr class="separator:a17aaf7ca89307dd25ebe981a0f08ceaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7056eaecbbf48091d3f5db6d844194dd" id="r_a7056eaecbbf48091d3f5db6d844194dd"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a7056eaecbbf48091d3f5db6d844194dd">get_node_id</a> (void *node_base)</td></tr>
+<tr class="memdesc:a7056eaecbbf48091d3f5db6d844194dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">从硬件节点描述符中获取节点的物理标识符  <br /></td></tr>
+<tr class="separator:a7056eaecbbf48091d3f5db6d844194dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a538611c26aa88c42ecf265c950fbe116" id="r_a538611c26aa88c42ecf265c950fbe116"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a538611c26aa88c42ecf265c950fbe116">get_node_logical_id</a> (void *node_base)</td></tr>
+<tr class="memdesc:a538611c26aa88c42ecf265c950fbe116"><td class="mdescLeft">&#160;</td><td class="mdescRight">从硬件节点描述符中获取节点的逻辑标识符  <br /></td></tr>
+<tr class="separator:a538611c26aa88c42ecf265c950fbe116"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9eda14c74ddd16a5c2c73090def70de" id="r_ae9eda14c74ddd16a5c2c73090def70de"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ae9eda14c74ddd16a5c2c73090def70de">get_child_node</a> (uintptr_t base, void *node_base, unsigned int child_index)</td></tr>
+<tr class="memdesc:ae9eda14c74ddd16a5c2c73090def70de"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据父节点和子节点索引获取子节点指针  <br /></td></tr>
+<tr class="separator:ae9eda14c74ddd16a5c2c73090def70de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a456130bb3afbdb65168886ae4e1238d1" id="r_a456130bb3afbdb65168886ae4e1238d1"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a456130bb3afbdb65168886ae4e1238d1">get_child_node_id</a> (void *node_base, unsigned int child_index)</td></tr>
+<tr class="memdesc:a456130bb3afbdb65168886ae4e1238d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">通过父节点的子节点指针获取子节点的物理标识符  <br /></td></tr>
+<tr class="separator:a456130bb3afbdb65168886ae4e1238d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a870cbaad75fff8a5be5531eb3d7f3a3e" id="r_a870cbaad75fff8a5be5531eb3d7f3a3e"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a870cbaad75fff8a5be5531eb3d7f3a3e">get_cmn600_revision</a> (struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *root)</td></tr>
+<tr class="memdesc:a870cbaad75fff8a5be5531eb3d7f3a3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取 CMN-600 的修订版本号  <br /></td></tr>
+<tr class="separator:a870cbaad75fff8a5be5531eb3d7f3a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a746f0bf4eae94d042139c8f539f00fb1" id="r_a746f0bf4eae94d042139c8f539f00fb1"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a746f0bf4eae94d042139c8f539f00fb1">get_cmn600_revision_name</a> (struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *root)</td></tr>
+<tr class="memdesc:a746f0bf4eae94d042139c8f539f00fb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取 CMN-600 的修订版本名称字符串  <br /></td></tr>
+<tr class="separator:a746f0bf4eae94d042139c8f539f00fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac093b75a00f5cecb92a1b85e25495cfb" id="r_ac093b75a00f5cecb92a1b85e25495cfb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ac093b75a00f5cecb92a1b85e25495cfb">is_child_external</a> (void *node_base, unsigned int child_index)</td></tr>
+<tr class="memdesc:ac093b75a00f5cecb92a1b85e25495cfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断子节点是否为外部节点  <br /></td></tr>
+<tr class="separator:ac093b75a00f5cecb92a1b85e25495cfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a501f5d9c6bda74d8d79a47cbba4e6962" id="r_a501f5d9c6bda74d8d79a47cbba4e6962"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a501f5d9c6bda74d8d79a47cbba4e6962">get_port_number</a> (unsigned int child_node_id)</td></tr>
+<tr class="memdesc:a501f5d9c6bda74d8d79a47cbba4e6962"><td class="mdescLeft">&#160;</td><td class="mdescRight">从子节点 ID 中获取端口号  <br /></td></tr>
+<tr class="separator:a501f5d9c6bda74d8d79a47cbba4e6962"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d005a132d95791fc47bc9596776cd1f" id="r_a8d005a132d95791fc47bc9596776cd1f"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a8d005a132d95791fc47bc9596776cd1f">get_device_type</a> (void *mxp_base, bool port)</td></tr>
+<tr class="memdesc:a8d005a132d95791fc47bc9596776cd1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">从 XP 端口连接信息寄存器获取设备类型  <br /></td></tr>
+<tr class="separator:a8d005a132d95791fc47bc9596776cd1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab7a13ed2e6214e0a57d92c1c7b82662" id="r_aab7a13ed2e6214e0a57d92c1c7b82662"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#aab7a13ed2e6214e0a57d92c1c7b82662">sam_encode_region_size</a> (uint64_t size)</td></tr>
+<tr class="memdesc:aab7a13ed2e6214e0a57d92c1c7b82662"><td class="mdescLeft">&#160;</td><td class="mdescRight">将内存区域大小转换为 CMN-600 寄存器使用的大小编码  <br /></td></tr>
+<tr class="separator:aab7a13ed2e6214e0a57d92c1c7b82662"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71449bb071080b3ad2397e417287826c" id="r_a71449bb071080b3ad2397e417287826c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a71449bb071080b3ad2397e417287826c">configure_region</a> (volatile uint64_t *reg, unsigned int bit_offset, uint64_t base, uint64_t size, enum <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19">sam_node_type</a> <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a>)</td></tr>
+<tr class="memdesc:a71449bb071080b3ad2397e417287826c"><td class="mdescLeft">&#160;</td><td class="mdescRight">配置一个内存区域条目  <br /></td></tr>
+<tr class="separator:a71449bb071080b3ad2397e417287826c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fba5955aa6ea33e4c659872bf0a8575" id="r_a6fba5955aa6ea33e4c659872bf0a8575"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a6fba5955aa6ea33e4c659872bf0a8575">get_node_type_name</a> (enum <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a> <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a>)</td></tr>
+<tr class="memdesc:a6fba5955aa6ea33e4c659872bf0a8575"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取节点类型名称字符串  <br /></td></tr>
+<tr class="separator:a6fba5955aa6ea33e4c659872bf0a8575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6862ce7cce0a25c6fc7eaebe6e246dc6" id="r_a6862ce7cce0a25c6fc7eaebe6e246dc6"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a6862ce7cce0a25c6fc7eaebe6e246dc6">get_node_pos_x</a> (void *node_base)</td></tr>
+<tr class="memdesc:a6862ce7cce0a25c6fc7eaebe6e246dc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取节点在 mesh 中沿 X 轴的位置  <br /></td></tr>
+<tr class="separator:a6862ce7cce0a25c6fc7eaebe6e246dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a762d778d31f551a6a9b88bd3df2fced3" id="r_a762d778d31f551a6a9b88bd3df2fced3"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#a762d778d31f551a6a9b88bd3df2fced3">get_node_pos_y</a> (void *node_base)</td></tr>
+<tr class="memdesc:a762d778d31f551a6a9b88bd3df2fced3"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取节点在 mesh 中沿 Y 轴的位置  <br /></td></tr>
+<tr class="separator:a762d778d31f551a6a9b88bd3df2fced3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6caa6f4b5c842e4cf8723c7d80795d0" id="r_ad6caa6f4b5c842e4cf8723c7d80795d0"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#ad6caa6f4b5c842e4cf8723c7d80795d0">get_root_node</a> (uintptr_t base, unsigned int hnd_node_id, unsigned int mesh_size_x, unsigned int mesh_size_y)</td></tr>
+<tr class="memdesc:ad6caa6f4b5c842e4cf8723c7d80795d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据外设基地址、HN-D 节点 ID 和 mesh 尺寸获取根节点描述符  <br /></td></tr>
+<tr class="separator:ad6caa6f4b5c842e4cf8723c7d80795d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc4566e5ee2f7d9eccba03d2501cde07" id="r_abc4566e5ee2f7d9eccba03d2501cde07"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmn600_8h.html#abc4566e5ee2f7d9eccba03d2501cde07">is_cal_mode_supported</a> (struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *root)</td></tr>
+<tr class="memdesc:abc4566e5ee2f7d9eccba03d2501cde07"><td class="mdescLeft">&#160;</td><td class="mdescRight">检查 CMN-600 是否支持 CAL 模式  <br /></td></tr>
+<tr class="separator:abc4566e5ee2f7d9eccba03d2501cde07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
+<div class="textblock"><p>CMN-600 互连控制器硬件寄存器定义和工具函数声明 </p>
+<p>定义 CMN-600 (Arm Coherent Mesh Network) 互连控制器的所有 硬件寄存器结构体映射、节点类型枚举、地址映射宏和工具函数声明。 包含以下核心内容：</p><ul>
+<li>节点类型和设备类型枚举</li>
+<li>各类节点（RN-SAM、HN-F、HN-I、RN-D、RN-I、XP、CFGM、SBSX、DTC） 的寄存器映射结构体</li>
+<li>CCIX CML (Coherent Multichip Link) 节点类型定义</li>
+<li>RN-SAM、HN-F SAM 地址映射相关宏</li>
+<li>节点遍历和查询工具函数声明</li>
+</ul>
+<dl class="section note"><dt>注解</dt><dd>"manager" 一词的使用可能与旧版 TRM 不一致</dd></dl>
+<dl class="section copyright"><dt>版权所有</dt><dd>Copyright (c) 2017-2022, Arm Limited and Contributors. All rights reserved. @license SPDX-License-Identifier: BSD-3-Clause </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 中定义.</p>
+</div><h2 class="groupheader">宏定义说明</h2>
+<a id="a6df436b38edb5952b32dc13f72652cb4" name="a6df436b38edb5952b32dc13f72652cb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6df436b38edb5952b32dc13f72652cb4">&#9670;&#160;</a></span>CMN600_CHILD_INFO_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_INFO_COUNT&#160;&#160;&#160;UINT64_C(0x000000000000FFFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CHILD_INFO 寄存器中子节点数量字段的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00606">606</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a298f81ef02d2b0f14903fcc98afb60db" name="a298f81ef02d2b0f14903fcc98afb60db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a298f81ef02d2b0f14903fcc98afb60db">&#9670;&#160;</a></span>CMN600_CHILD_POINTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_POINTER&#160;&#160;&#160;UINT64_C(0x00000000FFFFFFFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>子节点指针寄存器中有效数据的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00612">612</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a47dc2c047062a530b167c8dedc080003" name="a47dc2c047062a530b167c8dedc080003"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47dc2c047062a530b167c8dedc080003">&#9670;&#160;</a></span>CMN600_CHILD_POINTER_EXT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_POINTER_EXT&#160;&#160;&#160;UINT64_C(0x0000000080000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>子节点指针中外部节点标志位的掩码（bit 31） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00620">620</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a78164d80fb9be438a2762b309eedfe76" name="a78164d80fb9be438a2762b309eedfe76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78164d80fb9be438a2762b309eedfe76">&#9670;&#160;</a></span>CMN600_CHILD_POINTER_EXT_NODE_POINTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_POINTER_EXT_NODE_POINTER&#160;&#160;&#160;UINT64_C(0x000000000FFFC000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>外部子节点指针中节点指针字段的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00630">630</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a043cfda0d8db463c97dcbea2db247114" name="a043cfda0d8db463c97dcbea2db247114"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a043cfda0d8db463c97dcbea2db247114">&#9670;&#160;</a></span>CMN600_CHILD_POINTER_EXT_NODE_POINTER_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_POINTER_EXT_NODE_POINTER_POS&#160;&#160;&#160;14</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>外部子节点指针中节点指针字段的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00634">634</a> 行定义.</p>
+
+</div>
+</div>
+<a id="abfefb34c673eb70ae9701660a3990463" name="abfefb34c673eb70ae9701660a3990463"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfefb34c673eb70ae9701660a3990463">&#9670;&#160;</a></span>CMN600_CHILD_POINTER_EXT_REGISTER_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_POINTER_EXT_REGISTER_OFFSET&#160;&#160;&#160;UINT64_C(0x0000000000003FFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>外部子节点指针中寄存器偏移字段的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00626">626</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2c3394e0c2306b0ea6d91e1dfbd60735" name="a2c3394e0c2306b0ea6d91e1dfbd60735"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c3394e0c2306b0ea6d91e1dfbd60735">&#9670;&#160;</a></span>CMN600_CHILD_POINTER_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_CHILD_POINTER_OFFSET&#160;&#160;&#160;UINT64_C(0x000000000FFFFFFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>子节点指针中偏移地址字段的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00616">616</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a75487701db2fad0d50b4b92f40b94392" name="a75487701db2fad0d50b4b92f40b94392"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75487701db2fad0d50b4b92f40b94392">&#9670;&#160;</a></span>CMN600_HNF_CACHE_GROUP_ENTRIES_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNF_CACHE_GROUP_ENTRIES_MAX&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F 缓存分组的最大条目数 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00708">708</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2b117cd5fe81871692c54998df7ce163" name="a2b117cd5fe81871692c54998df7ce163"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b117cd5fe81871692c54998df7ce163">&#9670;&#160;</a></span>CMN600_HNF_CACHE_GROUP_ENTRIES_PER_GROUP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNF_CACHE_GROUP_ENTRIES_PER_GROUP&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>每个缓存分组寄存器中的条目数（4 个） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00712">712</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a962968b48bc38643d30e3d700e7e0f2e" name="a962968b48bc38643d30e3d700e7e0f2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a962968b48bc38643d30e3d700e7e0f2e">&#9670;&#160;</a></span>CMN600_HNF_CACHE_GROUP_ENTRY_BITS_WIDTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNF_CACHE_GROUP_ENTRY_BITS_WIDTH&#160;&#160;&#160;12</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>每个缓存分组条目的位宽（12 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00716">716</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab34a1f6228de964ee0ccb913463ae19b" name="ab34a1f6228de964ee0ccb913463ae19b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab34a1f6228de964ee0ccb913463ae19b">&#9670;&#160;</a></span>CMN600_HNF_SAM_MEMREGION_BASE_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNF_SAM_MEMREGION_BASE_POS&#160;&#160;&#160;26</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F SAM_MEMREGION 寄存器中基地址字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00698">698</a> 行定义.</p>
+
+</div>
+</div>
+<a id="abb626a672a7c3b6945b8a4ede0906ad8" name="abb626a672a7c3b6945b8a4ede0906ad8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb626a672a7c3b6945b8a4ede0906ad8">&#9670;&#160;</a></span>CMN600_HNF_SAM_MEMREGION_SIZE_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNF_SAM_MEMREGION_SIZE_POS&#160;&#160;&#160;12</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F SAM_MEMREGION 寄存器中大小编码字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00694">694</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0597722a4be325144efad529653f864f" name="a0597722a4be325144efad529653f864f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0597722a4be325144efad529653f864f">&#9670;&#160;</a></span>CMN600_HNF_SAM_MEMREGION_VALID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNF_SAM_MEMREGION_VALID&#160;&#160;&#160;UINT64_C(0x8000000000000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-F SAM_MEMREGION 寄存器中有效位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00702">702</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af6082baa23354250113a583eb6de0e4a" name="af6082baa23354250113a583eb6de0e4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6082baa23354250113a583eb6de0e4a">&#9670;&#160;</a></span>CMN600_HNI_SAM_REGION_CFG_SER_DEVNE_WR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_HNI_SAM_REGION_CFG_SER_DEVNE_WR&#160;&#160;&#160;UINT64_C(0x1000000000000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HN-I SAM 地址区域配置中安全设备非安全写使能位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00722">722</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9ba3a1204744639b50eccf3391d16e80" name="a9ba3a1204744639b50eccf3391d16e80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ba3a1204744639b50eccf3391d16e80">&#9670;&#160;</a></span>CMN600_MAX_NUM_HNF</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_MAX_NUM_HNF&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统中 HN-F（全一致性主节点/系统缓存节点）的最大数量 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00035">35</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a862fa76fd0cd0f61a535b7233c5277f0" name="a862fa76fd0cd0f61a535b7233c5277f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a862fa76fd0cd0f61a535b7233c5277f0">&#9670;&#160;</a></span>CMN600_MAX_NUM_RNF</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_MAX_NUM_RNF&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统中 RN-F（全一致性请求节点）的最大数量 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00031">31</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af1f03b3fa1c92c512dc11fa00ac9b0a6" name="af1f03b3fa1c92c512dc11fa00ac9b0a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1f03b3fa1c92c512dc11fa00ac9b0a6">&#9670;&#160;</a></span>CMN600_MAX_NUM_SCG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_MAX_NUM_SCG&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统缓存分组 (System Cache Group) 的最大数量 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00039">39</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a1deecdd96773b8d61968a432afac71ad" name="a1deecdd96773b8d61968a432afac71ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1deecdd96773b8d61968a432afac71ad">&#9670;&#160;</a></span>CMN600_MESH_X_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_MESH_X_MAX&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Mesh X 轴最大尺寸 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00813">813</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a891b69c95bbcff0d3181b8743ed3b1de" name="a891b69c95bbcff0d3181b8743ed3b1de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a891b69c95bbcff0d3181b8743ed3b1de">&#9670;&#160;</a></span>CMN600_MESH_Y_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_MESH_Y_MAX&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Mesh Y 轴最大尺寸 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00817">817</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a20dca8d219aa2e955df0ec8b1b4daf8e" name="a20dca8d219aa2e955df0ec8b1b4daf8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20dca8d219aa2e955df0ec8b1b4daf8e">&#9670;&#160;</a></span>CMN600_MXP_PORT_CONNECT_INFO_DEVICE_TYPE_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_MXP_PORT_CONNECT_INFO_DEVICE_TYPE_MASK&#160;&#160;&#160;UINT64_C(0x1F)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>XP 端口连接信息寄存器中设备类型字段的掩码（bits [4:0]） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00833">833</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a981f7cd21515e7b1be8fef237ddb00c5" name="a981f7cd21515e7b1be8fef237ddb00c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a981f7cd21515e7b1be8fef237ddb00c5">&#9670;&#160;</a></span>CMN600_NODE_ID_PORT_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_ID_PORT_MASK&#160;&#160;&#160;0x1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>节点 ID 中端口号字段的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00825">825</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aad7949ab3a88c42dfca40800f28c1e8a" name="aad7949ab3a88c42dfca40800f28c1e8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad7949ab3a88c42dfca40800f28c1e8a">&#9670;&#160;</a></span>CMN600_NODE_ID_PORT_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_ID_PORT_POS&#160;&#160;&#160;2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>节点 ID 中端口号字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00821">821</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a318507105e7d99b14f531b5a85f7a622" name="a318507105e7d99b14f531b5a85f7a622"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a318507105e7d99b14f531b5a85f7a622">&#9670;&#160;</a></span>CMN600_NODE_ID_Y_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_ID_Y_POS&#160;&#160;&#160;3</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>节点 ID 中 Y 坐标字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00829">829</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a71819fb5ccd29c8f860b3b9fce8b1e2d" name="a71819fb5ccd29c8f860b3b9fce8b1e2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71819fb5ccd29c8f860b3b9fce8b1e2d">&#9670;&#160;</a></span>CMN600_NODE_INFO_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_INFO_ID&#160;&#160;&#160;UINT64_C(0x00000000FFFF0000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>NODE_INFO 寄存器中节点 ID 字段的掩码（bits [31:16]） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00588">588</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6a0a5e65a78ef97b0b264612f0139425" name="a6a0a5e65a78ef97b0b264612f0139425"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a0a5e65a78ef97b0b264612f0139425">&#9670;&#160;</a></span>CMN600_NODE_INFO_ID_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_INFO_ID_POS&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>NODE_INFO 寄存器中节点 ID 字段的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00592">592</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a459f80677cf140a30d8d635ebb624395" name="a459f80677cf140a30d8d635ebb624395"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a459f80677cf140a30d8d635ebb624395">&#9670;&#160;</a></span>CMN600_NODE_INFO_LOGICAL_ID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_INFO_LOGICAL_ID&#160;&#160;&#160;UINT64_C(0x0000FFFF00000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>NODE_INFO 寄存器中逻辑 ID 字段的掩码（bits [47:32]） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00596">596</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa667c0871243345cef2ebf6f5e626dda" name="aa667c0871243345cef2ebf6f5e626dda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa667c0871243345cef2ebf6f5e626dda">&#9670;&#160;</a></span>CMN600_NODE_INFO_LOGICAL_ID_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_INFO_LOGICAL_ID_POS&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>NODE_INFO 寄存器中逻辑 ID 字段的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00600">600</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a11577ebff9bb011ecd1dded8f63492fb" name="a11577ebff9bb011ecd1dded8f63492fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11577ebff9bb011ecd1dded8f63492fb">&#9670;&#160;</a></span>CMN600_NODE_INFO_TYPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_NODE_INFO_TYPE&#160;&#160;&#160;UINT64_C(0x000000000000FFFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>NODE_INFO 寄存器中节点类型字段的掩码（bits [15:0]） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00584">584</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac864fe1ef0086cf256349ce5240ff8dd" name="ac864fe1ef0086cf256349ce5240ff8dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac864fe1ef0086cf256349ce5240ff8dd">&#9670;&#160;</a></span>CMN600_PERIPH_ID_2_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PERIPH_ID_2_MASK&#160;&#160;&#160;UINT64_C(0xFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PERIPH_ID[1] 寄存器中修订号字段的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00863">863</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2e09cf1341640c50d8e5f53d870d71d2" name="a2e09cf1341640c50d8e5f53d870d71d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e09cf1341640c50d8e5f53d870d71d2">&#9670;&#160;</a></span>CMN600_PERIPH_ID_2_REV_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PERIPH_ID_2_REV_POS&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PERIPH_ID[1] 寄存器中修订号字段的位移值 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00867">867</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a54bdecf232feea437116c4ff847b5272" name="a54bdecf232feea437116c4ff847b5272"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54bdecf232feea437116c4ff847b5272">&#9670;&#160;</a></span>CMN600_PPU_PWPR_DYN_EN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_DYN_EN&#160;&#160;&#160;UINT64_C(0x0000000000000100)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 动态电源门控使能位 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00807">807</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5320f13035484ce31d8de3ea183abc67" name="a5320f13035484ce31d8de3ea183abc67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5320f13035484ce31d8de3ea183abc67">&#9670;&#160;</a></span>CMN600_PPU_PWPR_OPMODE_FAM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_OPMODE_FAM&#160;&#160;&#160;UINT64_C(0x0000000000000030)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 操作模式：全关联模式 (FAM) </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00803">803</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3e95db3d8f538022fd8beb54028a43cf" name="a3e95db3d8f538022fd8beb54028a43cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e95db3d8f538022fd8beb54028a43cf">&#9670;&#160;</a></span>CMN600_PPU_PWPR_OPMODE_HAM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_OPMODE_HAM&#160;&#160;&#160;UINT64_C(0x0000000000000020)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 操作模式：半关联模式 (HAM) </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00799">799</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac7cf1af5f3a2119122a46233e97e7ad7" name="ac7cf1af5f3a2119122a46233e97e7ad7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7cf1af5f3a2119122a46233e97e7ad7">&#9670;&#160;</a></span>CMN600_PPU_PWPR_OPMODE_NOSFSLC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_OPMODE_NOSFSLC&#160;&#160;&#160;UINT64_C(0x0000000000000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 操作模式：无 Snoop Filter / SLC </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00791">791</a> 行定义.</p>
+
+</div>
+</div>
+<a id="abec0948d64bd749c68b2845f87fe3e68" name="abec0948d64bd749c68b2845f87fe3e68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec0948d64bd749c68b2845f87fe3e68">&#9670;&#160;</a></span>CMN600_PPU_PWPR_OPMODE_SFONLY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_OPMODE_SFONLY&#160;&#160;&#160;UINT64_C(0x0000000000000010)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 操作模式：仅 Snoop Filter </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00795">795</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8ee2db040ff931c62e64282d31e0bd1f" name="a8ee2db040ff931c62e64282d31e0bd1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ee2db040ff931c62e64282d31e0bd1f">&#9670;&#160;</a></span>CMN600_PPU_PWPR_POLICY_FUNC_RET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_POLICY_FUNC_RET&#160;&#160;&#160;UINT64_C(0x000000000000007)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 电源策略：功能保持（FUNC_RET） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00783">783</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a42b1c155824e4c1770017e527cc763e5" name="a42b1c155824e4c1770017e527cc763e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42b1c155824e4c1770017e527cc763e5">&#9670;&#160;</a></span>CMN600_PPU_PWPR_POLICY_MEM_RET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_POLICY_MEM_RET&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 电源策略：内存保持（MEM_RET） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00779">779</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae7f9f9ca396524289d2ab7521027b1bb" name="ae7f9f9ca396524289d2ab7521027b1bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7f9f9ca396524289d2ab7521027b1bb">&#9670;&#160;</a></span>CMN600_PPU_PWPR_POLICY_OFF</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_POLICY_OFF&#160;&#160;&#160;UINT64_C(0x0000000000000000)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 电源策略：关闭（OFF） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00775">775</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a15256abe394a9932f7d75f9b2d8e7574" name="a15256abe394a9932f7d75f9b2d8e7574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15256abe394a9932f7d75f9b2d8e7574">&#9670;&#160;</a></span>CMN600_PPU_PWPR_POLICY_ON</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_PPU_PWPR_POLICY_ON&#160;&#160;&#160;UINT64_C(0x0000000000000008)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PPU 电源策略：开启（ON） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00787">787</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a270d3bf5d3de6b9ec97830a1256dd3c2" name="a270d3bf5d3de6b9ec97830a1256dd3c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a270d3bf5d3de6b9ec97830a1256dd3c2">&#9670;&#160;</a></span>CMN600_RND_CFG_CTL_PCIE_MSTR_PRESENT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RND_CFG_CTL_PCIE_MSTR_PRESENT&#160;&#160;&#160;UINT64_C(0x0000000000000020)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-D 配置控制寄存器中 PCIe 主设备存在标志的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00728">728</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad659ee7058442cfe275cf3154a9a16a9" name="ad659ee7058442cfe275cf3154a9a16a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad659ee7058442cfe275cf3154a9a16a9">&#9670;&#160;</a></span>CMN600_RNSAM_MAX_HASH_MEM_REGION_ENTRIES</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_MAX_HASH_MEM_REGION_ENTRIES&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>哈希内存区域的最大条目数 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00676">676</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a24507cc712627f12e5f0a03969c3adbb" name="a24507cc712627f12e5f0a03969c3adbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24507cc712627f12e5f0a03969c3adbb">&#9670;&#160;</a></span>CMN600_RNSAM_MAX_NON_HASH_MEM_REGION_ENTRIES</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_MAX_NON_HASH_MEM_REGION_ENTRIES</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">nr_reg</td><td>)</td>
+          <td>&#160;&#160;&#160;    ((nr_reg)*<a class="el" href="cmn600_8h.html#af9116a4646930c318ef31129c8701cef">CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRIES_PER_GROUP</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>计算非哈希内存区域的最大条目数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nr_reg</td><td>NON_HASH_TGT_NODEID 寄存器数量 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00750">750</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af9116a4646930c318ef31129c8701cef" name="af9116a4646930c318ef31129c8701cef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9116a4646930c318ef31129c8701cef">&#9670;&#160;</a></span>CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRIES_PER_GROUP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRIES_PER_GROUP&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>每个目标节点 ID 寄存器组中的条目数（4 个） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00742">742</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa90b58e08a040fe680f305cf09705e80" name="aa90b58e08a040fe680f305cf09705e80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa90b58e08a040fe680f305cf09705e80">&#9670;&#160;</a></span>CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRY_BITS_WIDTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRY_BITS_WIDTH&#160;&#160;&#160;12</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>非哈希目标节点 ID 条目的位宽（12 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00734">734</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a921af02ad6927f557ce3215cb7115e3c" name="a921af02ad6927f557ce3215cb7115e3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a921af02ad6927f557ce3215cb7115e3c">&#9670;&#160;</a></span>CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRY_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_NON_HASH_TGT_NODEID_ENTRY_MASK&#160;&#160;&#160;UINT64_C(0xFFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>非哈希目标节点 ID 条目的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00738">738</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac8fc52ede2f41c7a2f5b1ffa9f9896cc" name="ac8fc52ede2f41c7a2f5b1ffa9f9896cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8fc52ede2f41c7a2f5b1ffa9f9896cc">&#9670;&#160;</a></span>CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_2&#160;&#160;&#160;2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>r1p0、r1p1、r1p3 版本的 CMN-600 有 2 个 NON_HASH_TGT_NODEID 寄存器 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00757">757</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad1064191019555dc945caf73c11939d9" name="ad1064191019555dc945caf73c11939d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1064191019555dc945caf73c11939d9">&#9670;&#160;</a></span>CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_3</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_3&#160;&#160;&#160;3</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>r1p2、r2p0 版本的 CMN-600 有 3 个 NON_HASH_TGT_NODEID 寄存器 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00763">763</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa3486179e66557a65a2816e8529e59ac" name="aa3486179e66557a65a2816e8529e59ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3486179e66557a65a2816e8529e59ac">&#9670;&#160;</a></span>CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_5</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_NON_HASH_TGT_NODEID_REGS_5&#160;&#160;&#160;5</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>r3p0 及以上版本的 CMN-600 有 5 个 NON_HASH_TGT_NODEID 寄存器 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00769">769</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad6958ee1d40b7dd12bd4c7eb2f069e2d" name="ad6958ee1d40b7dd12bd4c7eb2f069e2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6958ee1d40b7dd12bd4c7eb2f069e2d">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRIES_PER_GROUP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRIES_PER_GROUP&#160;&#160;&#160;2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>每个 64 位寄存器组中可容纳的区域条目数（2 个） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00672">672</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a134adad9b0072c8668efc312aa14075a" name="a134adad9b0072c8668efc312aa14075a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a134adad9b0072c8668efc312aa14075a">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_BASE_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_BASE_POS&#160;&#160;&#160;9</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 区域条目中基地址字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00656">656</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a1e74af60185e5f5dbe1cf8cfe928173f" name="a1e74af60185e5f5dbe1cf8cfe928173f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e74af60185e5f5dbe1cf8cfe928173f">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_BITS_WIDTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_BITS_WIDTH&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>每个 RN-SAM 区域条目的位宽（32 位） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00660">660</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af54f3b8ab0f25308909be55da2696b59" name="af54f3b8ab0f25308909be55da2696b59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af54f3b8ab0f25308909be55da2696b59">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_EN_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_EN_POS&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 区域条目中使能位的位移（部分区域类型不支持） </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00644">644</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a72cebd1fff8f6973924ea8c2139362a4" name="a72cebd1fff8f6973924ea8c2139362a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72cebd1fff8f6973924ea8c2139362a4">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_MASK&#160;&#160;&#160;UINT64_C(0xFFFFFFFF)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>单个 RN-SAM 区域条目的完整掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00668">668</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac46f05a997fb1f7fd64eafcc0dc2d93d" name="ac46f05a997fb1f7fd64eafcc0dc2d93d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac46f05a997fb1f7fd64eafcc0dc2d93d">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_SIZE_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_SIZE_POS&#160;&#160;&#160;4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 区域条目中大小编码字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00652">652</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a038701b11e47fa8a135b3c8901f42302" name="a038701b11e47fa8a135b3c8901f42302"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a038701b11e47fa8a135b3c8901f42302">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_TYPE_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_TYPE_POS&#160;&#160;&#160;2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 区域条目中目标节点类型字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00648">648</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a710cdb1bb1e66b494a24c08c01272c76" name="a710cdb1bb1e66b494a24c08c01272c76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a710cdb1bb1e66b494a24c08c01272c76">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_VALID</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_VALID&#160;&#160;&#160;UINT64_C(0x0000000000000001)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 区域条目有效位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00664">664</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac8ab07e236fcf63bdbf794660280f3fd" name="ac8ab07e236fcf63bdbf794660280f3fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8ab07e236fcf63bdbf794660280f3fd">&#9670;&#160;</a></span>CMN600_RNSAM_REGION_ENTRY_VALID_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_REGION_ENTRY_VALID_POS&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 区域条目中有效位的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00640">640</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2391ad16f9b72dc1c7a3ad79a2dabcb2" name="a2391ad16f9b72dc1c7a3ad79a2dabcb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2391ad16f9b72dc1c7a3ad79a2dabcb2">&#9670;&#160;</a></span>CMN600_RNSAM_SCG_HNF_CAL_MODE_EN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_SCG_HNF_CAL_MODE_EN&#160;&#160;&#160;UINT64_C(0x01)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统缓存分组 CAL 模式使能位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00680">680</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a01488d991b2123394200d20ee017d37c" name="a01488d991b2123394200d20ee017d37c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01488d991b2123394200d20ee017d37c">&#9670;&#160;</a></span>CMN600_RNSAM_SCG_HNF_CAL_MODE_SHIFT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_SCG_HNF_CAL_MODE_SHIFT&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统缓存分组 CAL 模式使能位的位移基数 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00684">684</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad91162c866adf48448d60537d6efe628" name="ad91162c866adf48448d60537d6efe628"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad91162c866adf48448d60537d6efe628">&#9670;&#160;</a></span>CMN600_RNSAM_STATUS_UNSTALL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_RNSAM_STATUS_UNSTALL&#160;&#160;&#160;UINT64_C(0x0000000000000002)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>RN-SAM 状态寄存器中 UNSTALL（取消停顿/使能）位的掩码 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00688">688</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac47e4b7c0002c79cfa4421de92808b5e" name="ac47e4b7c0002c79cfa4421de92808b5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac47e4b7c0002c79cfa4421de92808b5e">&#9670;&#160;</a></span>CMN600_ROOT_NODE_OFFSET_PORT_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_ROOT_NODE_OFFSET_PORT_POS&#160;&#160;&#160;14</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根节点偏移中端口号字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00837">837</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a510f25267f88141d9600afee75c5af48" name="a510f25267f88141d9600afee75c5af48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a510f25267f88141d9600afee75c5af48">&#9670;&#160;</a></span>CMN600_ROOT_NODE_OFFSET_Y_POS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CMN600_ROOT_NODE_OFFSET_Y_POS&#160;&#160;&#160;20</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根节点偏移中 Y 坐标字段的位移 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00841">841</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6673210144583a977c80ac8f4a42fd00" name="a6673210144583a977c80ac8f4a42fd00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6673210144583a977c80ac8f4a42fd00">&#9670;&#160;</a></span>SAM_GRANULARITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SAM_GRANULARITY&#160;&#160;&#160;(64 * FWK_MIB)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SAM（系统地址映射）粒度，64MB </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00043">43</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">枚举类型说明</h2>
+<a id="af2b559cc2ee2eaee47fe1f15cc99f49e" name="af2b559cc2ee2eaee47fe1f15cc99f49e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2b559cc2ee2eaee47fe1f15cc99f49e">&#9670;&#160;</a></span>device_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600_8h.html#af2b559cc2ee2eaee47fe1f15cc99f49e">device_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CCIX CML 设备类型枚举 </p>
+<p>定义交叉点 (XP) 端口连接信息中的设备类型编码， 用于识别外部 CCIX 节点。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="af2b559cc2ee2eaee47fe1f15cc99f49eadf0914fdbd9b51bb0401f9e5967784ea" name="af2b559cc2ee2eaee47fe1f15cc99f49eadf0914fdbd9b51bb0401f9e5967784ea"></a>DEVICE_TYPE_CXHA&#160;</td><td class="fielddoc"><p>CCIX Gateway Home Agent 设备 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="af2b559cc2ee2eaee47fe1f15cc99f49ea0040eb920e224dbbfcce66f1c55de921" name="af2b559cc2ee2eaee47fe1f15cc99f49ea0040eb920e224dbbfcce66f1c55de921"></a>DEVICE_TYPE_CXRA&#160;</td><td class="fielddoc"><p>CCIX Gateway 请求代理设备 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="af2b559cc2ee2eaee47fe1f15cc99f49ea67d287addd3b1bf2ff25a7e1de3132b1" name="af2b559cc2ee2eaee47fe1f15cc99f49ea67d287addd3b1bf2ff25a7e1de3132b1"></a>DEVICE_TYPE_CXRH&#160;</td><td class="fielddoc"><p>CCIX Gateway Root Home 设备 </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00087">87</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a24b468de285ac8edec6090b731593674" name="a24b468de285ac8edec6090b731593674"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24b468de285ac8edec6090b731593674">&#9670;&#160;</a></span>node_id_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600_8h.html#a24b468de285ac8edec6090b731593674">node_id_size</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>节点 ID 宽度枚举 </p>
+<p>定义节点标识符的位宽，取决于 mesh 尺寸。 mesh 尺寸不超过 4 时使用 7 位，超过 4 时使用 9 位。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a24b468de285ac8edec6090b731593674abe3833058f3d55d2355cfd09ce790c0a" name="a24b468de285ac8edec6090b731593674abe3833058f3d55d2355cfd09ce790c0a"></a>NODE_ID_SIZE_7BITS&#160;</td><td class="fielddoc"><p>7 位节点 ID（mesh 尺寸 &lt;= 4） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a24b468de285ac8edec6090b731593674a686cb420e4b43eb85c04f406acd60307" name="a24b468de285ac8edec6090b731593674a686cb420e4b43eb85c04f406acd60307"></a>NODE_ID_SIZE_9BITS&#160;</td><td class="fielddoc"><p>9 位节点 ID（mesh 尺寸 &gt; 4） </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00051">51</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6a276b85e2da28c5f9c3dbce61c55682" name="a6a276b85e2da28c5f9c3dbce61c55682"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a276b85e2da28c5f9c3dbce61c55682">&#9670;&#160;</a></span>node_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CMN-600 节点类型枚举 </p>
+<p>定义 CMN-600 互连中所有可能的节点类型， 通过 NODE_INFO 寄存器的低 16 位读取。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a55395370fcd419b23b92525f565467be" name="a6a276b85e2da28c5f9c3dbce61c55682a55395370fcd419b23b92525f565467be"></a>NODE_TYPE_INVALID&#160;</td><td class="fielddoc"><p>无效节点 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a787309a59e315d084ad3a88e23bc44b1" name="a6a276b85e2da28c5f9c3dbce61c55682a787309a59e315d084ad3a88e23bc44b1"></a>NODE_TYPE_DVM&#160;</td><td class="fielddoc"><p>DVM（分布式虚拟内存）节点 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682aec6125b696164f5470452ccd834155de" name="a6a276b85e2da28c5f9c3dbce61c55682aec6125b696164f5470452ccd834155de"></a>NODE_TYPE_CFG&#160;</td><td class="fielddoc"><p>CFG（配置管理器）节点 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a10e0cb0d07128014e9bf98dfc417027a" name="a6a276b85e2da28c5f9c3dbce61c55682a10e0cb0d07128014e9bf98dfc417027a"></a>NODE_TYPE_DTC&#160;</td><td class="fielddoc"><p>DTC（调试和跟踪控制器）节点 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682ac78749695e399ca800b8dbe853012aa5" name="a6a276b85e2da28c5f9c3dbce61c55682ac78749695e399ca800b8dbe853012aa5"></a>NODE_TYPE_HN_I&#160;</td><td class="fielddoc"><p>HN-I（I/O 主节点） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a9416fc1992b557591f98da9c7d2586ec" name="a6a276b85e2da28c5f9c3dbce61c55682a9416fc1992b557591f98da9c7d2586ec"></a>NODE_TYPE_HN_F&#160;</td><td class="fielddoc"><p>HN-F（全一致性主节点/系统缓存） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a0dd7d7232a586b0a16223a91f5e745c2" name="a6a276b85e2da28c5f9c3dbce61c55682a0dd7d7232a586b0a16223a91f5e745c2"></a>NODE_TYPE_XP&#160;</td><td class="fielddoc"><p>XP（交叉点）节点 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a7c37e83d89221f41ff09410f53c9c259" name="a6a276b85e2da28c5f9c3dbce61c55682a7c37e83d89221f41ff09410f53c9c259"></a>NODE_TYPE_SBSX&#160;</td><td class="fielddoc"><p>SBSX（AMBA 5 CHI 到 AXI 桥接） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682ae1d246677b1c31affb98b24e755fe212" name="a6a276b85e2da28c5f9c3dbce61c55682ae1d246677b1c31affb98b24e755fe212"></a>NODE_TYPE_RN_I&#160;</td><td class="fielddoc"><p>RN-I（I/O 请求节点） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a49c42f0da9e65656456b0dd892d21eb3" name="a6a276b85e2da28c5f9c3dbce61c55682a49c42f0da9e65656456b0dd892d21eb3"></a>NODE_TYPE_RN_D&#160;</td><td class="fielddoc"><p>RN-D（设备请求节点） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a0b62e06288891f9838ac1d8301062f24" name="a6a276b85e2da28c5f9c3dbce61c55682a0b62e06288891f9838ac1d8301062f24"></a>NODE_TYPE_RN_SAM&#160;</td><td class="fielddoc"><p>RN-SAM（请求节点系统地址映射） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682ac26797ef17551113aad387bdf2c1b6ed" name="a6a276b85e2da28c5f9c3dbce61c55682ac26797ef17551113aad387bdf2c1b6ed"></a>NODE_TYPE_CML_BASE&#160;</td><td class="fielddoc"><p>CML 节点类型基址 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a54b0ba92d151bd2b5c2dceccbee783d7" name="a6a276b85e2da28c5f9c3dbce61c55682a54b0ba92d151bd2b5c2dceccbee783d7"></a>NODE_TYPE_CXRA&#160;</td><td class="fielddoc"><p>CXRA（CCIX Gateway 请求代理） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682a6e955d544ffbd8f78fa70968300fc313" name="a6a276b85e2da28c5f9c3dbce61c55682a6e955d544ffbd8f78fa70968300fc313"></a>NODE_TYPE_CXHA&#160;</td><td class="fielddoc"><p>CXHA（CCIX Gateway Home Agent） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6a276b85e2da28c5f9c3dbce61c55682abcb5bc529f9a6ff76f45eb9b9c8f4350" name="a6a276b85e2da28c5f9c3dbce61c55682abcb5bc529f9a6ff76f45eb9b9c8f4350"></a>NODE_TYPE_CXLA&#160;</td><td class="fielddoc"><p>CXLA（CCIX Gateway 链路代理） </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00062">62</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad8957929b2f7ed4ca7478b967d2c29b7" name="ad8957929b2f7ed4ca7478b967d2c29b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8957929b2f7ed4ca7478b967d2c29b7">&#9670;&#160;</a></span>peripheral_id_revision</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600_8h.html#ad8957929b2f7ed4ca7478b967d2c29b7">peripheral_id_revision</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>外设 ID 修订版本枚举 </p>
+<p>定义 CMN-600 的硬件修订版本号， 通过 PERIPH_ID 寄存器读取。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7a2c74f4a47a8343adc88c3420da478b92" name="ad8957929b2f7ed4ca7478b967d2c29b7a2c74f4a47a8343adc88c3420da478b92"></a>CMN600_PERIPH_ID_2_REV_R1_P0&#160;</td><td class="fielddoc"><p>修订版本 r1p0 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7aa291822bab6f5d1b277acd5388e3ad9d" name="ad8957929b2f7ed4ca7478b967d2c29b7aa291822bab6f5d1b277acd5388e3ad9d"></a>CMN600_PERIPH_ID_2_REV_R1_P1&#160;</td><td class="fielddoc"><p>修订版本 r1p1 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7a021fdf183b39d74a39e0890be384d1af" name="ad8957929b2f7ed4ca7478b967d2c29b7a021fdf183b39d74a39e0890be384d1af"></a>CMN600_PERIPH_ID_2_REV_R1_P2&#160;</td><td class="fielddoc"><p>修订版本 r1p2 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7a1e330881d07be2ade8bf81179e0c9071" name="ad8957929b2f7ed4ca7478b967d2c29b7a1e330881d07be2ade8bf81179e0c9071"></a>CMN600_PERIPH_ID_2_REV_R1_P3&#160;</td><td class="fielddoc"><p>修订版本 r1p3 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7abbf00908dbd66a75e678866742e04d56" name="ad8957929b2f7ed4ca7478b967d2c29b7abbf00908dbd66a75e678866742e04d56"></a>CMN600_PERIPH_ID_2_REV_R2_P0&#160;</td><td class="fielddoc"><p>修订版本 r2p0 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7a12693313f29a83d0fa1aa530d4648164" name="ad8957929b2f7ed4ca7478b967d2c29b7a12693313f29a83d0fa1aa530d4648164"></a>CMN600_PERIPH_ID_2_REV_R3_P0&#160;</td><td class="fielddoc"><p>修订版本 r3p0 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7aaa7ef14b2a0e898db263649847bfcf72" name="ad8957929b2f7ed4ca7478b967d2c29b7aaa7ef14b2a0e898db263649847bfcf72"></a>CMN600_PERIPH_ID_2_REV_R3_P1&#160;</td><td class="fielddoc"><p>修订版本 r3p1 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7a699ab51002f2b87549a8b558ad40f596" name="ad8957929b2f7ed4ca7478b967d2c29b7a699ab51002f2b87549a8b558ad40f596"></a>CMN600_PERIPH_ID_2_REV_R3_P2&#160;</td><td class="fielddoc"><p>修订版本 r3p2 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad8957929b2f7ed4ca7478b967d2c29b7ace62eb9fe20ed43889a333fd11443436" name="ad8957929b2f7ed4ca7478b967d2c29b7ace62eb9fe20ed43889a333fd11443436"></a>CMN600_PERIPH_ID_UNKNOWN_REV&#160;</td><td class="fielddoc"><p>未知修订版本 </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00849">849</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8515ee51f7fa920ba641672f37ec9c19" name="a8515ee51f7fa920ba641672f37ec9c19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8515ee51f7fa920ba641672f37ec9c19">&#9670;&#160;</a></span>sam_node_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19">sam_node_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SAM 目标节点类型枚举 </p>
+<p>定义 RN-SAM 地址映射中的目标节点类型， 决定请求被路由到哪类主节点。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a8515ee51f7fa920ba641672f37ec9c19a62b6e1c06c18251e7abb3fee1c204c83" name="a8515ee51f7fa920ba641672f37ec9c19a62b6e1c06c18251e7abb3fee1c204c83"></a>SAM_NODE_TYPE_HN_F&#160;</td><td class="fielddoc"><p>目标为 HN-F（全一致性主节点/系统缓存） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8515ee51f7fa920ba641672f37ec9c19a7800bf3a4db7cdb2b1226757e49f1dcc" name="a8515ee51f7fa920ba641672f37ec9c19a7800bf3a4db7cdb2b1226757e49f1dcc"></a>SAM_NODE_TYPE_HN_I&#160;</td><td class="fielddoc"><p>目标为 HN-I（I/O 主节点） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8515ee51f7fa920ba641672f37ec9c19a616f4e238a4f6a28d8aa0c195710d6cc" name="a8515ee51f7fa920ba641672f37ec9c19a616f4e238a4f6a28d8aa0c195710d6cc"></a>SAM_NODE_TYPE_CXRA&#160;</td><td class="fielddoc"><p>目标为 CXRA（CCIX Gateway 请求代理） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8515ee51f7fa920ba641672f37ec9c19acb9261e7ca4f354113978a7e520241a0" name="a8515ee51f7fa920ba641672f37ec9c19acb9261e7ca4f354113978a7e520241a0"></a>SAM_NODE_TYPE_COUNT&#160;</td><td class="fielddoc"><p>SAM 节点类型总数 </p>
+</td></tr>
+</table>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8h_source.html">cmn600.h</a> 第 <a class="el" href="cmn600_8h_source.html#l00123">123</a> 行定义.</p>
+
+</div>
+</div>
+<h2 class="groupheader">函数说明</h2>
+<a id="a71449bb071080b3ad2397e417287826c" name="a71449bb071080b3ad2397e417287826c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71449bb071080b3ad2397e417287826c">&#9670;&#160;</a></span>configure_region()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void configure_region </td>
+          <td>(</td>
+          <td class="paramtype">volatile uint64_t *&#160;</td>
+          <td class="paramname"><em>reg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>bit_offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">enum <a class="el" href="cmn600_8h.html#a8515ee51f7fa920ba641672f37ec9c19">sam_node_type</a>&#160;</td>
+          <td class="paramname"><em>node_type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>配置一个内存区域条目 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">reg</td><td>待配置的区域组描述符寄存器指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>必须为有效指针 </dd></dl>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">bit_offset</td><td>内存区域在组描述符中的位偏移 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">base</td><td>区域基地址 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">size</td><td>区域大小 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_type</td><td>目标节点类型</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>将有效位、目标节点类型、大小编码和基地址编码 写入 RN-SAM 区域描述符寄存器的指定位偏移位置。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00215">215</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae9eda14c74ddd16a5c2c73090def70de" name="ae9eda14c74ddd16a5c2c73090def70de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9eda14c74ddd16a5c2c73090def70de">&#9670;&#160;</a></span>get_child_node()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * get_child_node </td>
+          <td>(</td>
+          <td class="paramtype">uintptr_t&#160;</td>
+          <td class="paramname"><em>base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>child_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据父节点和子节点索引获取子节点指针 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">base</td><td>CMN-600 外设基地址 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向父节点描述符的指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">child_index</td><td>子节点索引 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针和子节点索引必须有效</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>指向子节点描述符的指针 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00081">81</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a456130bb3afbdb65168886ae4e1238d1" name="a456130bb3afbdb65168886ae4e1238d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a456130bb3afbdb65168886ae4e1238d1">&#9670;&#160;</a></span>get_child_node_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_child_node_id </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>child_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>通过父节点的子节点指针获取子节点的物理标识符 </p>
+<p>此函数无需访问子节点描述符即可获取节点 ID， 特别适用于位于不可用电源/时钟域中的外部节点。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向父节点描述符的指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">child_index</td><td>子节点索引 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针和子节点索引必须有效</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>子节点的物理标识符</dd></dl>
+<p>从子节点指针中提取节点 ID，将内部编码转换为标准的 节点 ID 格式（Y坐标|X坐标|端口号）。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00101">101</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a870cbaad75fff8a5be5531eb3d7f3a3e" name="a870cbaad75fff8a5be5531eb3d7f3a3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a870cbaad75fff8a5be5531eb3d7f3a3e">&#9670;&#160;</a></span>get_cmn600_revision()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_cmn600_revision </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取 CMN-600 的修订版本号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">root</td><td>指向 CMN-600 配置管理器寄存器的指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>CMN-600 修订版本号，参见 enum peripheral_id_revision </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00123">123</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a746f0bf4eae94d042139c8f539f00fb1" name="a746f0bf4eae94d042139c8f539f00fb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a746f0bf4eae94d042139c8f539f00fb1">&#9670;&#160;</a></span>get_cmn600_revision_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * get_cmn600_revision_name </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取 CMN-600 的修订版本名称字符串 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">root</td><td>指向 CMN-600 配置管理器寄存器基地址的指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>指向修订版本名称字符串的指针（如 "r1p0"、"r2p0" 等） </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00133">133</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8d005a132d95791fc47bc9596776cd1f" name="a8d005a132d95791fc47bc9596776cd1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d005a132d95791fc47bc9596776cd1f">&#9670;&#160;</a></span>get_device_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_device_type </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>mxp_base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>port</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从 XP 端口连接信息寄存器获取设备类型 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">mxp_base</td><td>指向交叉点节点描述符的指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>交叉点节点指针必须有效 </dd></dl>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">port</td><td>端口号（0 或 1） </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>端口号必须为 0 或 1</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>设备类型（PORT_CONNECT_INFO[port] &amp; 0x1F） </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00180">180</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac036e4559f51086bdd951792aa6ba619" name="ac036e4559f51086bdd951792aa6ba619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac036e4559f51086bdd951792aa6ba619">&#9670;&#160;</a></span>get_node_child_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_node_child_count </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取指定节点的子节点数量 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向节点描述符的指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针必须有效</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>子节点数量 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00044">44</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7056eaecbbf48091d3f5db6d844194dd" name="a7056eaecbbf48091d3f5db6d844194dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7056eaecbbf48091d3f5db6d844194dd">&#9670;&#160;</a></span>get_node_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_node_id </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从硬件节点描述符中获取节点的物理标识符 </p>
+<p>物理标识符编码了节点在 mesh 中的位置。 </p><dl class="section note"><dt>注解</dt><dd>同一 mesh 位置上的多个节点描述符可能共享相同的物理标识符。</dd></dl>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向节点描述符的指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针必须有效</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>节点的物理标识符</dd></dl>
+<p>从硬件节点描述符中获取节点的物理标识符 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00062">62</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a538611c26aa88c42ecf265c950fbe116" name="a538611c26aa88c42ecf265c950fbe116"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a538611c26aa88c42ecf265c950fbe116">&#9670;&#160;</a></span>get_node_logical_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_node_logical_id </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从硬件节点描述符中获取节点的逻辑标识符 </p>
+<p>逻辑标识符是同类型节点中的唯一索引。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向节点基地址的指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针必须有效</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>节点的逻辑标识符</dd></dl>
+<p>从硬件节点描述符中获取节点的逻辑标识符 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00071">71</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6862ce7cce0a25c6fc7eaebe6e246dc6" name="a6862ce7cce0a25c6fc7eaebe6e246dc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6862ce7cce0a25c6fc7eaebe6e246dc6">&#9670;&#160;</a></span>get_node_pos_x()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_node_pos_x </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取节点在 mesh 中沿 X 轴的位置 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向节点描述符的指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>从零开始的 X 轴位置索引</dd></dl>
+<p>从节点 ID 的高位字段中提取 X 坐标。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00282">282</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a762d778d31f551a6a9b88bd3df2fced3" name="a762d778d31f551a6a9b88bd3df2fced3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a762d778d31f551a6a9b88bd3df2fced3">&#9670;&#160;</a></span>get_node_pos_y()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int get_node_pos_y </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取节点在 mesh 中沿 Y 轴的位置 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向节点描述符的指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>从零开始的 Y 轴位置索引</dd></dl>
+<p>从节点 ID 的中间字段中提取 Y 坐标。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00294">294</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a17aaf7ca89307dd25ebe981a0f08ceaf" name="a17aaf7ca89307dd25ebe981a0f08ceaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17aaf7ca89307dd25ebe981a0f08ceaf">&#9670;&#160;</a></span>get_node_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a> get_node_type </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取节点类型标识符 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向节点描述符的指针 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针必须有效</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>节点类型标识符，参见 enum node_type </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00053">53</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6fba5955aa6ea33e4c659872bf0a8575" name="a6fba5955aa6ea33e4c659872bf0a8575"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fba5955aa6ea33e4c659872bf0a8575">&#9670;&#160;</a></span>get_node_type_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * get_node_type_name </td>
+          <td>(</td>
+          <td class="paramtype">enum <a class="el" href="cmn600_8h.html#a6a276b85e2da28c5f9c3dbce61c55682">node_type</a>&#160;</td>
+          <td class="paramname"><em>node_type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取节点类型名称字符串 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_type</td><td>节点类型</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>指向节点类型名称字符串的指针 </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00262">262</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a501f5d9c6bda74d8d79a47cbba4e6962" name="a501f5d9c6bda74d8d79a47cbba4e6962"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a501f5d9c6bda74d8d79a47cbba4e6962">&#9670;&#160;</a></span>get_port_number()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool get_port_number </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>child_node_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从子节点 ID 中获取端口号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">child_node_id</td><td>由子节点指针计算得到的子节点 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>端口号（0 或 1） </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00171">171</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad6caa6f4b5c842e4cf8723c7d80795d0" name="ad6caa6f4b5c842e4cf8723c7d80795d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6caa6f4b5c842e4cf8723c7d80795d0">&#9670;&#160;</a></span>get_root_node()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> * get_root_node </td>
+          <td>(</td>
+          <td class="paramtype">uintptr_t&#160;</td>
+          <td class="paramname"><em>base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>hnd_node_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>mesh_size_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>mesh_size_y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据外设基地址、HN-D 节点 ID 和 mesh 尺寸获取根节点描述符 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">base</td><td>CMN-600 外设基地址 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hnd_node_id</td><td>包含全局配置的 HN-D 节点标识符 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mesh_size_x</td><td>mesh X 轴尺寸 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mesh_size_y</td><td>mesh Y 轴尺寸</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>指向根节点（Configuration Manager）描述符的指针</dd></dl>
+<p>根据 mesh 尺寸确定坐标编码位数，从 HN-D 节点 ID 中 提取坐标信息，计算根节点（Configuration Manager）的地址偏移。 该函数同时设置全局变量 encoding_bits 和 mask_bits， 供 <a class="el" href="cmn600_8c.html#a6862ce7cce0a25c6fc7eaebe6e246dc6" title="获取节点在 mesh 中沿 X 轴的位置">get_node_pos_x()</a> 和 <a class="el" href="cmn600_8c.html#a762d778d31f551a6a9b88bd3df2fced3" title="获取节点在 mesh 中沿 Y 轴的位置">get_node_pos_y()</a> 使用。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00308">308</a> 行定义.</p>
+
+</div>
+</div>
+<a id="abc4566e5ee2f7d9eccba03d2501cde07" name="abc4566e5ee2f7d9eccba03d2501cde07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc4566e5ee2f7d9eccba03d2501cde07">&#9670;&#160;</a></span>is_cal_mode_supported()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_cal_mode_supported </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structcmn600__cfgm__reg.html">cmn600_cfgm_reg</a> *&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>检查 CMN-600 是否支持 CAL 模式 </p>
+<p>CAL 模式从 CMN-600 r2p0 版本开始支持。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">root</td><td>指向根节点描述符的指针</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>返回值</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td>CMN-600 版本为 r2p0 或以上，支持 CAL 模式 </td></tr>
+    <tr><td class="paramname">false</td><td>CMN-600 版本为 r1p3 或以下，不支持 CAL 模式</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>CAL 模式从 r2p0 版本开始支持。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00151">151</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac093b75a00f5cecb92a1b85e25495cfb" name="ac093b75a00f5cecb92a1b85e25495cfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac093b75a00f5cecb92a1b85e25495cfb">&#9670;&#160;</a></span>is_child_external()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_child_external </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>node_base</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>child_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>判断子节点是否为外部节点 </p>
+<p>从当前 CMN-600 实例的角度判断指定子节点是否为外部节点。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">node_base</td><td>指向父节点描述符的指针 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">child_index</td><td>子节点索引 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>节点指针和子节点索引必须有效</dd></dl>
+<dl class="retval"><dt>返回值</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">true</td><td>子节点为外部节点 </td></tr>
+    <tr><td class="paramname">false</td><td>子节点为内部节点</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>通过检查子节点指针的 bit 31（外部标志位）判断。 </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00162">162</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aab7a13ed2e6214e0a57d92c1c7b82662" name="aab7a13ed2e6214e0a57d92c1c7b82662"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab7a13ed2e6214e0a57d92c1c7b82662">&#9670;&#160;</a></span>sam_encode_region_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t sam_encode_region_size </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将内存区域大小转换为 CMN-600 寄存器使用的大小编码 </p>
+<p>编码格式为内存区域大小相对于 SAM_GRANULARITY 的二进制对数： n = log2(size / SAM_GRANULARITY)</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">size</td><td>内存区域大小 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>前置条件</dt><dd>size 必须为 SAM_GRANULARITY 的倍数且为 2 的幂次</dd></dl>
+<dl class="section return"><dt>返回</dt><dd>log2(size / SAM_GRANULARITY)</dd></dl>
+<p>编码公式：n = log2(size / SAM_GRANULARITY) </p>
+
+<p class="definition">在文件 <a class="el" href="cmn600_8c_source.html">cmn600.c</a> 第 <a class="el" href="cmn600_8c_source.html#l00192">192</a> 行定义.</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_48f311512fb313e8ec1c32eaef206743.html">scp_firmware</a></li><li class="navelem"><a class="el" href="dir_fcc1255ba6bda919d85092c50000c4b5.html">module</a></li><li class="navelem"><a class="el" href="dir_a446bcb378e7d3b34199efec74fac8d3.html">cmn600</a></li><li class="navelem"><a class="el" href="dir_5cfcfa01f4a6472ad01ca99ac164ce3b.html">src</a></li><li class="navelem"><a class="el" href="cmn600_8h.html">cmn600.h</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,2410 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>TF-A v2.12 BL1 启动流程与关键功能分析 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tf-a-v212-bl1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TF-A v2.12 BL1 启动流程与关键功能分析
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../arm_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  arm技术文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../api_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API参考
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../quantumdocs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  项目文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../allure/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  测试报告
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arm技术文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../api_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quantumdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    项目文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../allure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-bl1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. BL1 概述
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. BL1 概述">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 角色定位
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 内存布局（map 文件验证）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 完整启动流程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 完整启动流程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 流程总览
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-1-bl1_entrypoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Phase 1: 汇编入口点详解 (bl1_entrypoint)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Phase 1: 汇编入口点详解 (bl1_entrypoint)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-el3_entrypoint_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 el3_entrypoint_common 宏展开
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.1 el3_entrypoint_common 宏展开">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#311-el3_arch_init_common" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.1 el3_arch_init_common — 架构寄存器初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-warm-boot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.2 Warm Boot 检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313-vbar_el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.3 VBAR_EL3 设置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#314-cpu-reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.4 CPU Reset 处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#315" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.5 冷启动路径：主/从核分发
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#316-_init_memory1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.6 内存初始化 (_init_memory=1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#317-c-_init_c_runtime1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1.7 C 运行时初始化 (_init_c_runtime=1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-phase-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Phase 1 函数调用总结
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-2-bl1_setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Phase 2: bl1_setup() — 早期平台初始化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Phase 2: bl1_setup() — 早期平台初始化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-bl1_early_platform_setup-qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 bl1_early_platform_setup() — QEMU 平台早期设置
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 bl1_early_platform_setup() — QEMU 平台早期设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qemu_console_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        qemu_console_init() 调用链
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-bl1_plat_arch_setup-mmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 bl1_plat_arch_setup() — MMU 配置
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 bl1_plat_arch_setup() — MMU 配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        页表配置内存映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enable_mmu_el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        enable_mmu_el3() 内部流程
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-phase-3-bl1_main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Phase 3: bl1_main() — 核心启动逻辑
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Phase 3: bl1_main() — 核心启动逻辑">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 步骤详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.1 步骤详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: 打印欢迎信息
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: 架构与安全初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: 平台 IO 初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-bl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: 加载 BL2 镜像
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-bl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: 准备跳转到 BL2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: 收尾
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-phase-4-el3_exit-bl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Phase 4: el3_exit — 跳转到 BL2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 关键功能点分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. 关键功能点分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 IO 存储子系统
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.1 IO 存储子系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IO 设备加载优先级
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        镜像定位策略表 (policies[])
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-cpu-errata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 CPU Errata 处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-mmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 MMU 与地址映射
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-el3-bl2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 上下文切换机制 (EL3 → BL2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-trusted-boot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 安全启动链 (Trusted Boot)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-smc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 SMC 中断处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 从核启动路径
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 关键数据结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 关键数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-image_desc_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 image_desc_t — 镜像描述符
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-plat_io_policy-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 plat_io_policy — IO 策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-cpu_context_t-cpu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 cpu_context_t — CPU 上下文
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-bl1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. BL1 启动时序图
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tf-a-v212-bl1">TF-A v2.12 BL1 启动流程与关键功能分析<a class="headerlink" href="#tf-a-v212-bl1" title="Permanent link">&para;</a></h1>
+<h2 id="1-bl1">1. BL1 概述<a class="headerlink" href="#1-bl1" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 角色定位<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p>BL1 (Boot Loader Stage 1) 是 TF-A 启动链的第一个阶段，运行在 <strong>EL3</strong>（最高特权级），负责：</p>
+<ol>
+<li>CPU/架构级早期初始化（MMU、缓存、异常向量）</li>
+<li>平台硬件初始化（控制台、IO 子系统）</li>
+<li>从存储介质加载 BL2 镜像（支持认证）</li>
+<li>准备执行上下文并跳转到 BL2</li>
+</ol>
+<div class="highlight"><pre><span></span><code>┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌──────────┐
+│  BL1    │────→│  BL2    │────→│  BL31   │────→│ BL32/33 │────→│  Kernel  │
+│ (EL3)   │     │ (EL3)   │     │ (EL3)   │     │(EL1/EL2)│     │ (EL1/2)  │
+│ ROM/RAM │     │ Trusted │     │ Runtime │     │ OS/fw   │     │          │
+└─────────┘     └─────────┘     └─────────┘     └─────────┘     └──────────┘
+   QEMU: ROM=0x0
+         RAM=0xE0EE000
+</code></pre></div>
+<h3 id="12-map">1.2 内存布局（map 文件验证）<a class="headerlink" href="#12-map" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>地址范围</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.text</td>
+<td><code>0x0000</code> - <code>0x4FFF</code></td>
+<td>20 KB</td>
+<td>代码段（含向量表）</td>
+</tr>
+<tr>
+<td>.rodata</td>
+<td><code>0x5000</code> - <code>0x69E7</code></td>
+<td>6.6 KB</td>
+<td>只读数据</td>
+</tr>
+<tr>
+<td>.data ROM 副本</td>
+<td><code>0x69F0</code> - <code>0x6AF4</code></td>
+<td>261 B</td>
+<td>运行时搬运到 RAM</td>
+</tr>
+<tr>
+<td>.data (RAM)</td>
+<td><code>0xE0EE000</code> - <code>0xE0EE104</code></td>
+<td>261 B</td>
+<td>初始化数据</td>
+</tr>
+<tr>
+<td>.stacks (RAM)</td>
+<td><code>0xE0EE140</code> - <code>0xE0EF13F</code></td>
+<td>4 KB</td>
+<td>运行时栈</td>
+</tr>
+<tr>
+<td>.bss (RAM)</td>
+<td><code>0xE0EF140</code> - <code>0xE0EF9DF</code></td>
+<td>2.2 KB</td>
+<td>零初始化数据</td>
+</tr>
+<tr>
+<td>.xlat_table (RAM)</td>
+<td><code>0xE0F0000</code> - <code>0xE0F5FFF</code></td>
+<td>24 KB</td>
+<td>MMU 页表</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2">2. 完整启动流程<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h3 id="21">2.1 流程总览<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>CPU 复位 (Cold/Warm Reset)
+        │
+        ▼
+┌──────────────────────────────────────────────────────────┐
+│  Phase 1: el3_entrypoint_common (汇编宏)                   │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  1. el3_arch_init_common                          │   │
+│  │     ├─ 初始化 SCTLR_EL3 (M=0,I=0,C=0,A=0...)   │   │
+│  │     ├─ 初始化 SCR_EL3 (NS=1,RW=0,EA=1)           │   │
+│  │     ├─ 初始化 MDCR_EL3, CPTR_EL3                 │   │
+│  │     └─ 调用 init_cpu_data_ptr (仅 BL31)          │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  2. Warm Boot 检查 (mailbox 机制)                  │   │
+│  │     └─ 非可编程复位地址时启用                      │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  3. PIE Fixup (本次: pie_fixup_size=0, 跳过)      │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  4. 设置 VBAR_EL3 = bl1_exceptions (0x4000)       │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  5. 调用 reset_handler (CPU ops reset_func)       │   │
+│  │     └─ CPU errata workaround 应用                  │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  6. 冷启动:                                       │   │
+│  │     ├─ plat_set_my_stack (设置 EL3 栈)             │   │
+│  │     ├─ plat_is_my_cpu_primary (判断主/从核)       │   │
+│  │     │   └─ 从核: plat_secondary_cold_boot_setup    │   │
+│  │     │          → 等待主核唤醒 (QEMU: 空函数)      │   │
+│  │     └─ 主核继续                                   │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  7. _init_memory=1:                               │   │
+│  │     ├─ zeromem .bss 段                             │   │
+│  │     ├─ 搬运 .data 段 (ROM→RAM)                    │   │
+│  │     └─ enable_mmu_direct_el3 (使能 EL3 MMU)       │   │
+│  ├──────────────────────────────────────────────────┤   │
+│  │  8. _init_c_runtime=1:                             │   │
+│  │     └─ 零初始化 .bss 段 (二次确认)                 │   │
+│  └──────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────┘
+        │ (主核，C 环境就绪，MMU 已使能)
+        ▼
+┌──────────────────────────────────────────────────────────┐
+│  Phase 2: bl1_setup() (C 函数)                           │
+│  ├─ plat_setup_early_console() (早期控制台，可选)        │
+│  ├─ bl1_early_platform_setup()                           │
+│  │   └─ qemu_console_init() → PL011 UART 初始化        │
+│  │   └─ bl1_tzram_layout 设置 Trusted RAM 范围          │
+│  └─ bl1_plat_arch_setup()                               │
+│      ├─ setup_page_tables() → 配置初始页表               │
+│      │   ├─ MAP_BL1_TOTAL: RAM 可读写 (EL3 PAS)        │
+│      │   ├─ MAP_BL1_RO: ROM 代码+只读数据 (EL3 PAS)    │
+│      │   └─ plat_qemu_get_mmap(): QEMU 平台设备映射      │
+│      └─ enable_mmu_el3(0) → 使能 MMU + 数据缓存          │
+└──────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌──────────────────────────────────────────────────────────┐
+│  Phase 3: bl1_main() (C 函数，仅主核冷启动)               │
+│  ├─ NOTICE: 打印欢迎信息和版本字符串                     │
+│  ├─ INFO: 打印 RAM 范围                                  │
+│  ├─ print_errata_status() → 打印 CPU 勘误状态            │
+│  ├─ assert: 检查 MMU/Cache 已使能                        │
+│  ├─ bl1_arch_setup() → 剩余架构初始化                    │
+│  ├─ crypto_mod_init() → 加密模块初始化 (TBBR=0 可能空)   │
+│  ├─ auth_mod_init() → 认证模块初始化                      │
+│  ├─ bl1_plat_mboot_init() → 测量启动初始化 (可选)         │
+│  ├─ bl1_platform_setup()                                 │
+│  │   └─ plat_qemu_io_setup() → IO 子系统初始化           │
+│  │       ├─ register_io_dev_fip() → 注册 FIP 设备        │
+│  │       ├─ register_io_dev_memmap() → 注册 Memmap 设备  │
+│  │       ├─ register_io_dev_sh() → 注册 Semihosting 设备│
+│  │       └─ 打开设备连接，缓存 handle                    │
+│  ├─ image_id = bl1_plat_get_next_image_id() → BL2_IMAGE_ID│
+│  ├─ bl1_load_bl2()                                       │
+│  │   ├─ bl1_plat_get_image_desc(BL2_IMAGE_ID)            │
+│  │   ├─ bl1_plat_handle_pre_image_load()                  │
+│  │   ├─ load_auth_image(BL2_IMAGE_ID, info)               │
+│  │   │   ├─ plat_get_image_source(BL2)                    │
+│  │   │   │   ├─ 尝试 FIP → UUID 定位 bl2.bin              │
+│  │   │   │   └─ 回退 Semihosting → 文件系统              │
+│  │   │   ├─ io_open / io_size / io_read                   │
+│  │   │   ├─ auth_mod_verify_img() (TBBR 启用时认证)      │
+│  │   │   ├─ flush_dcache_range()                          │
+│  │   │   └─ plat_mboot_measure_image() (测量启动)        │
+│  │   └─ bl1_plat_handle_post_image_load()                │
+│  ├─ bl1_plat_mboot_finish()                              │
+│  ├─ bl1_prepare_next_image(BL2_IMAGE_ID)                  │
+│  │   ├─ 设置 BL2 的 SPSR (Secure EL2, 异常禁用)         │
+│  │   ├─ bl1_plat_set_ep_info()                            │
+│  │   ├─ cm_init_my_context() → 初始化 CPU 上下文           │
+│  │   │   ├─ 设置 SCR_EL3 (NS=0, 安全态)                   │
+│  │   │   ├─ 设置 SCTLR_EL1                                │
+│  │   │   ├─ 设置 CPACR_EL1 (SVE/SIMD/FP 权限)            │
+│  │   │   ├─ 设置 ELR_EL3 = BL2 PC                        │
+│  │   │   └─ 设置 SPSR_EL3 = BL2 SPSR                     │
+│  │   ├─ cm_prepare_el3_exit(SECURE)                       │
+│  │   │   ├─ 保存 EL3 扩展寄存器                           │
+│  │   │   ├─ restore_gp_pmcr_pauth_regs()                  │
+│  │   │   └─ enable_extensions                             │
+│  │   └─ print_entry_point_info() → 打印 BL2 入口信息      │
+│  └─ console_flush()                                      │
+└──────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌──────────────────────────────────────────────────────────┐
+│  Phase 4: el3_exit (汇编)                                 │
+│  ├─ 恢复 EL3 保存的上下文到系统寄存器                      │
+│  ├─ 从 SCR_EL3 读取目标安全状态                           │
+│  ├─ 设置 VBAR_EL3 为 Secure/Non-Secure 向量表            │
+│  ├─ ISB 指令同步屏障                                     │
+│  └─ ERET → 跳转到 BL2 (EL3 → EL2/EL1)                   │
+└──────────────────────────────────────────────────────────┘
+</code></pre></div>
+<hr />
+<h2 id="3-phase-1-bl1_entrypoint">3. Phase 1: 汇编入口点详解 (<code>bl1_entrypoint</code>)<a class="headerlink" href="#3-phase-1-bl1_entrypoint" title="Permanent link">&para;</a></h2>
+<p><strong>源文件</strong>: <code>bl1/aarch64/bl1_entrypoint.S</code>
+<strong>符号地址</strong>: <code>0x0000</code> (map 文件)
+<strong>大小</strong>: 0x100 (256 B)</p>
+<h3 id="31-el3_entrypoint_common">3.1 <code>el3_entrypoint_common</code> 宏展开<a class="headerlink" href="#31-el3_entrypoint_common" title="Permanent link">&para;</a></h3>
+<p>BL1 入口点通过 <code>el3_entrypoint_common</code> 宏实现（定义在 <code>include/arch/aarch64/el3_common_macros.S</code>），该宏由以下参数配置：</p>
+<div class="highlight"><pre><span></span><code><span class="nf">el3_entrypoint_common</span><span class="w">                  </span><span class="err">\</span>
+<span class="w">    </span><span class="nf">_init_sctlr</span><span class="err">=</span><span class="mi">1</span><span class="w">                      </span><span class="err">\</span><span class="w">  </span><span class="err">←</span><span class="w"> </span><span class="err">初始化</span><span class="w"> </span><span class="no">SCTLR_EL3</span>
+<span class="w">    </span><span class="nf">_warm_boot_mailbox</span><span class="err">=</span><span class="p">!</span><span class="no">PROGRAMMABLE_RESET_ADDRESS</span><span class="w"> </span><span class="err">\</span><span class="w">  </span><span class="err">←</span><span class="w"> </span><span class="no">QEMU</span><span class="w"> </span><span class="err">使用可编程复位地址，跳过</span>
+<span class="w">    </span><span class="nf">_secondary_cold_boot</span><span class="err">=</span><span class="p">!</span><span class="no">COLD_BOOT_SINGLE_CPU</span><span class="w"> </span><span class="err">\</span><span class="w">  </span><span class="err">←</span><span class="w"> </span><span class="err">支持从核冷启动</span>
+<span class="w">    </span><span class="nf">_init_memory</span><span class="err">=</span><span class="mi">1</span><span class="w">                     </span><span class="err">\</span><span class="w">  </span><span class="err">←</span><span class="w"> </span><span class="err">使能</span><span class="w"> </span><span class="no">MMU</span><span class="err">、搬运</span><span class="w"> </span><span class="no">.data</span><span class="err">、清零</span><span class="w"> </span><span class="no">.bss</span>
+<span class="w">    </span><span class="nf">_init_c_runtime</span><span class="err">=</span><span class="mi">1</span><span class="w">                  </span><span class="err">\</span><span class="w">  </span><span class="err">←</span><span class="w"> </span><span class="no">C</span><span class="w"> </span><span class="err">运行时初始化</span>
+<span class="w">    </span><span class="nf">_exception_vectors</span><span class="err">=</span><span class="no">bl1_exceptions</span><span class="w">  </span><span class="err">\</span><span class="w">  </span><span class="err">←</span><span class="w"> </span><span class="err">异常向量表基地址</span>
+<span class="w">    </span><span class="nf">_pie_fixup_size</span><span class="err">=</span><span class="mi">0</span><span class="w">                     </span><span class="err">←</span><span class="w"> </span><span class="err">无</span><span class="w"> </span><span class="no">PIE</span><span class="w"> </span><span class="err">修复</span>
+</code></pre></div>
+<h4 id="311-el3_arch_init_common">3.1.1 <code>el3_arch_init_common</code> — 架构寄存器初始化<a class="headerlink" href="#311-el3_arch_init_common" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────┐
+│ SCTLR_EL3:                                      │
+│   M=0 (MMU 关闭)                                │
+│   I=0,C=0 (指令/数据缓存关闭)                    │
+│   A=0 (对齐检查关闭)                             │
+│   SA=0,EE=0 (小端序)                            │
+│   WXN=0 (不允许 Writable-X)                     │
+│                                                  │
+│ SCR_EL3:                                         │
+│   NS=1 (默认 Non-Secure)                        │
+│   IRQ/FIQ=0 (路由到 EL3)                        │
+│   EA=1 (External Abort 路由到 EL3)              │
+│   SIF=1 (Secure FIQ 路由到 EL3)                 │
+│   RW=0 (EL3 为 Secure)                          │
+│                                                  │
+│ MDCR_EL3: SPME=0 (禁止 EL2 PMU 访问)           │
+│ CPTR_EL3: 禁止 EL2/EL1 SIMD/SVE/FP 访问         │
+└─────────────────────────────────────────────────┘
+</code></pre></div>
+<h4 id="312-warm-boot">3.1.2 Warm Boot 检查<a class="headerlink" href="#312-warm-boot" title="Permanent link">&para;</a></h4>
+<p>由于 QEMU 的复位地址是可编程的（<code>PROGRAMMABLE_RESET_ADDRESS=1</code>），<code>_warm_boot_mailbox=!PROGRAMMABLE_RESET_ADDRESS</code> 使得 warm boot 路径被跳过。每次都走冷启动路径。</p>
+<h4 id="313-vbar_el3">3.1.3 VBAR_EL3 设置<a class="headerlink" href="#313-vbar_el3" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nf">adr</span><span class="w">  </span><span class="no">x0</span><span class="p">,</span><span class="w"> </span><span class="no">bl1_exceptions</span><span class="w">      </span><span class="cm">/* x0 = 向量表物理地址 0x4000 */</span>
+<span class="nf">msr</span><span class="w">  </span><span class="no">VBAR_EL3</span><span class="p">,</span><span class="w"> </span><span class="no">x0</span><span class="w">           </span><span class="cm">/* 设置异常向量表基址寄存器 */</span>
+</code></pre></div>
+<h4 id="314-cpu-reset">3.1.4 CPU Reset 处理<a class="headerlink" href="#314-cpu-reset" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nf">bl</span><span class="w">  </span><span class="no">reset_handler</span><span class="w">            </span><span class="cm">/* 调用 cpu_helpers.o 中的 reset_handler */</span>
+</code></pre></div>
+<p><code>reset_handler</code> 的核心逻辑：
+1. 调用 <code>get_cpu_ops_ptr</code> → 通过 <code>.cpu_ops</code> 表获取当前 CPU 的操作函数集
+2. 调用 <code>cpu_ops-&gt;reset_func</code> → 执行 CPU 特定的 reset 函数
+   - QEMU 平台匹配到 <code>qemu_max_ops</code> 或 <code>aem_generic_ops</code>
+   - 每个 CPU 的 <code>reset_func</code> 内部会遍历该 CPU 的 errata 表，逐个检查并应用 workaround
+3. 调用 <code>cpu_ops-&gt;errata_func</code> → 打印 errata 状态</p>
+<h4 id="315">3.1.5 冷启动路径：主/从核分发<a class="headerlink" href="#315" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="nf">bl</span><span class="w">  </span><span class="no">plat_set_my_stack</span><span class="w">         </span><span class="cm">/* 设置 EL3 栈指针 = platform_up_stack.o 中的栈顶 */</span>
+<span class="nf">bl</span><span class="w">  </span><span class="no">plat_is_my_cpu_primary</span><span class="w">    </span><span class="cm">/* 读取 MPIDR，判断是否主 CPU */</span>
+<span class="w">    </span><span class="err">├─</span><span class="w"> </span><span class="err">主核:</span><span class="w"> </span><span class="err">继续执行</span>
+<span class="w">    </span><span class="err">└─</span><span class="w"> </span><span class="err">从核:</span>
+<span class="w">         </span><span class="nf">bl</span><span class="w">  </span><span class="no">plat_secondary_cold_boot_setup</span>
+<span class="w">              </span><span class="err">└─</span><span class="w"> </span><span class="nl">QEMU:</span><span class="w"> </span><span class="err">空函数</span><span class="w"> </span><span class="err">(4</span><span class="w"> </span><span class="nf">bytes</span><span class="p">,</span><span class="w"> </span><span class="mi">0x3104</span><span class="p">)</span>
+<span class="w">              </span><span class="err">实际场景:</span><span class="w"> </span><span class="err">等待主核通过</span><span class="w"> </span><span class="nf">SEV</span><span class="w"> </span><span class="err">指令唤醒</span>
+<span class="w">         </span><span class="nf">b</span><span class="w">   </span><span class="p">.</span><span class="w">     </span><span class="err">←</span><span class="w"> </span><span class="err">死循环等待</span><span class="w"> </span><span class="p">(</span><span class="no">PSCI</span><span class="w"> </span><span class="no">cpu_on</span><span class="w"> </span><span class="err">触发后唤醒</span><span class="p">)</span>
+</code></pre></div>
+<blockquote>
+<p><strong>map 验证</strong>: <code>plat_set_my_stack</code> 在 <code>0x30C8</code> (16 B)，<code>plat_is_my_cpu_primary</code> 在 <code>0x30F0</code> (20 B)，<code>plat_secondary_cold_boot_setup</code> 在 <code>0x3104</code> (52 B)</p>
+</blockquote>
+<h4 id="316-_init_memory1">3.1.6 内存初始化 (<code>_init_memory=1</code>)<a class="headerlink" href="#316-_init_memory1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────┐
+│  1. zeromem .bss 段                                  │
+│     └─ 调用 zeromem (0x22DC) / zero_normalmem (0x22E4)│
+│     └─ 将 __BSS_START__ 到 __BSS_END__ 清零          │
+│                                                      │
+│  2. 搬运 .data 段 (ROM → RAM)                        │
+│     └─ 从 __DATA_ROM_START__ (0x69F0)                │
+│     └─ 到 __DATA_RAM_START__ (0xE0EE000)             │
+│     └─ 大小: __DATA_SIZE__ = 0x105 (261 bytes)       │
+│                                                      │
+│  3. 使能 MMU                                         │
+│     └─ enable_mmu_direct_el3 (0x305C, 88 B)          │
+│     └─ 设置 MAIR_EL3, TCR_EL3, TTBR0_EL3              │
+│     └─ 使能 SCTLR_EL3.M (MMU 位)                     │
+│     └─ ISB 同步                                       │
+│     └─ TLB 无效化 (TLBI ALLE3)                        │
+└─────────────────────────────────────────────────────┘
+</code></pre></div>
+<blockquote>
+<p><strong>关键</strong>: MMU 使能前，页表已在 <code>bl1_plat_arch_setup()</code> 中由 <code>setup_page_tables()</code> 预先填充。但此处 <code>enable_mmu_direct_el3</code> 使用的是"直通"映射方式，在 <code>bl1_plat_arch_setup()</code> 中的 <code>enable_mmu_el3()</code> 才会启用完整的虚实地址映射。</p>
+</blockquote>
+<p>实际上，<code>el3_entrypoint_common</code> 中的内存初始化是在 <code>bl1_setup()</code> 调用之前执行的。对于 BL1，<code>.data</code> 搬运和 MMU 使能发生在 <code>bl1_setup()</code> 返回之后，由 <code>bl1_plat_arch_setup()</code> 中的 <code>enable_mmu_el3(0)</code> 完成。<code>el3_entrypoint_common</code> 的 <code>_init_memory=1</code> 主要负责 <code>.bss</code> 清零。</p>
+<h4 id="317-c-_init_c_runtime1">3.1.7 C 运行时初始化 (<code>_init_c_runtime=1</code>)<a class="headerlink" href="#317-c-_init_c_runtime1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────┐
+│  1. 再次清零 .bss 段 (二次确认)                      │
+│                                                      │
+│  2. 初始化 SP (栈指针已由 plat_set_my_stack 设置)     │
+│                                                      │
+│  3. 初始化 GOT 表 (本次: 空, 静态链接)                │
+│                                                      │
+│  4. 初始化 BSS 段中指向 data 段的指针                 │
+│     └─ 将 .data 段中的全局变量地址写入 GOT             │
+│     └─ 本次 GOT 为空, 跳过                            │
+│                                                      │
+│  5. 调用 plat_report_exception → QEMU: 空函数          │
+│                                                      │
+│  6. 跳转到 C 入口: bl bl1_setup                      │
+└─────────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="32-phase-1">3.2 Phase 1 函数调用总结<a class="headerlink" href="#32-phase-1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>bl1_entrypoint (0x0000)
+  ├─ el3_arch_init_common
+  │    ├─ 写 SCTLR_EL3
+  │    ├─ 写 SCR_EL3
+  │    ├─ 写 MDCR_EL3
+  │    └─ 写 CPTR_EL3
+  ├─ 写 VBAR_EL3 = bl1_exceptions (0x4000)
+  ├─ bl reset_handler (0x2A30)
+  │    └─ cpu_ops-&gt;reset_func → errata workaround
+  ├─ bl plat_set_my_stack (0x30C8)
+  ├─ bl plat_is_my_cpu_primary (0x30F0)
+  │    └─ 从核: plat_secondary_cold_boot_setup → 等待
+  ├─ zeromem (.bss) (0x22DC)
+  ├─ bl bl1_setup (0x01D4)          ← Phase 2 入口
+  ├─ bl bl1_main (0x01E8)           ← Phase 3 入口
+  └─ b el3_exit (0x2FDC)             ← Phase 4 入口
+</code></pre></div>
+<hr />
+<h2 id="4-phase-2-bl1_setup">4. Phase 2: <code>bl1_setup()</code> — 早期平台初始化<a class="headerlink" href="#4-phase-2-bl1_setup" title="Permanent link">&para;</a></h2>
+<p><strong>源文件</strong>: <code>bl1/bl1_main.c:45</code>
+<strong>符号地址</strong>: <code>0x01D4</code> (map 文件)
+<strong>大小</strong>: 0x14 (20 B)</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">bl1_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">plat_setup_early_console</span><span class="p">();</span><span class="w">          </span><span class="c1">// EARLY_CONSOLE=0 时为空</span>
+<span class="w">    </span><span class="n">bl1_early_platform_setup</span><span class="p">();</span><span class="w">          </span><span class="c1">// 平台早期设置</span>
+<span class="w">    </span><span class="n">bl1_plat_arch_setup</span><span class="p">();</span><span class="w">              </span><span class="c1">// 平台架构设置 (MMU)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="41-bl1_early_platform_setup-qemu">4.1 <code>bl1_early_platform_setup()</code> — QEMU 平台早期设置<a class="headerlink" href="#41-bl1_early_platform_setup-qemu" title="Permanent link">&para;</a></h3>
+<p><strong>源文件</strong>: <code>plat/qemu/common/qemu_bl1_setup.c:52</code></p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">bl1_early_platform_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">qemu_console_init</span><span class="p">();</span><span class="w">                </span><span class="c1">// 初始化 PL011 UART</span>
+<span class="w">    </span><span class="n">bl1_tzram_layout</span><span class="p">.</span><span class="n">total_base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BL_RAM_BASE</span><span class="p">;</span><span class="w">   </span><span class="c1">// 0xE0EE000</span>
+<span class="w">    </span><span class="n">bl1_tzram_layout</span><span class="p">.</span><span class="n">total_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BL_RAM_SIZE</span><span class="p">;</span><span class="w">   </span><span class="c1">// RAM 大小</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="qemu_console_init"><code>qemu_console_init()</code> 调用链<a class="headerlink" href="#qemu_console_init" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>qemu_console_init (qemu_console.o:0x1E50)
+  └─ console_pl011_register(PL011_UART0_BASE, ...)
+       ├─ console_pl011_core_init → 配置 PL011 寄存器
+       │   (0x21C0, 88 B)
+       ├─ console_register → 注册到多控制台框架
+       │   (0x0580, 52 B)
+       └─ console_putc / console_flush
+</code></pre></div>
+<blockquote>
+<p><strong>map 验证</strong>: <code>qemu_console_init</code> 在 <code>0x1E50</code> (64 B)，<code>console_pl011_core_init</code> 在 <code>0x21C0</code> (88 B)，<code>console_register</code> 在 <code>0x0580</code> (52 B)</p>
+</blockquote>
+<h3 id="42-bl1_plat_arch_setup-mmu">4.2 <code>bl1_plat_arch_setup()</code> — MMU 配置<a class="headerlink" href="#42-bl1_plat_arch_setup-mmu" title="Permanent link">&para;</a></h3>
+<p><strong>源文件</strong>: <code>plat/qemu/common/qemu_bl1_setup.c:73</code></p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">bl1_plat_arch_setup</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">mmap_region_t</span><span class="w"> </span><span class="n">bl_regions</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">MAP_BL1_TOTAL</span><span class="p">,</span><span class="w">     </span><span class="c1">// RAM: 0xE0EE000, 全大小, RW, EL3 PAS</span>
+<span class="w">        </span><span class="n">MAP_BL1_RO</span><span class="p">,</span><span class="w">       </span><span class="c1">// ROM: 代码+只读数据, RO, EL3 PAS</span>
+<span class="w">        </span><span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="w">               </span><span class="c1">// 终止符</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">setup_page_tables</span><span class="p">(</span><span class="n">bl_regions</span><span class="p">,</span><span class="w"> </span><span class="n">plat_qemu_get_mmap</span><span class="p">());</span>
+<span class="w">    </span><span class="n">enable_mmu_el3</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">   </span><span class="c1">// disable_mmu=0 → 使能 MMU</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="_1">页表配置内存映射<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>BL1Regions (bl1_tzram_layout):
+┌──────────────────────┬──────────────────┬──────────────────────┐
+│ 区域                 │ 属性             │ 说明                 │
+├──────────────────────┼──────────────────┼──────────────────────┤
+│ BL1 Total RAM        │ MT_MEMORY|RW     │ BL1 使用的全部 RAM   │
+│ (0xE0EE000, 8KB)    │ EL3_PAS          │ 可读写, EL3 地址空间  │
+├──────────────────────┼──────────────────┼──────────────────────┤
+│ BL1 Code             │ MT_CODE          │ .text 代码段         │
+│ (0x0, 20KB)         │ EL3_PAS          │ 只读, 可执行         │
+├──────────────────────┼──────────────────┼──────────────────────┤
+│ BL1 RO Data          │ MT_RO_DATA       │ .rodata 只读数据     │
+│ (0x5000, 6.6KB)    │ EL3_PAS          │ 只读                 │
+├──────────────────────┼──────────────────┼──────────────────────┤
+│ QEMU Platform mmap   │ (plat_qemu_get_mmap)                     │
+│ (UART, GIC, etc.)    │ 平台设备映射                             │
+└──────────────────────┴──────────────────┴──────────────────────┘
+</code></pre></div>
+<h4 id="enable_mmu_el3"><code>enable_mmu_el3()</code> 内部流程<a class="headerlink" href="#enable_mmu_el3" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code>enable_mmu_el3 (xlat_tables_context.o:0x15FC, 72 B)
+  ├─ setup_mmu_cfg (xlat_tables_arch.o:0x1534, 124 B)
+  │    ├─ 设置 MAIR_EL3 (内存属性)
+  │    ├─ 设置 TCR_EL3 (页表配置)
+  │    │   ├─ T0SZ = 地址空间大小
+  │    │   ├─ TG0 = 4KB/16KB/64KB granule
+  │    │   ├─ SH0 = Inner Shareable
+  │    │   └─ ORGN0GN = 内部/外部缓存策略
+  │    └─ 设置 TTBR0_EL3 (页表基址)
+  ├─ init_xlat_tables (xlat_tables_context.o:0x15C0, 60 B)
+  │    └─ 遍历 mmap regions → 填充页表 (.xlat_table)
+  └─ 实际使能 MMU:
+       ├─ 设置 SCTLR_EL3.M = 1
+       ├─ 设置 SCTLR_EL3.C = 1
+       ├─ 设置 SCTLR_EL3.I = 1
+       ├─ TLBI ALLE3 (无效化全部 TLB)
+       ├─ DSBO / ISB
+       └─ TLBI ALLE1 (无效化 EL1 TLB)
+</code></pre></div>
+<blockquote>
+<p><strong>map 验证</strong>: <code>setup_page_tables</code> 在 <code>0x1CF0</code> (40 B)，<code>plat_qemu_get_mmap</code> 在 <code>0x1E44</code> (12 B)，数据 <code>plat_qemu_mmap</code> 在 <code>.rodata</code> 的 <code>0x5118</code> (240 B)</p>
+</blockquote>
+<hr />
+<h2 id="5-phase-3-bl1_main">5. Phase 3: <code>bl1_main()</code> — 核心启动逻辑<a class="headerlink" href="#5-phase-3-bl1_main" title="Permanent link">&para;</a></h2>
+<p><strong>源文件</strong>: <code>bl1/bl1_main.c:70</code>
+<strong>符号地址</strong>: <code>0x01E8</code> (map 文件)
+<strong>大小</strong>: 0x104 (260 B)</p>
+<h3 id="51">5.1 步骤详解<a class="headerlink" href="#51" title="Permanent link">&para;</a></h3>
+<h4 id="step-1">Step 1: 打印欢迎信息<a class="headerlink" href="#step-1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">NOTICE</span><span class="p">(</span><span class="n">FIRMWARE_WELCOME_STR</span><span class="p">);</span><span class="w">        </span><span class="c1">// &quot;Booting Trusted Firmware&quot;</span>
+<span class="n">NOTICE</span><span class="p">(</span><span class="s">&quot;BL1: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">build_version_string</span><span class="p">);</span>
+<span class="n">NOTICE</span><span class="p">(</span><span class="s">&quot;BL1: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">build_message</span><span class="p">);</span>
+<span class="n">INFO</span><span class="p">(</span><span class="s">&quot;BL1: RAM %p - %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">BL1_RAM_BASE</span><span class="p">,</span><span class="w"> </span><span class="n">BL1_RAM_LIMIT</span><span class="p">);</span>
+<span class="n">print_errata_status</span><span class="p">();</span><span class="w">                </span><span class="c1">// 打印 CPU 勘误状态</span>
+</code></pre></div>
+<blockquote>
+<p><strong>map 数据</strong>: <code>build_version_string</code> 在 <code>.rodata:0x6601</code> (23 B)，<code>build_message</code> 在 <code>.rodata:0x6618</code> (30 B)，<code>panic_str</code> 在 <code>.rodata:0x66D6</code> (17 B)</p>
+</blockquote>
+<h4 id="step-2">Step 2: 架构与安全初始化<a class="headerlink" href="#step-2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">bl1_arch_setup</span><span class="p">();</span><span class="w">              </span><span class="c1">// 剩余架构初始化 (CPU 扩展, 等等)</span>
+<span class="n">crypto_mod_init</span><span class="p">();</span><span class="w">            </span><span class="c1">// 加密模块初始化 (TBB 启用时有效)</span>
+<span class="n">auth_mod_init</span><span class="p">();</span><span class="w">              </span><span class="c1">// 认证模块初始化</span>
+<span class="n">bl1_plat_mboot_init</span><span class="p">();</span><span class="w">        </span><span class="c1">// 测量启动初始化 (MEASURED_BOOT 时有效)</span>
+</code></pre></div>
+<h4 id="step-3-io">Step 3: 平台 IO 初始化<a class="headerlink" href="#step-3-io" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">bl1_platform_setup</span><span class="p">();</span><span class="w">          </span><span class="c1">// → plat_qemu_io_setup()</span>
+</code></pre></div>
+<p><code>plat_qemu_io_setup()</code> (qemu_io_storage.c:494) 完成以下工作：</p>
+<div class="highlight"><pre><span></span><code>plat_qemu_io_setup (qemu_io_storage.o:0x1F58, 116 B)
+  ├─ register_io_dev_fip(&amp;fip_dev_con)       // 注册 FIP IO 设备
+  │   (0x0A70, 56 B)
+  ├─ register_io_dev_memmap(&amp;memmap_dev_con) // 注册 Memmap IO 设备
+  │   (0x0BF4, 56 B)
+  ├─ io_dev_open(fip_dev_con) → fip_dev_handle  // 打开并缓存 FIP 设备句柄
+  ├─ io_dev_open(memmap_dev_con) → memmap_dev_handle
+  ├─ register_io_dev_sh(&amp;sh_dev_con)        // 注册 Semihosting IO 设备
+  │   (0x0DA4, 56 B)
+  └─ io_dev_open(sh_dev_con) → sh_dev_handle  // 打开并缓存 Semihosting 句柄
+</code></pre></div>
+<p>IO 设备加载优先级策略（<code>plat_get_image_source</code>）：</p>
+<div class="highlight"><pre><span></span><code>plat_get_image_source(image_id)
+  ├─ 1. 尝试 FIP (Firmware Image Package)
+  │    └─ 通过 UUID 在 FIP 中查找镜像 (bl2_uuid_spec 等)
+  │    └─ open_fip() → io_dev_init + io_open + io_close
+  │
+  └─ 2. FIP 失败 → 回退到 Semihosting
+       └─ get_alt_image_source()
+            └─ open_semihosting()
+                 └─ 通过文件名查找 (bl2.bin 等)
+</code></pre></div>
+<h4 id="step-4-bl2">Step 4: 加载 BL2 镜像<a class="headerlink" href="#step-4-bl2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">image_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bl1_plat_get_next_image_id</span><span class="p">();</span><span class="w">  </span><span class="c1">// 返回 BL2_IMAGE_ID</span>
+<span class="n">bl1_load_bl2</span><span class="p">();</span><span class="w">                             </span><span class="c1">// 加载 BL2</span>
+</code></pre></div>
+<p><code>bl1_load_bl2()</code> 详细流程：</p>
+<div class="highlight"><pre><span></span><code>bl1_load_bl2 (bl1_main.c:166)
+  │
+  ├─ bl1_plat_get_image_desc(BL2_IMAGE_ID)
+  │   └─ plat_bl1_common.o → 返回 bl2_img_desc.0 (BSS: 0xE0EE080, 128 B)
+  │      包含: image_info + ep_info + image_id + state
+  │
+  ├─ bl1_plat_handle_pre_image_load(BL2_IMAGE_ID)
+  │   └─ plat_bl1_common.o:0x1C64 → 空函数 (返回 0)
+  │
+  ├─ load_auth_image(BL2_IMAGE_ID, info)
+  │   │
+  │   ├─ plat_try_img_ops == NULL ?
+  │   │   ├─ 是: load_auth_image_internal()
+  │   │   └─ 否: 循环尝试 load_auth_image_internal + next_instance
+  │   │
+  │   └─ load_auth_image_internal()
+  │       ├─ TRUSTED_BOARD_BOOT 启用?
+  │       │   ├─ 是: load_auth_image_recursive()
+  │       │   │       ├─ 递归认证父镜像 (cert chain)
+  │       │   │       ├─ load_image() → 实际加载
+  │       │   │       └─ auth_mod_verify_img() → 签名验证
+  │       │   └─ 否: load_image()
+  │       │
+  │       └─ load_image() (bl_common.c:71, 176 B)
+  │           ├─ plat_get_image_source(BL2_IMAGE_ID)
+  │           │   └─ 尝试 FIP → 回退 Semihosting
+  │           ├─ io_open(dev_handle, image_spec, &amp;image_handle)
+  │           ├─ io_size(image_handle, &amp;image_size)
+  │           ├─ io_read(image_handle, image_base, image_size, &amp;bytes_read)
+  │           │   └─ 将 BL2 二进制读到 image_info.image_base 指定地址
+  │           └─ io_close(image_handle) + io_dev_close(dev_handle)
+  │
+  ├─ plat_mboot_measure_image(BL2_IMAGE_ID, info)
+  │   └─ 可选: 计算镜像哈希用于测量启动
+  │
+  ├─ flush_dcache_range(image_base, image_size)
+  │   └─ 刷新 D-cache 确保数据一致性 (0x22A4, 56 B)
+  │
+  └─ bl1_plat_handle_post_image_load(BL2_IMAGE_ID)
+      └─ plat_bl1_common.o:0x1C9C (76 B) → 平台后处理
+</code></pre></div>
+<h4 id="step-5-bl2">Step 5: 准备跳转到 BL2<a class="headerlink" href="#step-5-bl2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">bl1_prepare_next_image</span><span class="p">(</span><span class="n">BL2_IMAGE_ID</span><span class="p">);</span>
+</code></pre></div>
+<p><code>bl1_prepare_next_image()</code> 详细流程（非 RME 路径）：</p>
+<div class="highlight"><pre><span></span><code>bl1_prepare_next_image (bl1_context_mgmt.c:72, 180 B)
+  │
+  ├─ bl1_plat_get_image_desc(image_id) → desc
+  ├─ next_bl_ep = &amp;desc-&gt;ep_info → BL2 入口点信息
+  ├─ security_state = GET_SECURITY_STATE(next_bl_ep-&gt;h.attr)
+  │
+  ├─ cm_get_context(security_state) == NULL ?
+  │   └─ cm_set_context(&amp;bl1_cpu_context[security_state])
+  │      → 绑定 CPU 上下文 (bl1_cpu_context.0, BSS: 0xE0EF140, 1152 B)
+  │
+  ├─ 设置 next_bl_ep-&gt;spsr
+  │   └─ SPSR_64(MODE_EL2, MODE_SP_ELX, DISABLE_ALL_EXCEPTIONS)
+  │      → BL2 将以 EL2、SP_ELx 启动，所有异常禁用
+  │
+  ├─ bl1_plat_set_ep_info(image_id, next_bl_ep)
+  │   └─ plat_bl1_common.o:0x1C60 → 空函数 (返回 0)
+  │
+  ├─ cm_init_my_context(next_bl_ep) (context_mgmt.c:0x1170, 48 B)
+  │   └─ cm_init() → setup_context_common()
+  │       ├─ 零初始化整个 cpu_context
+  │       ├─ setup_secure_context() 或 setup_ns_context()
+  │       │   ├─ 设置 SCR_EL3 (NS/IRQ/FIQ/PAuth/FGT/ECV 等)
+  │       │   ├─ setup_el1_context()
+  │       │   │   ├─ SCTLR_EL1 (MMU/Cache 配置)
+  │       │   │   └─ ACTLR_EL1
+  │       │   ├─ 如果 NS 且 EL2 实现:
+  │       │   │   └─ setup_el2_context()
+  │       │   │       ├─ HCR_EL2, VTCR_EL2, SCTLR_EL2
+  │       │   │       └─ CPTR_EL2 (SIMD 权限)
+  │       │   └─ CPACR_EL1 (EL1 SIMD/SVE/FP 权限)
+  │       ├─ 设置 ELR_EL3 = BL2 PC
+  │       ├─ 设置 SPSR_EL3 = BL2 SPSR
+  │       └─ 拷贝入口参数 args[0..7]
+  │
+  ├─ cm_prepare_el3_exit(security_state) (context_mgmt.c:0x12CC, 136 B)
+  │   ├─ 保存 EL3 扩展寄存器
+  │   ├─ restore_gp_pmcr_pauth_regs()
+  │   │   (context.o:0x2F8C, 80 B)
+  │   ├─ manage_extensions_*() → 启用 AMU/SPE/PMUv3 等
+  │   └─ 写入 SCR_EL3.NS → 准备跳转到目标安全态
+  │
+  ├─ desc-&gt;state = IMAGE_STATE_EXECUTED
+  └─ print_entry_point_info(next_bl_ep)
+      └─ INFO: 打印 BL2 PC、SPSR、参数
+</code></pre></div>
+<h4 id="step-6">Step 6: 收尾<a class="headerlink" href="#step-6" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="n">console_flush</span><span class="p">();</span><span class="w">    </span><span class="c1">// 确保所有日志输出</span>
+</code></pre></div>
+<hr />
+<h2 id="6-phase-4-el3_exit-bl2">6. Phase 4: <code>el3_exit</code> — 跳转到 BL2<a class="headerlink" href="#6-phase-4-el3_exit-bl2" title="Permanent link">&para;</a></h2>
+<p><strong>源文件</strong>: <code>lib/el3_runtime/aarch64/context_mgmt.c</code>
+<strong>符号地址</strong>: <code>0x2FDC</code> (map 文件)
+<strong>大小</strong>: 0x78 (120 B)</p>
+<div class="highlight"><pre><span></span><code>el3_exit (context.o:0x2FDC)
+  │
+  ├─ el3_exit_common (宏展开)
+  │    ├─ 读取 cpu_context → 恢复 EL3 上下文到系统寄存器
+  │    ├─ 读取 SCR_EL3 → 确定目标安全态
+  │    │   └─ Secure 或 Non-Secure
+  │    ├─ 根据 SCR_EL3.NS 设置 VBAR_EL3
+  │    │   ├─ NS=0: VBAR_EL3 = bl1_exceptions (Secure 向量)
+  │    │   └─ NS=1: VBAR_EL3 = bl1_exceptions (Non-Secure 向量)
+  │    ├─ ISB 指令同步屏障
+  │    └─ ERET → 从 EL3 退出到 BL2
+  │         ├─ PC = ELR_EL3 = BL2 入口地址
+  │         ├─ CPSR = SPSR_EL3 = EL2 (Secure) / EL1 (Non-Secure)
+  │         └─ SP = SP_ELx = BL2 栈指针
+  │
+  └─ exception_return (ERET 指令)
+</code></pre></div>
+<hr />
+<h2 id="7">7. 关键功能点分析<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<h3 id="71-io">7.1 IO 存储子系统<a class="headerlink" href="#71-io" title="Permanent link">&para;</a></h3>
+<p>BL1 实现了一个分层的 IO 抽象框架：</p>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────┐
+│                    bl1_load_bl2()                        │
+│                    load_auth_image()                    │
+│                          │                              │
+│                          ▼                              │
+│                plat_get_image_source()                    │
+│                     (QEMU 策略层)                         │
+│                          │                              │
+│          ┌───────────────┼───────────────┐               │
+│          ▼               ▼               ▼               │
+│     ┌─────────┐    ┌─────────┐    ┌──────────────┐       │
+│     │  FIP    │    │ Memmap  │    │ Semihosting │       │
+│     │  设备   │    │  设备   │    │   设备       │       │
+│     └────┬────┘    └────┬────┘    └──────┬───────┘       │
+│          │              │               │               │
+│          ▼              ▼               ▼               │
+│     io_fip.o     io_memmap.o     io_semihosting.o        │
+│     (UUID 查找)  (地址偏移)     (主机文件系统)            │
+│          │              │               │               │
+│          └──────────────┼───────────────┘               │
+│                         ▼                              │
+│                  io_storage.o                            │
+│                  (统一 IO 接口)                         │
+│              io_open / io_read / io_close                │
+└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h4 id="io">IO 设备加载优先级<a class="headerlink" href="#io" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>IO 后端</th>
+<th>定位方式</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>FIP</td>
+<td>UUID (bl2_uuid_spec 等)</td>
+<td>Flash 中的固件包</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Memmap</td>
+<td>地址偏移 (fip_block_spec)</td>
+<td>直接内存映射</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Semihosting</td>
+<td>文件名 (bl2.bin 等)</td>
+<td>QEMU 调试/开发</td>
+</tr>
+</tbody>
+</table>
+<h4 id="policies">镜像定位策略表 (<code>policies[]</code>)<a class="headerlink" href="#policies" title="Permanent link">&para;</a></h4>
+<p>每个镜像 ID 对应一个 <code>plat_io_policy</code> 结构，定义了该镜像使用哪个 IO 设备和哪种定位方式：</p>
+<div class="highlight"><pre><span></span><code><span class="n">policies</span><span class="p">[</span><span class="n">BL2_IMAGE_ID</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">dev_handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fip_dev_handle</span><span class="p">,</span><span class="w">          </span><span class="c1">// 使用 FIP 设备</span>
+<span class="w">    </span><span class="p">.</span><span class="n">image_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">bl2_uuid_spec</span><span class="p">,</span><span class="w">           </span><span class="c1">// 通过 UUID 定位</span>
+<span class="w">    </span><span class="p">.</span><span class="n">check</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open_fip</span><span class="w">                        </span><span class="c1">// 检查函数</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="72-cpu-errata">7.2 CPU Errata 处理<a class="headerlink" href="#72-cpu-errata" title="Permanent link">&para;</a></h3>
+<p>BL1 在启动早期会检查并应用 CPU errata workaround：</p>
+<div class="highlight"><pre><span></span><code>reset_handler (cpu_helpers.o:0x2A30)
+  ├─ get_cpu_ops_ptr() → 查找匹配当前 CPU 的 .cpu_ops 表
+  │   (cpu_helpers.o:0x2A50, 72 B)
+  │
+  ├─ cpu_ops-&gt;midr = read_mpidr_el1() (匹配 CPU)
+  │
+  └─ cpu_ops-&gt;reset_func()
+       ├─ Cortex-A53: cortex_a53_reset_func (0x24C0)
+       │   └─ 8 个 erratum 检查
+       ├─ Cortex-A55: cortex_a55_reset_func (0x256C)
+       │   └─ 6 个 erratum 检查
+       ├─ Cortex-A57: cortex_a57_reset_func (0x26D8)
+       │   └─ 14 个 erratum 检查
+       ├─ Cortex-A710: cortex_a710_reset_func (0x27E8)
+       │   └─ 16 个 erratum 检查
+       ├─ Cortex-A72: cortex_a72_reset_func (0x2908)
+       ├─ Cortex-A76: cortex_a76_reset_func (0x29D8)
+       ├─ Neoverse-N1: neoverse_n1_reset_func (0x2C30)
+       ├─ Neoverse-N2: neoverse_n2_reset_func (0x2D84)
+       ├─ Neoverse-V1: neoverse_v1_reset_func (0x2EA4)
+       ├─ AEM Generic: aem_generic (通用)
+       └─ QEMU Max: qemu_max
+</code></pre></div>
+<h3 id="73-mmu">7.3 MMU 与地址映射<a class="headerlink" href="#73-mmu" title="Permanent link">&para;</a></h3>
+<p>BL1 的 MMU 在 <code>bl1_plat_arch_setup()</code> 中使能，使用三级页表（4KB granule）：</p>
+<div class="highlight"><pre><span></span><code>enable_mmu_el3 流程:
+  1. setup_mmu_cfg:
+     ├─ MAIR_EL3 = Attr0(Device-nGnRnE) | Attr1(Normal-WriteBack)
+     ├─ TCR_EL3:
+     │   ├─ T0SZ = 地址大小 (如 40 bit)
+     │   ├─ TG0 = TG0_4K (4KB granule)
+     │   ├─ SH0 = INNER (Inner Shareable)
+     │   ├─ ORGN0GN = WBWA (Write-Back, Write-Allocate)
+     │   └─ TBI0 = 1 (Top Byte Ignored)
+     └─ TTBR0_EL3 = 页表基地址
+
+  2. init_xlat_tables → 遍历 mmap 填充页表
+     └─ .xlat_table (0xE0F0000, 24 KB) = 6 个 L0 页表项范围
+
+  3. 使能:
+     SCTLR_EL3.M = 1, .C = 1, .I = 1
+     TLBI ALLE3 → 无效化 TLB
+</code></pre></div>
+<h3 id="74-el3-bl2">7.4 上下文切换机制 (EL3 → BL2)<a class="headerlink" href="#74-el3-bl2" title="Permanent link">&para;</a></h3>
+<p>BL1 使用 <code>cpu_context_t</code> 结构保存完整的 CPU 上下文（约 1152 B）：</p>
+<div class="highlight"><pre><span></span><code>cm_init_my_context(next_bl_ep)
+  └─ cm_init() → setup_context_common()
+       │
+       ├─ cpu_context: 整体清零
+       │
+       ├─ el3_sysregs_context:
+       │   ├─ scr_el3    (安全状态, 中断路由)
+       │   ├─ sctlr_el3  (EL3 系统控制)
+       │   ├─ cptr_el3   (陷阱控制)
+       │   ├─ mdcr_el3   (调试控制)
+       │   ├─ elr_el3    = BL2 PC (返回地址)
+       │   ├─ spsr_el3   = BL2 SPSR (CPSR)
+       │   └─ arguments (args[0..7])
+       │
+       ├─ el1_sysregs_context (BL2 在 EL1/EL2 使用):
+       │   ├─ sctlr_el1, actlr_el1, cpacr_el1
+       │   └─ tcr_el1, ttbr0_el1, ttbr1_el1, mair_el1
+       │
+       └─ el2_sysregs_context (BL2 在 EL2 时):
+           ├─ hcr_el2, vtcr_el2, sctlr_el2
+           └─ cptr_el2, cntvoff_el2, cnthctl_el2
+</code></pre></div>
+<h3 id="75-trusted-boot">7.5 安全启动链 (Trusted Boot)<a class="headerlink" href="#75-trusted-boot" title="Permanent link">&para;</a></h3>
+<p>当 <code>TRUSTED_BOARD_BOOT=1</code> 时，BL1 的镜像加载流程变为：</p>
+<div class="highlight"><pre><span></span><code>load_auth_image_recursive(image_id)
+  ├─ auth_mod_get_parent_id(image_id) → parent_id
+  ├─ 递归: load_auth_image_recursive(parent_id)
+  │   └─ 直到 root of trust (trusted key cert)
+  ├─ load_image(image_id)
+  │   └─ 从 FIP/Semihosting 加载二进制
+  └─ auth_mod_verify_img(image_id, base, size)
+      ├─ 使用 RSA/ECDSA 验证签名
+      ├─ 验证证书链
+      └─ 失败时: zero_normalmem + flush_dcache_range → 清除敏感数据
+</code></pre></div>
+<h3 id="76-smc">7.6 SMC 中断处理<a class="headerlink" href="#76-smc" title="Permanent link">&para;</a></h3>
+<p>BL1 的 SMC handler (<code>bl1_smc_handler</code>, <code>0x0318</code>, 100 B) 在 BL1 运行期间处理来自低 EL 的 SMC 调用：</p>
+<div class="highlight"><pre><span></span><code>bl1_smc_handler (bl1_main.c:228)
+  ├─ BL1_SMC_CALL_COUNT → 返回支持的 SMC 数量
+  ├─ BL1_SMC_UID → 返回 BL1 服务 UUID
+  ├─ BL1_SMC_VERSION → 返回版本号
+  └─ TRUSTED_BOARD_BOOT 时:
+       └─ is_fwu_fid() → bl1_fwu_smc_handler() (固件更新)
+</code></pre></div>
+<p>SMC 异常由 <code>smc_handler64</code> (bl1_exceptions.o:0x2084, 188 B) 接收并路由到 <code>bl1_smc_handler</code>。</p>
+<hr />
+<h2 id="8">8. 从核启动路径<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<p>QEMU 平台支持多核启动，从核的路径：</p>
+<div class="highlight"><pre><span></span><code>CPU n 复位
+  └─ bl1_entrypoint
+       └─ el3_entrypoint_common
+            ├─ el3_arch_init_common (架构初始化)
+            ├─ VBAR_EL3 = bl1_exceptions
+            ├─ reset_handler → errata workaround
+            ├─ plat_set_my_stack (设置从核栈)
+            └─ plat_is_my_cpu_primary → FALSE
+                 └─ plat_secondary_cold_boot_setup
+                      └─ QEMU: 空函数 (PSCI cpu_on 触发)
+                 └─ b .  ← 死循环等待
+
+... 主核通过 PSCI CPU_ON 通知 ...
+
+CPU n 被唤醒 (Warm Boot)
+  └─ bl1_entrypoint (warm boot)
+       └─ el3_entrypoint_common
+            └─ warm_boot_mailbox 机制
+                 └─ 读取 mailbox 中的入口地址
+                 └─ 跳转到主核指定的入口 (通常为 BL31)
+</code></pre></div>
+<hr />
+<h2 id="9">9. 关键数据结构<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<h3 id="91-image_desc_t">9.1 <code>image_desc_t</code> — 镜像描述符<a class="headerlink" href="#91-image_desc_t" title="Permanent link">&para;</a></h3>
+<p>BL2 的镜像描述符 <code>bl2_img_desc.0</code> 位于 <code>.data:0xE0EE080</code>（128 B），结构：</p>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">image_desc</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">image_info_t</span><span class="w"> </span><span class="n">image_info</span><span class="p">;</span><span class="w">      </span><span class="c1">// 镜像信息 (基址, 大小, HAT)</span>
+<span class="w">    </span><span class="n">entry_point_info_t</span><span class="w"> </span><span class="n">ep_info</span><span class="p">;</span><span class="w">  </span><span class="c1">// 入口点信息 (PC, SPSR, args)</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">image_id</span><span class="p">;</span><span class="w">        </span><span class="c1">// 镜像 ID</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">state</span><span class="p">;</span><span class="w">           </span><span class="c1">// 状态: COPIED/COPIED/AUTH/EXECUTED</span>
+<span class="p">}</span><span class="w"> </span><span class="n">image_desc_t</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="92-plat_io_policy-io">9.2 <code>plat_io_policy</code> — IO 策略<a class="headerlink" href="#92-plat_io_policy-io" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">plat_io_policy</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">dev_handle</span><span class="p">;</span><span class="w">            </span><span class="c1">// IO 设备句柄指针</span>
+<span class="w">    </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">image_spec</span><span class="p">;</span><span class="w">             </span><span class="c1">// 镜像定位规格 (UUID/地址/文件名)</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">check</span><span class="p">)(</span><span class="k">const</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="p">);</span><span class="w">     </span><span class="c1">// 检查函数 (open_fip/open_memmap)</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="93-cpu_context_t-cpu">9.3 <code>cpu_context_t</code> — CPU 上下文<a class="headerlink" href="#93-cpu_context_t-cpu" title="Permanent link">&para;</a></h3>
+<p><code>bl1_cpu_context[2]</code> (BSS: <code>0xE0EF140</code>, 1152 B) 包含完整的 CPU 寄存器状态，分为：
+- <code>el3_sysregs_context</code>: EL3 寄存器（SCR, SCTLR, CPTR, MDCR, ELR, SPSR 等）
+- <code>el1_sysregs_context</code>: EL1 寄存器（SCTLR, TCR, TTBR, MAIR, CPACR 等）
+- <code>el2_sysregs_context</code>: EL2 寄存器（HCR, VTCR, SCTLR, CPTR 等）</p>
+<hr />
+<h2 id="10-bl1">10. BL1 启动时序图<a class="headerlink" href="#10-bl1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>时间 ──────────────────────────────────────────────────────────────→
+
+CPU  bl1_entrypoint     el3_arch    VBAR     reset   plat_   plat_     bl1_    load     prepare  el3_exit
+      (0x0000)        _init     _EL3     _handler set_my  is_my_  plat_    main    bl2     next     (ERET)
+                      _common           (errata) stack   primary arch_  (0x1E8) (0x037C) image   → BL2
+                                                                   _setup  (0x12AC)
+                                                                   MMU
+
+      ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+      │ Cold Boot (主核)                                                                                                      │
+      │                                                                                                                     │
+      │  ┌── SCTLR/SCR/MDCR 初始化                                                                                             │
+      │  ├── VBAR_EL3 = 0x4000                                                                                                │
+      │  ├── CPU Errata Check                                                                                                  │
+      │  ├── Stack = 0xE0EF140 (栈顶)                                                                                         │
+      │  ├── Primary CPU = Yes                                                                                               │
+      │  ├── zeromem .bss                                                                                                    │
+      │  ├── bl1_setup()                                                                                                      │
+      │  │   ├── PL011 UART Init                                                                                                │
+      │  │   ├── TZRAM Layout                                                                                                  │
+      │  │   └── MMU Enable (setup_page_tables + enable_mmu_el3)                                                               │
+      │  ├── bl1_main()                                                                                                       │
+      │  │   ├── Print Version/Errata                                                                                         │
+      │  │   ├── crypto/auth init                                                                                              │
+      │  │   ├── plat_qemu_io_setup() (FIP + Memmap + Semihosting)                                                           │
+      │  │   ├── load_auth_image(BL2) (FIP UUID → read → verify → flush)                                                     │
+      │  │   ├── cm_init_my_context(BL2 ep)                                                                                   │
+      │  │   └── cm_prepare_el3_exit(SECURE)                                                                                 │
+      │  └── ERET → BL2                                                                                                      │
+      ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+      │ Cold Boot (从核)                                                                                                      │
+      │                                                                                                                     │
+      │  ┌── 同上 (到 plat_is_my_cpu_primary)                                                                                  │
+      │  ├── Primary CPU = No                                                                                                │
+      │  ├── plat_secondary_cold_boot_setup → 等待                                                                          │
+      │  └── b . (死循环)                                                                                                    │
+      ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+      │ Warm Boot (主核唤醒从核)                                                                                               │
+      │                                                                                                                     │
+      │  ┌── el3_entrypoint_common (warm boot 路径)                                                                            │
+      │  ├── 读取 mailbox → 获取目标入口地址                                                                                   │
+      │  └── 直接跳转 (不经过 bl1_main)                                                                                       │
+      └──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

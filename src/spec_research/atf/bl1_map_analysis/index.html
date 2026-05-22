@@ -1,0 +1,4059 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Quantum Memory 技术文档">
+      
+      
+        <meta name="author" content="quantum_main">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>TF-A v2.12 BL1 Linker Map 文件分析报告 - Quantum Memory</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tf-a-v212-bl1-linker-map" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Quantum Memory" class="md-header__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quantum Memory
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TF-A v2.12 BL1 Linker Map 文件分析报告
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到暗色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换到暗色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到亮色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换到亮色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../guide/mermaid_include/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  写作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../learn-claude-code/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  学习大模型
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../cli_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  cli操作指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../arm_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  arm技术文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../zephyr_index/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  zephyr
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../api_index/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API参考
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../quantumdocs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  项目文档
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../allure/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  测试报告
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Quantum Memory" class="md-nav__button md-logo" aria-label="Quantum Memory" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Quantum Memory
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    写作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    写作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guide/mermaid_include/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mermaid 图表引用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    学习大模型
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    学习大模型
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../learn-claude-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    learn-cluade-code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli操作指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    cli操作指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../cli_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    cli列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../arm_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    arm技术文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    zephyr
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    zephyr
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../zephyr_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    功能列表
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../api_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../quantumdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    项目文档
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../allure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-memory-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 内存配置 (Memory Configuration)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 内存配置 (Memory Configuration)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 链接器关键符号
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 空描述符区域（均为空）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Section 布局详解
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Section 布局详解">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 总体内存布局图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-text-0x0000-0x4fff-20-kb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 .text 代码段 (0x0000 - 0x4FFF, 20 KB)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 .text 代码段 (0x0000 - 0x4FFF, 20 KB)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#321-bl1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.1 BL1 核心启动函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#322" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.2 镜像加载与认证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#323" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.3 日志与控制台
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#324-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.4 IO 存储子系统
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#325-el" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.5 上下文管理与 EL 切换
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#326-mmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.6 MMU / 页表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#327" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.7 平台初始化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#328-cpu-errata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.8 CPU Errata 处理（代码段占比大）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#329" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2.9 汇编辅助函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-rodata-0x5000-0x69e8-6640-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 .rodata 只读数据段 (0x5000 - 0x69E8, 6640 B)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 .rodata 只读数据段 (0x5000 - 0x69E8, 6640 B)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#331-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.1 IO 设备操作表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#332" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.2 平台内存映射表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#333-cpu-errata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.3 CPU Errata 表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#334-uuid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.4 镜像 UUID 规格
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#335-cpu-cpu_ops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.5 CPU 操作表 (.cpu_ops)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#336" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3.6 其他只读数据
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 特殊只读 Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-data-0xe0ee000-261-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 .data 初始化数据段 (0xE0EE000, 261 B)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-stacks-0xe0ee140-4-kb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 .stacks 栈段 (0xE0EE140, 4 KB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-bss-0xe0ef140-2208-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 .bss 未初始化数据段 (0xE0EF140, 2208 B)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-xlat_table-0xe0f0000-24-kb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 .xlat_table 页表段 (0xE0F0000, 24 KB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#39" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 空描述符区域（详细）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#310-el3-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 EL3 异常向量表 (.vectors)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#311-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.11 EL3 上下文管理汇编函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.12 平台辅助函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#313-libc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.13 libc 内置函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-romram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ROM/RAM 运行时搬运机制
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 外部库依赖
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. 外部库依赖">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Archive 成员
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 编译器内置函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-discarded-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Discarded Sections 分析
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Discarded Sections 分析">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 因条件编译被完全丢弃的函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-eh_frame" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 .eh_frame 丢弃
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-assert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 链接器断言 (ASSERT)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. 参与链接的目标文件清单
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. 参与链接的目标文件清单">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-bl1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 BL1 核心模块
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 IO 存储子系统
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-mmu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 MMU / 页表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 平台相关
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-cpu-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 CPU 支持 (11 种核心)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#86" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 其他支撑模块
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#87" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7 外部库
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. 内存占用统计
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. 内存占用统计">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-rom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 ROM 占用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-ram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 RAM 占用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-bl1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 BL1 整体大小
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. 关键分析结论
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. 关键分析结论">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 空间效率
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 启动流程推断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#103" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 安全相关观察
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104-cross-reference-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Cross Reference Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#104" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 优化建议（供参考）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. 链接器约束与限制
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tf-a-v212-bl1-linker-map">TF-A v2.12 BL1 Linker Map 文件分析报告<a class="headerlink" href="#tf-a-v212-bl1-linker-map" title="Permanent link">&para;</a></h1>
+<h2 id="1">1. 概述<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>固件版本</strong>: Arm Trusted Firmware-A (TF-A) v2.12</li>
+<li><strong>目标平台</strong>: QEMU (ARM AArch64)</li>
+<li><strong>构建配置</strong>: release</li>
+<li><strong>目标文件</strong>: <code>bl1.elf</code> (elf64-littleaarch64)</li>
+</ul>
+<p>BL1 是 TF-A 启动链的第一个阶段，运行在 EL3 异常级别，负责平台早期初始化并加载 BL2 镜像。</p>
+<hr />
+<h2 id="2-memory-configuration">2. 内存配置 (Memory Configuration)<a class="headerlink" href="#2-memory-configuration" title="Permanent link">&para;</a></h2>
+<p>BL1 的链接脚本定义了两个内存区域：ROM（只读）和 RAM（可读写），运行时 .data 段从 ROM 搬运到 RAM 中执行。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>起始地址</th>
+<th>长度</th>
+<th>属性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ROM</td>
+<td><code>0x0000000000000000</code></td>
+<td><code>0x20000</code> (128 KB)</td>
+<td>xr</td>
+<td>存放 .text、.rodata 和 .data 的 ROM 副本</td>
+</tr>
+<tr>
+<td>RAM</td>
+<td><code>0x000000000e0ee000</code></td>
+<td><code>0x12000</code> (72 KB)</td>
+<td>xrw</td>
+<td>存放运行时 .data、.stacks、.bss 和页表</td>
+</tr>
+</tbody>
+</table>
+<h3 id="21">2.1 链接器关键符号<a class="headerlink" href="#21" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROM_REGION_START</code></td>
+<td><code>0x0000000000000000</code></td>
+<td>ROM 区域起始地址</td>
+</tr>
+<tr>
+<td><code>ROM_REGION_END</code></td>
+<td><code>0x00000000000069f0</code></td>
+<td>ROM 区域结束地址</td>
+</tr>
+<tr>
+<td><code>RAM_REGION_START</code></td>
+<td><code>0x000000000e0ee000</code></td>
+<td>RAM 区域起始地址</td>
+</tr>
+<tr>
+<td><code>RAM_REGION_END</code></td>
+<td><code>0x000000000e0f6000</code></td>
+<td>RAM 区域结束地址</td>
+</tr>
+<tr>
+<td><code>__BL1_ROM_END__</code></td>
+<td><code>0x0000000000006af5</code></td>
+<td>ROM 有效数据结束（含 .data 的 ROM 拷贝）</td>
+</tr>
+<tr>
+<td><code>__BL1_RAM_START__</code></td>
+<td><code>0x000000000e0ee000</code></td>
+<td>BL1 RAM 起始</td>
+</tr>
+<tr>
+<td><code>__BL1_RAM_END__</code></td>
+<td><code>0x000000000e0f6000</code></td>
+<td>BL1 RAM 结束</td>
+</tr>
+<tr>
+<td><code>__BSS_SIZE__</code></td>
+<td><code>0x8a0</code> (2208 B)</td>
+<td>BSS 段大小</td>
+</tr>
+<tr>
+<td><code>__DATA_SIZE__</code></td>
+<td><code>0x105</code> (261 B)</td>
+<td>.data 段大小</td>
+</tr>
+<tr>
+<td><code>__TEXT_START__</code></td>
+<td><code>0x0000000000000000</code></td>
+<td>代码段起始</td>
+</tr>
+<tr>
+<td><code>__TEXT_END__</code></td>
+<td><code>0x0000000000005000</code></td>
+<td>代码段结束（页对齐后）</td>
+</tr>
+<tr>
+<td><code>__RODATA_START__</code></td>
+<td><code>0x0000000000005000</code></td>
+<td>只读数据段起始</td>
+</tr>
+<tr>
+<td><code>__RODATA_END__</code></td>
+<td><code>0x00000000000069e8</code></td>
+<td>只读数据段结束</td>
+</tr>
+<tr>
+<td><code>__RW_START__</code></td>
+<td><code>0x000000000e0ee000</code></td>
+<td>读写区域起始</td>
+</tr>
+<tr>
+<td><code>__RW_END__</code></td>
+<td><code>0x000000000e0f6000</code></td>
+<td>读写区域结束</td>
+</tr>
+<tr>
+<td><code>__DATA_ROM_START__</code></td>
+<td><code>0x00000000000069f0</code></td>
+<td>.data 在 ROM 中的 load address</td>
+</tr>
+<tr>
+<td><code>__CPU_OPS_START__</code></td>
+<td><code>0x00000000000066e8</code></td>
+<td>CPU 操作表起始</td>
+</tr>
+<tr>
+<td><code>__CPU_OPS_END__</code></td>
+<td><code>0x00000000000069e8</code></td>
+<td>CPU 操作表结束</td>
+</tr>
+<tr>
+<td><code>__XLAT_TABLE_START__</code></td>
+<td><code>0x000000000e0f0000</code></td>
+<td>MMU 页表段起始</td>
+</tr>
+<tr>
+<td><code>__XLAT_TABLE_END__</code></td>
+<td><code>0x000000000e0f6000</code></td>
+<td>MMU 页表段结束</td>
+</tr>
+<tr>
+<td><code>__STACKS_START__</code></td>
+<td><code>0x000000000e0ee140</code></td>
+<td>栈段起始</td>
+</tr>
+<tr>
+<td><code>__STACKS_END__</code></td>
+<td><code>0x000000000e0ef140</code></td>
+<td>栈段结束</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22">2.2 空描述符区域（均为空）<a class="headerlink" href="#22" title="Permanent link">&para;</a></h3>
+<p>以下链接器描述符区域在 BL1 中大小为 0：</p>
+<table>
+<thead>
+<tr>
+<th>描述符区域</th>
+<th>地址</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__RT_SVC_DESCS_START__</code> / <code>__END__</code></td>
+<td><code>0x66E8</code></td>
+<td>运行时服务描述符（BL1 无 RT svc）</td>
+</tr>
+<tr>
+<td><code>__FCONF_POPULATOR_START__</code> / <code>__END__</code></td>
+<td><code>0x66E8</code></td>
+<td>FCONF 动态配置</td>
+</tr>
+<tr>
+<td><code>__PMF_SVC_DESCS_START__</code> / <code>__END__</code></td>
+<td><code>0x66E8</code></td>
+<td>PMF 服务描述符</td>
+</tr>
+<tr>
+<td><code>__PARSER_LIB_DESCS_START__</code> / <code>__END__</code></td>
+<td><code>0x66E8</code></td>
+<td>镜像解析器库描述符</td>
+</tr>
+<tr>
+<td><code>__BAKERY_LOCK_START__</code> / <code>__END__</code></td>
+<td><code>0xE0EF9C0</code></td>
+<td>Bakery Lock（单核无需锁）</td>
+</tr>
+<tr>
+<td><code>__PMF_TIMESTAMP_START__</code> / <code>__END__</code></td>
+<td><code>0xE0EF9C0</code></td>
+<td>PMF 时间戳（未启用）</td>
+</tr>
+<tr>
+<td><code>.got</code> (<code>__GOT_START__</code> / <code>__END__</code>)</td>
+<td><code>0x69E8</code></td>
+<td>全局偏移表（静态链接无需 GOT）</td>
+</tr>
+<tr>
+<td><code>.iplt</code></td>
+<td><code>0x5000</code></td>
+<td>间接 PLT（未使用）</td>
+</tr>
+<tr>
+<td><code>.rela.dyn</code></td>
+<td><code>0x69F0</code></td>
+<td>运行时重定位（未使用）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-section">3. Section 布局详解<a class="headerlink" href="#3-section" title="Permanent link">&para;</a></h2>
+<h3 id="31">3.1 总体内存布局图<a class="headerlink" href="#31" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>ROM 区域 (0x0 - 0x20000, 128KB)
+┌─────────────────────────────────────────────┐
+│ 0x0000  .text 代码段                        │ 0x5000 (20 KB)
+│  ┌─ 0x0000  bl1_entrypoint (入口点)         │
+│  │  0x0100  bl1_arch_setup                  │
+│  │  0x01D4  bl1_setup                       │
+│  │  0x01E8  bl1_main (主函数)               │
+│  │  ...                                     │
+│  └─ 0x4FFF  (代码段结束)                    │
+├─────────────────────────────────────────────┤
+│ 0x5000  .rodata 只读数据段                   │ 0x19F0 (6640 B)
+│  ├─ IO 设备操作函数表 (fip/memmap/sh)        │
+│  ├─ plat_qemu_mmap (QEMU 内存映射表)         │
+│  ├─ errata_entries (CPU勘误表, 7种核心)      │
+│  ├─ build_version_string / build_message    │
+│  ├─ UUID specs (BL2~BL33 镜像)              │
+│  └─ .cpu_ops (CPU 操作表, 11种核心)          │
+├─────────────────────────────────────────────┤
+│ 0x69F0  .data 的 ROM 拷贝 (load address)    │ 0x105 (261 B)
+│         运行时搬运到 RAM: 0x0E0EE000         │
+├─────────────────────────────────────────────┤
+│ 0x6AF5  ─── BL1 ROM 有效结束 ───             │
+├─────────────────────────────────────────────┤
+│ 0x6AF5 ~ 0x20000  未使用 ROM 空间             │
+│         (剩余 ~110 KB)                       │
+└─────────────────────────────────────────────┘
+
+RAM 区域 (0xE0EE000 - 0xE0F6000, 72KB)
+┌─────────────────────────────────────────────┐
+│ 0xE0EE000  .data 初始化数据段                 │ 0x105 (261 B)
+│  ├─ memmap_dev_info                         │
+│  ├─ sh_dev_info                             │
+│  ├─ tf_xlat_ctx (XLAT 上下文)               │
+│  ├─ bl2_img_desc.0 (BL2 镜像描述)           │
+│  ├─ max_log_level                           │
+│  └─ console_state                           │
+├─────────────────────────────────────────────┤
+│ 0xE0EE140  .stacks 栈段                     │ 0x1000 (4 KB)
+│  └─ tzfw_normal_stacks                      │
+├─────────────────────────────────────────────┤
+│ 0xE0EF140  .bss 未初始化数据段               │ 0x8A0 (2208 B)
+│  ├─ bl1_cpu_context.0 (CPU 上下文, 1152 B)  │
+│  ├─ bl1_cpu_context_ptr                     │
+│  ├─ console_list                            │
+│  ├─ IO 子系统数据结构                        │
+│  ├─ tf_mmap (内存映射描述, 560 B)           │
+│  ├─ per_world_context                       │
+│  └─ base_xlat_table (基础页表, 32 B)        │
+├─────────────────────────────────────────────┤
+│ 0xE0F0000  .xlat_table 页表段                │ 0x6000 (24 KB)
+│  └─ 运行时 MMU 页表 (translation tables)     │
+├─────────────────────────────────────────────┤
+│ 0xE0F6000  ─── BL1 RAM 结束 ───              │
+└─────────────────────────────────────────────┘
+</code></pre></div>
+<blockquote>
+<p><strong>注意</strong>: .text 段中 <code>0x0000</code>~<code>0x37F4</code> 为 C/汇编代码，<code>0x3168</code>~<code>0x3814</code> 为 libc 函数，<code>0x4000</code>~<code>0x47FF</code> 为 EL3 异常向量表（.vectors, 2KB），中间有填充对齐。</p>
+</blockquote>
+<h3 id="32-text-0x0000-0x4fff-20-kb">3.2 .text 代码段 (0x0000 - 0x4FFF, 20 KB)<a class="headerlink" href="#32-text-0x0000-0x4fff-20-kb" title="Permanent link">&para;</a></h3>
+<p>代码段是 BL1 最大的 section，包含所有可执行代码。<code>bl1_entrypoint</code> 位于最开头，确保复位后首先执行。</p>
+<h4 id="321-bl1">3.2.1 BL1 核心启动函数<a class="headerlink" href="#321-bl1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bl1_entrypoint</code></td>
+<td><code>0x0000</code></td>
+<td>0x100 (256 B)</td>
+<td>bl1_entrypoint.o</td>
+<td>BL1 入口点（汇编），CPU 复位后第一条指令</td>
+</tr>
+<tr>
+<td><code>bl1_arch_setup</code></td>
+<td><code>0x0100</code></td>
+<td>0x10 (16 B)</td>
+<td>bl1_arch_setup.o</td>
+<td>架构相关初始化</td>
+</tr>
+<tr>
+<td><code>cm_get_context</code></td>
+<td><code>0x0110</code></td>
+<td>0x10 (16 B)</td>
+<td>bl1_context_mgmt.o</td>
+<td>获取 CPU 上下文</td>
+</tr>
+<tr>
+<td><code>bl1_prepare_next_image</code></td>
+<td><code>0x0120</code></td>
+<td>0xB4 (180 B)</td>
+<td>bl1_context_mgmt.o</td>
+<td>准备下一个镜像的入口点信息</td>
+</tr>
+<tr>
+<td><code>bl1_setup</code></td>
+<td><code>0x01D4</code></td>
+<td>0x14 (20 B)</td>
+<td>bl1_main.o</td>
+<td>BL1 设置（公共层）</td>
+</tr>
+<tr>
+<td><code>bl1_main</code></td>
+<td><code>0x01E8</code></td>
+<td>0x104 (260 B)</td>
+<td>bl1_main.o</td>
+<td>BL1 主函数（C 入口）</td>
+</tr>
+<tr>
+<td><code>bl1_print_next_bl_ep_info</code></td>
+<td><code>0x02EC</code></td>
+<td>0x2C (44 B)</td>
+<td>bl1_main.o</td>
+<td>打印下一 BL 阶段入口信息</td>
+</tr>
+<tr>
+<td><code>bl1_smc_handler</code></td>
+<td><code>0x0318</code></td>
+<td>0x64 (100 B)</td>
+<td>bl1_main.o</td>
+<td>SMC 中断处理函数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="322">3.2.2 镜像加载与认证<a class="headerlink" href="#322" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>load_image</code></td>
+<td><code>0x037C</code></td>
+<td>0xB0 (176 B)</td>
+<td>bl_common.o</td>
+<td>加载镜像（不含认证）</td>
+</tr>
+<tr>
+<td><code>load_auth_image</code></td>
+<td><code>0x042C</code></td>
+<td>0x90 (144 B)</td>
+<td>bl_common.o</td>
+<td>加载并认证镜像</td>
+</tr>
+</tbody>
+</table>
+<h4 id="323">3.2.3 日志与控制台<a class="headerlink" href="#323" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tf_log</code></td>
+<td><code>0x04C0</code></td>
+<td>0x94 (148 B)</td>
+<td>tf_log.o</td>
+<td>TF-A 日志输出</td>
+</tr>
+<tr>
+<td><code>console_register</code></td>
+<td><code>0x0580</code></td>
+<td>0x34 (52 B)</td>
+<td>multi_console.o</td>
+<td>注册控制台驱动</td>
+</tr>
+<tr>
+<td><code>console_putc</code></td>
+<td><code>0x05CC</code></td>
+<td>0xA8 (168 B)</td>
+<td>multi_console.o</td>
+<td>控制台字符输出</td>
+</tr>
+<tr>
+<td><code>console_flush</code></td>
+<td><code>0x069C</code></td>
+<td>0x54 (84 B)</td>
+<td>multi_console.o</td>
+<td>控制台刷新</td>
+</tr>
+<tr>
+<td><code>plat_log_get_prefix</code></td>
+<td><code>0x1D18</code></td>
+<td>0x30 (48 B)</td>
+<td>plat_log_common.o</td>
+<td>日志前缀</td>
+</tr>
+</tbody>
+</table>
+<h4 id="324-io">3.2.4 IO 存储子系统<a class="headerlink" href="#324-io" title="Permanent link">&para;</a></h4>
+<p>BL1 支持三种 IO 后端：FIP（Firmware Image Package）、memmap（内存映射）和 semihosting。</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>register_io_dev_fip</code></td>
+<td><code>0x0A70</code></td>
+<td>0x38 (56 B)</td>
+<td>io_fip.o</td>
+<td>注册 FIP IO 设备</td>
+</tr>
+<tr>
+<td><code>register_io_dev_memmap</code></td>
+<td><code>0x0BF4</code></td>
+<td>0x38 (56 B)</td>
+<td>io_memmap.o</td>
+<td>注册 memmap IO 设备</td>
+</tr>
+<tr>
+<td><code>register_io_dev_sh</code></td>
+<td><code>0x0DA4</code></td>
+<td>0x38 (56 B)</td>
+<td>io_semihosting.o</td>
+<td>注册 semihosting IO 设备</td>
+</tr>
+<tr>
+<td><code>io_open</code></td>
+<td><code>0x0E94</code></td>
+<td>0xD4 (212 B)</td>
+<td>io_storage.o</td>
+<td>IO 设备打开</td>
+</tr>
+<tr>
+<td><code>io_read</code></td>
+<td><code>0x0FA8</code></td>
+<td>0x20 (32 B)</td>
+<td>io_storage.o</td>
+<td>IO 设备读取</td>
+</tr>
+</tbody>
+</table>
+<h4 id="325-el">3.2.5 上下文管理与 EL 切换<a class="headerlink" href="#325-el" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cm_setup_context</code></td>
+<td><code>0x1014</code></td>
+<td>0x15C (348 B)</td>
+<td>context_mgmt.o</td>
+<td>设置 CPU 上下文</td>
+</tr>
+<tr>
+<td><code>cm_init_my_context</code></td>
+<td><code>0x1170</code></td>
+<td>0x30 (48 B)</td>
+<td>context_mgmt.o</td>
+<td>初始化当前 CPU 上下文</td>
+</tr>
+<tr>
+<td><code>cm_el1_sysregs_context_restore</code></td>
+<td><code>0x11A0</code></td>
+<td>0x10C (268 B)</td>
+<td>context_mgmt.o</td>
+<td>恢复 EL1 系统寄存器</td>
+</tr>
+<tr>
+<td><code>cm_prepare_el3_exit</code></td>
+<td><code>0x12CC</code></td>
+<td>0x88 (136 B)</td>
+<td>context_mgmt.o</td>
+<td>准备退出 EL3</td>
+</tr>
+</tbody>
+</table>
+<h4 id="326-mmu">3.2.6 MMU / 页表<a class="headerlink" href="#326-mmu" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>setup_mmu_cfg</code></td>
+<td><code>0x1534</code></td>
+<td>0x7C (124 B)</td>
+<td>xlat_tables_arch.o</td>
+<td>MMU 配置</td>
+</tr>
+<tr>
+<td><code>init_xlat_tables</code></td>
+<td><code>0x15C0</code></td>
+<td>0x3C (60 B)</td>
+<td>xlat_tables_context.o</td>
+<td>初始化页表</td>
+</tr>
+<tr>
+<td><code>enable_mmu_el3</code></td>
+<td><code>0x15FC</code></td>
+<td>0x48 (72 B)</td>
+<td>xlat_tables_context.o</td>
+<td>使能 EL3 MMU</td>
+</tr>
+<tr>
+<td><code>mmap_add_region_ctx</code></td>
+<td><code>0x1900</code></td>
+<td>0x230 (560 B)</td>
+<td>xlat_tables_core.o</td>
+<td>添加内存映射区域</td>
+</tr>
+<tr>
+<td><code>init_xlat_tables_ctx</code></td>
+<td><code>0x1B6C</code></td>
+<td>0xE4 (228 B)</td>
+<td>xlat_tables_core.o</td>
+<td>初始化页表上下文</td>
+</tr>
+</tbody>
+</table>
+<h4 id="327">3.2.7 平台初始化<a class="headerlink" href="#327" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bl1_early_platform_setup</code></td>
+<td><code>0x1D54</code></td>
+<td>0x30 (48 B)</td>
+<td>qemu_bl1_setup.o</td>
+<td>QEMU 平台早期设置</td>
+</tr>
+<tr>
+<td><code>bl1_plat_arch_setup</code></td>
+<td><code>0x1D84</code></td>
+<td>0xBC (188 B)</td>
+<td>qemu_bl1_setup.o</td>
+<td>QEMU 平台架构设置</td>
+</tr>
+<tr>
+<td><code>bl1_platform_setup</code></td>
+<td><code>0x1E40</code></td>
+<td>0x04 (4 B)</td>
+<td>qemu_bl1_setup.o</td>
+<td>QEMU 平台设置（空函数）</td>
+</tr>
+<tr>
+<td><code>plat_qemu_io_setup</code></td>
+<td><code>0x1F58</code></td>
+<td>0x74 (116 B)</td>
+<td>qemu_io_storage.o</td>
+<td>QEMU IO 子系统初始化</td>
+</tr>
+<tr>
+<td><code>plat_get_image_source</code></td>
+<td><code>0x1FCC</code></td>
+<td>0xB8 (184 B)</td>
+<td>qemu_io_storage.o</td>
+<td>获取镜像数据源</td>
+</tr>
+</tbody>
+</table>
+<h4 id="328-cpu-errata">3.2.8 CPU Errata 处理（代码段占比大）<a class="headerlink" href="#328-cpu-errata" title="Permanent link">&para;</a></h4>
+<p>代码段后半部分（<code>0x2084</code> ~ <code>0x4FFF</code>）主要由 CPU errata 处理函数和 CPU reset 函数占据，支持以下核心：</p>
+<table>
+<thead>
+<tr>
+<th>核心类型</th>
+<th>代码范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cortex-A53</td>
+<td><code>0x2420</code> - <code>0x2517</code></td>
+<td>8 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Cortex-A55</td>
+<td><code>0x2518</code> - <code>0x25B7</code></td>
+<td>6 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Cortex-A57</td>
+<td><code>0x25B8</code> - <code>0x272F</code></td>
+<td>14 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Cortex-A710</td>
+<td><code>0x2738</code> - <code>0x2837</code></td>
+<td>16 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Cortex-A72</td>
+<td><code>0x2838</code> - <code>0x295F</code></td>
+<td>7 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Cortex-A76</td>
+<td><code>0x2960</code> - <code>0x2A2F</code></td>
+<td>12 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Neoverse-N1</td>
+<td><code>0x2B80</code> - <code>0x2CCF</code></td>
+<td>14 个 erratum 检查 + reset</td>
+</tr>
+<tr>
+<td>Neoverse-N2</td>
+<td><code>0x2CD0</code> - <code>0x2D??</code></td>
+<td>11 个 erratum 检查</td>
+</tr>
+<tr>
+<td>Neoverse-V1</td>
+<td><code>0x2D??</code> - <code>0x2E??</code></td>
+<td>若干 erratum 检查</td>
+</tr>
+<tr>
+<td>AEM Generic</td>
+<td><code>0x66E8</code> - <code>.cpu_ops</code></td>
+<td>通用 CPU 操作</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意</strong>: 虽然 QEMU 平台运行时只使用一种核心，但 TF-A 静态链接了所有支持的 CPU errata 代码和 CPU ops 表，这显著增加了代码段体积。</p>
+</blockquote>
+<h4 id="329">3.2.9 汇编辅助函数<a class="headerlink" href="#329" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>el3_panic</code></td>
+<td><code>0x2190</code></td>
+<td>0x30</td>
+<td>EL3 panic 处理</td>
+</tr>
+<tr>
+<td><code>smc_handler64</code></td>
+<td><code>0x2084</code></td>
+<td>0xBC</td>
+<td>SMC 异常路由（汇编）</td>
+</tr>
+<tr>
+<td><code>console_pl011_core_init</code></td>
+<td><code>0x21C0</code></td>
+<td>0x58</td>
+<td>PL011 UART 初始化（汇编）</td>
+</tr>
+<tr>
+<td><code>flush_dcache_range</code></td>
+<td><code>0x22A4</code></td>
+<td>0x38</td>
+<td>D-cache 刷新</td>
+</tr>
+<tr>
+<td><code>zeromem</code> / <code>zero_normalmem</code></td>
+<td><code>0x22DC</code> / <code>0x22E4</code></td>
+<td>8 / 232 B</td>
+<td>内存清零</td>
+</tr>
+<tr>
+<td><code>memcpy16</code></td>
+<td><code>0x23CC</code></td>
+<td>0x30</td>
+<td>16 字节对齐拷贝</td>
+</tr>
+<tr>
+<td><code>disable_mmu_el3</code></td>
+<td><code>0x23FC</code></td>
+<td>0x1C</td>
+<td>禁用 EL3 MMU</td>
+</tr>
+<tr>
+<td><code>reset_handler</code></td>
+<td><code>0x2A30</code></td>
+<td>0x20</td>
+<td>CPU reset 处理</td>
+</tr>
+<tr>
+<td><code>get_cpu_ops_ptr</code></td>
+<td><code>0x2A50</code></td>
+<td>0x48</td>
+<td>获取 CPU 操作表指针</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-rodata-0x5000-0x69e8-6640-b">3.3 .rodata 只读数据段 (0x5000 - 0x69E8, 6640 B)<a class="headerlink" href="#33-rodata-0x5000-0x69e8-6640-b" title="Permanent link">&para;</a></h3>
+<h4 id="331-io">3.3.1 IO 设备操作表<a class="headerlink" href="#331-io" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fip_dev_funcs</code></td>
+<td><code>0x5000</code></td>
+<td>0x48 (72 B)</td>
+<td>FIP 设备操作函数表</td>
+</tr>
+<tr>
+<td><code>fip_dev_connector</code></td>
+<td><code>0x5048</code></td>
+<td>0x08</td>
+<td>FIP 设备连接器</td>
+</tr>
+<tr>
+<td><code>memmap_dev_funcs</code></td>
+<td><code>0x5050</code></td>
+<td>0x48 (72 B)</td>
+<td>Memmap 设备操作函数表</td>
+</tr>
+<tr>
+<td><code>memmap_dev_connector</code></td>
+<td><code>0x5098</code></td>
+<td>0x08</td>
+<td>Memmap 设备连接器</td>
+</tr>
+<tr>
+<td><code>sh_dev_funcs</code></td>
+<td><code>0x50A0</code></td>
+<td>0x48 (72 B)</td>
+<td>Semihosting 设备操作函数表</td>
+</tr>
+<tr>
+<td><code>sh_dev_connector</code></td>
+<td><code>0x50E8</code></td>
+<td>0x08</td>
+<td>Semihosting 设备连接器</td>
+</tr>
+</tbody>
+</table>
+<h4 id="332">3.3.2 平台内存映射表<a class="headerlink" href="#332" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plat_qemu_mmap</code></td>
+<td><code>0x5118</code></td>
+<td>0xF0 (240 B)</td>
+<td>QEMU 平台内存映射描述表</td>
+</tr>
+<tr>
+<td><code>policies</code></td>
+<td><code>0x5208</code></td>
+<td>0x360 (864 B)</td>
+<td>IO 存储策略表（sh_file_spec + fip_block_spec）</td>
+</tr>
+<tr>
+<td><code>sh_file_spec</code></td>
+<td><code>0x5568</code></td>
+<td>0x240 (576 B)</td>
+<td>Semihosting 文件描述符表</td>
+</tr>
+<tr>
+<td><code>fip_block_spec</code></td>
+<td><code>0x57A8</code></td>
+<td>0x10 (16 B)</td>
+<td>FIP 块设备描述符</td>
+</tr>
+</tbody>
+</table>
+<h4 id="333-cpu-errata">3.3.3 CPU Errata 表<a class="headerlink" href="#333-cpu-errata" title="Permanent link">&para;</a></h4>
+<p>每种 CPU 核心都有对应的 <code>.rodata.errata_entries</code> 表，记录该核心的 erratum 编号和处理函数：</p>
+<table>
+<thead>
+<tr>
+<th>CPU 核心</th>
+<th>地址</th>
+<th>大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cortex-A53</td>
+<td><code>0x57B8</code></td>
+<td>0xD8 (216 B)</td>
+</tr>
+<tr>
+<td>Cortex-A55</td>
+<td><code>0x5890</code></td>
+<td>0xD8 (216 B)</td>
+</tr>
+<tr>
+<td>Cortex-A57</td>
+<td><code>0x5968</code></td>
+<td>0x180 (384 B)</td>
+</tr>
+<tr>
+<td>Cortex-A710</td>
+<td><code>0x5AE8</code></td>
+<td>0x1C8 (456 B)</td>
+</tr>
+<tr>
+<td>Cortex-A72</td>
+<td><code>0x5CB0</code></td>
+<td>0x78 (120 B)</td>
+</tr>
+<tr>
+<td>Cortex-A76</td>
+<td><code>0x5D28</code></td>
+<td>0x150 (336 B)</td>
+</tr>
+<tr>
+<td>Neoverse-N1</td>
+<td><code>0x5E78</code></td>
+<td>0x198 (408 B)</td>
+</tr>
+<tr>
+<td>Neoverse-N2</td>
+<td><code>0x6010</code></td>
+<td>0x1F8 (504 B)</td>
+</tr>
+<tr>
+<td>Neoverse-V1</td>
+<td><code>0x6208</code></td>
+<td>0x198 (408 B)</td>
+</tr>
+<tr>
+<td>AEM Generic</td>
+<td><code>0x66E7</code></td>
+<td>0x00 (空)</td>
+</tr>
+<tr>
+<td>QEMU Max</td>
+<td><code>0x66E7</code></td>
+<td>0x00 (空)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>总计约 3.3 KB</strong> 的 errata 表数据，占 .rodata 的近一半。</p>
+</blockquote>
+<h4 id="334-uuid">3.3.4 镜像 UUID 规格<a class="headerlink" href="#334-uuid" title="Permanent link">&para;</a></h4>
+<p>BL1 通过 UUID 定位固件包中的各个镜像：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rmm_uuid_spec</code></td>
+<td><code>0x6646</code></td>
+<td>RMM (Realm Management Monitor) UUID</td>
+</tr>
+<tr>
+<td><code>bl33_uuid_spec</code></td>
+<td><code>0x6656</code></td>
+<td>BL33 (Non-secure firmware, 如 U-Boot) UUID</td>
+</tr>
+<tr>
+<td><code>tos_fw_config_uuid_spec</code></td>
+<td><code>0x6666</code></td>
+<td>Trusted OS FW Config UUID</td>
+</tr>
+<tr>
+<td><code>tb_fw_config_uuid_spec</code></td>
+<td><code>0x6676</code></td>
+<td>Trusted Boot FW Config UUID</td>
+</tr>
+<tr>
+<td><code>bl32_extra2_uuid_spec</code></td>
+<td><code>0x6686</code></td>
+<td>BL32 Extra2 UUID</td>
+</tr>
+<tr>
+<td><code>bl32_extra1_uuid_spec</code></td>
+<td><code>0x6696</code></td>
+<td>BL32 Extra1 UUID</td>
+</tr>
+<tr>
+<td><code>bl32_uuid_spec</code></td>
+<td><code>0x66A6</code></td>
+<td>BL32 (Trusted OS, 如 OP-TEE) UUID</td>
+</tr>
+<tr>
+<td><code>bl31_uuid_spec</code></td>
+<td><code>0x66B6</code></td>
+<td>BL31 (EL3 Runtime firmware) UUID</td>
+</tr>
+<tr>
+<td><code>bl2_uuid_spec</code></td>
+<td><code>0x66C6</code></td>
+<td>BL2 UUID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="335-cpu-cpu_ops">3.3.5 CPU 操作表 (.cpu_ops)<a class="headerlink" href="#335-cpu-cpu_ops" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>CPU 核心</th>
+<th>地址</th>
+<th>大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aem_generic</td>
+<td><code>0x66E8</code></td>
+<td>0x80 (128 B)</td>
+</tr>
+<tr>
+<td>cortex_a53</td>
+<td><code>0x6768</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>cortex_a55</td>
+<td><code>0x67A8</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>cortex_a57</td>
+<td><code>0x67E8</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>cortex_a710</td>
+<td><code>0x6828</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>cortex_a72</td>
+<td><code>0x6868</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>cortex_a76</td>
+<td><code>0x68A8</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>neoverse_n1</td>
+<td><code>0x68E8</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>neoverse_n2</td>
+<td><code>0x6928</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>neoverse_v1</td>
+<td><code>0x6968</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+<tr>
+<td>qemu_max</td>
+<td><code>0x69A8</code></td>
+<td>0x40 (64 B)</td>
+</tr>
+</tbody>
+</table>
+<p><code>__CPU_OPS_START__</code> = <code>0x66E8</code>, <code>__CPU_OPS_END__</code> = <code>0x69E8</code>，总计 <code>0x300</code> (768 B)</p>
+<h4 id="336">3.3.6 其他只读数据<a class="headerlink" href="#336" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plat_prefix_str</code></td>
+<td><code>0x50F0</code></td>
+<td>0x28 (40 B)</td>
+<td>平台日志前缀</td>
+</tr>
+<tr>
+<td><code>vprintf</code></td>
+<td><code>0x63A0</code></td>
+<td>0x30 (48 B)</td>
+<td>vprintf 格式化函数指针</td>
+</tr>
+<tr>
+<td><code>build_version_string</code></td>
+<td><code>0x6601</code></td>
+<td>0x17 (23 B)</td>
+<td>构建版本字符串</td>
+</tr>
+<tr>
+<td><code>build_message</code></td>
+<td><code>0x6618</code></td>
+<td>0x1E (30 B)</td>
+<td>构建消息字符串</td>
+</tr>
+<tr>
+<td><code>uuid_null</code></td>
+<td><code>0x6636</code></td>
+<td>0x10 (16 B)</td>
+<td>空 UUID</td>
+</tr>
+<tr>
+<td><code>panic_str</code></td>
+<td><code>0x66D6</code></td>
+<td>0x11 (17 B)</td>
+<td>panic 字符串 ("PANIC")</td>
+</tr>
+</tbody>
+</table>
+<h3 id="34-section">3.4 特殊只读 Section<a class="headerlink" href="#34-section" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.iplt</code></td>
+<td><code>0x5000</code></td>
+<td>0x00</td>
+<td>间接 PLT（未使用，PIE 模式）</td>
+</tr>
+<tr>
+<td><code>.ARM.extab</code></td>
+<td>-</td>
+<td>空</td>
+<td>ARM 异常展开表</td>
+</tr>
+<tr>
+<td><code>.ARM.exidx</code></td>
+<td>-</td>
+<td>空</td>
+<td>ARM 异常展开索引</td>
+</tr>
+<tr>
+<td><code>.eh_frame_hdr</code></td>
+<td><code>0x69F0</code></td>
+<td>0x00</td>
+<td>异常处理帧头（release 模式排除）</td>
+</tr>
+<tr>
+<td><code>.rela.dyn</code></td>
+<td><code>0x69F0</code></td>
+<td>0x00</td>
+<td>运行时重定位表</td>
+</tr>
+<tr>
+<td><code>.got</code></td>
+<td><code>0x69E8</code></td>
+<td>0x00</td>
+<td>全局偏移表（静态链接无 GOT 条目）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="35-data-0xe0ee000-261-b">3.5 .data 初始化数据段 (0xE0EE000, 261 B)<a class="headerlink" href="#35-data-0xe0ee000-261-b" title="Permanent link">&para;</a></h3>
+<p>.data 段在 ROM 中有副本（load address <code>0x69F0</code>），启动时搬运到 RAM。</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>memmap_dev_info</code></td>
+<td><code>0xE0EE000</code></td>
+<td>0x10 (16 B)</td>
+<td>Memmap 设备信息</td>
+</tr>
+<tr>
+<td><code>sh_dev_info</code></td>
+<td><code>0xE0EE010</code></td>
+<td>0x10 (16 B)</td>
+<td>Semihosting 设备信息</td>
+</tr>
+<tr>
+<td><code>tf_xlat_ctx</code></td>
+<td><code>0xE0EE020</code></td>
+<td>0x60 (96 B)</td>
+<td>EL3 XLAT 上下文</td>
+</tr>
+<tr>
+<td><code>bl2_img_desc.0</code></td>
+<td><code>0xE0EE080</code></td>
+<td>0x80 (128 B)</td>
+<td>BL2 镜像描述符</td>
+</tr>
+<tr>
+<td><code>max_log_level</code></td>
+<td><code>0xE0EE100</code></td>
+<td>0x04 (4 B)</td>
+<td>最大日志级别</td>
+</tr>
+<tr>
+<td><code>console_state</code></td>
+<td><code>0xE0EE104</code></td>
+<td>0x01 (1 B)</td>
+<td>控制台状态</td>
+</tr>
+</tbody>
+</table>
+<h3 id="36-stacks-0xe0ee140-4-kb">3.6 .stacks 栈段 (0xE0EE140, 4 KB)<a class="headerlink" href="#36-stacks-0xe0ee140-4-kb" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tzfw_normal_stacks</code></td>
+<td><code>0xE0EE140</code></td>
+<td>0x1000 (4 KB)</td>
+<td>Trusted Firmware 栈（<code>platform_up_stack.o</code>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="37-bss-0xe0ef140-2208-b">3.7 .bss 未初始化数据段 (0xE0EF140, 2208 B)<a class="headerlink" href="#37-bss-0xe0ef140-2208-b" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bl1_cpu_context.0</code></td>
+<td><code>0xE0EF140</code></td>
+<td>0x480 (1152 B)</td>
+<td>BL1 CPU 上下文（最大 BSS 消耗者）</td>
+</tr>
+<tr>
+<td><code>bl1_cpu_context_ptr</code></td>
+<td><code>0xE0EF5C0</code></td>
+<td>0x10 (16 B)</td>
+<td>CPU 上下文指针</td>
+</tr>
+<tr>
+<td><code>console_list</code></td>
+<td><code>0xE0EF5D0</code></td>
+<td>0x08 (8 B)</td>
+<td>控制台链表头</td>
+</tr>
+<tr>
+<td><code>dev_info_pool</code></td>
+<td><code>0xE0EF5D8</code></td>
+<td>0x10 (16 B)</td>
+<td>FIP 设备信息池</td>
+</tr>
+<tr>
+<td><code>state_pool</code></td>
+<td><code>0xE0EF5E8</code></td>
+<td>0x10 (16 B)</td>
+<td>FIP 状态池</td>
+</tr>
+<tr>
+<td><code>backend_image_spec</code></td>
+<td><code>0xE0EF5F8</code></td>
+<td>0x08</td>
+<td>后端镜像规格</td>
+</tr>
+<tr>
+<td><code>backend_dev_handle</code></td>
+<td><code>0xE0EF600</code></td>
+<td>0x08</td>
+<td>后端设备句柄</td>
+</tr>
+<tr>
+<td><code>current_fip_file</code></td>
+<td><code>0xE0EF608</code></td>
+<td>0x30 (48 B)</td>
+<td>当前 FIP 文件状态</td>
+</tr>
+<tr>
+<td><code>current_memmap_file</code></td>
+<td><code>0xE0EF638</code></td>
+<td>0x20 (32 B)</td>
+<td>当前 memmap 文件状态</td>
+</tr>
+<tr>
+<td><code>entity_map</code></td>
+<td><code>0xE0EF658</code></td>
+<td>0x20 (32 B)</td>
+<td>IO 实体映射表</td>
+</tr>
+<tr>
+<td><code>entity_pool</code></td>
+<td><code>0xE0EF678</code></td>
+<td>0x40 (64 B)</td>
+<td>IO 实体池</td>
+</tr>
+<tr>
+<td><code>per_world_context</code></td>
+<td><code>0xE0EF6B8</code></td>
+<td>0x30 (48 B)</td>
+<td>每个世界上下文</td>
+</tr>
+<tr>
+<td><code>tf_mmap</code></td>
+<td><code>0xE0EF6E8</code></td>
+<td>0x230 (560 B)</td>
+<td>内存映射描述数组</td>
+</tr>
+<tr>
+<td><code>mmu_cfg_params</code></td>
+<td><code>0xE0EF918</code></td>
+<td>0x18 (24 B)</td>
+<td>MMU 配置参数</td>
+</tr>
+<tr>
+<td><code>plat_try_img_ops</code></td>
+<td><code>0xE0EF930</code></td>
+<td>0x08</td>
+<td>平台镜像操作</td>
+</tr>
+<tr>
+<td><code>bl1_tzram_layout</code></td>
+<td><code>0xE0EF938</code></td>
+<td>0x10 (16 B)</td>
+<td>BL1 TZRAM 布局</td>
+</tr>
+<tr>
+<td><code>console</code></td>
+<td><code>0xE0EF948</code></td>
+<td>0x28 (40 B)</td>
+<td>QEMU PL011 控制台实例</td>
+</tr>
+<tr>
+<td><code>sh_dev_handle</code></td>
+<td><code>0xE0EF970</code></td>
+<td>0x08</td>
+<td>Semihosting 设备句柄</td>
+</tr>
+<tr>
+<td><code>fip_dev_handle</code></td>
+<td><code>0xE0EF990</code></td>
+<td>0x08</td>
+<td>FIP 设备句柄</td>
+</tr>
+<tr>
+<td><code>fip_dev_count</code></td>
+<td><code>0xE0EF9A0</code></td>
+<td>0x04</td>
+<td>FIP 设备计数</td>
+</tr>
+<tr>
+<td><code>dev_count</code></td>
+<td><code>0xE0EF9A4</code></td>
+<td>0x04</td>
+<td>IO 设备总数</td>
+</tr>
+<tr>
+<td><code>entity_count</code></td>
+<td><code>0xE0EF9A8</code></td>
+<td>0x04</td>
+<td>IO 实体总数</td>
+</tr>
+<tr>
+<td><code>base_xlat_table</code></td>
+<td><code>0xE0EF9C0</code></td>
+<td>0x20 (32 B)</td>
+<td>基础页表</td>
+</tr>
+</tbody>
+</table>
+<h3 id="38-xlat_table-0xe0f0000-24-kb">3.8 .xlat_table 页表段 (0xE0F0000, 24 KB)<a class="headerlink" href="#38-xlat_table-0xe0f0000-24-kb" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xlat_table</code></td>
+<td><code>0xE0F0000</code></td>
+<td>0x6000 (24 KB)</td>
+<td>MMU translation tables</td>
+</tr>
+</tbody>
+</table>
+<p>这是 BL1 最大的运行时数据段，用于存储 EL3 的页表（4KB granule, Level 0~2）。</p>
+<h3 id="39">3.9 空描述符区域（详细）<a class="headerlink" href="#39" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>区域</th>
+<th>起始/结束地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__RT_SVC_DESCS__</code></td>
+<td><code>0x66E8</code></td>
+<td>0</td>
+<td>运行时服务描述符 — BL1 不注册 RT svc</td>
+</tr>
+<tr>
+<td><code>__FCONF_POPULATOR__</code></td>
+<td><code>0x66E8</code></td>
+<td>0</td>
+<td>FCONF 动态配置 — BL1 不使用 FCONF</td>
+</tr>
+<tr>
+<td><code>__PMF_SVC_DESCS__</code></td>
+<td><code>0x66E8</code></td>
+<td>0</td>
+<td>PMF 性能测量描述符 — 未启用</td>
+</tr>
+<tr>
+<td><code>__PARSER_LIB_DESCS__</code></td>
+<td><code>0x66E8</code></td>
+<td>0</td>
+<td>镜像解析器描述符 — BL1 不使用</td>
+</tr>
+<tr>
+<td><code>__BAKERY_LOCK__</code></td>
+<td><code>0xE0EF9C0</code></td>
+<td>0</td>
+<td>Bakery Lock — QEMU 单核无需</td>
+</tr>
+<tr>
+<td><code>__PMF_TIMESTAMP__</code></td>
+<td><code>0xE0EF9C0</code></td>
+<td>0</td>
+<td>PMF 时间戳 — 未启用</td>
+</tr>
+<tr>
+<td><code>.got</code></td>
+<td><code>0x69E8</code></td>
+<td>0</td>
+<td>全局偏移表 — 静态链接无 GOT</td>
+</tr>
+<tr>
+<td><code>.iplt</code></td>
+<td><code>0x5000</code></td>
+<td>0</td>
+<td>间接 PLT — 未使用</td>
+</tr>
+<tr>
+<td><code>.ARM.extab</code> / <code>.ARM.exidx</code></td>
+<td>-</td>
+<td>0</td>
+<td>ARM 异常展开表 — 不需要</td>
+</tr>
+<tr>
+<td><code>.eh_frame_hdr</code></td>
+<td><code>0x69F0</code></td>
+<td>0</td>
+<td>异常处理帧头 — release 排除</td>
+</tr>
+<tr>
+<td><code>.rela.dyn</code></td>
+<td><code>0x69F0</code></td>
+<td>0</td>
+<td>动态重定位 — 完全静态链接</td>
+</tr>
+<tr>
+<td><code>.igot.plt</code></td>
+<td><code>0xE0EE108</code></td>
+<td>0</td>
+<td>间接 GOT PLT — 未使用</td>
+</tr>
+</tbody>
+</table>
+<h3 id="310-el3-vectors">3.10 EL3 异常向量表 (.vectors)<a class="headerlink" href="#310-el3-vectors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bl1_exceptions</code></td>
+<td><code>0x4000</code></td>
+<td>0x800 (2048 B)</td>
+<td>EL3 异常向量表（bl1_exceptions.o）</td>
+</tr>
+</tbody>
+</table>
+<p>向量表位于 .text 段内、页对齐的 <code>0x4000</code> 地址处，包含 Synchronous、IRQ、FIQ、SError 四类异常的入口。<code>__TEXT_END_UNALIGNED__</code> = <code>0x4800</code>，然后填充对齐到 <code>__TEXT_END__</code> = <code>0x5000</code>。</p>
+<h3 id="311-el3">3.11 EL3 上下文管理汇编函数<a class="headerlink" href="#311-el3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prepare_el3_entry</code></td>
+<td><code>0x2EF4</code></td>
+<td>0x98 (152 B)</td>
+<td>准备进入 EL3（保存上下文）</td>
+</tr>
+<tr>
+<td><code>restore_gp_pmcr_pauth_regs</code></td>
+<td><code>0x2F8C</code></td>
+<td>0x50 (80 B)</td>
+<td>恢复通用/PMCR/PAuth 寄存器</td>
+</tr>
+<tr>
+<td><code>el3_exit</code></td>
+<td><code>0x2FDC</code></td>
+<td>0x78 (120 B)</td>
+<td>退出 EL3（ERET）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="312">3.12 平台辅助函数<a class="headerlink" href="#312" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plat_set_my_stack</code></td>
+<td><code>0x30C8</code></td>
+<td>0x10 (16 B)</td>
+<td>设置当前 CPU 栈</td>
+</tr>
+<tr>
+<td><code>plat_is_my_cpu_primary</code></td>
+<td><code>0x30F0</code></td>
+<td>0x14 (20 B)</td>
+<td>判断是否主 CPU</td>
+</tr>
+<tr>
+<td><code>plat_secondary_cold_boot_setup</code></td>
+<td><code>0x3104</code></td>
+<td>0x34 (52 B)</td>
+<td>从核冷启动（QEMU 空函数）</td>
+</tr>
+<tr>
+<td><code>plat_crash_console_init</code></td>
+<td><code>0x3144</code></td>
+<td>0x14 (20 B)</td>
+<td>crash 控制台初始化</td>
+</tr>
+<tr>
+<td><code>plat_crash_console_putc</code></td>
+<td><code>0x3158</code></td>
+<td>0x08</td>
+<td>crash 控制台字符输出</td>
+</tr>
+<tr>
+<td><code>plat_crash_console_flush</code></td>
+<td><code>0x3160</code></td>
+<td>0x08</td>
+<td>crash 控制台刷新</td>
+</tr>
+</tbody>
+</table>
+<h3 id="313-libc">3.13 libc 内置函数<a class="headerlink" href="#313-libc" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>地址</th>
+<th>大小</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>memcmp</code></td>
+<td><code>0x3168</code></td>
+<td>0x34 (52 B)</td>
+<td>内存比较</td>
+</tr>
+<tr>
+<td><code>memcpy</code></td>
+<td><code>0x319C</code></td>
+<td>0x20 (32 B)</td>
+<td>内存拷贝</td>
+</tr>
+<tr>
+<td><code>memmove</code></td>
+<td><code>0x31BC</code></td>
+<td>0x34 (52 B)</td>
+<td>内存移动</td>
+</tr>
+<tr>
+<td><code>vprintf</code></td>
+<td><code>0x32E4</code></td>
+<td>0x4A0 (1184 B)</td>
+<td>格式化输出（最大 libc 函数）</td>
+</tr>
+<tr>
+<td><code>strlen</code></td>
+<td><code>0x3784</code></td>
+<td>0x1C (28 B)</td>
+<td>字符串长度</td>
+</tr>
+<tr>
+<td><code>memset</code></td>
+<td><code>0x37A0</code></td>
+<td>0x74 (116 B)</td>
+<td>内存填充</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>vprintf</code> 是最大的 libc 函数（1184 B），因为 BL1 需要支持格式化日志输出。</p>
+</blockquote>
+<hr />
+<h2 id="4-romram">4. ROM/RAM 运行时搬运机制<a class="headerlink" href="#4-romram" title="Permanent link">&para;</a></h2>
+<p>BL1 采用了 ROM + RAM 分离布局：</p>
+<div class="highlight"><pre><span></span><code>Flash/ROM 侧:                    RAM 侧:
+┌──────────────┐                 ┌──────────────┐
+│  .text       │                 │              │
+│  .rodata     │     复制        │  .data       │ ← 从 ROM 搬运
+│  .data(ROM)  │ ──────────────→ │  .stacks     │
+│              │                 │  .bss        │ ← 运行时清零
+└──────────────┘                 │  .xlat_table │ ← 运行时填充
+                                 └──────────────┘
+</code></pre></div>
+<ul>
+<li><code>.data</code> 段的 <strong>load address</strong> 在 ROM 中 (<code>0x69F0</code>)，<strong>VMA/RUN address</strong> 在 RAM 中 (<code>0xE0EE000</code>)</li>
+<li>启动时 <code>bl1_entrypoint</code> 汇编代码负责将 <code>.data</code> 从 ROM 搬运到 RAM</li>
+<li><code>.bss</code> 段在 RAM 中，需要清零</li>
+<li><code>.stacks</code> 段在 RAM 中，栈指针在入口处设置</li>
+</ul>
+<hr />
+<h2 id="5">5. 外部库依赖<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<h3 id="51-archive">5.1 Archive 成员<a class="headerlink" href="#51-archive" title="Permanent link">&para;</a></h3>
+<p>从 libc.a 中链接了以下函数：</p>
+<table>
+<thead>
+<tr>
+<th>库文件</th>
+<th>提供的符号</th>
+<th>被引用者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>libc.a(memcmp.o)</code></td>
+<td><code>memcmp</code></td>
+<td>io_fip.o</td>
+</tr>
+<tr>
+<td><code>libc.a(memcpy.o)</code></td>
+<td><code>memcpy</code></td>
+<td>io_memmap.o</td>
+</tr>
+<tr>
+<td><code>libc.a(memmove.o)</code></td>
+<td><code>memmove</code></td>
+<td>xlat_tables_core.o</td>
+</tr>
+<tr>
+<td><code>libc.a(printf.o)</code></td>
+<td><code>vprintf</code></td>
+<td>tf_log.o</td>
+</tr>
+<tr>
+<td><code>libc.a(strlen.o)</code></td>
+<td><code>strlen</code></td>
+<td>semihosting.o</td>
+</tr>
+<tr>
+<td><code>libc.a(memset.o)</code></td>
+<td><code>memset</code></td>
+<td>qemu_bl1_setup.o</td>
+</tr>
+</tbody>
+</table>
+<p>此外还链接了 <code>libfdt.a</code>（FDT 设备树库），用于设备树操作。</p>
+<h3 id="52">5.2 编译器内置函数<a class="headerlink" href="#52" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>源文件</th>
+<th>提供的符号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>popcountdi2.o</code></td>
+<td><code>__popcountdi2</code></td>
+</tr>
+<tr>
+<td><code>popcountsi2.o</code></td>
+<td><code>__popcountsi2</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-discarded-sections">6. Discarded Sections 分析<a class="headerlink" href="#6-discarded-sections" title="Permanent link">&para;</a></h2>
+<p>map 文件记录了多个被链接器丢弃的 section，这些 section 中的代码/数据未被最终链接：</p>
+<h3 id="61">6.1 因条件编译被完全丢弃的函数<a class="headerlink" href="#61" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>来源文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page_align</code></td>
+<td>bl_common.o</td>
+<td>页对齐辅助函数（未使用）</td>
+</tr>
+<tr>
+<td><code>get_version</code></td>
+<td>bl_common.o</td>
+<td>版本获取函数（未使用）</td>
+</tr>
+<tr>
+<td><code>build_version</code></td>
+<td>bl_common.o</td>
+<td>版本数据（未使用）</td>
+</tr>
+<tr>
+<td><code>bl1_smc_wrapper</code></td>
+<td>bl1_main.o</td>
+<td>SMC 包装器（未使用）</td>
+</tr>
+<tr>
+<td><code>cm_set_context</code></td>
+<td>bl1_context_mgmt.o</td>
+<td>上下文设置（未使用此版本）</td>
+</tr>
+<tr>
+<td><code>tf_log_newline</code></td>
+<td>tf_log.o</td>
+<td>日志换行（未使用）</td>
+</tr>
+<tr>
+<td><code>tf_log_set_max_level</code></td>
+<td>tf_log.o</td>
+<td>设置日志级别（编译时固定）</td>
+</tr>
+<tr>
+<td><code>console_unregister</code></td>
+<td>multi_console.o</td>
+<td>控制台注销（未使用）</td>
+</tr>
+<tr>
+<td><code>console_switch_state</code></td>
+<td>multi_console.o</td>
+<td>控制台状态切换（未使用）</td>
+</tr>
+<tr>
+<td><code>fip_dev_get_plat_toc_flag</code></td>
+<td>io_fip.o</td>
+<td>FIP TOC 标志获取（未使用）</td>
+</tr>
+<tr>
+<td><code>io_write</code></td>
+<td>io_storage.o</td>
+<td>IO 写操作（BL1 只读）</td>
+</tr>
+<tr>
+<td><code>amu_enable</code> / <code>amu_init_el3</code></td>
+<td>context_mgmt.o</td>
+<td>AMU 使能（QEMU 不支持）</td>
+</tr>
+<tr>
+<td><code>__popcountdi2</code> / <code>__popcountsi2</code></td>
+<td>popcountdi2.o / popcountsi2.o</td>
+<td>编译器内置（优化后未使用）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-eh_frame">6.2 .eh_frame 丢弃<a class="headerlink" href="#62-eh_frame" title="Permanent link">&para;</a></h3>
+<p>所有 .o 文件的 <code>.eh_frame</code> section（C++ 异常处理帧 / DWARF unwind info）均被丢弃。TF-A 作为裸机固件不需要 C++ 异常处理和 stack unwinding。release 模式下仅保留了 <code>.debug_frame</code>（DWARF 调试信息，不进入最终二进制）。</p>
+<hr />
+<h2 id="7-assert">7. 链接器断言 (ASSERT)<a class="headerlink" href="#7-assert" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>断言</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BL1_RO_BASE address is not aligned on a page boundary</code></td>
+<td>BL1 只读基址必须 4KB 页对齐</td>
+</tr>
+<tr>
+<td><code>.text address is not aligned on a page boundary</code></td>
+<td>.text 段必须 4KB 页对齐</td>
+</tr>
+<tr>
+<td><code>BL1_RW_BASE address is not aligned on a page boundary</code></td>
+<td>BL1 读写基址必须 4KB 页对齐</td>
+</tr>
+<tr>
+<td><code>cpu_ops not defined for this platform</code></td>
+<td>必须有至少一个 CPU ops 定义</td>
+</tr>
+<tr>
+<td><code>BL1's ROM content has exceeded its limit</code> (0x20000)</td>
+<td>ROM 内容不能超过 128 KB</td>
+</tr>
+<tr>
+<td><code>BL1's RW section has exceeded its limit</code> (0xE100000)</td>
+<td>RW 区域不能超出安全 RAM 范围</td>
+</tr>
+</tbody>
+</table>
+<p>所有断言均通过（值为 1），链接成功。</p>
+<hr />
+<h2 id="8">8. 参与链接的目标文件清单<a class="headerlink" href="#8" title="Permanent link">&para;</a></h2>
+<p>共链接了 <strong>55 个目标文件</strong>（不含库文件成员）和 <strong>2 个库</strong>：</p>
+<h3 id="81-bl1">8.1 BL1 核心模块<a class="headerlink" href="#81-bl1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bl1_entrypoint.o</code></td>
+<td>BL1 入口点（汇编）</td>
+</tr>
+<tr>
+<td><code>bl1_arch_setup.o</code></td>
+<td>BL1 架构设置</td>
+</tr>
+<tr>
+<td><code>bl1_main.o</code></td>
+<td>BL1 主逻辑</td>
+</tr>
+<tr>
+<td><code>bl1_context_mgmt.o</code></td>
+<td>BL1 CPU 上下文管理</td>
+</tr>
+<tr>
+<td><code>bl1_exceptions.o</code></td>
+<td>EL3 异常向量</td>
+</tr>
+<tr>
+<td><code>bl_common.o</code></td>
+<td>BL 公共函数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-io">8.2 IO 存储子系统<a class="headerlink" href="#82-io" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>io_storage.o</code></td>
+<td>IO 存储抽象层</td>
+</tr>
+<tr>
+<td><code>io_fip.o</code></td>
+<td>FIP (Firmware Image Package) 驱动</td>
+</tr>
+<tr>
+<td><code>io_memmap.o</code></td>
+<td>内存映射 IO 驱动</td>
+</tr>
+<tr>
+<td><code>io_semihosting.o</code></td>
+<td>Semihosting IO 驱动</td>
+</tr>
+</tbody>
+</table>
+<h3 id="83-mmu">8.3 MMU / 页表<a class="headerlink" href="#83-mmu" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>xlat_tables_arch.o</code></td>
+<td>AArch64 页表架构操作</td>
+</tr>
+<tr>
+<td><code>xlat_tables_core.o</code></td>
+<td>页表核心逻辑</td>
+</tr>
+<tr>
+<td><code>xlat_tables_context.o</code></td>
+<td>页表上下文</td>
+</tr>
+<tr>
+<td><code>xlat_tables_utils.o</code></td>
+<td>页表工具（debug 打印）</td>
+</tr>
+<tr>
+<td><code>enable_mmu.o</code></td>
+<td>MMU 使能</td>
+</tr>
+</tbody>
+</table>
+<h3 id="84">8.4 平台相关<a class="headerlink" href="#84" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qemu_bl1_setup.o</code></td>
+<td>QEMU BL1 平台设置</td>
+</tr>
+<tr>
+<td><code>qemu_common.o</code></td>
+<td>QEMU 公共（mmap 表）</td>
+</tr>
+<tr>
+<td><code>qemu_console.o</code></td>
+<td>QEMU PL011 控制台</td>
+</tr>
+<tr>
+<td><code>qemu_io_storage.o</code></td>
+<td>QEMU IO 存储初始化</td>
+</tr>
+<tr>
+<td><code>plat_bl1_common.o</code></td>
+<td>BL1 平台公共函数</td>
+</tr>
+<tr>
+<td><code>plat_bl_common.o</code></td>
+<td>BL 平台公共函数</td>
+</tr>
+<tr>
+<td><code>plat_common.o</code></td>
+<td>通用平台函数</td>
+</tr>
+<tr>
+<td><code>plat_log_common.o</code></td>
+<td>平台日志</td>
+</tr>
+</tbody>
+</table>
+<h3 id="85-cpu-11">8.5 CPU 支持 (11 种核心)<a class="headerlink" href="#85-cpu-11" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>aem_generic.o</code></td>
+<td>ARM Emulation Model</td>
+</tr>
+<tr>
+<td><code>cortex_a53.o</code></td>
+<td>Cortex-A53</td>
+</tr>
+<tr>
+<td><code>cortex_a55.o</code></td>
+<td>Cortex-A55</td>
+</tr>
+<tr>
+<td><code>cortex_a57.o</code></td>
+<td>Cortex-A57</td>
+</tr>
+<tr>
+<td><code>cortex_a710.o</code></td>
+<td>Cortex-A710</td>
+</tr>
+<tr>
+<td><code>cortex_a72.o</code></td>
+<td>Cortex-A72</td>
+</tr>
+<tr>
+<td><code>cortex_a76.o</code></td>
+<td>Cortex-A76</td>
+</tr>
+<tr>
+<td><code>neoverse_n1.o</code></td>
+<td>Neoverse-N1</td>
+</tr>
+<tr>
+<td><code>neoverse_n2.o</code></td>
+<td>Neoverse-N2</td>
+</tr>
+<tr>
+<td><code>neoverse_n_common.o</code></td>
+<td>Neverse-N 系列公共</td>
+</tr>
+<tr>
+<td><code>neoverse_v1.o</code></td>
+<td>Neoverse-V1</td>
+</tr>
+<tr>
+<td><code>qemu_max.o</code></td>
+<td>QEMU Max CPU</td>
+</tr>
+<tr>
+<td><code>cpu_helpers.o</code></td>
+<td>CPU 辅助函数</td>
+</tr>
+<tr>
+<td><code>dsu_helpers.o</code></td>
+<td>DSU errata 辅助</td>
+</tr>
+</tbody>
+</table>
+<h3 id="86">8.6 其他支撑模块<a class="headerlink" href="#86" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>目标文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tf_log.o</code></td>
+<td>TF-A 日志</td>
+</tr>
+<tr>
+<td><code>multi_console.o</code></td>
+<td>多控制台框架</td>
+</tr>
+<tr>
+<td><code>context_mgmt.o</code></td>
+<td>上下文管理公共</td>
+</tr>
+<tr>
+<td><code>context.o</code></td>
+<td>上下文操作</td>
+</tr>
+<tr>
+<td><code>semihosting.o</code></td>
+<td>Semihosting 支持</td>
+</tr>
+<tr>
+<td><code>semihosting_call.o</code></td>
+<td>Semihosting 调用</td>
+</tr>
+<tr>
+<td><code>errata_common.o</code></td>
+<td>Errata 公共函数</td>
+</tr>
+<tr>
+<td><code>errata_report.o</code></td>
+<td>Errata 报告</td>
+</tr>
+<tr>
+<td><code>pmuv3.o</code></td>
+<td>PMU v3</td>
+</tr>
+<tr>
+<td><code>debug.o</code></td>
+<td>调试辅助（panic, print）</td>
+</tr>
+<tr>
+<td><code>pl011_console.o</code></td>
+<td>PL011 UART 驱动</td>
+</tr>
+<tr>
+<td><code>cache_helpers.o</code></td>
+<td>Cache 操作</td>
+</tr>
+<tr>
+<td><code>misc_helpers.o</code></td>
+<td>杂项辅助（zeromem, memcpy16 等）</td>
+</tr>
+<tr>
+<td><code>spinlock.o</code></td>
+<td>自旋锁</td>
+</tr>
+<tr>
+<td><code>platform_helpers.o</code></td>
+<td>平台辅助函数</td>
+</tr>
+<tr>
+<td><code>platform_up_stack.o</code></td>
+<td>平台栈定义</td>
+</tr>
+<tr>
+<td><code>plat_helpers.o</code></td>
+<td>平台 helper</td>
+</tr>
+</tbody>
+</table>
+<h3 id="87">8.7 外部库<a class="headerlink" href="#87" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>库</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lib/libfdt.a</code></td>
+<td>Flattened Device Tree 操作库</td>
+</tr>
+<tr>
+<td><code>lib/libc.a</code></td>
+<td>TF-A 内置精简 libc</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9">9. 内存占用统计<a class="headerlink" href="#9" title="Permanent link">&para;</a></h2>
+<h3 id="91-rom">9.1 ROM 占用<a class="headerlink" href="#91-rom" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>大小</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.text</td>
+<td>20,480 B (20 KB)</td>
+<td>56.1%</td>
+</tr>
+<tr>
+<td>.rodata</td>
+<td>6,640 B (6.5 KB)</td>
+<td>18.2%</td>
+</tr>
+<tr>
+<td>.data (ROM 副本)</td>
+<td>261 B</td>
+<td>0.7%</td>
+</tr>
+<tr>
+<td>padding/alignment</td>
+<td>~4 B</td>
+<td>~0%</td>
+</tr>
+<tr>
+<td><strong>ROM 有效使用总计</strong></td>
+<td><strong>27,389 B (~26.7 KB)</strong></td>
+<td><strong>75.1%</strong></td>
+</tr>
+<tr>
+<td>ROM 剩余空间</td>
+<td>~100 KB</td>
+<td>24.9%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="92-ram">9.2 RAM 占用<a class="headerlink" href="#92-ram" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>大小</th>
+<th>占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.data</td>
+<td>261 B</td>
+<td>0.3%</td>
+</tr>
+<tr>
+<td>对齐填充 (.data→.stacks)</td>
+<td>59 B</td>
+<td>-</td>
+</tr>
+<tr>
+<td>.stacks</td>
+<td>4,096 B (4 KB)</td>
+<td>5.3%</td>
+</tr>
+<tr>
+<td>.bss</td>
+<td>2,208 B (~2.2 KB)</td>
+<td>2.9%</td>
+</tr>
+<tr>
+<td>.base_xlat_table (in .bss)</td>
+<td>32 B</td>
+<td>-</td>
+</tr>
+<tr>
+<td>对齐填充 (.bss→.xlat_table)</td>
+<td>1,568 B</td>
+<td>-</td>
+</tr>
+<tr>
+<td>.xlat_table</td>
+<td>24,576 B (24 KB)</td>
+<td>31.7%</td>
+</tr>
+<tr>
+<td><strong>RAM 有效使用总计</strong></td>
+<td><strong>31,145 B (~30.4 KB)</strong></td>
+<td><strong>40.2%</strong></td>
+</tr>
+<tr>
+<td>RAM 剩余空间</td>
+<td>~43 KB</td>
+<td>59.8%</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-bl1">9.3 BL1 整体大小<a class="headerlink" href="#93-bl1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>ROM 有效内容:  ~26.7 KB / 128 KB  (20.9% 利用率)
+RAM 使用:      ~30.4 KB / 72 KB   (42.2% 利用率)
+BL1 总 footprint: ~57 KB
+</code></pre></div>
+<hr />
+<h2 id="10">10. 关键分析结论<a class="headerlink" href="#10" title="Permanent link">&para;</a></h2>
+<h3 id="101">10.1 空间效率<a class="headerlink" href="#101" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>ROM 使用率仅 20.9%</strong>，有大量空间裕量，这为未来添加功能（如安全启动增强、更多 IO 后端）提供了充足空间</li>
+<li><strong>RAM 使用率 42.2%</strong>，.xlat_table 占用了 RAM 的 31.7%，是最大的单一数据段</li>
+<li><strong>.text 段中 CPU errata 代码占比显著</strong>，对 QEMU 平台而言这些代码可能不会被运行，但增加了代码段体积</li>
+</ol>
+<h3 id="102">10.2 启动流程推断<a class="headerlink" href="#102" title="Permanent link">&para;</a></h3>
+<p>从符号布局可以推断 BL1 的启动流程：</p>
+<div class="highlight"><pre><span></span><code>bl1_entrypoint (汇编)          ← CPU 复位向量
+  ├─ 禁用中断、设置 EL3 栈
+  ├─ 搬运 .data 段 (ROM → RAM)
+  ├─ 清零 .bss 段
+  └─ 跳转 bl1_main (C)
+
+bl1_main
+  ├─ bl1_setup
+  │    └─ bl1_early_platform_setup  (控制台、IO 初始化)
+  │         └─ qemu_console_init
+  │         └─ plat_qemu_io_setup
+  │              └─ open_fip / open_memmap
+  │
+  ├─ bl1_plat_arch_setup
+  │    └─ setup_page_tables         (配置初始页表)
+  │    └─ enable_mmu_el3            (使能 MMU)
+  │
+  ├─ print_errata_status            (打印 CPU 勘误状态)
+  ├─ NOTICE(&quot;BL1: ...&quot;)            (启动日志)
+  │
+  └─ bl1_prepare_next_image
+       ├─ load_auth_image           (加载并认证 BL2)
+       │    └─ plat_get_image_source
+       │    └─ io_open / io_read
+       │
+       └─ cm_prepare_el3_exit       (准备跳转到 BL2)
+            └─ ERET 到 BL2 入口
+</code></pre></div>
+<h3 id="103">10.3 安全相关观察<a class="headerlink" href="#103" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>BL1 支持镜像认证</strong>：<code>load_auth_image</code> 函数表明 BL1 可在加载 BL2 时进行签名验证</li>
+<li><strong>EL3 执行</strong>：所有代码运行在最高特权级 EL3，<code>smc_handler64</code> 处理来自低 EL 的 SMC 调用</li>
+<li><strong>没有动态内存分配</strong>：所有数据结构都是静态分配（.bss / .data），没有 heap</li>
+<li><strong>Bakery Lock 和 PMF Timestamp</strong> 区域大小为 0，表明 QEMU 单核场景下未启用多核同步和时间测量</li>
+<li><strong>无运行时服务描述符</strong>：<code>__RT_SVC_DESCS__</code> 区域为空，BL1 不注册任何 runtime service</li>
+<li><strong>无动态重定位</strong>：<code>.rela.dyn</code> 和 <code>.got</code> 均为空，BL1 完全静态链接，无 PIE 依赖</li>
+<li><strong>完全静态链接</strong>：没有 <code>.iplt</code>/<code>.igot.plt</code> 条目，所有符号引用在链接时已解析</li>
+</ol>
+<h3 id="104-cross-reference-table">10.4 Cross Reference Table<a class="headerlink" href="#104-cross-reference-table" title="Permanent link">&para;</a></h3>
+<p>本次 map 文件<strong>不包含 Cross Reference Table</strong>（符号交叉引用表）。这是因为链接器未使用 <code>--cref</code> 选项。如需分析函数间的调用关系，可通过以下方式补充：</p>
+<ul>
+<li>在 TF-A 构建系统中向 <code>LDFLAGS</code> 添加 <code>-Map=bl1.map --cref</code> 重新链接</li>
+<li>使用 <code>readelf -s bl1.elf</code> 获取符号表，结合源码静态分析调用链</li>
+<li>使用 GDB 的 <code>info functions</code> 和 <code>info callers</code> 命令动态追踪</li>
+</ul>
+<h3 id="104">10.4 优化建议（供参考）<a class="headerlink" href="#104" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>CPU errata 代码裁剪</strong>：对于 QEMU 平台，可通过 Kconfig <code>ERRATA_A53_xxx</code> 等选项精确启用所需的 errata，减少不必要的代码</li>
+<li><strong>CPU ops 裁剪</strong>：11 种 CPU ops 表（768 B）中，QEMU 只需 1-2 种</li>
+<li><strong>.xlat_table 优化</strong>：24 KB 页表对 QEMU 简单地址映射可能过大，可考虑减少预留的页表数量</li>
+</ol>
+<hr />
+<h2 id="11">11. 链接器约束与限制<a class="headerlink" href="#11" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>限制值</th>
+<th>实际值</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BL1 ROM 最大</td>
+<td>128 KB (0x20000)</td>
+<td>27,389 B</td>
+<td>通过 (裕量 ~75%)</td>
+</tr>
+<tr>
+<td>BL1 RW 最大</td>
+<td>0xE100000</td>
+<td>0xE0F6000</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>页对齐要求</td>
+<td>4 KB (0x1000)</td>
+<td>全部满足</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>CPU ops</td>
+<td>至少 1 个</td>
+<td>11 个</td>
+<td>通过</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1 @@
+   78 root     /usr/sbin/elogd
