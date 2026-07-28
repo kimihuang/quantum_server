@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三角形面积计算与可视化</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .container {
+    display: flex;
+    gap: 30px;
+    max-width: 1100px;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px;
+  }
+
+  /* ---- 左侧控制面板 ---- */
+  .panel {
+    flex: 0 0 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .panel h1 {
+    font-size: 22px;
+    color: #1a1a2e;
+    border-bottom: 2px solid #4a6cf7;
+    padding-bottom: 10px;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .input-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .input-group input {
+    padding: 10px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color .2s;
+    outline: none;
+  }
+
+  .input-group input:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74,108,247,0.12);
+  }
+
+  .sides-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .sides-row .input-group { flex: 1; }
+
+  .btn {
+    padding: 12px 0;
+    background: #4a6cf7;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+
+  .btn:hover { background: #3b5de7; }
+
+  .result {
+    background: #f8f9ff;
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .result .area {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4a6cf7;
+  }
+
+  .result .error {
+    color: #e74c3c;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* ---- 右侧画布 ---- */
+  .canvas-wrapper {
+    flex: 1;
+    min-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafbfc;
+    border-radius: 8px;
+    border: 1px solid #eee;
+  }
+
+  canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  /* ---- 响应式 ---- */
+  @media (max-width: 800px) {
+    .container { flex-direction: column; }
+    .panel { flex: none; }
+    .canvas-wrapper { min-height: 350px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 左侧面板 -->
+  <div class="panel">
+    <h1>三角形面积计算器</h1>
+
+    <div class="sides-row">
+      <div class="input-group">
+        <label for="sideA">边长 a</label>
+        <input type="number" id="sideA" placeholder="0" min="0.001" step="any" autofocus>
+      </div>
+      <div class="input-group">
+        <label for="sideB">边长 b</label>
+        <input type="number" id="sideB" placeholder="0" min="0.001" step="any">
+      </div>
+      <div class="input-group">
+        <label for="sideC">边长 c</label>
+        <input type="number" id="sideC" placeholder="0" min="0.001" step="any">
+      </div>
+    </div>
+
+    <button class="btn" id="calcBtn">计 算</button>
+
+    <div class="result" id="resultBox">
+      <span style="color:#999; font-size:14px;">输入三条边长后点击计算</span>
+    </div>
+
+    <div style="font-size:12px; color:#999; line-height:1.6;">
+      <p>使用<b>海伦公式</b>计算面积：</p>
+      <p>s = (a+b+c) / 2</p>
+      <p>S = √[s(s−a)(s−b)(s−c)]</p>
+    </div>
+  </div>
+
+  <!-- 右侧画布 -->
+  <div class="canvas-wrapper">
+    <canvas id="canvas" width="520" height="420"></canvas>
+  </div>
+</div>
+
+<script>
+(function() {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const sideA   = document.getElementById('sideA');
+  const sideB   = document.getElementById('sideB');
+  const sideC   = document.getElementById('sideC');
+  const calcBtn = document.getElementById('calcBtn');
+  const resultBox = document.getElementById('resultBox');
+
+  const inputs = [sideA, sideB, sideC];
+
+  // ---------- 工具函数 ----------
+
+  /** 检查是否构成有效三角形 */
+  function isValidTriangle(a, b, c) {
+    if (!(Number.isFinite(a) && Number.isFinite(b) && Number.isFinite(c))) return false;
+    if (a <= 0 || b <= 0 || c <= 0) return false;
+    return (a + b > c) && (a + c > b) && (b + c > a);
+  }
+
+  /** 海伦公式计算面积 */
+  function heronArea(a, b, c) {
+    const s = (a + b + c) / 2;
+    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+  }
+
+  /**
+   * 由三边长计算顶点坐标
+   * 以 AB 为底边，按三角形不等式保证合法
+   */
+  function getVertices(a, b, c) {
+    // A = (0, 0),  B = (c, 0)
+    // 边 a = BC, 边 b = AC, 边 c = AB
+    const Ax = 0, Ay = 0;
+    const Bx = c, By = 0;
+    // C 坐标: 由 AC = b, BC = a 定
+    const Cx = (b * b + c * c - a * a) / (2 * c);
+    const Cy = Math.sqrt(Math.max(0, b * b - Cx * Cx));
+    return { A: { x: Ax, y: Ay }, B: { x: Bx, y: By }, C: { x: Cx, y: Cy } };
+  }
+
+  // ---------- 绘制 ----------
+
+  function drawTriangle(a, b, c) {
+    const W = canvas.width;
+    const H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    const verts = getVertices(a, b, c);
+
+    // 计算包围盒
+    const xs = [verts.A.x, verts.B.x, verts.C.x];
+    const ys = [verts.A.y, verts.B.y, verts.C.y];
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const bw = maxX - minX || 1;
+    const bh = maxY - minY || 1;
+
+    const padding = 70;
+    const scale = Math.min((W - padding * 2) / bw, (H - padding * 2) / bh);
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+
+    function tx(v) { return (v.x - cx) * scale + W / 2; }
+    function ty(v) { return H - ((v.y - cy) * scale + H / 2); } // Y 轴翻转
+
+    // ---- 绘制填充 ----
+    ctx.beginPath();
+    ctx.moveTo(tx(verts.A), ty(verts.A));
+    ctx.lineTo(tx(verts.B), ty(verts.B));
+    ctx.lineTo(tx(verts.C), ty(verts.C));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(74,108,247,0.12)';
+    ctx.fill();
+    ctx.strokeStyle = '#4a6cf7';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // ---- 顶点标注 ----
+    const labels = [
+      { key: 'A', v: verts.A },
+      { key: 'B', v: verts.B },
+      { key: 'C', v: verts.C },
+    ];
+    const offsets = [       // 标签偏移，避免遮盖顶点
+      { dx: -14, dy: -14 },
+      { dx:  6,  dy: -14 },
+      { dx:  6,  dy:  16 },
+    ];
+
+    ctx.font = 'bold 16px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#1a1a2e';
+
+    labels.forEach(({ key, v }, i) => {
+      const px = tx(v);
+      const py = ty(v);
+      // 顶点圆点
+      ctx.beginPath();
+      ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#4a6cf7';
+      ctx.fill();
+      // 标签
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillText(key, px + offsets[i].dx, py + offsets[i].dy);
+    });
+
+    // ---- 边长标注（边中点旁） ----
+    const sideDefs = [
+      { from: 'A', to: 'B', len: c, disp: 'c' },
+      { from: 'B', to: 'C', len: a, disp: 'a' },
+      { from: 'C', to: 'A', len: b, disp: 'b' },
+    ];
+
+    ctx.font = '13px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#e67e22';
+
+    sideDefs.forEach(({ from, to, len }) => {
+      const f = verts[from];
+      const t = verts[to];
+      const mx = (f.x + t.x) / 2;
+      const my = (f.y + t.y) / 2;
+      const ppx = tx({ x: mx, y: my });
+      const ppy = ty({ x: mx, y: my });
+
+      // 法线方向偏移（画在边外侧）
+      const dx = t.x - f.x;
+      const dy = t.y - f.y;
+      const lenEdge = Math.sqrt(dx * dx + dy * dy) || 1;
+      const nx = -dy / lenEdge;
+      const ny =  dx / lenEdge;
+
+      ctx.fillText(
+        len.toFixed(2),
+        ppx + nx * 12,
+        ppy - ny * 12
+      );
+    });
+  }
+
+  // ---------- 主逻辑 ----------
+
+  function compute() {
+    const a = parseFloat(sideA.value);
+    const b = parseFloat(sideB.value);
+    const c = parseFloat(sideC.value);
+
+    if (!isValidTriangle(a, b, c)) {
+      resultBox.innerHTML = '<span class="error">这三条边无法构成三角形！<br>请检查：任意两边之和必须大于第三边。</span>';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
+    const area = heronArea(a, b, c);
+    resultBox.innerHTML = '<span class="area">面积 S = ' + area.toFixed(4) + '</span>';
+
+    drawTriangle(a, b, c);
+  }
+
+  // ---------- 事件 ----------
+  calcBtn.addEventListener('click', compute);
+
+  // Enter 键触发
+  inputs.forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') compute();
+    });
+  });
+
+  // 示例默认值
+  sideA.value = 3;
+  sideB.value = 4;
+  sideC.value = 5;
+  compute();
+})();
+</script>
+
+</body>
+</html>
