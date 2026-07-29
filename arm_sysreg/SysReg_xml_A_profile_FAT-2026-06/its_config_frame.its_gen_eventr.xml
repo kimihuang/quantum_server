@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register is_register="True" is_internal="False" is_stub_entry="False">
+      <reg_short_name>ITS_GEN_EVENTR</reg_short_name>
+        
+        <reg_long_name>ITS Generate Incoming Event Register</reg_long_name>
+
+
+        <reg_parent_link id="its_config_frame.xml">ITS_CONFIG_FRAME</reg_parent_link>
+
+      
+            <reg_condition otherwise="RES0">when FEAT_GICv5_EXT is implemented</reg_condition>
+      
+
+
+
+    
+    <reg_address
+        external_access="False"
+        mem_map_access="False"
+        block_access="True"
+        memory_access="True"
+        table_id="ITS_CONFIG_FRAMEacccessor0"
+    >
+  
+  <reg_frame>ITS_CONFIG_FRAME</reg_frame>
+  
+    
+    <reg_offset><hexnumber>0x018C</hexnumber></reg_offset>
+    <reg_access>
+    
+        
+      <reg_access_state>
+          <reg_access_level>When ITS_CR0.[IDLE,ITSEN] != '11' or ITS_GEN_EVENT_STATUSR.IDLE != '1'</reg_access_level>
+          <reg_access_type>WI</reg_access_type>
+      </reg_access_state>
+        
+      <reg_access_state>
+          <reg_access_type>WO</reg_access_type>
+      </reg_access_state>
+    </reg_access>
+</reg_address>
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>ITS Generate Incoming Event Register.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>This register is used to generate a SET_EDGE event for the EventID specified in <register_link id="its_config_frame.its_gen_event_eidr.xml" state="">ITS_GEN_EVENT_EIDR</register_link> and the DeviceID specified in <register_link id="its_config_frame.its_gen_event_didr.xml" state="">ITS_GEN_EVENT_DIDR</register_link>.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GICv5 ITS</reg_group>
+      </reg_groups>
+      <reg_configuration>
+        
+    
+      <configuration_text>
+        <para>The effects of a write to this register are not guaranteed to have completed before <register_link id="its_config_frame.its_gen_event_statusr.xml" state="">ITS_GEN_EVENT_STATUSR</register_link>.IDLE is 1.</para>
+      </configuration_text>
+
+      </reg_configuration>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>ITS_GEN_EVENTR is a 32-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="32">
+  <text_before_fields/>
+  <field id="fieldset_0-31_31" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>R</field_name>
+    <field_msb>31</field_msb>
+    <field_lsb>31</field_lsb>
+    <rel_range>31</rel_range>
+    <field_description order="before">
+      <para>Request the ITS to generate an incoming event.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>The write has no effect on the ITS.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description><para>Generate an incoming event with the following information:</para>
+<list type="unordered">
+<listitem><content>
+<para>Event is associated with the Interrupt Domain associated with the PAS of the write.</para>
+</content>
+</listitem><listitem><content>
+<para>The event is translated in the ITS Domain specified in TARGET_DOMAIN.</para>
+</content>
+</listitem><listitem><content>
+<para>DeviceID is specified in the <register_link id="its_config_frame.its_gen_event_didr.xml" state="">ITS_GEN_EVENT_DIDR</register_link> register.</para>
+</content>
+</listitem><listitem><content>
+<para>EventID is specified in the <register_link id="its_config_frame.its_gen_event_eidr.xml" state="">ITS_GEN_EVENT_EIDR</register_link> register.</para>
+</content>
+</listitem></list></field_value_description>
+      </field_value_instance>
+    </field_values>
+  </field>
+  <field id="fieldset_0-30_2" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>30</field_msb>
+    <field_lsb>2</field_lsb>
+    <rel_range>30:2</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-1_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>TARGET_DOMAIN</field_name>
+    <field_msb>1</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>1:0</rel_range>
+    <field_description order="before"><para>Specifies the ITS Domain in which the incoming event is translated.</para>
+<para>If the specified ITS Domain is not enabled, the write to this register does not generate an incoming event.</para></field_description>
+    <field_description order="after"><para>Values not defined above are reserved.</para>
+<para>Values corresponding to unimplemented Domains are reserved.</para>
+<para>If a reserved value is programmed, the ITS behavior is <arm-defined-word>CONSTRAINED UNPREDICTABLE</arm-defined-word> to any behavior which could be achieved by programming a valid value.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b00</field_value>
+        <field_value_description>
+          <para>The incoming event is translated in the ITS Domain specified by <register_link id="its_config_frame.its_idr0.xml" state="">ITS_IDR0</register_link>.INT_DOM.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>The incoming event is translated in the Realm ITS Domain.</para>
+        </field_value_description>
+        <field_value_condition>When ITS_IDR0.INT_DOM == '01'</field_value_condition>
+      </field_value_instance>
+    </field_values>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="32">
+  <fieldat id="fieldset_0-31_31" msb="31" lsb="31"/>
+  <fieldat id="fieldset_0-30_2" msb="30" lsb="2"/>
+  <fieldat id="fieldset_0-1_0" msb="1" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+
+
+
+
+    
+        
+        <access_mechanism type="BlockAccessAbstract" table_id="ITS_CONFIG_FRAMEacccessor0">
+        
+        
+        
+        
+        <access_header>Accessible at offset <hexnumber>0x018C</hexnumber> from ITS_CONFIG_FRAME</access_header>
+    </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

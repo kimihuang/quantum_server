@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register is_register="True" is_internal="False" is_stub_entry="False">
+      <reg_short_name>IRS_VPE_SELR</reg_short_name>
+        
+        <reg_long_name>IRS VPE Selection Register</reg_long_name>
+
+
+        <reg_parent_link id="irs_config_frame.xml">IRS_CONFIG_FRAME</reg_parent_link>
+
+      
+            <reg_condition otherwise="RES0">when FEAT_GICv5_EXT is implemented and IRS_IDR0.VIRT == '1'</reg_condition>
+      
+
+
+
+    
+    <reg_address
+        external_access="False"
+        mem_map_access="False"
+        block_access="True"
+        memory_access="True"
+        table_id="IRS_CONFIG_FRAMEacccessor0"
+    >
+  
+  <reg_frame>IRS_CONFIG_FRAME</reg_frame>
+  
+    
+    <reg_offset><hexnumber>0x0240</hexnumber></reg_offset>
+    <reg_access>
+    
+        
+      <reg_access_state>
+          <reg_access_level>When IRS_VPE_STATUSR.IDLE == '0'</reg_access_level>
+          <reg_access_type>RO</reg_access_type>
+      </reg_access_state>
+        
+      <reg_access_state>
+          <reg_access_type>RW</reg_access_type>
+      </reg_access_state>
+    </reg_access>
+</reg_address>
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>IRS VPE Selection Register.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GICv5 IRS</reg_group>
+      </reg_groups>
+      <reg_configuration>
+        
+    
+      <configuration_text>
+        <para>The effects of a write to this register are not guaranteed to have completed before <register_link id="irs_config_frame.irs_vpe_statusr.xml" state="">IRS_VPE_STATUSR</register_link>.IDLE is 1.</para>
+      </configuration_text>
+
+      </reg_configuration>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>IRS_VPE_SELR is a 64-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="64">
+  <text_before_fields/>
+  <field id="fieldset_0-63_63" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>S</field_name>
+    <field_msb>63</field_msb>
+    <field_lsb>63</field_lsb>
+    <rel_range>63</rel_range>
+    <field_description order="before"><para>Writing 1 to this field selects a VPE. The configuration of the selected VPE can be accessed using the following registers:</para>
+<list type="unordered">
+<listitem><content><register_link id="irs_config_frame.irs_vpe_dbr.xml" state="">IRS_VPE_DBR</register_link></content>
+</listitem><listitem><content><register_link id="irs_config_frame.irs_vpe_hppir.xml" state="">IRS_VPE_HPPIR</register_link></content>
+</listitem><listitem><content><register_link id="irs_config_frame.irs_vpe_cr0.xml" state="">IRS_VPE_CR0</register_link></content>
+</listitem></list></field_description>
+    <field_description order="after"><para>If this field is not set to 1 on a write to this register, updates to any other field in this register has no effect beyond updating the value of that field.</para>
+<para>This means that if <register_link id="irs_config_frame.irs_vpe_statusr.xml" state="">IRS_VPE_STATUSR</register_link>.V is updated as a result of a write to another register, <register_link id="irs_config_frame.irs_vpe_statusr.xml" state="">IRS_VPE_STATUSR</register_link>.V reflects whether the VPE selected when this field was set to 1 is valid.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>The write to this register has no effect.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>The write to this register selects a VPE.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_access>
+      <field_access_state>
+        <field_access_type>WO/UNKNOWN</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <field id="fieldset_0-62_48" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>62</field_msb>
+    <field_lsb>48</field_lsb>
+    <rel_range>62:48</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-47_32" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>VPE_ID</field_name>
+    <field_msb>47</field_msb>
+    <field_lsb>32</field_lsb>
+    <rel_range>47:32</rel_range>
+    <field_description order="before">
+      <para>Identifies the VPE.</para>
+    </field_description>
+    <field_resets>
+      <field_reset reset_type="reset">
+        <field_reset_standard_text>U</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-31_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>31</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>31:16</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-15_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>VM_ID</field_name>
+    <field_msb>15</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>15:0</rel_range>
+    <field_description order="before">
+      <para>Identifies the VM.</para>
+    </field_description>
+    <field_resets>
+      <field_reset reset_type="reset">
+        <field_reset_standard_text>U</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="64">
+  <fieldat id="fieldset_0-63_63" msb="63" lsb="63"/>
+  <fieldat id="fieldset_0-62_48" msb="62" lsb="48"/>
+  <fieldat id="fieldset_0-47_32" msb="47" lsb="32"/>
+  <fieldat id="fieldset_0-31_16" msb="31" lsb="16"/>
+  <fieldat id="fieldset_0-15_0" msb="15" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+
+
+
+
+    
+        
+        <access_mechanism type="BlockAccessAbstract" table_id="IRS_CONFIG_FRAMEacccessor0">
+        
+        
+        
+        
+        <access_header>Accessible at offset <hexnumber>0x0240</hexnumber> from IRS_CONFIG_FRAME</access_header>
+    </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

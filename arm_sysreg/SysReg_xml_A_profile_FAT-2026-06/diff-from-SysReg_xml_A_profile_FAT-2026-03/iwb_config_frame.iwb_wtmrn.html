@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>IWB_WTMR&lt;n></title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><div align="center" class="htmldiff_header"><table><tbody><tr><td class="old">(old) </td><td class="explain">htmldiff from-</td><td class="new">(new) </td></tr></tbody></table></div><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">IWB_WTMR&lt;n>, IWB Wire Trigger Mode Register, n = 0 - 2047</h1><p>The IWB_WTMR&lt;n> characteristics are:</p><h2>Purpose</h2>
+        <p>IWB Wire Trigger Mode Register. Allows software to configure if the wire signal is level-sensitive or edge-triggered.</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_GICv5_EXT is <del>implemented and FEAT_GICv5_EXT is </del>implemented. Otherwise, direct accesses to IWB_WTMR&lt;n> are <span class="arm-defined-word"><ins>RES0</ins><del>RAZ/WI</del></span>.</p>
+        <p>The number of implemented IWB_WTMR&lt;n> registers is IWB_IDR0.IW_RANGE + 1.</p>
+      <h2>Attributes</h2>
+        <p>IWB_WTMR&lt;n> is a 32-bit register.</p>
+      <p>This  register is part of the <a href="iwb_config_frame.html">IWB_CONFIG_FRAME</a> block.</p><h2>Field descriptions</h2><table class="regdiagram" id="fieldset_0"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM31</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM30</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM29</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM28</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM27</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM26</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM25</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM24</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM23</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM22</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM21</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM20</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM19</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM18</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM17</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM16</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM15</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM14</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM13</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM12</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM11</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM10</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM9</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM8</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM7</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM6</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM5</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM4</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM3</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM2</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM1</a></td><td class="lr" colspan="1"><a href="#fieldset_0-31_0">TM0</a></td></tr></tbody></table><h4 id="fieldset_0-31_0">TM&lt;x>, bit [x], for x = 31 to 0</h4><div class="field"><p>Configures if wire ((32 * n) + x) is level-sensitive or edge-triggered.</p>
+<p>When the wire is configured as level-sensitive, a CLEAR event is sent to the ITS when the wire signal is de-asserted, and a SET_LEVEL event is sent to the ITS when the wire signal is asserted.</p>
+<p>When the wire is configured as edge-triggered, only SET_EDGE events are generated to the ITS and only when the wire changes from de-asserted to asserted.</p>
+<p>When <span class="function">IsWireConfigRO(n * 32 + x)</span> is 0, this field resets to 0.</p>
+<p>Access to control fields for wires which are not implemented are RAZ/WI.</p><table class="valuetable"><tr><th>TM&lt;x></th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Edge-triggered</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Level-sensitive</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul><p>Accessing this field has the following behavior:</p><ul><li>Access to this field is <span class="access_level">RO</span> if any the following are true:<ul><li>!IsWireAccessible(n, x).</li><li>IsWireConfigRO((n * 32) + x).</li></ul></li><li>
+                  Otherwise,
+                  
+                  access to this field
+                  is <span class="access_level">RW</span>.
+                </li></ul></div><div class="access_mechanisms"><h2>Accessing IWB_WTMR&lt;n></h2>
+        <p>When the Trigger mode of a wire is software programmable, all of the following are true:</p>
+
+      
+        <ul>
+<li>
+<p>When accessed using the MPPAS of the IWB, all fields are RW.</p>
+
+</li><li>
+<p>When accessed using any other PAS, a field is RW if all of the following are true:</p>
+
+</li><li>
+<p>The wire corresponding to the field is assigned to an Interrupt Domain that is implemented by the IWB.</p>
+
+</li><li>
+<p>The PAS corresponding to the access is same as the PAS associated with the Interrupt Domain to which the wire is assigned.</p>
+
+</li></ul>
+
+      
+        <p>Otherwise, the field is RO for that access.</p>
+      <p>Accesses to this register use the following encodings:</p><div><p>Accessible at offset <span class="hexnumber">0x4000 + (4 * n)</span> from IWB_CONFIG_FRAME</p></div><ul><li>When IWB_CR0.IDLE == '0', accesses to this register are <span class="access_level">RO</span>.
+          </li><li>Otherwise, accesses to this register are <span class="access_level">RW</span>.
+          </li></ul><table class="access_instructions"><tr/><tr/></table></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions"><ins>2026-06-24</ins><del>2026-06-08</del> <ins>17</ins><del>19</del>:<ins>12</ins><del>28</del>:<ins>14</ins><del>52</del>, <ins>2026-06_rel</ins><del>2026-03_diff_tag</del></p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p><div align="center" class="htmldiff_header"><table><tbody><tr><td class="old">(old) </td><td class="explain">htmldiff from-</td><td class="new">(new) </td></tr></tbody></table></div></body>
+</html>

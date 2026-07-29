@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>ITS_TRANSLATE_FRAME</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">ITS_TRANSLATE_FRAME, ITS translate register frame</h1><p>The ITS_TRANSLATE_FRAME characteristics are:</p><h2>Purpose</h2>
+        <p>Contains translate registers used to generate translated interrupts for an ITS Domain.</p>
+
+      
+        <p>One or more ITS translate register frames are present for each supported ITS Domain.</p>
+
+      
+        <p>Arm strongly recommends that translate register frame is not accessible by PEs.
+This is because a write to an translate register may require the ITS access to memory, leading to in-out dependencies than can potentially lead to deadlocks in the system.
+The translate register frames may be mapped in stage 2 translation tables shared between an SMMU and a PE, and software in a VM may perform an access to any of the mapped translate register frames.
+If the translate register frames are not accessible by PEs, the behavior on an attempted access from a PE is <span class="arm-defined-word">IMPLEMENTATION DEFINED</span> and is likely to result in an External abort.
+If the translate register frames are accessible by PEs, writes from each PE must use a unique DeviceID that cannot spoof a write originating from a different PE or requesting device.</p>
+
+      
+        <p>Each translate register frame is only accessible in the PAS associated with the ITS Domain.</p>
+
+      
+        <p>The base address of each translate register frame is distinct from addresses of registers accessible in any other PAS.</p>
+
+      
+        <p>The base address of each translate register frame is aligned to 64KB.</p>
+      <h2>Configuration</h2><p>This block is present only when FEAT_GICv5_EXT is implemented.</p><h2>Attributes</h2>
+          <p>ITS_TRANSLATE_FRAME is a block of size: 64KB</p>
+        <h2>Contents</h2><table class="info"><tr><th>Offset</th><th>Name</th><th>Accessor condition</th><th>Register condition</th><th>Most permissive access</th></tr><tr><td><span class="hexnumber">0x0000</span></td><td><a href="its_translate_frame.its_translater.html">ITS_TRANSLATER</a></td><td>-</td><td>When FEAT_GICv5_EXT is implemented</td><td class="pseudocode">WO</td></tr><tr><td><span class="hexnumber">0x0008</span></td><td><a href="its_translate_frame.its_rl_translater.html">ITS_RL_TRANSLATER</a></td><td>-</td><td>When FEAT_GICv5_EXT is implemented</td><td class="pseudocode">WO</td></tr></table><p>Direct accesses to other offsets in this block are <span class="arm-defined-word">RAZ/WI</span>.</p><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-08 19:28:52, 2026-03_diff_tag</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>

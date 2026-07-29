@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register is_register="True" is_internal="False" is_stub_entry="False">
+      <reg_short_name>ITS_IIDR</reg_short_name>
+        
+        <reg_long_name>ITS Implementer Identification Register</reg_long_name>
+
+
+        <reg_parent_link id="its_config_frame.xml">ITS_CONFIG_FRAME</reg_parent_link>
+
+      
+            <reg_condition otherwise="RES0">when FEAT_GICv5_EXT is implemented</reg_condition>
+      
+
+
+
+    
+    <reg_address
+        external_access="False"
+        mem_map_access="False"
+        block_access="True"
+        memory_access="True"
+        table_id="ITS_CONFIG_FRAMEacccessor0"
+    >
+  
+  <reg_frame>ITS_CONFIG_FRAME</reg_frame>
+  
+    
+    <reg_offset><hexnumber>0x0040</hexnumber></reg_offset>
+    <reg_access>
+    
+        
+      <reg_access_state>
+          <reg_access_type>RO</reg_access_type>
+      </reg_access_state>
+    </reg_access>
+</reg_address>
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>ITS Implementer Identification Register. Provides information about the implementation and implementer of the GIC, and architecture version supported.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GICv5 ITS</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>ITS_IIDR is a 32-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="32">
+  <text_before_fields/>
+  <field id="fieldset_0-31_20" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>ProductID</field_name>
+    <field_msb>31</field_msb>
+    <field_lsb>20</field_lsb>
+    <rel_range>31:20</rel_range>
+    <field_description order="before"><para><arm-defined-word>IMPLEMENTATION DEFINED</arm-defined-word> value identifying the GIC part</para>
+<para>When the ITS_PIDR0-ITS_PIDR1 registers are present, Arm expects that the ITS_PIDR0.PART_0 and ITS_PIDR1.PART_1 fields match the value of ITS_IIDR.ProductID.</para>
+<para>If required, however, an implementation is permitted to provide values for the ITS_PIDR0.PART_0 and ITS_PIDR1.PART_1 fields that do not match the value of ITS_IIDR.ProductID</para></field_description>
+  </field>
+  <field id="fieldset_0-19_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>Variant</field_name>
+    <field_msb>19</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>19:16</rel_range>
+    <field_description order="before">
+      <para><arm-defined-word>IMPLEMENTATION DEFINED</arm-defined-word> value used to distinguish product variants, or major revisions of the product</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-15_12" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>Revision</field_name>
+    <field_msb>15</field_msb>
+    <field_lsb>12</field_lsb>
+    <rel_range>15:12</rel_range>
+    <field_description order="before">
+      <para><arm-defined-word>IMPLEMENTATION DEFINED</arm-defined-word> value used to distinguish minor revisions of the product</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-11_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>Implementer</field_name>
+    <field_msb>11</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>11:0</rel_range>
+    <field_description order="before"><para>Contains the JEP106 code of the company that implemented the GIC</para>
+<para>For an Arm implementation, the JEP106 code is <hexnumber>0x43B</hexnumber></para>
+<para>When the CoreSight ID registers are implemented, Arm expects that the JEP106 identification code in the ITS_PIDR1-ITS_PIDR4 registers matches that reported in ITS_IIDR.</para></field_description>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="32">
+  <fieldat id="fieldset_0-31_20" msb="31" lsb="20"/>
+  <fieldat id="fieldset_0-19_16" msb="19" lsb="16"/>
+  <fieldat id="fieldset_0-15_12" msb="15" lsb="12"/>
+  <fieldat id="fieldset_0-11_0" msb="11" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+
+
+
+
+    
+        
+        <access_mechanism type="BlockAccessAbstract" table_id="ITS_CONFIG_FRAMEacccessor0">
+        
+        
+        
+        
+        <access_header>Accessible at offset <hexnumber>0x0040</hexnumber> from ITS_CONFIG_FRAME</access_header>
+    </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

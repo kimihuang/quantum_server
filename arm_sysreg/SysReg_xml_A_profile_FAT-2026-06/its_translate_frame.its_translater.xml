@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register is_register="True" is_internal="False" is_stub_entry="False">
+      <reg_short_name>ITS_TRANSLATER</reg_short_name>
+        
+        <reg_long_name>ITS Translate Event Register</reg_long_name>
+
+
+        <reg_parent_link id="its_translate_frame.xml">ITS_TRANSLATE_FRAME</reg_parent_link>
+
+      
+            <reg_condition otherwise="RAZ/WI">when FEAT_GICv5_EXT is implemented</reg_condition>
+      
+
+
+
+    
+    <reg_address
+        external_access="False"
+        mem_map_access="False"
+        block_access="True"
+        memory_access="True"
+        table_id="ITS_TRANSLATE_FRAMEacccessor0"
+    >
+  
+  <reg_frame>ITS_TRANSLATE_FRAME</reg_frame>
+  
+    
+    <reg_offset><hexnumber>0x0000</hexnumber></reg_offset>
+    <reg_access>
+    
+        
+      <reg_access_state>
+          <reg_access_type>WO</reg_access_type>
+      </reg_access_state>
+    </reg_access>
+</reg_address>
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>ITS Translate Event Register.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>A write to this register generates a SET_EDGE event for the DeviceID of the agent writing to the register and the EventID specified as part of the write.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GICv5 ITS</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>ITS_TRANSLATER is a 32-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="32">
+  <text_before_fields/>
+  <field id="fieldset_0-31_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>EVENT_ID</field_name>
+    <field_msb>31</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>31:0</rel_range>
+    <field_description order="before">
+      <para>The EventID to translate.</para>
+    </field_description>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="32">
+  <fieldat id="fieldset_0-31_0" msb="31" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+  
+    
+      <access_permission_text>
+        <para>This register is write-only.</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>16-bit access to bits [15:0] of this register must be supported. When this register is written by a 16-bit transaction, bits [31:16] are written as zero.</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>Implementations must ensure that a unique DeviceID is provided for each requesting device, and the DeviceID is presented to the ITS when a write to this register occurs in a manner that cannot be spoofed by any agent capable of performing writes.</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>Writes to this register are ignored if the ITS Domain is not enabled.</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>See <xref linkend="#sec:its">'Interrupt translation service (ITS)'</xref> in Arm&#174; Generic Interrupt Controller Architecture Specification, GIC architecture version 5 (ARM IHI 111701) for more information about ordering and completion requirements for writes to this register.</para>
+      </access_permission_text>
+
+
+
+
+
+    
+        
+        <access_mechanism type="BlockAccessAbstract" table_id="ITS_TRANSLATE_FRAMEacccessor0">
+        
+        
+        
+        
+        <access_header>Accessible at offset <hexnumber>0x0000</hexnumber> from ITS_TRANSLATE_FRAME</access_header>
+    </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

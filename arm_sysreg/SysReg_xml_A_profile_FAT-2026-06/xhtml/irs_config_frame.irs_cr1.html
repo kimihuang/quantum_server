@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>IRS_CR1</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">IRS_CR1, IRS Control Register 1</h1><p>The IRS_CR1 characteristics are:</p><h2>Purpose</h2>
+        <p>IRS Configuration Register 1</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_GICv5_EXT is implemented. Otherwise, direct accesses to IRS_CR1 are <span class="arm-defined-word">RES0</span>.</p><h2>Attributes</h2>
+        <p>IRS_CR1 is a 32-bit register.</p>
+      <p>This  register is part of the <a href="irs_config_frame.html">IRS_CONFIG_FRAME</a> block.</p><h2>Field descriptions</h2><table class="regdiagram" id="fieldset_0"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="lr" colspan="16"><a href="#fieldset_0-31_16">RES0</a></td><td class="lr" colspan="1"><a href="#fieldset_0-15_15-1">VPED_WA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-14_14-1">VPED_RA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-13_13-1">VMD_WA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-12_12-1">VMD_RA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-11_11-1">VPET_WA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-10_10-1">VPET_RA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-9_9-1">VMT_WA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-8_8-1">VMT_RA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-7_7">IST_WA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-6_6">IST_RA</a></td><td class="lr" colspan="2"><a href="#fieldset_0-5_4">IC</a></td><td class="lr" colspan="2"><a href="#fieldset_0-3_2">OC</a></td><td class="lr" colspan="2"><a href="#fieldset_0-1_0">SH</a></td></tr></tbody></table><h4 id="fieldset_0-31_16">Bits [31:16]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-15_15-1">VPED_WA, bit [15]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Write-Allocate hint for the VPE descriptors.</p>
+    <table class="valuetable"><tr><th>VPED_WA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Write-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Write-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-15_15-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-14_14-1">VPED_RA, bit [14]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Read-Allocate hint for the VPE descriptors.</p>
+    <table class="valuetable"><tr><th>VPED_RA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Read-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Read-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-14_14-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-13_13-1">VMD_WA, bit [13]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Write-Allocate hint for the VM descriptors.</p>
+    <table class="valuetable"><tr><th>VMD_WA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Write-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Write-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-13_13-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-12_12-1">VMD_RA, bit [12]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Read-Allocate hint for the VM descriptors.</p>
+    <table class="valuetable"><tr><th>VMD_RA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Read-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Read-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-12_12-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-11_11-1">VPET_WA, bit [11]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Write-Allocate hint for the VPE table.</p>
+    <table class="valuetable"><tr><th>VPET_WA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Write-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Write-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-11_11-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-10_10-1">VPET_RA, bit [10]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Read-Allocate hint for the VPE table.</p>
+    <table class="valuetable"><tr><th>VPET_RA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Read-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Read-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-10_10-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-9_9-1">VMT_WA, bit [9]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Write-Allocate hint for the VM table.</p>
+    <table class="valuetable"><tr><th>VMT_WA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Write-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Write-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-9_9-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-8_8-1">VMT_RA, bit [8]<span class="condition"><br/>When IRS_IDR0.VIRT == '1':
+                        </span></h4><div class="field">
+      <p>Read-Allocate hint for the VM table.</p>
+    <table class="valuetable"><tr><th>VMT_RA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Read-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Read-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-8_8-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-7_7">IST_WA, bit [7]</h4><div class="field"><p>Write-Allocate hint for ISTs.</p>
+<p>When <a href="irs_config_frame.irs_idr0.html">IRS_IDR0</a>.VIRT is 1, this control applies to the virtual ISTs as well as the physical IST.</p><table class="valuetable"><tr><th>IST_WA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Write-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Write-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-6_6">IST_RA, bit [6]</h4><div class="field"><p>Read-Allocate hint for ISTs.</p>
+<p>When <a href="irs_config_frame.irs_idr0.html">IRS_IDR0</a>.VIRT is 1, this control applies to the virtual ISTs as well as the physical IST.</p><table class="valuetable"><tr><th>IST_RA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>No Read-Allocate.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Read-Allocate.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-5_4">IC, bits [5:4]</h4><div class="field">
+      <p>Controls the Inner Cacheability attribute used when the IRS accesses tables as a requester.</p>
+    <table class="valuetable"><tr><th>IC</th><th>Meaning</th></tr><tr><td class="bitfield">0b00</td><td>
+          <p>Non-cacheable.</p>
+        </td></tr><tr><td class="bitfield">0b01</td><td>
+          <p>Write-Back Cacheable.</p>
+        </td></tr><tr><td class="bitfield">0b10</td><td>
+          <p>Write-Through Cacheable.</p>
+        </td></tr><tr><td class="bitfield">0b11</td><td>
+          <p>Reserved, treated as <span class="binarynumber">0b00</span>.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-3_2">OC, bits [3:2]</h4><div class="field">
+      <p>Controls the Outer Cacheability attribute used when the IRS accesses tables as a requester.</p>
+    <table class="valuetable"><tr><th>OC</th><th>Meaning</th></tr><tr><td class="bitfield">0b00</td><td>
+          <p>Non-cacheable.</p>
+        </td></tr><tr><td class="bitfield">0b01</td><td>
+          <p>Write-Back Cacheable.</p>
+        </td></tr><tr><td class="bitfield">0b10</td><td>
+          <p>Write-Through Cacheable.</p>
+        </td></tr><tr><td class="bitfield">0b11</td><td>
+          <p>Reserved, treated as <span class="binarynumber">0b00</span>.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-1_0">SH, bits [1:0]</h4><div class="field">
+      <p>Controls the Shareability attribute used when the IRS accesses tables as a requester.</p>
+    <table class="valuetable"><tr><th>SH</th><th>Meaning</th></tr><tr><td class="bitfield">0b00</td><td>
+          <p>Non-shareable.</p>
+        </td></tr><tr><td class="bitfield">0b01</td><td>
+          <p>Reserved, treated as <span class="binarynumber">0b00</span>.</p>
+        </td></tr><tr><td class="bitfield">0b10</td><td>
+          <p>Outer Shareable.</p>
+        </td></tr><tr><td class="bitfield">0b11</td><td>
+          <p>Inner Shareable.</p>
+        </td></tr></table>
+      <p>When IRS_CR1.OC is <span class="binarynumber">0b00</span> and IRS_CR1.IC is <span class="binarynumber">0b00</span>, this field is IGNORED and behaves as Outer Shareable.</p>
+    <p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><div class="access_mechanisms"><h2>Accessing IRS_CR1</h2><p>Accesses to this register use the following encodings:</p><div><p>Accessible at offset <span class="hexnumber">0x0084</span> from IRS_CONFIG_FRAME</p></div><ul><li>When IRS_IST_BASER.VALID == '1' or IRS_IST_STATUSR.IDLE == '0', accesses to this register are <span class="access_level">RO</span>.
+          </li><li>When IRS_VMT_BASER.VALID == '1' or IRS_VMT_STATUSR.IDLE == '0', accesses to this register are <span class="access_level">RO</span>.
+          </li><li>Otherwise, accesses to this register are <span class="access_level">RW</span>.
+          </li></ul><table class="access_instructions"><tr/><tr/></table></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-24 17:12:14, 2026-06_rel</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>

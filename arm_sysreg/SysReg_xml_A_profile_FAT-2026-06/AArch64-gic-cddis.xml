@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register execution_state="AArch64" is_register="False" is_internal="True" is_stub_entry="False">
+      <reg_short_name>GIC CDDIS</reg_short_name>
+        
+        <reg_long_name>Interrupt Disable in the Current Interrupt Domain</reg_long_name>
+
+
+
+      
+            <reg_condition otherwise="UNDEFINED">when FEAT_GCIE is implemented and FEAT_AA64 is implemented</reg_condition>
+      
+
+
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>Disables the specified INTID in the Current Interrupt Domain.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>If the Current Interrupt Domain is the Virtual Interrupt Domain this operation applies to the virtual INTID in the VM identified by the resident VPE.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+          <reg_group>System Instructions</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>GIC CDDIS is a 64-bit System instruction.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="64">
+  <text_before_fields/>
+  <field id="fieldset_0-63_32" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>63</field_msb>
+    <field_lsb>32</field_lsb>
+    <rel_range>63:32</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-31_29" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>TYPE</field_name>
+    <field_msb>31</field_msb>
+    <field_lsb>29</field_lsb>
+    <rel_range>31:29</rel_range>
+    <field_description order="before">
+      <para>Type of the interrupt</para>
+    </field_description>
+    <field_description order="after">
+      <para>Valued not defined above are reserved</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b010</field_value>
+        <field_value_description>
+          <para>LPI</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b011</field_value>
+        <field_value_description>
+          <para>SPI</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+  </field>
+  <field id="fieldset_0-28_24" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>28</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>28:24</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-23_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>ID</field_name>
+    <field_msb>23</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>23:0</rel_range>
+    <field_description order="before"><para>The ID of the interrupt.</para>
+<para>ID and TYPE together form an INTID.</para>
+<para>The number of ID bits implemented is reported in ICC_IDR0_EL1.ID_BITS.  Unimplemented upper bits are <arm-defined-word>RES0</arm-defined-word>.</para></field_description>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="64">
+  <fieldat id="fieldset_0-63_32" msb="63" lsb="32"/>
+  <fieldat id="fieldset_0-31_29" msb="31" lsb="29"/>
+  <fieldat id="fieldset_0-28_24" msb="28" lsb="24"/>
+  <fieldat id="fieldset_0-23_0" msb="23" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+  
+    
+      <access_permission_text>
+        <para>This instruction has no effect if the INTID is unreachable</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>This instruction is treated as a NOP if the operation applies to the Virtual Interrupt Domain and there is no resident VPE.</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>This system instruction is an alias of the SYS instruction.</para>
+      </access_permission_text>
+
+
+
+
+
+    
+        
+        <access_mechanism accessor="GIC CDDIS" type="SystemAccessor">
+            <encoding>
+            <access_instruction>GIC CDDIS{, &lt;Xt&gt;}</access_instruction>
+                
+                <enc n="op0" v="0b01"/>
+                
+                <enc n="op1" v="0b000"/>
+                
+                <enc n="CRn" v="0b1100"/>
+                
+                <enc n="CRm" v="0b0001"/>
+                
+                <enc n="op2" v="0b000"/>
+            </encoding>
+            <access_permission>
+                <ps name="GIC" sections="1" secttype="access_permission">
+                <pstext>
+if !(IsFeatureImplemented(FEAT_GCIE) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EL2Enabled() &amp;&amp; HCR_EL2().IMO == '1' &amp;&amp; IsFeatureImplemented(FEAT_GCIE_LEGACY) &amp;&amp; ICH_VCTLR_EL2().V3 == '1' then
+        Undefined();
+    elsif EL2Enabled() &amp;&amp; ICH_HFGITR_EL2().GICCDDIS == '0' then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    else
+        AArch64_GIC(X{64}(t), GICInstrDomain_CD, GICInstr_DIS);
+    end;
+elsif PSTATE.EL == EL2 then
+    AArch64_GIC(X{64}(t), GICInstrDomain_CD, GICInstr_DIS);
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        AArch64_GIC(X{64}(t), GICInstrDomain_CD, GICInstr_DIS);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

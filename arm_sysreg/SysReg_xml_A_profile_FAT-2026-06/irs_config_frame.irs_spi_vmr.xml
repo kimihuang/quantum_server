@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register is_register="True" is_internal="False" is_stub_entry="False">
+      <reg_short_name>IRS_SPI_VMR</reg_short_name>
+        
+        <reg_long_name>IRS SPI VM Assignment Register</reg_long_name>
+
+
+        <reg_parent_link id="irs_config_frame.xml">IRS_CONFIG_FRAME</reg_parent_link>
+
+      
+            <reg_condition otherwise="RES0">when FEAT_GICv5_EXT is implemented and IRS_IDR0.VIRT == '1'</reg_condition>
+      
+
+
+
+    
+    <reg_address
+        external_access="False"
+        mem_map_access="False"
+        block_access="True"
+        memory_access="True"
+        table_id="IRS_CONFIG_FRAMEacccessor0"
+    >
+  
+  <reg_frame>IRS_CONFIG_FRAME</reg_frame>
+  
+    
+    <reg_offset><hexnumber>0x0100</hexnumber></reg_offset>
+    <reg_access>
+    
+        
+      <reg_access_state>
+          <reg_access_level>When IRS_SPI_STATUSR.[V,IDLE] != '11'</reg_access_level>
+          <reg_access_type>UNKNOWN/WI</reg_access_type>
+      </reg_access_state>
+        
+      <reg_access_state>
+          <reg_access_level>When !IsSPIDVISupported(IRS_SPI_SELR.ID)</reg_access_level>
+          <reg_access_type>RAZ/WI</reg_access_type>
+      </reg_access_state>
+        
+      <reg_access_state>
+          <reg_access_type>RW</reg_access_type>
+      </reg_access_state>
+    </reg_access>
+</reg_address>
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>IRS SPI VM Assignment Register.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>Allows software to read and update the VM assignment of the SPI selected by <register_link id="irs_config_frame.irs_spi_selr.xml" state="">IRS_SPI_SELR</register_link>.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GICv5 IRS</reg_group>
+      </reg_groups>
+      <reg_configuration>
+        
+    
+      <configuration_text>
+        <para>The effects of a write to this register are not guaranteed to have completed before <register_link id="irs_config_frame.irs_spi_statusr.xml" state="">IRS_SPI_STATUSR</register_link>.IDLE is 1.</para>
+
+      </configuration_text>
+      <configuration_text>
+        <para>Following a write to this register, <register_link id="irs_config_frame.irs_spi_statusr.xml" state="">IRS_SPI_STATUSR</register_link>.V is updated.</para>
+      </configuration_text>
+
+      </reg_configuration>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>IRS_SPI_VMR is a 64-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="64">
+  <text_before_fields>
+    <para>This register is updated after a write to <register_link id="irs_config_frame.irs_spi_selr.xml" state="">IRS_SPI_SELR</register_link> when <register_link id="irs_config_frame.irs_spi_statusr.xml" state="">IRS_SPI_STATUSR</register_link>.{V, IDLE} is {1, 1}.</para>
+  </text_before_fields>
+  <field id="fieldset_0-63_63" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>VIRT</field_name>
+    <field_msb>63</field_msb>
+    <field_lsb>63</field_lsb>
+    <rel_range>63</rel_range>
+    <field_description order="before">
+      <para>Whether the SPI selected by <register_link id="irs_config_frame.irs_spi_selr.xml" state="">IRS_SPI_SELR</register_link> is assigned as a virtual SPI to the VM.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>The SPI is not assigned to a VM.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>The SPI is assigned to the VM specified by VM_ID.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+  </field>
+  <field id="fieldset_0-62_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>62</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>62:16</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-15_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>VM_ID</field_name>
+    <field_msb>15</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>15:0</rel_range>
+    <field_description order="before">
+      <para>Identifies the VM that the SPI selected by <register_link id="irs_config_frame.irs_spi_selr.xml" state="">IRS_SPI_SELR</register_link> is assigned to.</para>
+    </field_description>
+    <field_description order="after">
+      <para>Following a write to <register_link id="irs_config_frame.irs_spi_selr.xml" state="">IRS_SPI_SELR</register_link>, when IRS_SPI_VMR.VIRT is 0, this field is set to an <arm-defined-word>UNKNOWN</arm-defined-word> value.</para>
+    </field_description>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_SPI_VMR.VIRT == '1'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="64">
+  <fieldat id="fieldset_0-63_63" msb="63" lsb="63"/>
+  <fieldat id="fieldset_0-62_16" msb="62" lsb="16"/>
+  <fieldat id="fieldset_0-15_0" msb="15" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+  
+    
+      <access_permission_text>
+        <para>When the value of VIRT in the register is 1, meaning that the selected SPI is assigned to a VM, any write that does not set VIRT to 0 is ignored.</para>
+
+      </access_permission_text>
+      <access_permission_text>
+        <para>To assign an SPI to a different VM, the SPI must first be unassigned from the old VM, and then subsequently assigned to the new VM.</para>
+      </access_permission_text>
+
+
+
+
+
+    
+        
+        <access_mechanism type="BlockAccessAbstract" table_id="IRS_CONFIG_FRAMEacccessor0">
+        
+        
+        
+        
+        <access_header>Accessible at offset <hexnumber>0x0100</hexnumber> from IRS_CONFIG_FRAME</access_header>
+    </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

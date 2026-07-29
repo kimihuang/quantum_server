@@ -1,0 +1,490 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register is_register="True" is_internal="False" is_stub_entry="False">
+      <reg_short_name>IRS_MPAM_PARTID_R</reg_short_name>
+        
+        <reg_long_name>IRS MPAM PARTID Register</reg_long_name>
+
+
+        <reg_parent_link id="irs_config_frame.xml">IRS_CONFIG_FRAME</reg_parent_link>
+
+      
+            <reg_condition otherwise="RES0">when FEAT_GICv5_EXT is implemented and (IRS_IDR0.MPAM == '1' or IRS_IDR0.MPAM2 == '1')</reg_condition>
+      
+
+
+
+    
+    <reg_address
+        external_access="False"
+        mem_map_access="False"
+        block_access="True"
+        memory_access="True"
+        table_id="IRS_CONFIG_FRAMEacccessor0"
+    >
+  
+  <reg_frame>IRS_CONFIG_FRAME</reg_frame>
+  
+    
+    <reg_offset><hexnumber>0x0384</hexnumber></reg_offset>
+    <reg_access>
+    
+        
+      <reg_access_state>
+          <reg_access_type>RW</reg_access_type>
+      </reg_access_state>
+    </reg_access>
+</reg_address>
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>Configures the PARTID, and PMG when support for MPAMv1.x is implemented, used for memory transactions performed by the IRS.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GICv5 IRS</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>IRS_MPAM_PARTID_R is a 32-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="32">
+  <fields_condition>When IRS_IDR0.MPAM == '1'</fields_condition>
+  <text_before_fields/>
+  <field id="fieldset_0-31_31" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>IDLE</field_name>
+    <field_msb>31</field_msb>
+    <field_lsb>31</field_lsb>
+    <rel_range>31</rel_range>
+    <field_description order="before">
+      <para>Whether the effects of a write to this register are complete.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>The effects of a write to this register are not complete.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>The effects of a write to this register are complete.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="GIC">
+        <field_reset_number>'1'</field_reset_number>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <field id="fieldset_0-30_26" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>30</field_msb>
+    <field_lsb>26</field_lsb>
+    <rel_range>30:26</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-25_24-1" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" reserved_type="RES0">
+    <field_name>MPAM_SP</field_name>
+    <field_msb>25</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>1:0</rel_range>
+    <field_description order="before"><para>MPAM PARTID space for the IRS for the Secure Interrupt Domain.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_description order="after">
+      <para>All other values are reserved.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b00</field_value>
+        <field_value_description>
+          <para>Secure PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>Non-secure PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="GIC" impdef="true">
+        <field_reset_standard_text>ID</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+    <fields_condition>When IRS_MPAM_IDR.HAS_MPAM_SP == '1' and IRS_IDR0.INT_DOM == '00'</fields_condition>
+  </field>
+  <field id="fieldset_0-25_24-2" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" reserved_type="RES0">
+    <field_name>MPAM_SP</field_name>
+    <field_msb>25</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>1:0</rel_range>
+    <field_description order="before"><para>MPAM PARTID space for the IRS for the Non-secure Interrupt Domain.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_description order="after">
+      <para>All other values are reserved.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>Non-secure PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="GIC" impdef="true">
+        <field_reset_standard_text>ID</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+    <fields_condition>When IRS_MPAM_IDR.HAS_MPAM_SP == '1' and IRS_IDR0.INT_DOM == '01'</fields_condition>
+  </field>
+  <field id="fieldset_0-25_24-3" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" reserved_type="RES0">
+    <field_name>MPAM_SP</field_name>
+    <field_msb>25</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>1:0</rel_range>
+    <field_description order="before"><para>MPAM PARTID space for the IRS for the EL3 Interrupt Domain.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_description order="after">
+      <para>All other values are reserved.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b00</field_value>
+        <field_value_description>
+          <para>Secure PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>Non-secure PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b10</field_value>
+        <field_value_description>
+          <para>Root PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b11</field_value>
+        <field_value_description>
+          <para>Realm PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="GIC" impdef="true">
+        <field_reset_standard_text>ID</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+    <fields_condition>When IRS_MPAM_IDR.HAS_MPAM_SP == '1' and IRS_IDR0.INT_DOM == '10'</fields_condition>
+  </field>
+  <field id="fieldset_0-25_24-4" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" reserved_type="RES0">
+    <field_name>MPAM_SP</field_name>
+    <field_msb>25</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>1:0</rel_range>
+    <field_description order="before"><para>MPAM PARTID space for the IRS for the Realm Interrupt Domain.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_description order="after">
+      <para>All other values are reserved.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>Non-secure PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b11</field_value>
+        <field_value_description>
+          <para>Realm PARTID space.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="GIC" impdef="true">
+        <field_reset_standard_text>ID</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+    <fields_condition>When IRS_MPAM_IDR.HAS_MPAM_SP == '1' and IRS_IDR0.INT_DOM == '11'</fields_condition>
+  </field>
+  <field id="fieldset_0-25_24-5" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>25</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>25:24</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+    <fields_condition>Otherwise</fields_condition>
+  </field>
+  <field id="fieldset_0-23_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>PMG</field_name>
+    <field_msb>23</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>23:16</rel_range>
+    <field_description order="before"><para>PMG for accesses to memory by the IRS for the Interrupt Domain.</para>
+<para>Bits above the supported PMG bit width, as indicated by <register_link id="irs_config_frame.irs_mpam_idr.xml" state="">IRS_MPAM_IDR</register_link>.PMG_MAX, are <arm-defined-word>RES0</arm-defined-word>.</para>
+<para>If a value greater than <register_link id="irs_config_frame.irs_mpam_idr.xml" state="">IRS_MPAM_IDR</register_link>.PMG_MAX is programmed, an <arm-defined-word>UNKNOWN</arm-defined-word> PMG is used.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_resets>
+      <field_reset reset_type="GIC">
+        <field_reset_number>'00000000'</field_reset_number>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <field id="fieldset_0-15_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>PARTID</field_name>
+    <field_msb>15</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>15:0</rel_range>
+    <field_description order="before"><para>PARTID for accesses to memory by the IRS for the Interrupt Domain.</para>
+<para>Bits above the supported PARTID bit width, as indicated by <register_link id="irs_config_frame.irs_mpam_idr.xml" state="">IRS_MPAM_IDR</register_link>.PARTID_MAX, are <arm-defined-word>RES0</arm-defined-word>.</para>
+<para>If a value greater than <register_link id="irs_config_frame.irs_mpam_idr.xml" state="">IRS_MPAM_IDR</register_link>.PARTID_MAX is programmed, an <arm-defined-word>UNKNOWN</arm-defined-word> PARTID is used.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_resets>
+      <field_reset reset_type="GIC">
+        <field_reset_number>'0000000000000000'</field_reset_number>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+<fields id="fieldset_1" length="32">
+  <fields_condition>When IRS_IDR0.MPAM2 == '1'</fields_condition>
+  <text_before_fields/>
+  <field id="fieldset_1-31_31" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>IDLE</field_name>
+    <field_msb>31</field_msb>
+    <field_lsb>31</field_lsb>
+    <rel_range>31</rel_range>
+    <field_description order="before">
+      <para>Whether the effects of a write to an MPAM register are complete.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>The effects of a write to an IRS MPAM register are not complete.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>The effects of a write to an IRS MPAM register are complete.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="GIC">
+        <field_reset_number>'1'</field_reset_number>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <field id="fieldset_1-30_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>30</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>30:16</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_1-15_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>PARTID</field_name>
+    <field_msb>15</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>15:0</rel_range>
+    <field_description order="before"><para>PARTID for accesses to memory by the IRS for the Interrupt Domain.</para>
+<para>Bits above the supported PARTID bit width, as indicated by <register_link id="irs_config_frame.irs_mpam_idr.xml" state="">IRS_MPAM_IDR</register_link>.PARTID_MAX, are <arm-defined-word>RES0</arm-defined-word>.</para>
+<para>If a value greater than <register_link id="irs_config_frame.irs_mpam_idr.xml" state="">IRS_MPAM_IDR</register_link>.PARTID_MAX is programmed, an <arm-defined-word>UNKNOWN</arm-defined-word> PARTID is used.</para>
+<para>This field is Guarded by IRS_MPAM_PARTID_R.IDLE.</para></field_description>
+    <field_resets>
+      <field_reset reset_type="GIC">
+        <field_reset_number>'0000000000000000'</field_reset_number>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When IRS_MPAM_PARTID_R.IDLE == '0'</field_access_level>
+        <field_access_type>RO</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+
+<reg_fieldset length="32">
+  <fields_condition>When IRS_IDR0.MPAM == '1'</fields_condition>
+  <fieldat id="fieldset_0-31_31" msb="31" lsb="31"/>
+  <fieldat id="fieldset_0-30_26" msb="30" lsb="26"/>
+  <fieldat id="fieldset_0-25_24-1" msb="25" lsb="24"/>
+  <fieldat id="fieldset_0-23_16" msb="23" lsb="16"/>
+  <fieldat id="fieldset_0-15_0" msb="15" lsb="0"/>
+</reg_fieldset>
+
+<reg_fieldset length="32">
+  <fields_condition>When IRS_IDR0.MPAM2 == '1'</fields_condition>
+  <fieldat id="fieldset_1-31_31" msb="31" lsb="31"/>
+  <fieldat id="fieldset_1-30_16" msb="30" lsb="16"/>
+  <fieldat id="fieldset_1-15_0" msb="15" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+
+      <access_mechanisms>
+          
+
+
+
+
+
+
+    
+        
+        <access_mechanism type="BlockAccessAbstract" table_id="IRS_CONFIG_FRAMEacccessor0">
+        
+        
+        
+        
+        <access_header>Accessible at offset <hexnumber>0x0384</hexnumber> from IRS_CONFIG_FRAME</access_header>
+    </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

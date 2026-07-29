@@ -1,0 +1,291 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register execution_state="AArch64" is_register="True" is_internal="True" is_stub_entry="False">
+      <reg_short_name>ICC_PPI_DOMAINR&lt;n&gt;_EL3</reg_short_name>
+        
+        <reg_long_name>Interrupt Controller PPI Domain Registers</reg_long_name>
+
+
+
+      
+            <reg_condition otherwise="UNDEFINED">when FEAT_GCIE is implemented, EL3 is implemented, and FEAT_AA64 is implemented</reg_condition>
+          <reg_array>
+              <reg_array_start>0</reg_array_start>
+              <reg_array_end>3</reg_array_end>
+         </reg_array>
+      
+
+
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>Controls which Interrupt Domain PPI sources are assigned to.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GIC control registers</reg_group>
+            <reg_group>Secure</reg_group>
+            <reg_group>GIC</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>ICC_PPI_DOMAINR&lt;n&gt;_EL3 is a 64-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="64">
+  <text_before_fields/>
+  <field id="fieldset_0-63_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>DOM&lt;x&gt;</field_name>
+    <field_msb>63</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>63:0</rel_range>
+    <field_description order="before"><para>Controls the Physical Interrupt Domain that PPI &lt;(n * 32) + x&gt; is assigned to.</para>
+<para>If the physical PPI is assigned to an unimplemented Interrupt Domain, all of the following are true:</para>
+<list type="unordered">
+<listitem><content>The physical PPI is not selected as the candidate HPPI in any Interrupt Domain.</content>
+</listitem><listitem><content>Access to the state and configuration of the PPI using an ICC_PPI_ System register is only permitted at EL3.</content>
+</listitem><listitem><content>Attempts to deactivate the PPI by executing a GIC xDDI System instruction are treated as NOPs.</content>
+</listitem></list></field_description>
+    <field_array_indexes index_variable="x" element_size="2" range_specifier="2x+1:2x">
+      <field_array_index>
+        <field_array_start>31</field_array_start>
+        <field_array_end>0</field_array_end>
+      </field_array_index>
+    </field_array_indexes>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b00</field_value>
+        <field_value_description>
+          <para>Secure</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>Non-secure</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b10</field_value>
+        <field_value_description>
+          <para>EL3</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b11</field_value>
+        <field_value_description>
+          <para>Realm</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>U</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When !IsPPIImplemented((n * 32) + x)</field_access_level>
+        <field_access_type>RAZ/WI</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="64">
+  <fieldat id="fieldset_0-63_0" label="DOM31" msb="63" lsb="62"/>
+  <fieldat id="fieldset_0-63_0" label="DOM30" msb="61" lsb="60"/>
+  <fieldat id="fieldset_0-63_0" label="DOM29" msb="59" lsb="58"/>
+  <fieldat id="fieldset_0-63_0" label="DOM28" msb="57" lsb="56"/>
+  <fieldat id="fieldset_0-63_0" label="DOM27" msb="55" lsb="54"/>
+  <fieldat id="fieldset_0-63_0" label="DOM26" msb="53" lsb="52"/>
+  <fieldat id="fieldset_0-63_0" label="DOM25" msb="51" lsb="50"/>
+  <fieldat id="fieldset_0-63_0" label="DOM24" msb="49" lsb="48"/>
+  <fieldat id="fieldset_0-63_0" label="DOM23" msb="47" lsb="46"/>
+  <fieldat id="fieldset_0-63_0" label="DOM22" msb="45" lsb="44"/>
+  <fieldat id="fieldset_0-63_0" label="DOM21" msb="43" lsb="42"/>
+  <fieldat id="fieldset_0-63_0" label="DOM20" msb="41" lsb="40"/>
+  <fieldat id="fieldset_0-63_0" label="DOM19" msb="39" lsb="38"/>
+  <fieldat id="fieldset_0-63_0" label="DOM18" msb="37" lsb="36"/>
+  <fieldat id="fieldset_0-63_0" label="DOM17" msb="35" lsb="34"/>
+  <fieldat id="fieldset_0-63_0" label="DOM16" msb="33" lsb="32"/>
+  <fieldat id="fieldset_0-63_0" label="DOM15" msb="31" lsb="30"/>
+  <fieldat id="fieldset_0-63_0" label="DOM14" msb="29" lsb="28"/>
+  <fieldat id="fieldset_0-63_0" label="DOM13" msb="27" lsb="26"/>
+  <fieldat id="fieldset_0-63_0" label="DOM12" msb="25" lsb="24"/>
+  <fieldat id="fieldset_0-63_0" label="DOM11" msb="23" lsb="22"/>
+  <fieldat id="fieldset_0-63_0" label="DOM10" msb="21" lsb="20"/>
+  <fieldat id="fieldset_0-63_0" label="DOM9" msb="19" lsb="18"/>
+  <fieldat id="fieldset_0-63_0" label="DOM8" msb="17" lsb="16"/>
+  <fieldat id="fieldset_0-63_0" label="DOM7" msb="15" lsb="14"/>
+  <fieldat id="fieldset_0-63_0" label="DOM6" msb="13" lsb="12"/>
+  <fieldat id="fieldset_0-63_0" label="DOM5" msb="11" lsb="10"/>
+  <fieldat id="fieldset_0-63_0" label="DOM4" msb="9" lsb="8"/>
+  <fieldat id="fieldset_0-63_0" label="DOM3" msb="7" lsb="6"/>
+  <fieldat id="fieldset_0-63_0" label="DOM2" msb="5" lsb="4"/>
+  <fieldat id="fieldset_0-63_0" label="DOM1" msb="3" lsb="2"/>
+  <fieldat id="fieldset_0-63_0" label="DOM0" msb="1" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+        <reg_variables>
+              <reg_variable variable="n" max="3"/>
+        </reg_variables>
+
+      <access_mechanisms>
+          
+
+
+
+
+
+
+    
+        
+        <access_mechanism accessor="MRS ICC_PPI_DOMAINR&lt;n&gt;_EL3" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="n">
+                    <acc_array_range>0-3</acc_array_range>
+                </acc_array>
+            <access_instruction>MRS &lt;Xt&gt;, ICC_PPI_DOMAINR&lt;n&gt;_EL3</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b110"/>
+                
+                <enc n="CRn" v="0b1100"/>
+                
+                <enc n="CRm" v="0b1000"/>
+                
+                <enc n="op2" v="0b1:n[1:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MRS" sections="1" secttype="access_permission">
+                <pstext>
+let n:integer = UInt(op2[1:0]);
+
+if !(IsFeatureImplemented(FEAT_GCIE) &amp;&amp; HaveEL(EL3) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    Undefined();
+elsif PSTATE.EL == EL2 then
+    Undefined();
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        X{64}(t) = ICC_PPI_DOMAINR_EL3(n);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+    
+        
+        <access_mechanism accessor="MSRregister ICC_PPI_DOMAINR&lt;n&gt;_EL3" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="n">
+                    <acc_array_range>0-3</acc_array_range>
+                </acc_array>
+            <access_instruction>MSR ICC_PPI_DOMAINR&lt;n&gt;_EL3, &lt;Xt&gt;</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b110"/>
+                
+                <enc n="CRn" v="0b1100"/>
+                
+                <enc n="CRm" v="0b1000"/>
+                
+                <enc n="op2" v="0b1:n[1:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MSRregister" sections="1" secttype="access_permission">
+                <pstext>
+let n:integer = UInt(op2[1:0]);
+
+if !(IsFeatureImplemented(FEAT_GCIE) &amp;&amp; HaveEL(EL3) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    Undefined();
+elsif PSTATE.EL == EL2 then
+    Undefined();
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        ICC_PPI_DOMAINR_EL3(n) = X{64}(t);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

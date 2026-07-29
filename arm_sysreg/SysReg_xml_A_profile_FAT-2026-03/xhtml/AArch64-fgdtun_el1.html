@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>FGDTU&lt;n&gt;_EL1</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">FGDTU&lt;n&gt;_EL1, Fine Grained Dynamic Traps, Unprivileged (EL1), n = 0 - 31</h1><p>The FGDTU&lt;n&gt;_EL1 characteristics are:</p><h2>Purpose</h2>
+        <p>Configuration of Fine-grained Dynamic Traps for EL0 execution when <a href="AArch64-hcr_el2.html">HCR_EL2</a>.{E2H, TGE} != {1, 1}.</p>
+
+      
+        <p>The controls selected by FGDTIndex 2n and 2n+1 are represented in this register.</p>
+
+      
+        <p>Each 64-bit register is made up of two 32-bit registers with fields described below.</p>
+
+      
+        <p>The low half of the register contains the controls used when FGDTIndex is 2n. The upper half of the register contains the controls used when FGDTIndex is 2n+1.</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_S1POE2 is implemented and FEAT_AA64 is implemented. Otherwise, direct accesses to FGDTU&lt;n&gt;_EL1 are <span class="arm-defined-word">UNDEFINED</span>.</p><h2>Attributes</h2>
+        <p>FGDTU&lt;n&gt;_EL1 is a 32-bit register.</p>
+      <h2>Field descriptions</h2><table class="regdiagram" id="fieldset_0"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="lr" colspan="8"><a href="#fieldset_0-31_24">RES0</a></td><td class="lr" colspan="2"><a href="#fieldset_0-23_22-1">nGCS</a></td><td class="lr" colspan="3"><a href="#fieldset_0-21_19">RES0</a></td><td class="lr" colspan="1"><a href="#fieldset_0-18_18">nKDB</a></td><td class="lr" colspan="1"><a href="#fieldset_0-17_17">nKDA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-16_16">nKIB</a></td><td class="lr" colspan="1"><a href="#fieldset_0-15_15">nKIA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-14_14">nWTPIDR3</a></td><td class="lr" colspan="1"><a href="#fieldset_0-13_13">nWTPIDR</a></td><td class="lr" colspan="1"><a href="#fieldset_0-12_12">nTC</a></td><td class="lr" colspan="2"><a href="#fieldset_0-11_10">RES0</a></td><td class="lr" colspan="1"><a href="#fieldset_0-9_9-1">nTPL</a></td><td class="lr" colspan="1"><a href="#fieldset_0-8_8">nTT</a></td><td class="lr" colspan="1"><a href="#fieldset_0-7_7-1">nLSTG</a></td><td class="lr" colspan="1"><a href="#fieldset_0-6_6">RES0</a></td><td class="lr" colspan="1"><a href="#fieldset_0-5_5">nKGA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-4_4">nSKDB</a></td><td class="lr" colspan="1"><a href="#fieldset_0-3_3">nSKDA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-2_2">nSKIB</a></td><td class="lr" colspan="1"><a href="#fieldset_0-1_1">nSKIA</a></td><td class="lr" colspan="1"><a href="#fieldset_0-0_0">nSVC</a></td></tr></tbody></table><h4 id="fieldset_0-31_24">Bits [31:24]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-23_22-1">nGCS, bits [23:22]<span class="condition"><br/>When FEAT_GCS is implemented:
+                        </span></h4><div class="field"><p>Traps the following GCS instructions:</p>
+<ul>
+<li>
+<p><span class="instruction">GCSSTR</span>, <span class="instruction">GCSSTTR</span>. The exception is reported using the EC syndrome value <span class="hexnumber">0x2D</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.ExType is <span class="binarynumber">0b0010</span>.</p>
+
+</li><li>
+<p><a href="AArch64-gcspushm.html">GCSPUSHM</a>, <a href="AArch64-gcspopm.html">GCSPOPM</a>, <a href="AArch64-gcsss1.html">GCSSS1</a>, <a href="AArch64-gcsss2.html">GCSSS2</a>. The exception is reported using the EC syndrome value <span class="hexnumber">0x18</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+
+</li></ul>
+<p>This trap is higher priority than any other trap.</p><table class="valuetable"><tr><th>nGCS</th><th>Meaning</th></tr><tr><td class="bitfield">0b00</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b01</td><td>
+          <p>Accesses to <span class="instruction">GCSSTR</span>, <span class="instruction">GCSSTTR</span>, and <a href="AArch64-gcspushm.html">GCSPUSHM</a> at EL0 are trapped to EL1.</p>
+        </td></tr><tr><td class="bitfield">0b10</td><td>
+          <p>Accesses to <span class="instruction">GCSSTR</span>, <span class="instruction">GCSSTTR</span>, <a href="AArch64-gcspushm.html">GCSPUSHM</a>, <a href="AArch64-gcsss1.html">GCSSS1</a>, and <a href="AArch64-gcsss2.html">GCSSS2</a> at EL0 are trapped to EL1.</p>
+        </td></tr><tr><td class="bitfield">0b11</td><td>
+          <p>Accesses to <span class="instruction">GCSSTR</span>, <span class="instruction">GCSSTTR</span>, <a href="AArch64-gcspushm.html">GCSPUSHM</a>, <a href="AArch64-gcsss1.html">GCSSS1</a>, <a href="AArch64-gcsss2.html">GCSSS2</a>, and <a href="AArch64-gcspopm.html">GCSPOPM</a> at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-23_22-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-21_19">Bits [21:19]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-18_18">nKDB, bit [18]</h4><div class="field"><p>Disables use of the PAC D B key for any <span class="instruction">PACDB</span> signing instruction, as well as preventing use of any PAC authentication instructions that use the D B key, which are trapped in the same manner as for nSKDB.</p>
+<p>This trap is higher priority than any other trap.</p><table class="valuetable"><tr><th>nKDB</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers and instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-17_17">nKDA, bit [17]</h4><div class="field"><p>Disables use of the PAC D A key for any <span class="instruction">PACDA</span> signing instruction, as well as preventing use of any PAC authentication instructions that use the D A key, which are trapped in the same manner as for nSKDA.</p>
+<p>This trap is higher priority than any other trap.</p><table class="valuetable"><tr><th>nKDA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-16_16">nKIB, bit [16]</h4><div class="field"><p>Disables use of the PAC I B key for any <span class="instruction">PACIB</span> signing instruction, as well as preventing use of any PAC authentication instructions that use the I B key, which are trapped in the same manner as for nSKIB.</p>
+<p>This trap is higher priority than any other trap.</p><table class="valuetable"><tr><th>nKIB</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-15_15">nKIA, bit [15]</h4><div class="field"><p>Disables use of the PAC I A key for any <span class="instruction">PACIA</span> signing instruction, as well as preventing use of any PAC authentication instructions that use the I A key, which are trapped in the same manner as for nSKIA.</p>
+<p>This trap is higher priority than any other trap.</p><table class="valuetable"><tr><th>nKIA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-14_14">nWTPIDR3, bit [14]</h4><div class="field"><p>Trap write accesses to <a href="AArch64-tpidr3_el0.html">TPIDR3_EL0</a>. The exception is reported using EC syndrome value <span class="hexnumber">0x18</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+<p>These traps are higher priority than the traps due to <a href="AArch64-hfgwtr2_el2.html">HFGWTR2_EL2</a>.TPIDR3_ELx and <a href="AArch64-fgwte3_el3.html">FGWTE3_EL3</a>.TPIDR_EL3.</p><table class="valuetable"><tr><th>nWTPIDR3</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-13_13">nWTPIDR, bit [13]</h4><div class="field"><p>Trap write accesses to <a href="AArch64-tpidr_el0.html">TPIDR_EL0</a>.</p>
+<p>At EL0 traps write accesses to <a href="AArch64-tpidr_el0.html">TPIDR_EL0</a>. These are reported using EC syndrome value <span class="hexnumber">0x18</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+<p>This trap is taken with higher priority than traps resulting from <a href="AArch64-hfgwtr_el2.html">HFGWTR_EL2</a>.TPIDR_EL0.</p><table class="valuetable"><tr><th>nWTPIDR</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-12_12">nTC, bit [12]</h4><div class="field">
+      <p>Traps the <span class="instruction">TCHANGEF</span> and <span class="instruction">TCHANGEB</span> instructions. The Illegal TIndex Change exception is reported using EC syndrome value <span class="hexnumber">0x2E</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+    <table class="valuetable"><tr><th>nTC</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-11_10">Bits [11:10]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-9_9-1">nTPL, bit [9]<span class="condition"><br/>When FEAT_TPS is implemented:
+                        </span></h4><div class="field"><p>Traps write access to TPMIN&lt;n&gt;_EL0 and TPMAX&lt;n&gt;_EL0. The exception is reported using EC syndrome value <span class="hexnumber">0x18</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+<p>This trap is higher priority than other traps.</p><table class="valuetable"><tr><th>nTPL</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-9_9-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-8_8">nTT, bit [8]</h4><div class="field"><p>At EL0 traps write accesses to <a href="AArch64-por_el0.html">POR_EL0</a>.</p>
+<p>The trap is reported using EC syndrome value <span class="hexnumber">0x18</span> for MSR accesses and EC syndrome value <span class="hexnumber">0x14</span> for MSRR accesses, and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+<p>This trap has higher priority than any trap by a higher Exception level.</p><table class="valuetable"><tr><th>nTT</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-7_7-1">nLSTG, bit [7]<span class="condition"><br/>When FEAT_MTE is implemented:
+                        </span></h4><div class="field"><p>Traps any instruction that loads or stores Allocation Tags. The exception is reported using EC syndrome value <span class="hexnumber">0x0A</span> and ISS=<span class="hexnumber">0x000005</span>.</p>
+<p>The exception is taken regardless of whether the target memory location has the Tagged attribute.</p>
+<p>For the <span class="instruction">SETG*</span> tag setting instructions, this trap has lower priority than the existing MSCEn trap controls.</p><table class="valuetable"><tr><th>nLSTG</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-7_7-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-6_6">Bit [6]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-5_5">nKGA, bit [5]</h4><div class="field"><p>Traps any <span class="instruction">PACGA</span> signing instruction that uses the PAC G A key. The exception is reported using EC syndrome value <span class="hexnumber">0x09</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1.</p>
+<p>Accesses to <a href="AArch64-apgakeyhi_el1.html">APGAKeyHi_EL1</a> and <a href="AArch64-apgakeylo_el1.html">APGAKeyLo_EL1</a> are trapped using EC syndrome value <span class="hexnumber">0x18</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1 if accesses to the register are not already <span class="arm-defined-word">UNDEFINED</span>.</p>
+<p>This trap is higher priority than any other trap on <span class="instruction">PACGA</span> instructions.</p><table class="valuetable"><tr><th>nKGA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers and instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-4_4">nSKDB, bit [4]</h4><div class="field"><p>Traps any <span class="instruction">PACD</span> signing instruction that uses the PAC D B key. The exception is reported using EC syndrome value <span class="hexnumber">0x09</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1, and:</p>
+<ul>
+<li>This trap is taken with higher priority than traps resulting from <a href="AArch64-hcr_el2.html">HCR_EL2</a>.API or <a href="AArch64-scr_el3.html">SCR_EL3</a>.API.
+</li><li>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnDB control.
+</li></ul><table class="valuetable"><tr><th>nSKDB</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-3_3">nSKDA, bit [3]</h4><div class="field"><p>Traps any <span class="instruction">PACD</span> signing instruction that uses the PAC D A key. The exception is reported using EC syndrome value <span class="hexnumber">0x09</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1, and:</p>
+<ul>
+<li>This trap is taken with higher priority than traps resulting from <a href="AArch64-hcr_el2.html">HCR_EL2</a>.API or <a href="AArch64-scr_el3.html">SCR_EL3</a>.API.
+</li><li>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnDA control.
+</li></ul><table class="valuetable"><tr><th>nSKDA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-2_2">nSKIB, bit [2]</h4><div class="field"><p>Traps any <span class="instruction">PACI</span> signing instruction that uses the PAC I B key. The exception is reported using EC syndrome value <span class="hexnumber">0x09</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1, and:</p>
+<ul>
+<li>This trap is taken with higher priority than traps resulting from <a href="AArch64-hcr_el2.html">HCR_EL2</a>.API or <a href="AArch64-scr_el3.html">SCR_EL3</a>.API.
+</li><li>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnIB control.
+</li></ul><table class="valuetable"><tr><th>nSKIB</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-1_1">nSKIA, bit [1]</h4><div class="field"><p>Traps any <span class="instruction">PACI</span> signing instruction that uses the PAC I A key. The exception is reported using EC syndrome value <span class="hexnumber">0x09</span> and <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1, and:</p>
+<ul>
+<li>This trap is taken with higher priority than traps resulting from <a href="AArch64-hcr_el2.html">HCR_EL2</a>.API or <a href="AArch64-scr_el3.html">SCR_EL3</a>.API.
+</li><li>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnIA control.
+</li></ul><table class="valuetable"><tr><th>nSKIA</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified instructions at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-0_0">nSVC, bit [0]</h4><div class="field"><p>Trap <span class="instruction">SVC</span> instructions.</p>
+<p>The <span class="instruction">SVC</span> instruction generates an SVC exception reported with <a href="AArch64-esr_el1.html">ESR_EL1</a>.ISS.FGDT is 1, and the value reported in <a href="AArch64-elr_el1.html">ELR_EL1</a> is the value of PC instead of PC+4.</p>
+<p>The exception is generated with higher priority than any other SVC traps, and is taken to EL1 if <a href="AArch64-hcr_el2.html">HCR_EL2</a>.TGE is 0, and to EL2 if <a href="AArch64-hcr_el2.html">HCR_EL2</a>.TGE is 1.</p><table class="valuetable"><tr><th>nSVC</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>This control does not generate an exception.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Accesses to the specified registers at EL0 are trapped to EL1.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a Warm reset, 
+      this field resets
+       to an architecturally <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><div class="access_mechanisms"><h2>Accessing FGDTU&lt;n&gt;_EL1</h2>
+        <p>Two 32-bit registers corresponding to FGDTIndexes 2p and 2p+1 are represented in each 64-bit register encoding.</p>
+      <p>Accesses to this register use the following encodings in the System register encoding space:</p><div><h4 class="assembler">MRS &lt;Xt&gt;, FGDTU&lt;p&gt;_EL1
+      ; Where p = 0-15</h4></div><table class="access_instructions"><tr><th>op0</th><th>op1</th><th>CRn</th><th>CRm</th><th>op2</th></tr><tr><td>0b11</td><td>0b000</td><td>0b0011</td><td>0b010:p[3]</td><td>p[2:0]</td></tr></table><p class="pseudocode">
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif PSTATE.EL == EL0 then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if HaveEL(EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+        Undefined();
+    elsif EL2Enabled() &amp;&amp; (!IsHCRXEL2Enabled() || HCRX_EL2().POE2En == '0') then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    elsif EL2Enabled() &amp;&amp; IsFeatureImplemented(FEAT_FGT2) &amp;&amp; ((HaveEL(EL3) &amp;&amp; SCR_EL3().FGTEn2 == '0') || HFGRTR2_EL2().nFGDTn_EL1 != '11') then
+        if p &gt;= 8 &amp;&amp; HFGRTR2_EL2().nFGDTn_EL1 == '10' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        elsif p &gt;= 4 &amp;&amp; HFGRTR2_EL2().nFGDTn_EL1 == '01' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        else
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        end;
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif EffectiveHCR_EL2_NVx() IN {'111'} then
+        X{64}(t) = NVMem(0x680 + (8 * p));
+    else
+        X{64}(t) = FGDTU_EL1((p * 2) + 1) :: FGDTU_EL1(p * 2);
+    end;
+elsif PSTATE.EL == EL2 then
+    if HaveEL(EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+        Undefined();
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif ELIsInHost(EL2) then
+        X{64}(t) = FGDTU_EL2((p * 2) + 1) :: FGDTU_EL2(p * 2);
+    else
+        X{64}(t) = FGDTU_EL1((p * 2) + 1) :: FGDTU_EL1(p * 2);
+    end;
+elsif PSTATE.EL == EL3 then
+    X{64}(t) = FGDTU_EL1((p * 2) + 1) :: FGDTU_EL1(p * 2);
+end;
+                </p><div><h4 class="assembler">MSR FGDTU&lt;p&gt;_EL1, &lt;Xt&gt;
+      ; Where p = 0-15</h4></div><table class="access_instructions"><tr><th>op0</th><th>op1</th><th>CRn</th><th>CRm</th><th>op2</th></tr><tr><td>0b11</td><td>0b000</td><td>0b0011</td><td>0b010:p[3]</td><td>p[2:0]</td></tr></table><p class="pseudocode">
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif PSTATE.EL == EL0 then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if HaveEL(EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+        Undefined();
+    elsif IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.nTT == '1' then
+        AArch64_FGDTSystemAccessTrap(EL1, 0x18);
+    elsif EL2Enabled() &amp;&amp; (!IsHCRXEL2Enabled() || HCRX_EL2().POE2En == '0') then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    elsif EL2Enabled() &amp;&amp; IsFeatureImplemented(FEAT_FGT2) &amp;&amp; ((HaveEL(EL3) &amp;&amp; SCR_EL3().FGTEn2 == '0') || HFGWTR2_EL2().nFGDTn_EL1 != '11') then
+        if p &gt;= 8 &amp;&amp; HFGWTR2_EL2().nFGDTn_EL1 == '10' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        elsif p &gt;= 4 &amp;&amp; HFGWTR2_EL2().nFGDTn_EL1 == '01' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        else
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        end;
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif EffectiveHCR_EL2_NVx() IN {'111'} then
+        NVMem(0x680 + (8 * p)) = X{64}(t);
+    else
+        FGDTU_EL1((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+elsif PSTATE.EL == EL2 then
+    if HaveEL(EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+        Undefined();
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif ELIsInHost(EL2) then
+        FGDTU_EL2((p * 2) + 1, p * 2) = X{64}(t);
+    else
+        FGDTU_EL1((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+elsif PSTATE.EL == EL3 then
+    FGDTU_EL1((p * 2) + 1, p * 2) = X{64}(t);
+end;
+                </p><div><h4 class="condition">
+When FEAT_VHE is implemented
+            </h4><h4 class="assembler">MRS &lt;Xt&gt;, FGDTU&lt;p&gt;_EL12
+      ; Where p = 0-15</h4></div><table class="access_instructions"><tr><th>op0</th><th>op1</th><th>CRn</th><th>CRm</th><th>op2</th></tr><tr><td>0b11</td><td>0b101</td><td>0b0011</td><td>0b010:p[3]</td><td>p[2:0]</td></tr></table><p class="pseudocode">
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif PSTATE.EL == EL0 then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EffectiveHCR_EL2_NVx() == '101' then
+        X{64}(t) = NVMem(0x680 + (8 * p));
+    elsif EffectiveHCR_EL2_NVx() IN {'xx1'} then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    else
+        Undefined();
+    end;
+elsif PSTATE.EL == EL2 then
+    if ELIsInHost(EL2) then
+        if HaveEL(EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+            Undefined();
+        elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+            if EL3SDDUndef() then
+                Undefined();
+            else
+                AArch64_SystemAccessTrap(EL3, 0x18);
+            end;
+        else
+            X{64}(t) = FGDTU_EL1((p * 2) + 1) :: FGDTU_EL1(p * 2);
+        end;
+    else
+        Undefined();
+    end;
+elsif PSTATE.EL == EL3 then
+    if ELIsInHost(EL2) then
+        X{64}(t) = FGDTU_EL1((p * 2) + 1) :: FGDTU_EL1(p * 2);
+    else
+        Undefined();
+    end;
+end;
+                </p><div><h4 class="condition">
+When FEAT_VHE is implemented
+            </h4><h4 class="assembler">MSR FGDTU&lt;p&gt;_EL12, &lt;Xt&gt;
+      ; Where p = 0-15</h4></div><table class="access_instructions"><tr><th>op0</th><th>op1</th><th>CRn</th><th>CRm</th><th>op2</th></tr><tr><td>0b11</td><td>0b101</td><td>0b0011</td><td>0b010:p[3]</td><td>p[2:0]</td></tr></table><p class="pseudocode">
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif PSTATE.EL == EL0 then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EffectiveHCR_EL2_NVx() == '101' then
+        NVMem(0x680 + (8 * p)) = X{64}(t);
+    elsif EffectiveHCR_EL2_NVx() IN {'xx1'} then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    else
+        Undefined();
+    end;
+elsif PSTATE.EL == EL2 then
+    if ELIsInHost(EL2) then
+        if HaveEL(EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+            Undefined();
+        elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+            if EL3SDDUndef() then
+                Undefined();
+            else
+                AArch64_SystemAccessTrap(EL3, 0x18);
+            end;
+        else
+            FGDTU_EL1((p * 2) + 1, p * 2) = X{64}(t);
+        end;
+    else
+        Undefined();
+    end;
+elsif PSTATE.EL == EL3 then
+    if ELIsInHost(EL2) then
+        FGDTU_EL1((p * 2) + 1, p * 2) = X{64}(t);
+    else
+        Undefined();
+    end;
+end;
+                </p></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-08 19:28:52, 2026-03_diff_tag</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>

@@ -1,0 +1,1108 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register execution_state="AArch64" is_register="True" is_internal="True" is_stub_entry="False">
+      <reg_short_name>FGDTP&lt;n&gt;_EL2</reg_short_name>
+        
+        <reg_long_name>Fine Grained Dynamic Traps, Privileged (EL2)</reg_long_name>
+
+
+
+      
+            <reg_condition otherwise="UNDEFINED">when FEAT_S1POE2 is implemented and FEAT_AA64 is implemented</reg_condition>
+          <reg_array>
+              <reg_array_start>0</reg_array_start>
+              <reg_array_end>31</reg_array_end>
+         </reg_array>
+      
+
+
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>Configuration of Fine-grained Dynamic Traps for EL2 execution.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>The controls selected by FGDTIndex 2n and 2n+1 are represented in this register.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>Each 64-bit register is made up of two 32-bit registers with fields described below.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>The low half of the register contains the controls used when FGDTIndex is 2n. The upper half of the register contains the controls used when FGDTIndex is 2n+1.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>FGDTP&lt;n&gt;_EL2 is permitted to be cached in an IRT PLB as part of an IRT entry that specifies the corresponding FGDTIndex value n.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>Memory</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>FGDTP&lt;n&gt;_EL2 is a 32-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="32">
+  <text_before_fields/>
+  <field id="fieldset_0-31_22" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>31</field_msb>
+    <field_lsb>22</field_lsb>
+    <rel_range>31:22</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-21_21" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>MMASK</field_name>
+    <field_msb>21</field_msb>
+    <field_lsb>21</field_lsb>
+    <rel_range>21</rel_range>
+    <field_description order="before"><para>At EL2, write accesses to the following mask registers that would be <arm-defined-word>UNDEFINED</arm-defined-word> when the mask is nonzero, instead perform direct write accesses to the following registers:</para>
+<list type="unordered">
+<listitem><content><register_link state="AArch64" id="AArch64-actlrmask_el2.xml">ACTLRMASK_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-sctlrmask_el2.xml">SCTLRMASK_EL2</register_link>, <register_link state="AArch64" id="AArch64-sctlr2mask_el2.xml">SCTLR2MASK_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-tcr_el2.xml">TCR_EL2</register_link>, <register_link state="AArch64" id="AArch64-tcr2_el2.xml">TCR2_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-tcrmask_el2.xml">TCRMASK_EL2</register_link> and <register_link state="AArch64" id="AArch64-tcr2mask_el2.xml">TCR2MASK_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-cptrmask_el2.xml">CPTRMASK_EL2</register_link>.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_SRMASK2">FEAT_SRMASK2</xref> is implemented, <register_link state="AArch64" id="AArch64-hcrmask_el2.xml">HCRMASK_EL2</register_link>, and <register_link state="AArch64" id="AArch64-hcrxmask_el2.xml">HCRXMASK_EL2</register_link>.</content>
+</listitem></list>
+<para>If E0 is 1, this field is <arm-defined-word>RES0</arm-defined-word>.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>The accesses remain <arm-defined-word>UNDEFINED</arm-defined-word>.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Write accesses to the specified mask registers perform the direct write access.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-20_20" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nH</field_name>
+    <field_msb>20</field_msb>
+    <field_lsb>20</field_lsb>
+    <rel_range>20</rel_range>
+    <field_description order="before"><para>Write accesses at EL2 to any register name for which there is an NVMem[] offset, and the register name is not listed for the nVTT control is trapped.</para>
+<para>In all cases the trap is reported using EC syndrome value <hexnumber>0x18</hexnumber> for MSR accesses and EC syndrome value <hexnumber>0x14</hexnumber> for MSRR accesses, and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1. This trap is higher priority than other traps. From EL2, the exception is taken to EL2.</para>
+<para>If E0 is 1, this field is <arm-defined-word>RES0</arm-defined-word>.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-19_19" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nVTT</field_name>
+    <field_msb>19</field_msb>
+    <field_lsb>19</field_lsb>
+    <rel_range>19</rel_range>
+    <field_description order="before"><para>Writes to the following registers are trapped:</para>
+<list type="unordered">
+<listitem><content>V(S)TCR_EL2, V(S)TTBR_EL2, <register_link state="AArch64" id="AArch64-vncr_el2.xml">VNCR_EL2</register_link>, <register_link state="AArch64" id="AArch64-vnccr_el2.xml">VNCCR_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-s2pir_el2.xml">S2PIR_EL2</register_link></content>
+</listitem></list>
+<para>Writes to <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.VM are ignored.</para>
+<para>The trap is reported using EC syndrome value <hexnumber>0x18</hexnumber> for MSR accesses and EC syndrome value <hexnumber>0x14</hexnumber> for MSRR accesses, and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1. This trap is higher priority than other traps.</para>
+<para>If E0 is 1, this field is <arm-defined-word>RES0</arm-defined-word>.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-18_18" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nKDB</field_name>
+    <field_msb>18</field_msb>
+    <field_lsb>18</field_lsb>
+    <rel_range>18</rel_range>
+    <field_description order="before"><para>Disables use of the PAC D B key for any <instruction>PACDB</instruction> signing instruction, as well as preventing use of any PAC authentication instructions that use the D B key, which are trapped in the same manner as for nSKDB.</para>
+<para>Additionally accesses to <register_link state="AArch64" id="AArch64-apdbkeyhi_el1.xml">APDBKeyHi_EL1</register_link> and <register_link state="AArch64" id="AArch64-apdbkeylo_el1.xml">APDBKeyLo_EL1</register_link> are reported using EC syndrome value <hexnumber>0x18</hexnumber> if accesses to the register are not already <arm-defined-word>UNDEFINED</arm-defined-word>.</para>
+<para>This trap is higher priority than any other trap.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers and instructions at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-17_17" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nKDA</field_name>
+    <field_msb>17</field_msb>
+    <field_lsb>17</field_lsb>
+    <rel_range>17</rel_range>
+    <field_description order="before"><para>Disables use of the PAC D A key for any <instruction>PACDA</instruction> signing instruction, as well as preventing use of any PAC authentication instructions that use the D A key, which are trapped in the same manner as for nSKDA.</para>
+<para>Additionally accesses to <register_link state="AArch64" id="AArch64-apdakeyhi_el1.xml">APDAKeyHi_EL1</register_link> and <register_link state="AArch64" id="AArch64-apdakeylo_el1.xml">APDAKeyLo_EL1</register_link> are reported using EC syndrome value <hexnumber>0x18</hexnumber> if accesses to the register are not already <arm-defined-word>UNDEFINED</arm-defined-word>.</para>
+<para>This trap is higher priority than any other trap.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-16_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nKIB</field_name>
+    <field_msb>16</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>16</rel_range>
+    <field_description order="before"><para>Disables use of the PAC I B key for any <instruction>PACIB</instruction> signing instruction, as well as preventing use of any PAC authentication instructions that use the I B key, which are trapped in the same manner as for nSKIB.</para>
+<para>The effect of this control on trapping <instruction>ERETAB</instruction> instructions is reported with higher priority than other traps on ERET instructions.</para>
+<para>Additionally accesses to <register_link state="AArch64" id="AArch64-apibkeyhi_el1.xml">APIBKeyHi_EL1</register_link> and <register_link state="AArch64" id="AArch64-apibkeylo_el1.xml">APIBKeyLo_EL1</register_link> are reported using EC syndrome value <hexnumber>0x18</hexnumber> if accesses to the register are not already <arm-defined-word>UNDEFINED</arm-defined-word>.</para>
+<para>This trap is higher priority than any other trap.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-15_15" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nKIA</field_name>
+    <field_msb>15</field_msb>
+    <field_lsb>15</field_lsb>
+    <rel_range>15</rel_range>
+    <field_description order="before"><para>Disables use of the PAC I A key for any <instruction>PACIA</instruction> signing instruction, as well as preventing use of any PAC authentication instructions that use the I A key, which are trapped in the same manner as for nSKIA.</para>
+<para>The effect of this control on trapping <instruction>ERETAA</instruction> instructions is reported with higher priority than other traps on ERET instructions.</para>
+<para>Additionally accesses to <register_link state="AArch64" id="AArch64-apiakeyhi_el1.xml">APIAKeyHi_EL1</register_link> and <register_link state="AArch64" id="AArch64-apiakeylo_el1.xml">APIAKeyLo_EL1</register_link> are reported using EC syndrome value <hexnumber>0x18</hexnumber> if accesses to the register are not already <arm-defined-word>UNDEFINED</arm-defined-word>.</para>
+<para>This trap is higher priority than any other trap.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-14_14" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nWTPIDR3</field_name>
+    <field_msb>14</field_msb>
+    <field_lsb>14</field_lsb>
+    <rel_range>14</rel_range>
+    <field_description order="before"><para>Trap write accesses to <register_link state="AArch64" id="AArch64-tpidr3_el2.xml">TPIDR3_EL2</register_link>. The exception is reported using EC syndrome value <hexnumber>0x18</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+<para>These traps are higher priority than the traps due to <register_link state="AArch64" id="AArch64-hfgwtr2_el2.xml">HFGWTR2_EL2</register_link>.TPIDR3_ELx and <register_link state="AArch64" id="AArch64-fgwte3_el3.xml">FGWTE3_EL3</register_link>.TPIDR_EL3.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-13_13" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nWTPIDR</field_name>
+    <field_msb>13</field_msb>
+    <field_lsb>13</field_lsb>
+    <rel_range>13</rel_range>
+    <field_description order="before"><para>Trap write accesses to <register_link state="AArch64" id="AArch64-tpidr_el2.xml">TPIDR_EL2</register_link>.</para>
+<para>At EL2 traps write accesses to <register_link state="AArch64" id="AArch64-tpidr_el2.xml">TPIDR_EL2</register_link>. These are reported using EC syndrome value <hexnumber>0x18</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-12_12" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nTC</field_name>
+    <field_msb>12</field_msb>
+    <field_lsb>12</field_lsb>
+    <rel_range>12</rel_range>
+    <field_description order="before">
+      <para>Traps the <instruction>TCHANGEF</instruction> and <instruction>TCHANGEB</instruction> instructions. The Illegal TIndex Change exception is reported using EC syndrome value <hexnumber>0x2E</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-11_11" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>E0</field_name>
+    <field_msb>11</field_msb>
+    <field_lsb>11</field_lsb>
+    <rel_range>11</rel_range>
+    <field_description order="before"><para>Forces execution at EL2 to look like EL0 in only the following manners:</para>
+<list type="unordered">
+<listitem><content>Access to any system or special-purpose register, and execution of any system instruction behaves as though it were executed at EL0 with <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.{E2H, TGE} == {1, 1}, with the one special case that read accesses to <register_link state="AArch64" id="AArch64-tpidr_el2.xml">TPIDR_EL2</register_link> and <register_link state="AArch64" id="AArch64-tpidr3_el2.xml">TPIDR3_EL2</register_link> are still permitted.</content>
+</listitem><listitem><content>Execution of any GCS system instruction still behaves as though executed at EL2.</content>
+</listitem><listitem><content>The <instruction>SMC</instruction> instruction is <arm-defined-word>UNDEFINED</arm-defined-word>, and this has higher priority than the <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.TSC and <register_link state="AArch64" id="AArch64-scr_el3.xml">SCR_EL3</register_link>.SMD controls.</content>
+</listitem><listitem><content>The <instruction>HVC</instruction> instruction is <arm-defined-word>UNDEFINED</arm-defined-word>, and this has higher priority than the <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.HCD and <register_link state="AArch64" id="AArch64-scr_el3.xml">SCR_EL3</register_link>.HCE controls.</content>
+</listitem></list>
+<para>However, it does not affect the permissions model or other behaviors. For example:</para>
+<list type="unordered">
+<listitem><content>The effect of PSTATE.PAN still applies.</content>
+</listitem><listitem><content>Execute and data access permissions are still evaluated as though execution is at EL2.</content>
+</listitem><listitem><content>This bit does not affect trapping of other instructions that are not direct accesses to System registers, system instructions or the instructions listed here.</content>
+</listitem><listitem><content>This bit does not prevent accesses to SP_ELx in cases where <syntax>SP</syntax> is used as an operand for an instruction.</content>
+</listitem></list></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers are trapped.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-10_10" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nERET</field_name>
+    <field_msb>10</field_msb>
+    <field_lsb>10</field_lsb>
+    <rel_range>10</rel_range>
+    <field_description order="before">
+      <para>Traps the <instruction>ERET</instruction>, <instruction>ERETAA</instruction>, and <instruction>ERETAB</instruction> instructions. The exception is reported using EC syndrome value <hexnumber>0x1A</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+    </field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-9_9-1" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" reserved_type="RES0">
+    <field_name>nTPL</field_name>
+    <field_msb>9</field_msb>
+    <field_lsb>9</field_lsb>
+    <rel_range>0</rel_range>
+    <field_description order="before"><para>Traps write access to TPCR&lt;n&gt;_EL2. The exception is reported using EC syndrome value <hexnumber>0x18</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+<para>This trap is higher priority than other traps.</para>
+<para>If E0 is 1, this field is <arm-defined-word>RES0</arm-defined-word>.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <fields_condition>When FEAT_TPSP is implemented</fields_condition>
+  </field>
+  <field id="fieldset_0-9_9-2" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>9</field_msb>
+    <field_lsb>9</field_lsb>
+    <rel_range>9</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+    <fields_condition>Otherwise</fields_condition>
+  </field>
+  <field id="fieldset_0-8_8" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nTT</field_name>
+    <field_msb>8</field_msb>
+    <field_lsb>8</field_lsb>
+    <rel_range>8</rel_range>
+    <field_description order="before"><para>At EL2 traps write accesses to the following registers:</para>
+<list type="unordered">
+<listitem><content>TTBRn_EL2, <register_link state="AArch64" id="AArch64-tcr_el2.xml">TCR_EL2</register_link>, <register_link state="AArch64" id="AArch64-tcr2_el2.xml">TCR2_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-pir_el2.xml">PIR_EL2</register_link>, <register_link state="AArch64" id="AArch64-pire0_el2.xml">PIRE0_EL2</register_link>, <register_link state="AArch64" id="AArch64-por_el2.xml">POR_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-mair_el2.xml">MAIR_EL2</register_link>, <register_link state="AArch64" id="AArch64-mair2_el2.xml">MAIR2_EL2</register_link>, <register_link state="AArch64" id="AArch64-amair_el2.xml">AMAIR_EL2</register_link>, <register_link state="AArch64" id="AArch64-amair2_el2.xml">AMAIR2_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-vbar_el2.xml">VBAR_EL2</register_link></content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-dpotbrn_el2.xml">DPOTBRn_EL2</register_link>, <register_link state="AArch64" id="AArch64-irtbrp_el2.xml">IRTBRp_EL2</register_link>, <register_link state="AArch64" id="AArch64-tttbrp_el2.xml">TTTBRp_EL2</register_link>.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-fgdtpn_el2.xml">FGDTpn_EL2</register_link>, <register_link state="AArch64" id="AArch64-afgdtpn_el2.xml">AFGDTpn_EL2</register_link>.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_SPE">FEAT_SPE</xref> is implemented, <register_link state="AArch64" id="AArch64-pmbmar_el1.xml">PMBMAR_EL1</register_link>.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_SPE_nVM">FEAT_SPE_nVM</xref> is implemented and <register_link state="AArch64" id="AArch64-pmblimitr_el1.xml">PMBLIMITR_EL1</register_link>.nVM is 1:<list type="unordered">
+<listitem><content><register_link state="AArch64" id="AArch64-pmbptr_el1.xml">PMBPTR_EL1</register_link>, <register_link state="AArch64" id="AArch64-pmblimitr_el1.xml">PMBLIMITR_EL1</register_link>.</content>
+</listitem></list>
+</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_TRBE">FEAT_TRBE</xref> is implemented, <register_link state="AArch64" id="AArch64-trbmar_el1.xml">TRBMAR_EL1</register_link>.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_TRBE">FEAT_TRBE</xref> is implemented and <register_link state="AArch64" id="AArch64-trblimitr_el1.xml">TRBLIMITR_EL1</register_link>.nVM is 1:<list type="unordered">
+<listitem><content><register_link state="AArch64" id="AArch64-trbbaser_el1.xml">TRBBASER_EL1</register_link>, <register_link state="AArch64" id="AArch64-trblimitr_el1.xml">TRBLIMITR_EL1</register_link>, <register_link state="AArch64" id="AArch64-trbptr_el1.xml">TRBPTR_EL1</register_link>.</content>
+</listitem></list>
+</content>
+</listitem></list>
+<para>At EL2 accesses to the following registers and fields are RO:</para>
+<list type="unordered">
+<listitem><content>If <xref linkend="#FEAT_SPE">FEAT_SPE</xref> is implemented, <register_link state="AArch64" id="AArch64-mdcr_el2.xml">MDCR_EL2</register_link>.E2PB.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_SPE_nVM">FEAT_SPE_nVM</xref> is implemented, <register_link state="AArch64" id="AArch64-pmblimitr_el1.xml">PMBLIMITR_EL1</register_link>.nVM and <register_link state="AArch64" id="AArch64-pmscr_el2.xml">PMSCR_EL2</register_link>.EnVM.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_TRBE">FEAT_TRBE</xref> is implemented, <register_link state="AArch64" id="AArch64-mdcr_el2.xml">MDCR_EL2</register_link>.E2TB and <register_link state="AArch64" id="AArch64-trblimitr_el1.xml">TRBLIMITR_EL1</register_link>.nVM.</content>
+</listitem><listitem><content>If <xref linkend="#FEAT_TRBEv1p1">FEAT_TRBEv1p1</xref> is implemented, <register_link state="AArch64" id="AArch64-trfcr_el2.xml">TRFCR_EL2</register_link>.DnVM.</content>
+</listitem><listitem><content><register_link state="AArch64" id="AArch64-sctlr_el2.xml">SCTLR_EL2</register_link>.M.</content>
+</listitem></list>
+<para>If E0 is 1, this field is <arm-defined-word>RES0</arm-defined-word>.</para>
+<para>The trap is reported using EC syndrome value <hexnumber>0x18</hexnumber> for MSR accesses and EC syndrome value <hexnumber>0x14</hexnumber> for MSRR accesses, and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+<para>This trap has higher priority than any trap by a higher Exception level.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-7_6-1" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" reserved_type="RES0">
+    <field_name>nLSTG</field_name>
+    <field_msb>7</field_msb>
+    <field_lsb>6</field_lsb>
+    <rel_range>1:0</rel_range>
+    <field_description order="before"><para>Traps the described instructions relating to FEAT_MTE.</para>
+<para>For a trapped MSR access to TCO, the exception is reported with EC syndrome value <hexnumber>0x18</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+<para>Otherwise, the exception is reported with EC syndrome value <hexnumber>0x0A</hexnumber>, and:</para>
+<list type="unordered">
+<listitem><content>For loads and stores of Allocation Tags, ISS=<hexnumber>0x000005</hexnumber>.</content>
+</listitem><listitem><content>For <instruction>IRG</instruction>, <instruction>ADDG</instruction> and <instruction>SUBG</instruction>, ISS=<hexnumber>0x000009</hexnumber>.</content>
+</listitem></list>
+<para>The exception is taken regardless of whether the target memory location has the Tagged attribute.</para>
+<para>For the <instruction>SETG*</instruction> tag setting instructions, this trap has lower priority than the existing MSCEn trap controls.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b00</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b01</field_value>
+        <field_value_description>
+          <para>Any instruction that loads or stores Allocation Tags is trapped.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b10</field_value>
+        <field_value_description>
+          <para>As <binarynumber>0b01</binarynumber> and MSR access to <register_link state="AArch64" id="AArch64-tco.xml">TCO</register_link> is trapped.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b11</field_value>
+        <field_value_description>
+          <para>As <binarynumber>0b10</binarynumber> and <instruction>IRG</instruction>, <instruction>ADDG</instruction> and <instruction>SUBG</instruction> are trapped.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <fields_condition>When FEAT_MTE is implemented</fields_condition>
+  </field>
+  <field id="fieldset_0-7_6-2" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>7</field_msb>
+    <field_lsb>6</field_lsb>
+    <rel_range>7:6</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+    <fields_condition>Otherwise</fields_condition>
+  </field>
+  <field id="fieldset_0-5_5" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nKGA</field_name>
+    <field_msb>5</field_msb>
+    <field_lsb>5</field_lsb>
+    <rel_range>5</rel_range>
+    <field_description order="before"><para>Traps any <instruction>PACGA</instruction> signing instruction that uses the PAC G A key. The exception is reported using EC syndrome value <hexnumber>0x09</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1.</para>
+<para>Accesses to <register_link state="AArch64" id="AArch64-apgakeyhi_el1.xml">APGAKeyHi_EL1</register_link> and <register_link state="AArch64" id="AArch64-apgakeylo_el1.xml">APGAKeyLo_EL1</register_link> are trapped using EC syndrome value <hexnumber>0x18</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1 if accesses to the register are not already <arm-defined-word>UNDEFINED</arm-defined-word>.</para>
+<para>This trap is higher priority than any other trap on <instruction>PACGA</instruction> instructions.</para></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified registers and instructions at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-4_4" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nSKDB</field_name>
+    <field_msb>4</field_msb>
+    <field_lsb>4</field_lsb>
+    <rel_range>4</rel_range>
+    <field_description order="before"><para>Traps any <instruction>PACD</instruction> signing instruction that uses the PAC D B key. The exception is reported using EC syndrome value <hexnumber>0x09</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1, and:</para>
+<list type="unordered">
+<listitem><content>This trap is taken with higher priority than traps resulting from <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.API or <register_link state="AArch64" id="AArch64-scr_el3.xml">SCR_EL3</register_link>.API.</content>
+</listitem><listitem><content>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnDB control.</content>
+</listitem></list></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified instructions at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-3_3" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nSKDA</field_name>
+    <field_msb>3</field_msb>
+    <field_lsb>3</field_lsb>
+    <rel_range>3</rel_range>
+    <field_description order="before"><para>Traps any <instruction>PACD</instruction> signing instruction that uses the PAC D A key. The exception is reported using EC syndrome value <hexnumber>0x09</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1, and:</para>
+<list type="unordered">
+<listitem><content>This trap is taken with higher priority than traps resulting from <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.API or <register_link state="AArch64" id="AArch64-scr_el3.xml">SCR_EL3</register_link>.API.</content>
+</listitem><listitem><content>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnDA control.</content>
+</listitem></list></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified instructions at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-2_2" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nSKIB</field_name>
+    <field_msb>2</field_msb>
+    <field_lsb>2</field_lsb>
+    <rel_range>2</rel_range>
+    <field_description order="before"><para>Traps any <instruction>PACI</instruction> signing instruction that uses the PAC I B key. The exception is reported using EC syndrome value <hexnumber>0x09</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1, and:</para>
+<list type="unordered">
+<listitem><content>This trap is taken with higher priority than traps resulting from <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.API or <register_link state="AArch64" id="AArch64-scr_el3.xml">SCR_EL3</register_link>.API.</content>
+</listitem><listitem><content>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnIB control.</content>
+</listitem></list></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified instructions at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-1_1" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>nSKIA</field_name>
+    <field_msb>1</field_msb>
+    <field_lsb>1</field_lsb>
+    <rel_range>1</rel_range>
+    <field_description order="before"><para>Traps any <instruction>PACI</instruction> signing instruction that uses the PAC I A key. The exception is reported using EC syndrome value <hexnumber>0x09</hexnumber> and <register_link state="AArch64" id="AArch64-esr_el2.xml">ESR_EL2</register_link>.ISS.FGDT is 1, and:</para>
+<list type="unordered">
+<listitem><content>This trap is taken with higher priority than traps resulting from <register_link state="AArch64" id="AArch64-hcr_el2.xml">HCR_EL2</register_link>.API or <register_link state="AArch64" id="AArch64-scr_el3.xml">SCR_EL3</register_link>.API.</content>
+</listitem><listitem><content>This field still applies even if the instructions are disabled as a result of the SCTLR_ELx.EnIA control.</content>
+</listitem></list></field_description>
+    <field_values impdef="False">
+      <field_value_instance>
+        <field_value>0b0</field_value>
+        <field_value_description>
+          <para>This control does not generate an exception.</para>
+        </field_value_description>
+      </field_value_instance>
+      <field_value_instance>
+        <field_value>0b1</field_value>
+        <field_value_description>
+          <para>Accesses to the specified instructions at EL2 are trapped to EL2.</para>
+        </field_value_description>
+      </field_value_instance>
+    </field_values>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>AU</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+  </field>
+  <field id="fieldset_0-0_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>0</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>0</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="32">
+  <fieldat id="fieldset_0-31_22" msb="31" lsb="22"/>
+  <fieldat id="fieldset_0-21_21" msb="21" lsb="21"/>
+  <fieldat id="fieldset_0-20_20" msb="20" lsb="20"/>
+  <fieldat id="fieldset_0-19_19" msb="19" lsb="19"/>
+  <fieldat id="fieldset_0-18_18" msb="18" lsb="18"/>
+  <fieldat id="fieldset_0-17_17" msb="17" lsb="17"/>
+  <fieldat id="fieldset_0-16_16" msb="16" lsb="16"/>
+  <fieldat id="fieldset_0-15_15" msb="15" lsb="15"/>
+  <fieldat id="fieldset_0-14_14" msb="14" lsb="14"/>
+  <fieldat id="fieldset_0-13_13" msb="13" lsb="13"/>
+  <fieldat id="fieldset_0-12_12" msb="12" lsb="12"/>
+  <fieldat id="fieldset_0-11_11" msb="11" lsb="11"/>
+  <fieldat id="fieldset_0-10_10" msb="10" lsb="10"/>
+  <fieldat id="fieldset_0-9_9-1" msb="9" lsb="9"/>
+  <fieldat id="fieldset_0-8_8" msb="8" lsb="8"/>
+  <fieldat id="fieldset_0-7_6-1" msb="7" lsb="6"/>
+  <fieldat id="fieldset_0-5_5" msb="5" lsb="5"/>
+  <fieldat id="fieldset_0-4_4" msb="4" lsb="4"/>
+  <fieldat id="fieldset_0-3_3" msb="3" lsb="3"/>
+  <fieldat id="fieldset_0-2_2" msb="2" lsb="2"/>
+  <fieldat id="fieldset_0-1_1" msb="1" lsb="1"/>
+  <fieldat id="fieldset_0-0_0" msb="0" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+        <reg_variables>
+              <reg_variable variable="n" max="31"/>
+        </reg_variables>
+
+      <access_mechanisms>
+          
+
+
+  
+    
+      <access_permission_text>
+        <para>Two 32-bit registers corresponding to FGDTIndexes 2p and 2p+1 are represented in each 64-bit register encoding.</para>
+      </access_permission_text>
+
+
+
+
+
+    
+        
+        <access_mechanism accessor="MRS FGDTP&lt;p&gt;_EL2" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="p">
+                    <acc_array_range>0-15</acc_array_range>
+                </acc_array>
+            <access_instruction>MRS &lt;Xt&gt;, FGDTP&lt;p&gt;_EL2</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b100"/>
+                
+                <enc n="CRn" v="0b0011"/>
+                
+                <enc n="CRm" v="0b001:p[3]"/>
+                
+                <enc n="op2" v="p[2:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MRS" sections="1" secttype="access_permission">
+                <pstext>
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif HaveEL(EL3) &amp;&amp; PSTATE.EL == EL2 &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EffectiveHCR_EL2_NVx() IN {'xx1'} then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    else
+        Undefined();
+    end;
+elsif PSTATE.EL == EL2 then
+    if HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    else
+        X{64}(t) = FGDTP_EL2((p * 2) + 1) :: FGDTP_EL2(p * 2);
+    end;
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        X{64}(t) = FGDTP_EL2((p * 2) + 1) :: FGDTP_EL2(p * 2);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+    
+        
+        <access_mechanism accessor="MSRregister FGDTP&lt;p&gt;_EL2" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="p">
+                    <acc_array_range>0-15</acc_array_range>
+                </acc_array>
+            <access_instruction>MSR FGDTP&lt;p&gt;_EL2, &lt;Xt&gt;</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b100"/>
+                
+                <enc n="CRn" v="0b0011"/>
+                
+                <enc n="CRm" v="0b001:p[3]"/>
+                
+                <enc n="op2" v="p[2:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MSRregister" sections="1" secttype="access_permission">
+                <pstext>
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif HaveEL(EL3) &amp;&amp; PSTATE.EL == EL2 &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EffectiveHCR_EL2_NVx() IN {'xx1'} then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    else
+        Undefined();
+    end;
+elsif PSTATE.EL == EL2 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.nTT == '1' then
+        AArch64_FGDTSystemAccessTrap(EL2, 0x18);
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    else
+        FGDTP_EL2((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        FGDTP_EL2((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+    
+        
+        <access_mechanism accessor="MRS FGDTP&lt;p&gt;_EL1" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="p">
+                    <acc_array_range>0-15</acc_array_range>
+                </acc_array>
+            <access_instruction>MRS &lt;Xt&gt;, FGDTP&lt;p&gt;_EL1</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b000"/>
+                
+                <enc n="CRn" v="0b0011"/>
+                
+                <enc n="CRm" v="0b001:p[3]"/>
+                
+                <enc n="op2" v="p[2:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MRS" sections="1" secttype="access_permission">
+                <pstext>
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif HaveEL(EL3) &amp;&amp; !(EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() || PSTATE.EL == EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EL2Enabled() &amp;&amp; (!IsHCRXEL2Enabled() || HCRX_EL2().POE2En == '0') then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    elsif EL2Enabled() &amp;&amp; IsFeatureImplemented(FEAT_FGT2) &amp;&amp; ((HaveEL(EL3) &amp;&amp; SCR_EL3().FGTEn2 == '0') || HFGRTR2_EL2().nFGDTn_EL1 != '11') then
+        if p &gt;= 8 &amp;&amp; HFGRTR2_EL2().nFGDTn_EL1 == '10' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        elsif p &gt;= 4 &amp;&amp; HFGRTR2_EL2().nFGDTn_EL1 == '01' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        else
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        end;
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif EffectiveHCR_EL2_NVx() IN {'111'} then
+        X{64}(t) = NVMem(0x600 + (8 * p));
+    else
+        X{64}(t) = FGDTP_EL1((p * 2) + 1) :: FGDTP_EL1(p * 2);
+    end;
+elsif PSTATE.EL == EL2 then
+    if HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif ELIsInHost(EL2) then
+        X{64}(t) = FGDTP_EL2((p * 2) + 1) :: FGDTP_EL2(p * 2);
+    else
+        X{64}(t) = FGDTP_EL1((p * 2) + 1) :: FGDTP_EL1(p * 2);
+    end;
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        X{64}(t) = FGDTP_EL1((p * 2) + 1) :: FGDTP_EL1(p * 2);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+    
+        
+        <access_mechanism accessor="MSRregister FGDTP&lt;p&gt;_EL1" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="p">
+                    <acc_array_range>0-15</acc_array_range>
+                </acc_array>
+            <access_instruction>MSR FGDTP&lt;p&gt;_EL1, &lt;Xt&gt;</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b000"/>
+                
+                <enc n="CRn" v="0b0011"/>
+                
+                <enc n="CRm" v="0b001:p[3]"/>
+                
+                <enc n="op2" v="p[2:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MSRregister" sections="1" secttype="access_permission">
+                <pstext>
+let p:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif HaveEL(EL3) &amp;&amp; !(EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() || PSTATE.EL == EL3) &amp;&amp; EL3SDDUndefPriority() &amp;&amp; SCR_EL3().POE2En == '0' then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; EffectiveHCR_EL2_NVx() IN {'x11'} &amp;&amp; FGDTState.nH == '1' then
+        AArch64_FGDTSystemAccessTrap(EL1, 0x18);
+    elsif IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.nTT == '1' then
+        AArch64_FGDTSystemAccessTrap(EL1, 0x18);
+    elsif EL2Enabled() &amp;&amp; (!IsHCRXEL2Enabled() || HCRX_EL2().POE2En == '0') then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    elsif EL2Enabled() &amp;&amp; IsFeatureImplemented(FEAT_FGT2) &amp;&amp; ((HaveEL(EL3) &amp;&amp; SCR_EL3().FGTEn2 == '0') || HFGWTR2_EL2().nFGDTn_EL1 != '11') then
+        if p &gt;= 8 &amp;&amp; HFGWTR2_EL2().nFGDTn_EL1 == '10' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        elsif p &gt;= 4 &amp;&amp; HFGWTR2_EL2().nFGDTn_EL1 == '01' then
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        else
+            AArch64_SystemAccessTrap(EL2, 0x18);
+        end;
+    elsif HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif EffectiveHCR_EL2_NVx() IN {'111'} then
+        NVMem(0x600 + (8 * p)) = X{64}(t);
+    else
+        FGDTP_EL1((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+elsif PSTATE.EL == EL2 then
+    if HaveEL(EL3) &amp;&amp; SCR_EL3().POE2En == '0' then
+        if EL3SDDUndef() then
+            Undefined();
+        else
+            AArch64_SystemAccessTrap(EL3, 0x18);
+        end;
+    elsif ELIsInHost(EL2) then
+        if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.nTT == '1' then
+            AArch64_FGDTSystemAccessTrap(EL2, 0x18);
+        else
+            FGDTP_EL2((p * 2) + 1, p * 2) = X{64}(t);
+        end;
+    else
+        FGDTP_EL1((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        FGDTP_EL1((p * 2) + 1, p * 2) = X{64}(t);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

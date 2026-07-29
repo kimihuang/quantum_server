@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>GIC_PMEVTYPER&lt;n&gt;</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">GIC_PMEVTYPER&lt;n&gt;, GIC PMU Event Type Select Register, n = 0 - 63</h1><p>The GIC_PMEVTYPER&lt;n&gt; characteristics are:</p><h2>Purpose</h2>
+        <p>GIC PMU Event Type Select Register</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_GICv5_EXT is implemented. Otherwise, direct accesses to GIC_PMEVTYPER&lt;n&gt; are <span class="arm-defined-word">RES0</span>.</p><h2>Attributes</h2>
+        <p>GIC_PMEVTYPER&lt;n&gt; is a 64-bit register.</p>
+      <p>This  register is part of the <a href="gic_pmu_frame.html">GIC_PMU_FRAME</a> block.</p><h2>Field descriptions</h2><table class="regdiagram" id="fieldset_0"><thead><tr><td>63</td><td>62</td><td>61</td><td>60</td><td>59</td><td>58</td><td>57</td><td>56</td><td>55</td><td>54</td><td>53</td><td>52</td><td>51</td><td>50</td><td>49</td><td>48</td><td>47</td><td>46</td><td>45</td><td>44</td><td>43</td><td>42</td><td>41</td><td>40</td><td>39</td><td>38</td><td>37</td><td>36</td><td>35</td><td>34</td><td>33</td><td>32</td></tr></thead><tfoot><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></tfoot><tbody><tr class="firstrow"><td class="lr" colspan="32"><a href="#fieldset_0-63_32">RES0</a></td></tr><tr class="firstrow"><td class="lr" colspan="1"><a href="#fieldset_0-31_31">V</a></td><td class="lr" colspan="1"><a href="#fieldset_0-30_30">FS</a></td><td class="lr" colspan="1"><a href="#fieldset_0-29_29">FSPAN</a></td><td class="lr" colspan="1"><a href="#fieldset_0-28_28-1">RL</a></td><td class="lr" colspan="1"><a href="#fieldset_0-27_27-1">EL3</a></td><td class="lr" colspan="1"><a href="#fieldset_0-26_26-1">NS</a></td><td class="lr" colspan="1"><a href="#fieldset_0-25_25-1">S</a></td><td class="lr" colspan="9"><a href="#fieldset_0-24_16">RES0</a></td><td class="lr" colspan="4"><a href="#fieldset_0-15_12">PMEVTYPE</a></td><td class="lr" colspan="12"><a href="#fieldset_0-11_0">PMEVTID</a></td></tr></tbody></table><h4 id="fieldset_0-63_32">Bits [63:32]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-31_31">V, bit [31]</h4><div class="field">
+      <p>Whether PMEVTYPE and PMEVTID select a valid event.</p>
+    <table class="valuetable"><tr><th>V</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>The event selected by PMEVTYPE and PMEVTID is invalid.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>The event selected by PMEVTYPE and PMEVTID is valid.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul><p>Access to this field is <span class="access_level">RO</span>.</p></div><h4 id="fieldset_0-30_30">FS, bit [30]</h4><div class="field"><p>Whether filtering is supported for the event selected in GIC_PMEVTID.</p>
+<p>When V is 0, the value of this field is <span class="arm-defined-word">UNKNOWN</span>.</p><table class="valuetable"><tr><th>FS</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Filtering for the selected event is not supported.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Filtering for the selected event is supported.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul><p>Access to this field is <span class="access_level">RO</span>.</p></div><h4 id="fieldset_0-29_29">FSPAN, bit [29]</h4><div class="field"><p>Whether filtering using a range of values is supported for the event selected in GIC_PMEVTID.
+See <span class="xref">'GIC Performance Monitoring Unit (PMU)'</span> in Arm® Generic Interrupt Controller Architecture Specification, GIC architecture version 5 (ARM IHI 111701) for more information about filtering on a range of values.</p>
+<p>When V is 0 or FS is 0, the value of this field is <span class="arm-defined-word">UNKNOWN</span>.</p><table class="valuetable"><tr><th>FSPAN</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Filtering using a range of values is not supported.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Filtering using a range of values is supported.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul><p>Access to this field is <span class="access_level">RO</span>.</p></div><h4 id="fieldset_0-28_28-1">RL, bit [28]<span class="condition"><br/>When GIC_PMIDR0.OACE == '1' and GIC_PMIDR0.DOM_RL == '1':
+                        </span></h4><div class="field">
+      <p>Configures matching the Realm Interrupt Domain.</p>
+    <table class="valuetable"><tr><th>RL</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Events or characteristics attributable to the Realm Interrupt Domain are unaffected by this bit.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Do not count events or monitor characteristics attributable to the Realm Interrupt Domain.</p>
+        </td></tr></table><p>This bit is ignored by the PMU when the PMU is not allowed to observe events or characteristics attributable to Realm operation of the agent being monitored.</p>
+<p>Accessing this bit has the following behavior:</p>
+<ul>
+<li>This bit reads-as-zero if the PMU is never allowed to observe events or characteristics attributable to Realm operation of the agent being monitored.
+</li><li>Otherwise, this bit is read/write.
+</li></ul><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-28_28-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-27_27-1">EL3, bit [27]<span class="condition"><br/>When GIC_PMIDR0.OACE == '1' and GIC_PMIDR0.DOM_EL3 == '1':
+                        </span></h4><div class="field">
+      <p>Configures matching the EL3 Interrupt Domain.</p>
+    <table class="valuetable"><tr><th>EL3</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Events or characteristics attributable to the EL3 Interrupt Domain are unaffected by this bit.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Do not count events or monitor characteristics attributable to the EL3 Interrupt Domain.</p>
+        </td></tr></table><p>This bit is ignored by the PMU when the PMU is not allowed to observe events or characteristics attributable to EL3 operation of the agent being monitored.</p>
+<p>Accessing this bit has the following behavior:</p>
+<ul>
+<li>This bit reads-as-zero if the PMU is never allowed to observe events or characteristics attributable to EL3 operation of the agent being monitored.
+</li><li>Otherwise, this bit is read/write.
+</li></ul><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-27_27-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-26_26-1">NS, bit [26]<span class="condition"><br/>When GIC_PMIDR0.OACE == '1' and GIC_PMIDR0.DOM_NS == '1':
+                        </span></h4><div class="field">
+      <p>Configures matching the Non-secure Interrupt Domain.</p>
+    <table class="valuetable"><tr><th>NS</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Events or characteristics attributable to the Non-secure Interrupt Domain are unaffected by this bit.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Do not count events or monitor characteristics attributable to the Non-secure Interrupt Domain.</p>
+        </td></tr></table><p>This bit is ignored by the PMU when the PMU is not allowed to observe events or characteristics attributable to Non-secure operation of the agent being monitored.</p>
+<p>Accessing this bit has the following behavior:</p>
+<ul>
+<li>This bit reads-as-zero if the PMU is never allowed to observe events or characteristics attributable to Non-secure operation of the agent being monitored.
+</li><li>Otherwise, this bit is read/write.
+</li></ul><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-26_26-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-25_25-1">S, bit [25]<span class="condition"><br/>When GIC_PMIDR0.OACE == '1' and GIC_PMIDR0.DOM_S == '1':
+                        </span></h4><div class="field">
+      <p>Configures matching the Secure Interrupt Domain.</p>
+    <table class="valuetable"><tr><th>S</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>Events or characteristics attributable to the Secure Interrupt Domain are unaffected by this bit.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Do not count events or monitor characteristics attributable to the Secure Interrupt Domain.</p>
+        </td></tr></table><p>This bit is ignored by the PMU when the PMU is not allowed to observe events or characteristics attributable to Secure operation of the agent being monitored.</p>
+<p>Accessing this bit has the following behavior:</p>
+<ul>
+<li>This bit reads-as-zero if the PMU is never allowed to observe events or characteristics attributable to Secure operation of the agent being monitored.
+</li><li>Otherwise, this bit is read/write.
+</li></ul><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-25_25-2"><span class="condition"><br/>Otherwise:
+                        </span></h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-24_16">Bits [24:16]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-15_12">PMEVTYPE, bits [15:12]</h4><div class="field"><p>The performance monitor event type.</p>
+<p>The value in this field selects the event for the type selected in PMEVTYPE.</p>
+<p>Values not defined are reserved.</p><table class="valuetable"><tr><th>PMEVTYPE</th><th>Meaning</th></tr><tr><td class="bitfield">0b0000</td><td>
+          <p>Architected IRS event.</p>
+        </td></tr><tr><td class="bitfield">0b0001</td><td>
+          <p><span class="arm-defined-word">IMPLEMENTATION DEFINED</span> IRS event.</p>
+        </td></tr><tr><td class="bitfield">0b0010</td><td>
+          <p>Architected ITS event.</p>
+        </td></tr><tr><td class="bitfield">0b0011</td><td>
+          <p><span class="arm-defined-word">IMPLEMENTATION DEFINED</span> ITS event.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><h4 id="fieldset_0-11_0">PMEVTID, bits [11:0]</h4><div class="field"><p>The performance monitor event ID.</p>
+<p>The value in this field selects the event for the type selected in PMEVTYPE.</p>
+<p>If the value in this field combined with the value in PMEVTYPE selects an invalid event, all other fields in this register are IGNORED.</p>
+<p>If less than 16 bits of event ID is implemented, unimplemented upper bits are <span class="arm-defined-word">RES0</span>.</p><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul></div><div class="access_mechanisms"><h2>Accessing GIC_PMEVTYPER&lt;n&gt;</h2><p>Accesses to this register use the following encodings:</p><div><p>Accessible at offset <span class="hexnumber">0x400 + (8 * n)</span> from GIC_PMU_FRAME</p></div><ul><li>When PMROOTCR.RA is implemented, an access is Secure, and PMROOTCR.RA IN {'001', '000'}, accesses to this register are <span class="access_level">RAZ/WI</span>.
+          </li><li>When PMROOTCR.RA is implemented, an access is Realm, and PMROOTCR.RA IN {'010', '000'}, accesses to this register are <span class="access_level">RAZ/WI</span>.
+          </li><li>When PMROOTCR.RA is implemented, an access is Non-secure, and PMROOTCR.RA != '011', accesses to this register are <span class="access_level">RAZ/WI</span>.
+          </li><li>When PMSCR.NSRA is implemented, (an access is Non-secure or an access is Realm), and PMSCR.NSRA == '0', accesses to this register are <span class="access_level">RAZ/WI</span>.
+          </li><li>When Register is read-only, accesses to this register are <span class="access_level">RO</span>.
+          </li><li>Otherwise, accesses to this register are <span class="access_level">RW</span>.
+          </li></ul><table class="access_instructions"><tr/><tr/></table></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-24 17:12:14, 2026-06_rel</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>

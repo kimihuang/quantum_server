@@ -1,0 +1,697 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_block_page SYSTEM "register_blocks.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+<register_block_page>
+  <register_blocks>
+    <register_block>
+      <reg_short_name>IRS_CONFIG_FRAME</reg_short_name>
+        <reg_long_name>IRS configuration register frame</reg_long_name>
+
+        
+          <reg_condition>when FEAT_GICv5_EXT is implemented</reg_condition>
+
+
+      <mappings>
+      </mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>Contains control registers for an IRS for an Interrupt Domain.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>An IRS configuration register frame is present for each supported Interrupt Domain on each IRS.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>This register frame is accessible in the PAS associated with the Interrupt Domain.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>It is <arm-defined-word>IMPLEMENTATION DEFINED</arm-defined-word> whether this register frame is also accessible in the MPPAS at the same address.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>The base address is distinct from the base address of any other GIC register frame, including the configuration register frames for other Interrupt Domains on all IRSs.</para>
+
+      </purpose_text>
+      <purpose_text>
+        <para>The base address is aligned to 64KB.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_attributes>
+        <attributes_text>
+          <para>IRS_CONFIG_FRAME is a block of size: 64KB</para>
+        </attributes_text>
+      </reg_attributes>
+      <child_blocks default_access="RES0">
+                   <child_block>
+            <block_offset>0x0000</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr0.xml">IRS_IDR0</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0004</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr1.xml">IRS_IDR1</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0008</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr2.xml">IRS_IDR2</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x000C</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr3.xml">IRS_IDR3</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0010</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr4.xml">IRS_IDR4</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0014</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr5.xml">IRS_IDR5</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0018</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr6.xml">IRS_IDR6</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x001C</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_idr7.xml">IRS_IDR7</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0040</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_iidr.xml">IRS_IIDR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0044</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_aidr.xml">IRS_AIDR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0080</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_cr0.xml">IRS_CR0</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0084</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_cr1.xml">IRS_CR1</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x00C0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_syncr.xml">IRS_SYNCR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x00C4</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_sync_statusr.xml">IRS_SYNC_STATUSR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0100</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_spi_vmr.xml">IRS_SPI_VMR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0108</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_spi_selr.xml">IRS_SPI_SELR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x010C</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_spi_domainr.xml">IRS_SPI_DOMAINR</block_link>
+            <block_condition>When IRS_IDR0.INT_DOM == '10'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0110</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_spi_resampler.xml">IRS_SPI_RESAMPLER</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0114</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_spi_cfgr.xml">IRS_SPI_CFGR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0118</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_spi_statusr.xml">IRS_SPI_STATUSR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0140</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_pe_selr.xml">IRS_PE_SELR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0144</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_pe_statusr.xml">IRS_PE_STATUSR</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0148</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_pe_cr0.xml">IRS_PE_CR0</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0180</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_ist_baser.xml">IRS_IST_BASER</block_link>
+            <block_condition>When IRS_IDR2.LPI == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0190</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_ist_cfgr.xml">IRS_IST_CFGR</block_link>
+            <block_condition>When IRS_IDR2.LPI == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0194</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_ist_statusr.xml">IRS_IST_STATUSR</block_link>
+            <block_condition>When IRS_IDR2.LPI == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x01C0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_map_l2_istr.xml">IRS_MAP_L2_ISTR</block_link>
+            <block_condition>When IRS_IDR2.LPI == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0200</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmt_baser.xml">IRS_VMT_BASER</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0210</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmt_cfgr.xml">IRS_VMT_CFGR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0214</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmt_statusr.xml">IRS_VMT_STATUSR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0240</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vpe_selr.xml">IRS_VPE_SELR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0248</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vpe_dbr.xml">IRS_VPE_DBR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0250</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vpe_hppir.xml">IRS_VPE_HPPIR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0258</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vpe_cr0.xml">IRS_VPE_CR0</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x025C</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vpe_statusr.xml">IRS_VPE_STATUSR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0280</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vm_dbr.xml">IRS_VM_DBR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1' and IRS_IDR0.VIRT_ONE_N == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0288</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vm_selr.xml">IRS_VM_SELR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1' and IRS_IDR0.VIRT_ONE_N == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x028C</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vm_statusr.xml">IRS_VM_STATUSR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1' and IRS_IDR0.VIRT_ONE_N == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x02C0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmap_l2_vmtr.xml">IRS_VMAP_L2_VMTR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x02C8</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmap_vmr.xml">IRS_VMAP_VMR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x02D0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmap_vistr.xml">IRS_VMAP_VISTR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x02D8</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmap_l2_vistr.xml">IRS_VMAP_L2_VISTR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x02E0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_vmap_vper.xml">IRS_VMAP_VPER</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0300</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_save_vmr.xml">IRS_SAVE_VMR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0308</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_save_vm_statusr.xml">IRS_SAVE_VM_STATUSR</block_link>
+            <block_condition>When IRS_IDR0.VIRT == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0340</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_mec_idr.xml">IRS_MEC_IDR</block_link>
+            <block_condition>When IRS_IDR0.INT_DOM == '11' and IRS_IDR0.MEC == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0344</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_mec_mecid_r.xml">IRS_MEC_MECID_R</block_link>
+            <block_condition>When IRS_IDR0.INT_DOM == '11' and IRS_IDR0.MEC == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0380</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_mpam_idr.xml">IRS_MPAM_IDR</block_link>
+            <block_condition>When IRS_IDR0.MPAM == '1' or IRS_IDR0.MPAM2 == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0384</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_mpam_partid_r.xml">IRS_MPAM_PARTID_R</block_link>
+            <block_condition>When IRS_IDR0.MPAM == '1' or IRS_IDR0.MPAM2 == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0388</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_mpam_pmgr.xml">IRS_MPAM_PMGR</block_link>
+            <block_condition>When IRS_IDR0.MPAM2 == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03C0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_swerr_statusr.xml">IRS_SWERR_STATUSR</block_link>
+            <block_condition>When IRS_IDR0.SWE == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RW</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03C8</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_swerr_syndromer0.xml">IRS_SWERR_SYNDROMER0</block_link>
+            <block_condition>When IRS_IDR0.SWE == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03D0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_swerr_syndromer1.xml">IRS_SWERR_SYNDROMER1</block_link>
+            <block_condition>When IRS_IDR0.SWE == '1'</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03D8</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_selr.xml">IRS_INT_SELR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03E0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_statusr.xml">IRS_INT_STATUSR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03E8</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_cfgr.xml">IRS_INT_CFGR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>RO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03F0</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_enabler.xml">IRS_INT_ENABLER</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03F4</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_pendingr.xml">IRS_INT_PENDINGR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03F8</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_cactiver.xml">IRS_INT_CACTIVER</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x03FC</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_hmr.xml">IRS_INT_HMR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0400</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_priorityr.xml">IRS_INT_PRIORITYR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0404</block_offset>
+            <block_type>Register</block_type>
+            <block_link id="irs_config_frame.irs_int_iaffidr.xml">IRS_INT_IAFFIDR</block_link>
+            <block_condition>When FEAT_GICv5_EXT is implemented</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>WO</pstext>
+            </block_access>
+          </child_block>
+                   <child_block>
+            <block_offset>0x0E00 + (4 * n) for n in 63:0</block_offset>
+            <block_type>ImplementationDefined</block_type>
+            <block_link id="None">-</block_link>
+            <block_condition>-</block_condition>
+            <accessor_condition>-</accessor_condition>
+            <block_access>
+            <pstext>ImplementationDefined</pstext>
+            </block_access>
+          </child_block>
+      </child_blocks>
+
+    </register_block>
+  </register_blocks>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_block_page>

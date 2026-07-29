@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>IRS_IST_BASER</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">IRS_IST_BASER, IRS IST Base Address Register</h1><p>The IRS_IST_BASER characteristics are:</p><h2>Purpose</h2>
+        <p>IRS IST Base Address Register</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_GICv5_EXT is implemented and IRS_IDR2.LPI == '1'. Otherwise, direct accesses to IRS_IST_BASER are <span class="arm-defined-word">RES0</span>.</p>
+        <p>The effects of a write to this register are not guaranteed to have completed before <a href="irs_config_frame.irs_ist_statusr.html">IRS_IST_STATUSR</a>.IDLE is 1.</p>
+      <h2>Attributes</h2>
+        <p>IRS_IST_BASER is a 64-bit register.</p>
+      <p>This  register is part of the <a href="irs_config_frame.html">IRS_CONFIG_FRAME</a> block.</p><h2>Field descriptions</h2><table class="regdiagram" id="fieldset_0"><thead><tr><td>63</td><td>62</td><td>61</td><td>60</td><td>59</td><td>58</td><td>57</td><td>56</td><td>55</td><td>54</td><td>53</td><td>52</td><td>51</td><td>50</td><td>49</td><td>48</td><td>47</td><td>46</td><td>45</td><td>44</td><td>43</td><td>42</td><td>41</td><td>40</td><td>39</td><td>38</td><td>37</td><td>36</td><td>35</td><td>34</td><td>33</td><td>32</td></tr></thead><tfoot><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></tfoot><tbody><tr class="firstrow"><td class="lr" colspan="8"><a href="#fieldset_0-63_56">RES0</a></td><td class="lr" colspan="24"><a href="#fieldset_0-55_6">ADDR</a></td></tr><tr class="firstrow"><td class="lr" colspan="26"><a href="#fieldset_0-55_6">ADDR</a></td><td class="lr" colspan="5"><a href="#fieldset_0-5_1">RES0</a></td><td class="lr" colspan="1"><a href="#fieldset_0-0_0">VALID</a></td></tr></tbody></table><h4 id="fieldset_0-63_56">Bits [63:56]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-55_6">ADDR, bits [55:6]</h4><div class="field"><p>Bits[55:6] of the base physical address of the IST.</p>
+<p>This field is Guarded by IRS_IST_BASER.VALID.</p><p>When <a href="irs_config_frame.irs_ist_cfgr.html">IRS_IST_CFGR</a>.STRUCTURE is 0, ADDR points to a linear IST and all of the following are true:</p>
+<ul>
+<li>
+<p>Bits[N:0] of the resulting address are 0 where N depends on the ISTSZ and LPI_ID_BITS fields in <a href="irs_config_frame.irs_ist_cfgr.html">IRS_IST_CFGR</a> as follows:</p>
+<p>N = Max(5, (ISTSZ + 1) + LPI_ID_BITS).</p>
+
+</li><li>
+<p>This means that the level 2 ISTE array is aligned to the size of the array or to a 64-byte boundary when its size is smaller than 64 bytes.</p>
+
+</li></ul>
+<p>When <a href="irs_config_frame.irs_ist_cfgr.html">IRS_IST_CFGR</a>.STRUCTURE is 1, ADDR points to the level 1 table in a 2-level IST and all of the following are true:</p>
+<ul>
+<li>
+<p>Bits[N:0] of the resulting address are 0 where N depends on L2SZ, ISTSZ, and LPI_ID_BITS in <a href="irs_config_frame.irs_ist_cfgr.html">IRS_IST_CFGR</a> as follows:</p>
+<p>N = Max(5, LPI_ID_BITS - ((10 - ISTSZ) + (2 * L2SZ)) + 2)</p>
+
+</li><li>
+<p>This means that the level 1 IST is aligned to the size of the level 1 table or to a 64-byte boundary when its size is smaller than 64 bytes.</p>
+
+</li></ul>
+<p>See <span class="xref">'Interrupt State Table (IST)'</span> in Arm® Generic Interrupt Controller Architecture Specification, GIC architecture version 5 (ARM IHI 111701) for more information.</p>
+<p>Access to any level of the IST and any additional memory accesses occurring as a result of the address in this field are performed using the PAS of the Interrupt Domain where this register is accessed.</p>
+<p>In implementations that support fewer than 56 bits of physical address, any unimplemented upper bits are <span class="arm-defined-word">RES0</span>.  The number of implemented address bits is reported in <a href="irs_config_frame.irs_idr0.html">IRS_IDR0</a>.PA_RANGE.</p><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to an <span class="arm-defined-word">UNKNOWN</span> value.</li></ul><p>Accessing this field has the following behavior:</p><ul><li>When IRS_IST_BASER.VALID == '1', access to this field
+                            is <span class="access_level">RO</span>.
+                        </li><li>
+                  Otherwise,
+                  
+                  access to this field
+                  is <span class="access_level">RW</span>.
+                </li></ul></div><h4 id="fieldset_0-5_1">Bits [5:1]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-0_0">VALID, bit [0]</h4><div class="field">
+      <p>Whether the ADDR points to a valid IST.</p>
+    <table class="valuetable"><tr><th>VALID</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>The IST address is not valid.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>The IST address is valid.</p>
+        </td></tr></table><p>The reset behavior of this field is:</p><ul><li>On a GIC reset, 
+      this field resets
+       to <span class="binarynumber">'0'</span>.
+</li></ul></div><div class="access_mechanisms"><h2>Accessing IRS_IST_BASER</h2><p>Accesses to this register use the following encodings:</p><div><p>Accessible at offset <span class="hexnumber">0x0180</span> from IRS_CONFIG_FRAME</p></div><ul><li>When IRS_IST_STATUSR.IDLE == '0', accesses to this register are <span class="access_level">RO</span>.
+          </li><li>Otherwise, accesses to this register are <span class="access_level">RW</span>.
+          </li></ul><table class="access_instructions"><tr/><tr/></table></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-24 17:12:14, 2026-06_rel</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>

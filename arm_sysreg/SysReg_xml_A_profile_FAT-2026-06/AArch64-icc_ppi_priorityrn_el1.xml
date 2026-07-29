@@ -1,0 +1,479 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE register_page SYSTEM "registers.dtd">
+<!-- Copyright (c) 2010-2026 Arm Limited or its affiliates. All rights reserved. -->
+<!-- This document is Non-Confidential. This document may only be used and distributed in accordance with the terms of the agreement entered into by Arm and the party that Arm delivered this document to. -->
+<!--The data contained in this document is preliminary and subject to change or correction following further review. -->
+<?xml-stylesheet href="one_register.xsl" type="text/xsl" ?>
+
+
+
+
+
+
+
+<register_page>
+  <registers>
+  
+    <register execution_state="AArch64" is_register="True" is_internal="True" is_stub_entry="False">
+      <reg_short_name>ICC_PPI_PRIORITYR&lt;n&gt;_EL1</reg_short_name>
+        
+        <reg_long_name>Interrupt Controller Physical PPI Priority Registers</reg_long_name>
+
+
+
+      
+            <reg_condition otherwise="UNDEFINED">when FEAT_GCIE is implemented and FEAT_AA64 is implemented</reg_condition>
+          <reg_array>
+              <reg_array_start>0</reg_array_start>
+              <reg_array_end>15</reg_array_end>
+         </reg_array>
+      
+
+
+
+
+          <reg_reset_value></reg_reset_value>
+
+      <reg_mappings>
+        
+
+
+
+
+      </reg_mappings>
+
+        <reg_purpose>
+          
+    
+      <purpose_text>
+        <para>Configures the priority of physical PPIs.</para>
+      </purpose_text>
+
+        </reg_purpose>
+
+      <reg_groups>
+            <reg_group>GIC control registers</reg_group>
+            <reg_group>GIC</reg_group>
+      </reg_groups>
+      
+      
+        
+      <reg_attributes>
+          
+    
+      <attributes_text>
+        <para>ICC_PPI_PRIORITYR&lt;n&gt;_EL1 is a 64-bit register.</para>
+      </attributes_text>
+
+      </reg_attributes>
+      <reg_fieldsets>
+        
+
+
+
+
+
+
+<fields id="fieldset_0" length="64">
+  <text_before_fields/>
+  <field id="fieldset_0-63_61" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" rwtype="RES0">
+    <field_msb>63</field_msb>
+    <field_lsb>61</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+    <field_rangesets>
+      <field_rangeset>
+        <field_msb>63</field_msb>
+        <field_lsb>61</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>55</field_msb>
+        <field_lsb>53</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>47</field_msb>
+        <field_lsb>45</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>39</field_msb>
+        <field_lsb>37</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>31</field_msb>
+        <field_lsb>29</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>23</field_msb>
+        <field_lsb>21</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>15</field_msb>
+        <field_lsb>13</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>7</field_msb>
+        <field_lsb>5</field_lsb>
+      </field_rangeset>
+    </field_rangesets>
+  </field>
+  <field id="fieldset_0-60_56" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False">
+    <field_name>PRIORITY&lt;x&gt;</field_name>
+    <field_msb>60</field_msb>
+    <field_lsb>56</field_lsb>
+    <rel_range>60:56, 52:48, 44:40, 36:32, 28:24, 20:16, 12:8, 4:0</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+    <field_rangesets>
+      <field_rangeset>
+        <field_msb>60</field_msb>
+        <field_lsb>56</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>52</field_msb>
+        <field_lsb>48</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>44</field_msb>
+        <field_lsb>40</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>36</field_msb>
+        <field_lsb>32</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>28</field_msb>
+        <field_lsb>24</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>20</field_msb>
+        <field_lsb>16</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>12</field_msb>
+        <field_lsb>8</field_lsb>
+      </field_rangeset>
+      <field_rangeset>
+        <field_msb>4</field_msb>
+        <field_lsb>0</field_lsb>
+      </field_rangeset>
+    </field_rangesets>
+    <field_array_indexes index_variable="x" element_size="5">
+      <field_array_index>
+        <field_array_start>7</field_array_start>
+        <field_array_end>0</field_array_end>
+      </field_array_index>
+    </field_array_indexes>
+    <field_resets>
+      <field_reset reset_type="Warm">
+        <field_reset_standard_text>U</field_reset_standard_text>
+      </field_reset>
+    </field_resets>
+    <field_access>
+      <field_access_state>
+        <field_access_level>When !IsPPIImplemented((n * 8) + x)</field_access_level>
+        <field_access_type>RAZ/WI</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_level operand="AND">
+          <field_access_sublevel>!IsPPIAssignedToCurrentDomain((n * 8) + x)</field_access_sublevel>
+          <field_access_sublevel>PSTATE.EL IN {EL2, EL1}</field_access_sublevel>
+        </field_access_level>
+        <field_access_type>RAZ/WI</field_access_type>
+      </field_access_state>
+      <field_access_state>
+        <field_access_type>RW</field_access_type>
+      </field_access_state>
+    </field_access>
+  </field>
+  <field id="fieldset_0-60_0-60_56" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY7</field_name>
+    <field_msb>60</field_msb>
+    <field_lsb>56</field_lsb>
+    <rel_range>39:35</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-55_53" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>55</field_msb>
+    <field_lsb>53</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-52_48" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY6</field_name>
+    <field_msb>52</field_msb>
+    <field_lsb>48</field_lsb>
+    <rel_range>34:30</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-47_45" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>47</field_msb>
+    <field_lsb>45</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-44_40" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY5</field_name>
+    <field_msb>44</field_msb>
+    <field_lsb>40</field_lsb>
+    <rel_range>29:25</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-39_37" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>39</field_msb>
+    <field_lsb>37</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-36_32" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY4</field_name>
+    <field_msb>36</field_msb>
+    <field_lsb>32</field_lsb>
+    <rel_range>24:20</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-31_29" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>31</field_msb>
+    <field_lsb>29</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-28_24" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY3</field_name>
+    <field_msb>28</field_msb>
+    <field_lsb>24</field_lsb>
+    <rel_range>19:15</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-23_21" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>23</field_msb>
+    <field_lsb>21</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-20_16" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY2</field_name>
+    <field_msb>20</field_msb>
+    <field_lsb>16</field_lsb>
+    <rel_range>14:10</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-15_13" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>15</field_msb>
+    <field_lsb>13</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-12_8" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY1</field_name>
+    <field_msb>12</field_msb>
+    <field_lsb>8</field_lsb>
+    <rel_range>9:5</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-7_5" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True" rwtype="RES0">
+    <field_msb>7</field_msb>
+    <field_lsb>5</field_lsb>
+    <rel_range>63:61, 55:53, 47:45, 39:37, 31:29, 23:21, 15:13, 7:5</rel_range>
+    <field_description order="before"/>
+    <field_description order="before">
+      <para>Reserved, <arm-defined-word>RES0</arm-defined-word>.</para>
+    </field_description>
+  </field>
+  <field id="fieldset_0-60_0-4_0" has_partial_fieldset="False" is_linked_to_partial_fieldset="False" is_access_restriction_possible="False" is_variable_length="False" is_constant_value="False" is_partial_field="False" is_conditional_field_name="False" is_expansion="True">
+    <field_name>PRIORITY0</field_name>
+    <field_msb>4</field_msb>
+    <field_lsb>0</field_lsb>
+    <rel_range>4:0</rel_range>
+    <field_description order="before">
+      <para>The priority of PPI &lt;(n * 8) + x&gt;.</para>
+    </field_description>
+  </field>
+  <text_after_fields/>
+</fields>
+
+
+
+
+<reg_fieldset length="64">
+  <fieldat id="fieldset_0-63_61" msb="63" lsb="61"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY7" msb="60" lsb="56"/>
+  <fieldat id="fieldset_0-63_61" msb="55" lsb="53"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY6" msb="52" lsb="48"/>
+  <fieldat id="fieldset_0-63_61" msb="47" lsb="45"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY5" msb="44" lsb="40"/>
+  <fieldat id="fieldset_0-63_61" msb="39" lsb="37"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY4" msb="36" lsb="32"/>
+  <fieldat id="fieldset_0-63_61" msb="31" lsb="29"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY3" msb="28" lsb="24"/>
+  <fieldat id="fieldset_0-63_61" msb="23" lsb="21"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY2" msb="20" lsb="16"/>
+  <fieldat id="fieldset_0-63_61" msb="15" lsb="13"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY1" msb="12" lsb="8"/>
+  <fieldat id="fieldset_0-63_61" msb="7" lsb="5"/>
+  <fieldat id="fieldset_0-60_56" label="PRIORITY0" msb="4" lsb="0"/>
+</reg_fieldset>
+
+
+      </reg_fieldsets>
+        <reg_variables>
+              <reg_variable variable="n" max="15"/>
+        </reg_variables>
+
+      <access_mechanisms>
+          
+
+
+
+
+
+
+    
+        
+        <access_mechanism accessor="MRS ICC_PPI_PRIORITYR&lt;n&gt;_EL1" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="n">
+                    <acc_array_range>0-15</acc_array_range>
+                </acc_array>
+            <access_instruction>MRS &lt;Xt&gt;, ICC_PPI_PRIORITYR&lt;n&gt;_EL1</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b000"/>
+                
+                <enc n="CRn" v="0b1100"/>
+                
+                <enc n="CRm" v="0b111:n[3]"/>
+                
+                <enc n="op2" v="n[2:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MRS" sections="1" secttype="access_permission">
+                <pstext>
+let n:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_GCIE) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EL2Enabled() &amp;&amp; HCR_EL2().IMO == '1' &amp;&amp; IsFeatureImplemented(FEAT_GCIE_LEGACY) &amp;&amp; ICH_VCTLR_EL2().V3 == '1' then
+        Undefined();
+    elsif EL2Enabled() &amp;&amp; ICH_HFGRTR_EL2().ICC_PPI_PRIORITYRn_EL1 == '0' then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    elsif EL2Enabled() &amp;&amp; HCR_EL2().IMO == '1' then
+        X{64}(t) = ICV_PPI_PRIORITYR_EL1(n);
+    else
+        X{64}(t) = ICC_PPI_PRIORITYR_EL1(n);
+    end;
+elsif PSTATE.EL == EL2 then
+    X{64}(t) = ICC_PPI_PRIORITYR_EL1(n);
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        X{64}(t) = ICC_PPI_PRIORITYR_EL1(n);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+    
+        
+        <access_mechanism accessor="MSRregister ICC_PPI_PRIORITYR&lt;n&gt;_EL1" type="SystemAccessor">
+            <encoding>
+                
+                <acc_array var="n">
+                    <acc_array_range>0-15</acc_array_range>
+                </acc_array>
+            <access_instruction>MSR ICC_PPI_PRIORITYR&lt;n&gt;_EL1, &lt;Xt&gt;</access_instruction>
+                
+                <enc n="op0" v="0b11"/>
+                
+                <enc n="op1" v="0b000"/>
+                
+                <enc n="CRn" v="0b1100"/>
+                
+                <enc n="CRm" v="0b111:n[3]"/>
+                
+                <enc n="op2" v="n[2:0]"/>
+            </encoding>
+            <access_permission>
+                <ps name="MSRregister" sections="1" secttype="access_permission">
+                <pstext>
+let n:integer = UInt(CRm[0] :: op2[2:0]);
+
+if !(IsFeatureImplemented(FEAT_GCIE) &amp;&amp; IsFeatureImplemented(FEAT_AA64)) then
+    Undefined();
+elsif EffectivelyAtEL0InHost() || EffectivelyAtEL0NotInHost() then
+    Undefined();
+elsif PSTATE.EL == EL1 then
+    if EL2Enabled() &amp;&amp; HCR_EL2().IMO == '1' &amp;&amp; IsFeatureImplemented(FEAT_GCIE_LEGACY) &amp;&amp; ICH_VCTLR_EL2().V3 == '1' then
+        Undefined();
+    elsif EL2Enabled() &amp;&amp; ICH_HFGWTR_EL2().ICC_PPI_PRIORITYRn_EL1 == '0' then
+        AArch64_SystemAccessTrap(EL2, 0x18);
+    elsif EL2Enabled() &amp;&amp; HCR_EL2().IMO == '1' then
+        ICV_PPI_PRIORITYR_EL1(n) = X{64}(t);
+    else
+        ICC_PPI_PRIORITYR_EL1(n) = X{64}(t);
+    end;
+elsif PSTATE.EL == EL2 then
+    ICC_PPI_PRIORITYR_EL1(n) = X{64}(t);
+elsif PSTATE.EL == EL3 then
+    if IsFeatureImplemented(FEAT_S1POE2) &amp;&amp; FGDTState.E0 == '1' then
+        AArch64_SystemAccessTrap(EL3, 0x18);
+    else
+        ICC_PPI_PRIORITYR_EL1(n) = X{64}(t);
+    end;
+end;
+                </pstext>
+                </ps>
+            </access_permission>
+        </access_mechanism>
+
+      </access_mechanisms>
+
+      <arch_variants>
+      </arch_variants>
+  </register>
+</registers>
+<timestamp>2026-06-24 17:12:14</timestamp>
+<commit_id>2026-06_rel</commit_id>
+</register_page>

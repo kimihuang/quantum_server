@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>ITS_MPAM_IDR</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">ITS_MPAM_IDR, ITS MPAM Identification Register</h1><p>The ITS_MPAM_IDR characteristics are:</p><h2>Purpose</h2>
+        <p>ITS MPAM Identification Register. Contains read-only fields with information about the ITS support for MPAM.</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_GICv5_EXT is implemented and FEAT_GICv5_EXT is implemented. Otherwise, direct accesses to ITS_MPAM_IDR are <span class="arm-defined-word">RAZ/WI</span>.</p><h2>Attributes</h2>
+        <p>ITS_MPAM_IDR is a 32-bit register.</p>
+      <p>This  register is part of the <a href="its_config_frame.html">ITS_CONFIG_FRAME</a> block.</p><h2>Field descriptions</h2><h3>When ITS_IDR0.MPAM == '1':</h3><table class="regdiagram" id="fieldset_0"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="lr" colspan="7"><a href="#fieldset_0-31_25">RES0</a></td><td class="lr" colspan="1"><a href="#fieldset_0-24_24">HAS_MPAM_SP</a></td><td class="lr" colspan="8"><a href="#fieldset_0-23_16">PMG_MAX</a></td><td class="lr" colspan="16"><a href="#fieldset_0-15_0">PARTID_MAX</a></td></tr></tbody></table><h4 id="fieldset_0-31_25">Bits [31:25]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-24_24">HAS_MPAM_SP, bit [24]</h4><div class="field">
+      <p>Whether the ITS Domain has support for MPAM PARTID space selection.</p>
+    <p>If HAS_MPAM_SP is 1, the ITS uses the MPAM PARTID specified by ITS_MPAM_PARTID_R.MPAM_SP.</p>
+<p>If HAS_MPAM_SP is 0, the following PARTID space is used for ITS accesses to memory:</p>
+<ul>
+<li>
+<p>Accesses made by the Secure ITS Domain use the Secure PARTID space.</p>
+
+</li><li>
+<p>Accesses made by the Non-secure ITS Domain use the Non-secure PARTID space.</p>
+
+</li><li>
+<p>Accesses made by the EL3 ITS Domain use the Root or Secure PARTID space.</p>
+
+</li><li>
+<p>Accesses made by the Realm ITS Domain use the Realm PARTID space.</p>
+
+</li></ul>
+<p>The value of this field is the same across all ITS Domains for an ITS.</p></div><h4 id="fieldset_0-23_16">PMG_MAX, bits [23:16]</h4><div class="field">
+      <p>The maximum PMG value that is permitted to be used in the ITS Domain.</p>
+    <p>The PMG bit width is defined as the bit position of the most significant 1 in PMG_MAX[7:0], plus one, or is defined as zero if PMG_MAX is zero.</p>
+<p>For example, if PMG_MAX == <span class="hexnumber">0x0F</span>, the PMG bit width is 4.</p>
+<p>This field is permitted to be zero-sized.</p></div><h4 id="fieldset_0-15_0">PARTID_MAX, bits [15:0]</h4><div class="field">
+      <p>The maximum PARTID value that is permitted to be used in the ITS Domain.</p>
+    <p>The PARTID bit width is defined as the bit position of the most significant 1 in PARTID_MAX[15:0], plus one, or is defined as zero if PARTID_MAX is zero.</p>
+<p>For example, if PARTID_MAX == <span class="hexnumber">0x0034</span>, the PARTID bit width is 6.</p>
+<p>This field is permitted to be zero-sized, but Arm recommends that it is non-zero when MPAM is implemented.</p></div><h3>When ITS_IDR0.MPAM2 == '1':</h3><table class="regdiagram" id="fieldset_1"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="lr" colspan="16"><a href="#fieldset_1-31_16">PMG_MAX</a></td><td class="lr" colspan="16"><a href="#fieldset_1-15_0">PARTID_MAX</a></td></tr></tbody></table><h4 id="fieldset_1-31_16">PMG_MAX, bits [31:16]</h4><div class="field">
+      <p>The maximum PMG value that is permitted to be used in the ITS Domain.</p>
+    <p>The PMG bit width is defined as the bit position of the most significant 1 in PMG_MAX[15:0], plus one, or is defined as zero if PMG_MAX is zero.</p>
+<p>For example, if PMG_MAX == <span class="hexnumber">0x0F</span>, the PMG bit width is 4.</p>
+<p>This field is permitted to be zero-sized.</p></div><h4 id="fieldset_1-15_0">PARTID_MAX, bits [15:0]</h4><div class="field">
+      <p>The maximum PARTID value that is permitted to be used in the ITS Domain.</p>
+    <p>The PARTID bit width is defined as the bit position of the most significant 1 in PARTID_MAX[15:0], plus one, or is defined as zero if PARTID_MAX is zero.</p>
+<p>For example, if PARTID_MAX == <span class="hexnumber">0x0034</span>, the PARTID bit width is 6.</p>
+<p>This field is permitted to be zero-sized, but Arm recommends that it is non-zero when MPAM is implemented.</p></div><div class="access_mechanisms"><h2>Accessing ITS_MPAM_IDR</h2><p>Accesses to this register use the following encodings:</p><div><p>Accessible at offset <span class="hexnumber">0x0200</span> from ITS_CONFIG_FRAME</p></div><ul><li>When ITS_IDR0.MPAM != '1' and ITS_IDR0.MPAM2 != '1', accesses to this register are <span class="access_level">RAZ/WI</span>.
+          </li><li>Otherwise, accesses to this register are <span class="access_level">RO</span>.
+          </li></ul><table class="access_instructions"><tr/><tr/></table></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-08 19:28:52, 2026-03_diff_tag</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>

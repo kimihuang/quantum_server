@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ext="http://exslt.org/common">
+  <head>
+    <title>ITS_INV_DEVICER</title>
+    <link href="insn.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr/><h1 class="register-section">ITS_INV_DEVICER, ITS Cache Invalidation Device Register</h1><p>The ITS_INV_DEVICER characteristics are:</p><h2>Purpose</h2>
+        <p>ITS Cache Invalidation Device Register for a single device or a range of devices.</p>
+      <h2>Configuration</h2><p>This register is present only when FEAT_GICv5_EXT is implemented. Otherwise, direct accesses to ITS_INV_DEVICER are <span class="arm-defined-word">RES0</span>.</p>
+        <p>The effects of a write to this register are not guaranteed to have completed before <a href="its_config_frame.its_statusr.html">ITS_STATUSR</a>.IDLE is 1.</p>
+      <h2>Attributes</h2>
+        <p>ITS_INV_DEVICER is a 32-bit register.</p>
+      <p>This  register is part of the <a href="its_config_frame.html">ITS_CONFIG_FRAME</a> block.</p><h2>Field descriptions</h2><table class="regdiagram" id="fieldset_0"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="lr" colspan="1"><a href="#fieldset_0-31_31">I</a></td><td class="lr" colspan="25"><a href="#fieldset_0-30_6">RES0</a></td><td class="lr" colspan="5"><a href="#fieldset_0-5_1">EVENTID_BITS</a></td><td class="lr" colspan="1"><a href="#fieldset_0-0_0">L1</a></td></tr></tbody></table><h4 id="fieldset_0-31_31">I, bit [31]</h4><div class="field">
+      <p>Writing 1 to this field invalidates cached information from DTEs for the DeviceID specified in <a href="its_config_frame.its_didr.html">ITS_DIDR</a>.DEVICE_ID.</p>
+    <table class="valuetable"><tr><th>I</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>The write has no effect.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>Invalidate cached information for the specified DeviceID.</p>
+        </td></tr></table></div><h4 id="fieldset_0-30_6">Bits [30:6]</h4><div class="field">
+      <p>Reserved, <span class="arm-defined-word">RES0</span>.</p>
+    </div><h4 id="fieldset_0-5_1">EVENTID_BITS, bits [5:1]</h4><div class="field">
+      <p>The range of EventIDs that the invalidation operation applies to for the specified DeviceID.</p>
+    <p>If this field is programmed to a value larger than the maximum, it is treated as having the maximum value for all other purposes than reading back the field.</p>
+<p>The maximum value is reported in <a href="its_config_frame.its_idr2.html">ITS_IDR2</a>.EVENTID_BITS.</p>
+<p>If ITS_INV_DEVICER.L1 is 1, the effective value of this field is the maximum value reported in <a href="its_config_frame.its_idr2.html">ITS_IDR2</a>.EVENTID_BITS.</p></div><h4 id="fieldset_0-0_0">L1, bit [0]</h4><div class="field"><p>Controls which cached information the invalidation operation applies to.</p>
+<p>When this field is 0, the operation invalidates cached information from the single level 2 DTE specified by <a href="its_config_frame.its_didr.html">ITS_DIDR</a>.DEVICE_ID.</p>
+<p>When this field is 1, the operation invalidates cached information from the level 1 DTE specified by <a href="its_config_frame.its_didr.html">ITS_DIDR</a>.DEVICE_ID as well as any level 2 DTE covered by the range of DeviceIDs given by <a href="its_config_frame.its_dt_cfgr.html">ITS_DT_CFGR</a>.L2SZ for the DeviceID specified in <a href="its_config_frame.its_didr.html">ITS_DIDR</a>.DEVICE_ID.</p>
+<p>If <a href="its_config_frame.its_dt_cfgr.html">ITS_DT_CFGR</a>.STRUCTURE is 0, the effective value of this field is 0.</p><table class="valuetable"><tr><th>L1</th><th>Meaning</th></tr><tr><td class="bitfield">0b0</td><td>
+          <p>The cache invalidation operation invalidates information from the specified level 2 DTE.DEVICE_ID.</p>
+        </td></tr><tr><td class="bitfield">0b1</td><td>
+          <p>The cache invalidation operation invalidates information from the specified level 1 DTE and level 2 DTEs.</p>
+        </td></tr></table></div><div class="access_mechanisms"><h2>Accessing ITS_INV_DEVICER</h2><p>Accesses to this register use the following encodings:</p><div><p>Accessible at offset <span class="hexnumber">0x0110</span> from ITS_CONFIG_FRAME</p></div><ul><li>When ITS_CR0.[IDLE,ITSEN] != '11' or ITS_STATUSR.IDLE != '1', accesses to this register are <span class="access_level">WI</span>.
+          </li><li>Otherwise, accesses to this register are <span class="access_level">WO</span>.
+          </li></ul><table class="access_instructions"><tr/><tr/></table></div><hr class="bottom_line"/><table style="margin: 0 auto;"><tr><td><div class="topbar"><a href="AArch32-regindex.html">AArch32 Registers</a></div></td><td><div class="topbar"><a href="AArch64-regindex.html">AArch64 Registers</a></div></td><td><div class="topbar"><a href="AArch32-sysindex.html">AArch32 Instructions</a></div></td><td><div class="topbar"><a href="AArch64-sysindex.html">AArch64 Instructions</a></div></td><td><div class="topbar"><a href="enc_index.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="ext_alpha_index.html">External Registers</a></div></td><td><div class="topbar"><a href="ext_enc_index.html">External Registers by Offset</a></div></td><td><div class="topbar"><a href="func_index.html">Registers by Functional Group</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">2026-06-24 17:12:14, 2026-06_rel</p><p class="copyconf">Copyright © 2010-2026 Arm Limited or its affiliates. All rights reserved. This document is Non-Confidential.</p></body>
+</html>
