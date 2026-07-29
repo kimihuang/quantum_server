@@ -1,0 +1,8 @@
+{
+  "sources": [
+    "registers_smmu.json",
+    "registers_cpu.json",
+    "registers_ddr.json",
+    "registers_mmu.json"
+  ]
+}

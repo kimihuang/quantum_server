@@ -1,0 +1,141 @@
+{
+  "category": "smmu",
+  "label": "SMMUv3",
+  "description": "Arm System Memory Management Unit v3 寄存器",
+  "registers": [
+    {
+      "name": "SMMU_IDR0",
+      "fullName": "SMMU Identification Register 0",
+      "address": "0x00000020",
+      "width": 32,
+      "description": "SMMU 识别寄存器0，描述 SMMU 支持的顶层能力",
+      "fields": [
+        { "name": "ST_LEVEL",  "bits": "28:27", "access": "RO", "description": "流表支持的级数：0=线性，1=两级，2/3=保留" },
+        { "name": "TTENDIAN",  "bits": "23:21", "access": "RO", "description": "支持的翻译表字节序格式，bit[21]=LE，bit[22]=BE，bit[23]=BE8" },
+        { "name": "CD2L",      "bits": "19",    "access": "RO", "description": "是否支持两级 Context Descriptor 表" },
+        { "name": "VMID16",    "bits": "18",    "access": "RO", "description": "是否支持 16 位 VMID" },
+        { "name": "PRI",       "bits": "16",    "access": "RO", "description": "是否支持 Page Request Interface (PRI)" },
+        { "name": "SEV",       "bits": "14",    "access": "RO", "description": "是否支持停止事件信号 (Stop Event Signaling)" },
+        { "name": "MSI",       "bits": "13",    "access": "RO", "description": "是否支持 MSI 中断" },
+        { "name": "COHACC",    "bits": "10",    "access": "RO", "description": "是否支持一致的页面请求/事件队列访问" },
+        { "name": "BTM",       "bits": "9",     "access": "RO", "description": "是否支持广播 TLB 维护操作" },
+        { "name": "S1P",       "bits": "1",     "access": "RO", "description": "是否支持 Stage 1 翻译" },
+        { "name": "S2P",       "bits": "0",     "access": "RO", "description": "是否支持 Stage 2 翻译" }
+      ]
+    },
+    {
+      "name": "SMMU_IDR1",
+      "fullName": "SMMU Identification Register 1",
+      "address": "0x00000024",
+      "width": 32,
+      "description": "SMMU 识别寄存器1，描述命令队列、事件队列、PRI队列和SID/SSID范围",
+      "fields": [
+        { "name": "CMDQS",         "bits": "29:25", "access": "RO", "description": "命令队列的最大条目数以2为底的对数，如 19=512K 条目" },
+        { "name": "EVENTQS",       "bits": "24:20", "access": "RO", "description": "事件队列的最大条目数以2为底的对数" },
+        { "name": "PRIQS",         "bits": "19:15", "access": "RO", "description": "PRI 队列的最大条目数以2为底的对数" },
+        { "name": "QUEUES_PRESET", "bits": "12",    "access": "RO", "description": "命令/事件/PRI队列基地址是否由硬件预设（集成配置）" },
+        { "name": "TABLES_PRESET", "bits": "11",    "access": "RO", "description": "流表和CD表基地址是否由硬件预设（集成配置）" },
+        { "name": "SSIDSIZE",      "bits": "10:6",  "access": "RO", "description": "支持的 SubstreamID (PASID) 最大位宽" },
+        { "name": "SIDSIZE",       "bits": "5:0",   "access": "RO", "description": "支持的 StreamID 最大位宽" }
+      ]
+    },
+    {
+      "name": "SMMU_IDR3",
+      "fullName": "SMMU Identification Register 3",
+      "address": "0x0000002C",
+      "width": 32,
+      "description": "SMMU 识别寄存器3，描述额外的 SMMU 能力和特性支持",
+      "fields": [
+        { "name": "RIL",   "bits": "10", "access": "RO", "description": "是否支持范围失效指令 (Range Invalidation)" },
+        { "name": "BBML",  "bits": "11", "access": "RO", "description": "是否支持广播 TLB 维护与释放 (Broadcast Maintenance with Lease)" },
+        { "name": "FWB",   "bits": "12", "access": "RO", "description": "是否支持强制写入回写 (Force Write-Back)" },
+        { "name": "MPAM",  "bits": "7",  "access": "RO", "description": "是否支持 MPAM (Memory System Partitioning and Monitoring)" },
+        { "name": "STALL", "bits": "0",  "access": "RO", "description": "是否支持 Stall 模型的事务处理" }
+      ]
+    },
+    {
+      "name": "SMMU_IDR5",
+      "fullName": "SMMU Identification Register 5",
+      "address": "0x00000034",
+      "width": 32,
+      "description": "SMMU 识别寄存器5，描述 VA 位数、ASID/VMID 粒度等架构特性",
+      "fields": [
+        { "name": "VADDRSIZE", "bits": "8:4",   "access": "RO", "description": "支持的虚拟地址最大位宽" },
+        { "name": "GRAN4K",    "bits": "2",     "access": "RO", "description": "是否支持 4KB 翻译粒度" },
+        { "name": "GRAN16K",   "bits": "1",     "access": "RO", "description": "是否支持 16KB 翻译粒度" },
+        { "name": "GRAN64K",   "bits": "0",     "access": "RO", "description": "是否支持 64KB 翻译粒度" },
+        { "name": "VAX",       "bits": "12:10", "access": "RO", "description": "是否支持 VA 扩展 (52-bit VA)" },
+        { "name": "OAS",       "bits": "15:13", "access": "RO", "description": "支持的物理地址输出位宽" }
+      ]
+    },
+    {
+      "name": "SMMU_CR0",
+      "fullName": "SMMU Control Register 0",
+      "address": "0x00000028",
+      "width": 32,
+      "description": "SMMU 控制寄存器0，控制 SMMU 全局使能和功能开关",
+      "fields": [
+        { "name": "ATSCHK",   "bits": "4", "access": "RW", "description": "ATS 检查使能位，使能后 SMMU 会检查 ATS 翻译请求的合法性" },
+        { "name": "CMDQEN",   "bits": "3", "access": "RW", "description": "命令队列使能位，0=禁用，1=使能" },
+        { "name": "EVENTQEN", "bits": "2", "access": "RW", "description": "事件队列使能位，0=禁用，1=使能" },
+        { "name": "PRIQEN",   "bits": "1", "access": "RW", "description": "PRI 队列使能位，0=禁用，1=使能" },
+        { "name": "SMMUEN",   "bits": "0", "access": "RW", "description": "SMMU 全局使能位：0=禁用，1=使能。修改前需确保命令队列空闲" }
+      ]
+    },
+    {
+      "name": "SMMU_CR0ACK",
+      "fullName": "SMMU Control Register 0 Acknowledge",
+      "address": "0x00000030",
+      "width": 32,
+      "description": "SMMU 控制寄存器0应答，反映 CR0 写入后各使能位的实际生效状态",
+      "fields": [
+        { "name": "ATSCHK",   "bits": "4", "access": "RO", "description": "ATS 检查使能应答" },
+        { "name": "CMDQEN",   "bits": "3", "access": "RO", "description": "命令队列使能应答" },
+        { "name": "EVENTQEN", "bits": "2", "access": "RO", "description": "事件队列使能应答" },
+        { "name": "PRIQEN",   "bits": "1", "access": "RO", "description": "PRI 队列使能应答" },
+        { "name": "SMMUEN",   "bits": "0", "access": "RO", "description": "SMMU 全局使能应答" }
+      ]
+    },
+    {
+      "name": "SMMU_GBPA",
+      "fullName": "SMMU Global Bypass Attribute Register",
+      "address": "0x00000044",
+      "width": 32,
+      "description": "SMMU 全局旁路属性寄存器，控制全局旁路行为和 Abort 检测",
+      "fields": [
+        { "name": "UPDATE",  "bits": "31", "access": "RW", "description": "更新位，写入1触发硬件更新 GBPA 配置" },
+        { "name": "ABORT",   "bits": "20", "access": "RW", "description": "全局 Abort，=1 时所有未配置的 Stream 全部 Abort" },
+        { "name": "PREFETCH","bits": "0",  "access": "RW", "description": "预取使能" }
+      ]
+    },
+    {
+      "name": "SMMU_IRQ_CTRL",
+      "fullName": "SMMU Interrupt Control Register",
+      "address": "0x00000070",
+      "width": 32,
+      "description": "SMMU 中断控制寄存器，控制 GERROR 中断的相关行为",
+      "fields": [
+        { "name": "GERROR_ON_CFG",    "bits": "31:16", "access": "RW", "description": "配置错误过滤，对应位为1时忽略对应类型的 GERROR" },
+        { "name": "GERROR_IRQ_EN",    "bits": "14:13", "access": "RW", "description": "GERROR 中断使能：bit13=PRIQ错误，bit14=EVENTQ错误" },
+        { "name": "GERROR_AUTO_CLR",  "bits": "3",     "access": "RW", "description": "GERROR 自动清除使能" },
+        { "name": "GERROR_MSK",       "bits": "1:0",   "access": "RW", "description": "GERROR 信号屏蔽位" }
+      ]
+    },
+    {
+      "name": "SMMU_GERROR",
+      "fullName": "SMMU Global Error Register",
+      "address": "0x00000060",
+      "width": 32,
+      "description": "SMMU 全局错误寄存器，记录 SMMU 内部发生的全局错误",
+      "fields": [
+        { "name": "SFM_ERR",           "bits": "8",    "access": "RO", "description": "流表映射错误。流表访问失败时置位" },
+        { "name": "CMDQP_ERR",         "bits": "0",    "access": "RO", "description": "命令队列操作错误。命令队列满了但仍尝试写入时置位" },
+        { "name": "MSI_CMDQ_ABT_ERR",  "bits": "10:9",  "access": "RO", "description": "MSI 命令队列 Abort 错误" },
+        { "name": "MSI_GERROR_ABT_ERR","bits": "12:11", "access": "RO", "description": "MSI GERROR Abort 错误" },
+        { "name": "MSI_PRIQ_ABT_ERR",  "bits": "14:13", "access": "RO", "description": "MSI PRI 队列 Abort 错误" },
+        { "name": "PRIQP_ERR",         "bits": "3:2",   "access": "RO", "description": "PRI 队列操作错误" },
+        { "name": "EVENTQP_ERR",       "bits": "5:4",   "access": "RO", "description": "事件队列操作错误" }
+      ]
+    }
+  ]
+}

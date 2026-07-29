@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arm 寄存器查询工具</title>
+<style>
+/* ===== CSS 变量 ===== */
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --bg-tertiary: #eef1f6;
+  --text: #1a1a2e;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #d1d5db;
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --primary-dark: #1d4ed8;
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #d97706;
+  --warning-light: #fef3c7;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --sidebar-width: 280px;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text);
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8edf5 50%, #f0f4ff 100%);
+  line-height: 1.6;
+}
+
+/* ===== 整体布局：侧边栏 + 主区域 ===== */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== 侧边栏 ===== */
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-header h2 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.sidebar-header .side-subtitle {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.sidebar-tree {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+/* 侧边栏 — 来源分组 */
+.source-group {
+  border-bottom: 1px solid #f0f1f3;
+}
+.source-group:last-child { border-bottom: none; }
+
+.source-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+.source-group-header:hover { background: var(--bg-secondary); }
+
+/* 展开/收起箭头 */
+.group-arrow {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  color: var(--text-muted);
+}
+.source-group.collapsed .group-arrow {
+  transform: rotate(-90deg);
+}
+
+.group-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.group-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.group-count {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* 寄存器列表 */
+.group-body {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.source-group.collapsed .group-body {
+  max-height: 0 !important;
+}
+
+.side-reg-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px 5px 36px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: background 0.08s, color 0.08s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.side-reg-item:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.side-reg-item.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+  border-left: 3px solid var(--primary);
+  padding-left: 33px;
+}
+
+.side-reg-addr {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.side-reg-item.active .side-reg-addr {
+  color: var(--primary);
+  opacity: 0.7;
+}
+
+/* 侧边栏底部 */
+.sidebar-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* ===== 主内容区域 ===== */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 24px 48px;
+}
+
+/* ===== 头部 ===== */
+.app-header {
+  text-align: center;
+  padding: 0 0 24px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 24px;
+}
+.app-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.app-header .subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+.source-badges {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.source-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+.source-badge.loaded {
+  background: var(--success-light);
+  color: var(--success);
+  border-color: var(--success);
+}
+.source-badge.error {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.source-badge.loading {
+  background: var(--warning-light);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+/* ===== 卡片 ===== */
+.card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card-header {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== 搜索区域 ===== */
+.search-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 12px;
+  align-items: end;
+}
+@media (max-width: 900px) {
+  .search-row { grid-template-columns: 1fr; }
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+.form-group input::placeholder {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+/* ===== 按钮 ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:active { transform: scale(0.98); }
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-outline {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  margin: 4px;
+}
+
+/* ===== 十六进制输入行 ===== */
+.hex-input-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 12px;
+  align-items: end;
+}
+@media (max-width: 900px) {
+  .hex-input-row { grid-template-columns: 1fr; }
+}
+
+/* ===== 结果卡 ===== */
+.reg-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.reg-name {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+.reg-addr {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+.reg-source {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  color: var(--primary);
+  text-transform: uppercase;
+}
+.reg-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* 数值显示 */
+.value-display {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.value-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.value-hex {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.value-bin {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+/* 二进制位显示（索引行 + 值行） */
+.value-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bit-display {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  white-space: pre;
+  user-select: text;
+}
+.bit-idx {
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+}
+.bit-val {
+  color: var(--text);
+}
+
+/* 位域表格 */
+.fields-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  table-layout: fixed;
+}
+.fields-table th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid var(--border);
+}
+.fields-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.fields-table tr:last-child td { border-bottom: none; }
+.fields-table tr:hover td { background: var(--primary-light); }
+
+.fields-table th:nth-child(1) { width: 12%; }
+.fields-table th:nth-child(2) { width: 10%; }
+.fields-table th:nth-child(3) { width: 6%; }
+.fields-table td:nth-child(4) { width: auto; }
+.fields-table th:nth-child(5) { width: 12%; }
+
+.field-name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.field-bits {
+  font-family: var(--font-mono);
+  color: var(--primary);
+  white-space: nowrap;
+  font-size: 0.8125rem;
+}
+.field-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.field-access {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+.access-ro { background: var(--success-light); color: var(--success); }
+.access-wo { background: var(--warning-light); color: var(--warning); }
+.access-rw { background: var(--primary-light); color: var(--primary); }
+.field-desc {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-muted);
+}
+.empty-state .empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+.empty-state p { font-size: 0.9375rem; }
+
+/* 错误/警告提示 */
+.error-msg {
+  padding: 12px 16px;
+  background: var(--danger-light);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+}
+.warn-msg {
+  padding: 12px 16px;
+  background: var(--warning-light);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius);
+  color: var(--warning);
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+}
+.info-msg {
+  padding: 12px 16px;
+  background: var(--primary-light);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  color: var(--primary);
+  font-size: 0.875rem;
+}
+
+/* 提示文本 */
+.hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* 页脚 */
+.app-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 16px 0 0;
+}
+
+/* 寄存器列表项 */
+.reg-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: var(--radius-sm);
+}
+.reg-list-item:hover { background: var(--primary-light); }
+.reg-list-item .rl-source {
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* ===== 多选 & 多寄存器显示 ===== */
+/* 多选列表项 */
+.reg-list-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.08s;
+  border-radius: var(--radius-sm);
+}
+.reg-list-select:hover { background: var(--bg-secondary); }
+.reg-list-select.selected { background: var(--primary-light); }
+
+.reg-list-select input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* 多选工具栏 */
+.multi-select-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.multi-select-toolbar .sel-counter {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.multi-select-toolbar .sel-counter .num {
+  color: var(--primary);
+}
+.multi-select-toolbar .toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+/* 多寄存器卡片 */
+.multi-reg-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.multi-reg-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.multi-reg-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.multi-reg-card-header .card-reg-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.multi-reg-card-header .card-reg-name {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--primary);
+}
+.multi-reg-card-header .card-reg-addr {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.multi-reg-card-header .card-val-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.multi-reg-card-header .card-val-input {
+  width: 160px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  background: var(--bg);
+  color: var(--text);
+}
+.multi-reg-card-header .card-val-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+}
+.multi-reg-card-body {
+  padding: 12px 16px;
+}
+.multi-reg-card-body .reg-desc {
+  font-size: 0.8125rem;
+  margin-bottom: 10px;
+}
+.multi-reg-card-body .fields-table {
+  font-size: 0.8125rem;
+}
+.multi-reg-card-body .fields-table th {
+  font-size: 0.6875rem;
+  padding: 6px 8px;
+}
+.multi-reg-card-body .fields-table td {
+  padding: 6px 8px;
+}
+
+/* 全局值输入区域 */
+.global-value-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.global-value-row label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.global-value-row input {
+  width: 200px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background: var(--bg);
+  color: var(--text);
+}
+.global-value-row input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ===== 响应式：窄屏隐藏侧边栏 ===== */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main-content { padding: 16px 12px 32px; }
+  .app-header h1 { font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ====== 左侧边栏 ====== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>&#128218; 寄存器目录</h2>
+      <div class="side-subtitle" id="sidebar-stats">加载中…</div>
+    </div>
+    <div class="sidebar-tree" id="sidebar-tree">
+      <!-- 动态生成 -->
+      <div style="padding:24px;text-align:center;color:var(--text-muted);font-size:0.8125rem;">正在加载…</div>
+    </div>
+    <div class="sidebar-footer" id="sidebar-footer">Arm Register Inspector</div>
+  </aside>
+
+  <!-- ====== 右侧主内容 ====== -->
+  <main class="main-content">
+
+    <!-- 头部 -->
+    <header class="app-header">
+      <h1>Arm 寄存器查询工具</h1>
+      <div class="subtitle">System Register Inspector</div>
+      <div class="source-badges" id="source-badges">
+        <span class="source-badge loading">加载中…</span>
+      </div>
+    </header>
+
+    <!-- 搜索卡片 -->
+    <div class="card">
+      <div class="card-header">&#128269; 查询寄存器</div>
+      <div class="search-row">
+        <div class="form-group">
+          <label for="query-input">寄存器名称或地址</label>
+        <input type="text" id="query-input"
+               placeholder="例如：IDR0, CR0 或 0x20"
+               autocomplete="off"
+               aria-describedby="query-hint">
+        <div id="query-hint" class="hint">支持逗号分隔多个关键词（模糊匹配），也支持十六进制地址精确匹配</div>
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" id="search-btn">查询</button>
+        </div>
+      </div>
+
+      <!-- 十六进制值输入 -->
+      <div class="hex-input-row" style="margin-top:16px; padding-top:16px; border-top:1px dashed var(--border)">
+        <div class="form-group">
+          <label for="val-input">寄存器值（可选）</label>
+          <input type="text" id="val-input"
+                 placeholder="例如：0x30C51801 或 12345"
+                 aria-describedby="val-hint">
+          <div id="val-hint" class="hint">支持十六进制（0x前缀）或十进制。输入后点击解析，可提取各位域的值</div>
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" id="apply-btn">解析</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结果展示卡片 -->
+    <div class="card" id="result-card" style="display:none">
+      <div class="card-header">&#128203; <span id="result-title">寄存器详情</span></div>
+      <div id="result-content"></div>
+    </div>
+
+    <!-- 空状态 -->
+    <div class="card" id="empty-card">
+      <div class="empty-state">
+        <div class="empty-icon">&#128226;</div>
+        <p id="empty-text">正在加载寄存器定义文件…</p>
+      </div>
+    </div>
+
+    <footer class="app-footer" id="footer-info">Arm Register Inspector</footer>
+  </main>
+</div>
+
+<script>
+/* ==========================================================================
+   Arm 寄存器查询工具 — 完整 JavaScript 逻辑
+   ========================================================================== */
+
+// ---------- 全局状态 ----------
+
+/** 所有寄存器数据的扁平化集合：数组元素为 { reg, source } */
+let allRegisters = [];
+
+/** 已加载的数据源计数 */
+let loadedSources = 0;
+
+/** 总共要加载的数据源数量（动态，从 manifest.json 获取） */
+let manifestSources = [];
+
+/** 当前正在显示的寄存器 */
+let currentRegister = null;
+
+/** 按 source 分组的寄存器数据：Map<sourceLabel, { data, registers:[] }> */
+const sourceGroups = new Map();
+
+/** 侧边栏是否已初始化 */
+let sidebarReady = false;
+
+// ---------- 工具函数 ----------
+
+function parseBits(bitsStr) {
+  const parts = bitsStr.split(':');
+  if (parts.length === 2) {
+    const high = parseInt(parts[0], 10);
+    const low  = parseInt(parts[1], 10);
+    return { high, low, width: high - low + 1 };
+  }
+  const bit = parseInt(parts[0], 10);
+  return { high: bit, low: bit, width: 1 };
+}
+
+function extractFieldValue(registerValue, bitsStr) {
+  if (registerValue === null || registerValue === undefined) {
+    return null;
+  }
+  const { low, width } = parseBits(bitsStr);
+  const mask = (1n << BigInt(width)) - 1n;
+  return Number((BigInt(registerValue) >> BigInt(low)) & mask);
+}
+
+function parseRegisterValue(inputStr) {
+  if (!inputStr || !inputStr.trim()) return null;
+  const str = inputStr.trim();
+  if (/^0[xX][0-9a-fA-F]+$/.test(str)) return BigInt(str);
+  if (/^0[bB][01]+$/.test(str)) return BigInt(str);
+  if (/^\d+$/.test(str)) return BigInt(str);
+  return null;
+}
+
+function escapeHtml(raw) {
+  const div = document.createElement('div');
+  div.textContent = String(raw);
+  return div.innerHTML;
+}
+
+function fmtHex(value, width) {
+  const hexDigits = Math.ceil(width / 4);
+  return value.toString(16).toUpperCase().padStart(hexDigits, '0');
+}
+
+function fmtBin(value, width) {
+  const bin = value.toString(2).padStart(width, '0');
+  const gap = width <= 32 ? 4 : 8;
+  const parts = [];
+  for (let i = 0; i < bin.length; i += gap) {
+    parts.push(bin.substring(i, i + gap));
+  }
+  return parts.join(' ');
+}
+
+/**
+ * 将数值格式化为带位索引的双行二进制显示。
+ * 返回 HTML 字符串：上行显示 bit 索引，下行显示 bit 值。
+ */
+function fmtBinWithIndex(value, width) {
+  const bin = value.toString(2).padStart(width, '0');
+  const gap = width <= 32 ? 4 : 8; // 每组位数
+
+  // 构建值行（分组）
+  const valGroups = [];
+  for (let i = 0; i < bin.length; i += gap) {
+    valGroups.push(bin.substring(i, i + gap));
+  }
+
+  // 构建索引行 + 对齐后的值行
+  // 每列宽度 = max(索引宽度, 值的宽度)，保证上下行严格对齐
+  const idxGroups = [];
+  const paddedValGroups = [];
+  let highBit = width - 1;
+
+  for (let g = 0; g < valGroups.length; g++) {
+    const lowBit = highBit - gap + 1;
+    // 固定 5 字符格式：HH-LL（高位2位 + '-' + 低位2位）
+    const idxStr = String(highBit).padStart(2, ' ') + '-' + String(lowBit).padStart(2, '0');
+
+    const groupLen = valGroups[g].length;
+    // 列宽取两者最大值，保证上下行对齐
+    const colWidth = Math.max(idxStr.length, groupLen);
+
+    // 居中索引
+    const idxPad = colWidth - idxStr.length;
+    const idxLeft = Math.floor(idxPad / 2);
+    const idxRight = idxPad - idxLeft;
+    idxGroups.push(' '.repeat(idxLeft) + idxStr + ' '.repeat(idxRight));
+
+    // 居中或左值
+    const valPad = colWidth - groupLen;
+    const valLeft = Math.floor(valPad / 2);
+    const valRight = valPad - valLeft;
+    paddedValGroups.push(' '.repeat(valLeft) + valGroups[g] + ' '.repeat(valRight));
+
+    highBit -= gap;
+  }
+
+  const sep = '  '; // 列之间用两个空格分隔，更清晰
+
+  return '<pre class="bit-display">' +
+    '<span class="bit-idx">' + escapeHtml(idxGroups.join(sep)) + '</span>\n' +
+    '<span class="bit-val">' + escapeHtml(paddedValGroups.join(sep)) + '</span>' +
+    '</pre>';
+}
+
+function fmtFieldVal(val, fieldWidth) {
+  if (val === null) return '-';
+  const hexDigits = Math.ceil(fieldWidth / 4);
+  const hex = val.toString(16).toUpperCase().padStart(hexDigits, '0');
+  return hexDigits > 1 ? `0x${hex} (${val})` : `${val}`;
+}
+
+// ---------- 侧边栏渲染 ----------
+
+/** 侧边栏来源配色 */
+const sourceColors = {
+  'SMMUv3':       { dot: '#2563eb', light: '#dbeafe' },
+  'CPU':          { dot: '#16a34a', light: '#dcfce7' },
+  'DDR 控制器':   { dot: '#d97706', light: '#fef3c7' },
+  'MMU':          { dot: '#7c3aed', light: '#ede9fe' }
+};
+
+/** 默认颜色（未知来源时使用） */
+const defaultSourceColor = { dot: '#6b7280', light: '#f5f7fa' };
+
+/**
+ * 为一个数据源构建侧边栏分组区域。
+ * @param {string} sourceLabel — 来源名称
+ * @param {Array} registers — 该来源的寄存器数组
+ */
+function buildSidebarSection(sourceLabel, registers) {
+  const colors = sourceColors[sourceLabel] || defaultSourceColor;
+  const sectionId = 'sec-' + sourceLabel.replace(/\s+/g, '-');
+
+  return '<div class="source-group" id="' + sectionId + '">' +
+    '<div class="source-group-header" onclick="toggleSidebarSection(\'' + sectionId + '\')">' +
+      '<span class="group-arrow">&#9660;</span>' +
+      '<span class="group-dot" style="background:' + colors.dot + '"></span>' +
+      '<span class="group-label">' + escapeHtml(sourceLabel) + '</span>' +
+      '<span class="group-count">' + registers.length + '</span>' +
+    '</div>' +
+    '<div class="group-body">' +
+      registers.map(reg =>
+        '<div class="side-reg-item" data-name="' + escapeHtml(reg.name) + '" ' +
+             'data-source="' + escapeHtml(sourceLabel) + '" ' +
+             'onclick="onSidebarRegClick(\'' + escapeHtml(reg.name) + '\', \'' + escapeHtml(sourceLabel) + '\')">' +
+          '<span class="side-reg-addr">' + escapeHtml(reg.address) + '</span>' +
+          escapeHtml(reg.name) +
+        '</div>'
+      ).join('') +
+    '</div>' +
+  '</div>';
+}
+
+/**
+ * 将所有已加载数据源渲染到侧边栏。
+ */
+function renderSidebar() {
+  const tree = document.getElementById('sidebar-tree');
+  if (!tree) return;
+
+  let html = '';
+
+  // 按固定顺序渲染
+  const order = ['SMMUv3', 'CPU', 'DDR 控制器'];
+  for (const label of order) {
+    if (sourceGroups.has(label)) {
+      const group = sourceGroups.get(label);
+      html += buildSidebarSection(label, group.registers);
+    }
+  }
+
+  // 未在固定顺序中的来源追加在后面
+  for (const [label, group] of sourceGroups) {
+    if (!order.includes(label)) {
+      html += buildSidebarSection(label, group.registers);
+    }
+  }
+
+  tree.innerHTML = html;
+  sidebarReady = true;
+
+  // 更新统计
+  const stats = document.getElementById('sidebar-stats');
+  if (stats) {
+    stats.textContent = allRegisters.length + ' 个寄存器 / ' + sourceGroups.size + ' 个来源';
+  }
+}
+
+/**
+ * 展开/收起侧边栏分组。
+ */
+function toggleSidebarSection(sectionId) {
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  section.classList.toggle('collapsed');
+}
+
+/**
+ * 侧边栏寄存器项点击事件。
+ */
+function onSidebarRegClick(regName, sourceLabel) {
+  const entry = allRegisters.find(e =>
+    e.reg.name === regName && e.source === sourceLabel
+  );
+  if (!entry) return;
+
+  // 高亮侧边栏项
+  document.querySelectorAll('.side-reg-item.active').forEach(el => el.classList.remove('active'));
+  const item = document.querySelector('.side-reg-item[data-name="' + escapeHtml(regName) + '"][data-source="' + escapeHtml(sourceLabel) + '"]');
+  if (item) {
+    item.classList.add('active');
+    // 确保可见（滚动到视图内）
+    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  displayRegister(entry);
+
+  // 移动端：隐藏侧边栏后将焦点移到主区域
+  if (window.innerWidth <= 768) {
+    document.getElementById('result-card')?.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+/**
+ * 清除侧边栏中的高亮。
+ */
+function clearSidebarHighlight() {
+  document.querySelectorAll('.side-reg-item.active').forEach(el => el.classList.remove('active'));
+}
+
+// ---------- 数据加载 ----------
+
+function onAllSourcesLoaded() {
+  const emptyCard = document.getElementById('empty-card');
+  const emptyText = document.getElementById('empty-text');
+  const footer = document.getElementById('footer-info');
+  const sideFooter = document.getElementById('sidebar-footer');
+
+  if (allRegisters.length === 0) {
+    emptyText.textContent = '没有加载到任何寄存器定义。请检查 JSON 文件是否存在。';
+    return;
+  }
+
+  emptyText.textContent = '在左侧目录选择寄存器，或输入名称/地址搜索';
+  footer.textContent = '共 ' + allRegisters.length + ' 个寄存器，来自 ' + sourceGroups.size + ' 个数据源';
+  sideFooter.textContent = '共 ' + allRegisters.length + ' 个寄存器';
+}
+
+/**
+ * 初始化：从 manifest.json 读取文件列表，再依次加载。
+ */
+async function initDataLoading() {
+  // 首先尝试加载 manifest.json
+  let sources = [];
+  try {
+    const resp = await fetch('./manifest.json', { cache: 'no-cache' });
+    if (resp.ok) {
+      const manifest = await resp.json();
+      if (manifest && Array.isArray(manifest.sources)) {
+        sources = manifest.sources;
+      }
+    }
+  } catch (e) {
+    console.warn('[manifest] 未找到 manifest.json，尝试默认列表:', e);
+  }
+
+  // 回退：如果没有 manifest.json，尝试扫描常见的 register 文件
+  if (sources.length === 0) {
+    const candidates = ['smmu', 'cpu', 'ddr', 'mmu'];
+    for (const name of candidates) {
+      sources.push('registers_' + name + '.json');
+    }
+  }
+
+  manifestSources = sources;
+
+  // 动态生成顶部 badges
+  const badgesContainer = document.getElementById('source-badges');
+  badgesContainer.innerHTML = sources.map(src => {
+    const id = src.replace(/^registers_/, '').replace(/\.json$/, '');
+    return '<span class="source-badge loading" id="badge-' + id + '">' +
+           id.toUpperCase() + ' 加载中</span>';
+  }).join('');
+
+  // 并行加载所有数据源
+  for (const src of sources) {
+    loadSource(src);
+  }
+}
+
+/**
+ * 尝试通过 fetch 加载一个 JSON 文件。
+ */
+async function loadJsonWithRetry(url) {
+  const response = await fetch(url, { cache: 'no-cache' });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  const json = await response.json();
+  if (!json || !Array.isArray(json.registers)) {
+    throw new Error('JSON 格式无效：缺少 registers 数组');
+  }
+  return json;
+}
+
+/**
+ * 加载单个数据源 JSON 文件。
+ * @param {string} filename — 文件名，如 "registers_smmu.json"
+ */
+async function loadSource(filename) {
+  const categoryId = filename.replace(/^registers_/, '').replace(/\.json$/, '');
+  const badge = document.getElementById('badge-' + categoryId);
+  const url = './' + filename;
+
+  try {
+    const data = await loadJsonWithRetry(url);
+    const sourceLabel = data.label || data.category || filename;
+
+    // 存储分组数据（用于侧边栏）
+    sourceGroups.set(sourceLabel, { data, registers: data.registers });
+
+    // 扁平化加入全局集合
+    for (const reg of data.registers) {
+      allRegisters.push({ reg, source: sourceLabel });
+    }
+
+    loadedSources++;
+
+    // 更新顶部 badge
+    if (badge) {
+      badge.className = 'source-badge loaded';
+      badge.textContent = sourceLabel.toUpperCase() + ' (' + data.registers.length + ')';
+    }
+
+    console.log(`[加载完成] ${sourceLabel} — ${data.registers.length} 个寄存器`);
+  } catch (err) {
+    console.error(`[加载失败] ${filename}:`, err);
+    if (badge) {
+      badge.className = 'source-badge error';
+      badge.textContent = categoryId.toUpperCase() + ' 加载失败';
+    }
+  }
+
+  // 每个源加载完就刷新侧边栏
+  renderSidebar();
+
+  // 所有加载完成后更新界面
+  if (manifestSources.length > 0 && loadedSources >= manifestSources.length) {
+    onAllSourcesLoaded();
+  }
+}
+
+// ---------- 查询逻辑 ----------
+
+function findRegisters(query) {
+  if (!query.trim()) return [];
+  const trimmed = query.trim();
+  const upperQuery = trimmed.toUpperCase();
+
+  return allRegisters.filter(entry => {
+    const r = entry.reg;
+    if (/^0[xX][0-9a-fA-F]+$/.test(trimmed)) {
+      return BigInt(trimmed) === BigInt(r.address);
+    }
+    if (/^\d+$/.test(trimmed)) {
+      return BigInt(trimmed) === BigInt(r.address);
+    }
+    return r.name.toUpperCase().includes(upperQuery);
+  });
+}
+
+// ---------- 显示逻辑 ----------
+
+function displayRegister(entry) {
+  const { reg, source } = entry;
+  const resultCard = document.getElementById('result-card');
+  const emptyCard = document.getElementById('empty-card');
+  const resultContent = document.getElementById('result-content');
+  const resultTitle = document.getElementById('result-title');
+  const valInput = document.getElementById('val-input');
+
+  currentRegister = entry;
+
+  resultCard.style.display = 'block';
+  emptyCard.style.display = 'none';
+  resultTitle.textContent = '寄存器详情';
+
+  const regValue = parseRegisterValue(valInput.value);
+
+  const bitsHtml = reg.fields.map(field => {
+    const parsed = parseBits(field.bits);
+    const fieldVal = extractFieldValue(regValue, field.bits);
+    const accessClass = 'access-' + (field.access || 'RO').toLowerCase();
+
+    return '<tr>' +
+      '<td><span class="field-name">' + escapeHtml(field.name) + '</span></td>' +
+      '<td><span class="field-bits">[' + escapeHtml(field.bits) + ']</span></td>' +
+      '<td><span class="field-access ' + accessClass + '">' +
+        escapeHtml(field.access || 'RO') +
+      '</span></td>' +
+      '<td class="field-desc">' + escapeHtml(field.description) + '</td>' +
+      '<td><span class="field-value">' + fmtFieldVal(fieldVal, parsed.width) + '</span></td>' +
+      '</tr>';
+  }).join('');
+
+  let valueSection = '';
+  if (regValue !== null) {
+    valueSection =
+      '<div class="value-display">' +
+        '<div class="value-col">' +
+          '<span class="value-label">十六进制</span>' +
+          '<span class="value-hex">0x' + fmtHex(regValue, reg.width) + '</span>' +
+        '</div>' +
+        '<div class="value-col">' +
+          '<span class="value-label">二进制</span>' +
+          fmtBinWithIndex(regValue, reg.width) +
+        '</div>' +
+      '</div>';
+  }
+
+  resultContent.innerHTML =
+    '<div class="reg-header">' +
+      '<span class="reg-name">' + escapeHtml(reg.name) + '</span>' +
+      '<span class="reg-addr">' + escapeHtml(reg.address) + '</span>' +
+      '<span class="reg-source">' + escapeHtml(source) + '</span>' +
+      (reg.fullName
+        ? '<span style="font-size:0.8125rem;color:var(--text-muted)">' +
+          escapeHtml(reg.fullName) + '</span>'
+        : '') +
+    '</div>' +
+    '<div class="reg-desc">' + escapeHtml(reg.description) + '</div>' +
+    valueSection +
+    '<table class="fields-table">' +
+      '<thead><tr>' +
+        '<th>位域名称</th><th>位范围</th><th>访问</th><th>描述</th><th>当前值</th>' +
+      '</tr></thead>' +
+      '<tbody>' + bitsHtml + '</tbody>' +
+    '</table>';
+
+  // 同步高亮侧边栏
+  syncSidebarHighlight(reg.name, source);
+
+  // 确保结果卡片可见
+  resultCard.scrollIntoView({ block: 'start', behavior: 'smooth' });
+}
+
+/**
+ * 同步侧边栏高亮：移除所有 active，为当前寄存器项添加 active。
+ */
+function syncSidebarHighlight(regName, sourceLabel) {
+  document.querySelectorAll('.side-reg-item.active').forEach(el => el.classList.remove('active'));
+  const item = document.querySelector(
+    '.side-reg-item[data-name="' + escapeHtml(regName) + '"][data-source="' + escapeHtml(sourceLabel) + '"]'
+  );
+  if (item) {
+    item.classList.add('active');
+    // 确保该分组展开
+    const group = item.closest('.source-group');
+    if (group) group.classList.remove('collapsed');
+    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
+function applyValue() {
+  // 多寄存器卡片模式：将全局值应用到所有卡片的输入框
+  const cardsContainer = document.getElementById('multi-reg-cards');
+  if (cardsContainer && cardsContainer.childElementCount > 0) {
+    applyGlobalToAll();
+    return;
+  }
+  // 单寄存器模式
+  if (!currentRegister) {
+    const resultContent = document.getElementById('result-content');
+    const regNameEl = resultContent.querySelector('.reg-name');
+    if (!regNameEl) return;
+    const nameText = regNameEl.textContent.trim();
+    const entry = allRegisters.find(e => e.reg.name === nameText);
+    if (!entry) return;
+    currentRegister = entry;
+  }
+  displayRegister(currentRegister);
+}
+
+function doSearch() {
+  const query = document.getElementById('query-input').value;
+  const resultCard = document.getElementById('result-card');
+  const emptyCard = document.getElementById('empty-card');
+  const resultContent = document.getElementById('result-content');
+  const resultTitle = document.getElementById('result-title');
+
+  if (!query.trim()) return;
+
+  // 按逗号拆分为多个查询词
+  const rawTerms = query.split(',');
+  // 分别搜索每个词，合并结果并去重（按 reg.name + source 去重）
+  const seen = new Map();
+  const matched = [];
+  const notFoundTerms = [];
+
+  for (const raw of rawTerms) {
+    const term = raw.trim();
+    if (!term) continue;
+    const results = findRegisters(term);
+    if (results.length === 0) {
+      notFoundTerms.push(term);
+    }
+    for (const entry of results) {
+      const key = entry.reg.name + '|' + entry.source;
+      if (!seen.has(key)) {
+        seen.set(key, true);
+        matched.push(entry);
+      }
+    }
+  }
+
+  // 全部未找到
+  if (matched.length === 0) {
+    clearSidebarHighlight();
+    resultCard.style.display = 'block';
+    emptyCard.style.display = 'none';
+    resultTitle.textContent = '查询结果';
+    var notFoundStr = notFoundTerms.map(function(t) { return '"' + escapeHtml(t) + '"'; }).join('、');
+    resultContent.innerHTML =
+      '<div class="error-msg">未找到匹配的寄存器：' + notFoundStr + '</div>' +
+      '<div class="info-msg">提示：尝试输入完整名称（如 SCTLR_EL1）或十六进制地址（如 0x28），多个查询用逗号隔开</div>';
+    return;
+  }
+
+  // 单个词且唯一精确匹配：走原单寄存器显示
+  const trimmedTerms = rawTerms.map(function(t) { return t.trim(); }).filter(Boolean);
+  if (trimmedTerms.length === 1 && matched.length === 1 &&
+      matched[0].reg.name.toUpperCase() === trimmedTerms[0].toUpperCase()) {
+    clearSidebarHighlight();
+    resultCard.style.display = 'block';
+    emptyCard.style.display = 'none';
+    resultTitle.textContent = '寄存器详情';
+    displayRegister(matched[0]);
+    return;
+  }
+
+  // 多结果：显示可多选的复选框列表
+  clearSidebarHighlight();
+  resultCard.style.display = 'block';
+  emptyCard.style.display = 'none';
+  var titleExtra = notFoundTerms.length > 0
+    ? '（' + notFoundTerms.map(function(t) { return escapeHtml(t); }).join('、') + ' 未找到）'
+    : '';
+  resultTitle.textContent = '查询结果（' + matched.length + ' 个匹配）' + titleExtra;
+
+  resultContent.innerHTML =
+    '<div class="multi-select-toolbar">' +
+      '<span class="sel-counter">已选择 <span class="num" id="sel-count">0</span>/10</span>' +
+      '<div class="toolbar-actions">' +
+        '<button class="btn btn-sm" onclick="selectAllResults()">全选</button>' +
+        '<button class="btn btn-sm" onclick="deselectAllResults()">取消</button>' +
+        '<button class="btn btn-sm btn-primary" onclick="querySelectedRegisters()">查询所选</button>' +
+      '</div>' +
+    '</div>' +
+    '<div id="search-result-list">' +
+      matched.map(function(entry, idx) {
+        var r = entry.reg;
+        return '<label class="reg-list-select" data-idx="' + idx + '">' +
+          '<input type="checkbox" class="sel-cb" onchange="updateSelCounter()">' +
+          '<span class="rl-source" style="background:var(--primary-light);color:var(--primary)">' +
+            escapeHtml(entry.source) +
+          '</span>' +
+          '<span style="font-family:var(--font-mono);font-weight:600;min-width:160px">' +
+            escapeHtml(r.name) +
+          '</span>' +
+          '<span style="font-family:var(--font-mono);color:var(--primary);min-width:100px">' +
+            escapeHtml(r.address) +
+          '</span>' +
+          '<span style="font-size:0.8125rem;color:var(--text-secondary);flex:1">' +
+            escapeHtml(r.description) +
+          '</span>' +
+        '</label>';
+      }).join('') +
+    '</div>';
+
+  // 保存当前搜索结果供后续使用
+  resultContent._matched = matched;
+
+  // 点击行也可切换复选框
+  resultContent.querySelectorAll('.reg-list-select').forEach(function(row) {
+    row.addEventListener('click', function(e) {
+      if (e.target.tagName === 'INPUT') return;
+      var cb = this.querySelector('.sel-cb');
+      cb.checked = !cb.checked;
+      cb.dispatchEvent(new Event('change'));
+    });
+  });
+}
+
+// ===== 多选辅助 =====
+
+/** 获取当前搜索结果中选中的条目索引数组（排序后） */
+function getSelectedIndices() {
+  var cbs = document.querySelectorAll('#search-result-list .sel-cb');
+  var indices = [];
+  cbs.forEach(function(cb, idx) {
+    if (cb.checked) indices.push(idx);
+  });
+  return indices;
+}
+
+/** 更新选择计数器，超限提示 */
+function updateSelCounter() {
+  var indices = getSelectedIndices();
+  var countEl = document.getElementById('sel-count');
+  if (countEl) countEl.textContent = indices.length;
+}
+
+/** 全选（最多10个） */
+function selectAllResults() {
+  var cbs = document.querySelectorAll('#search-result-list .sel-cb');
+  var count = 0;
+  cbs.forEach(function(cb) {
+    if (count < 10) { cb.checked = true; count++; }
+    else cb.checked = false;
+  });
+  updateSelCounter();
+}
+
+/** 取消全选 */
+function deselectAllResults() {
+  document.querySelectorAll('#search-result-list .sel-cb').forEach(function(cb) {
+    cb.checked = false;
+  });
+  updateSelCounter();
+}
+
+/** 查询所选寄存器 */
+function querySelectedRegisters() {
+  var resultContent = document.getElementById('result-content');
+  var matched = resultContent._matched;
+  if (!matched) return;
+
+  var indices = getSelectedIndices();
+  if (indices.length === 0) {
+    var warning = document.createElement('div');
+    warning.className = 'warn-msg';
+    warning.textContent = '请至少选择一个寄存器';
+    warning.style.marginTop = '10px';
+    resultContent.appendChild(warning);
+    setTimeout(function() { warning.remove(); }, 2000);
+    return;
+  }
+
+  if (indices.length > 10) {
+    indices = indices.slice(0, 10);
+  }
+
+  var selectedEntries = indices.map(function(i) { return matched[i]; });
+  displaySelectedRegisters(selectedEntries);
+}
+
+// ===== 多寄存器卡片显示 =====
+
+/**
+ * 显示多个寄存器的详情卡片。
+ */
+function displaySelectedRegisters(entries) {
+  var resultCard = document.getElementById('result-card');
+  var emptyCard = document.getElementById('empty-card');
+  var resultContent = document.getElementById('result-content');
+  var resultTitle = document.getElementById('result-title');
+  var valInput = document.getElementById('val-input');
+
+  resultCard.style.display = 'block';
+  emptyCard.style.display = 'none';
+  resultTitle.textContent = '寄存器对比（' + entries.length + ' 个）';
+
+  var globalValue = parseRegisterValue(valInput.value);
+  var cardsHtml = entries.map(function(entry, idx) {
+    return renderOneRegCard(entry, idx, globalValue);
+  }).join('');
+
+  resultContent.innerHTML =
+    '<div class="global-value-row">' +
+      '<label for="gval-input">全局十六进制值</label>' +
+      '<input type="text" id="gval-input" placeholder="例如：0x30C51801" ' +
+             'value="' + escapeHtml(valInput.value) + '" ' +
+             'onkeydown="if(event.key===\'Enter\')applyGlobalToAll()">' +
+      '<button class="btn btn-sm btn-primary" onclick="applyGlobalToAll()">应用到全部</button>' +
+    '</div>' +
+    '<div class="multi-reg-cards" id="multi-reg-cards">' +
+      cardsHtml +
+    '</div>';
+
+  // 保存 entries 供后续使用
+  resultContent._multiEntries = entries;
+}
+
+/**
+ * 渲染单个寄存器卡片。
+ */
+function renderOneRegCard(entry, idx, globalValue) {
+  var reg = entry.reg;
+  var source = entry.source;
+
+  // 提取当前值（如果有）
+  var fieldRows = reg.fields.map(function(field) {
+    var parsed = parseBits(field.bits);
+    var fieldVal = globalValue !== null ? extractFieldValue(globalValue, field.bits) : null;
+    var accessClass = 'access-' + (field.access || 'RO').toLowerCase();
+    return '<tr>' +
+      '<td><span class="field-name">' + escapeHtml(field.name) + '</span></td>' +
+      '<td><span class="field-bits">[' + escapeHtml(field.bits) + ']</span></td>' +
+      '<td><span class="field-access ' + accessClass + '">' + escapeHtml(field.access || 'RO') + '</span></td>' +
+      '<td class="field-desc">' + escapeHtml(field.description) + '</td>' +
+      '<td><span class="field-value" id="fv-' + idx + '-' + escapeHtml(field.name) + '">' +
+        fmtFieldVal(fieldVal, parsed.width) +
+      '</span></td>' +
+      '</tr>';
+  }).join('');
+
+  var valueHex = globalValue !== null ? '0x' + fmtHex(globalValue, reg.width) : '';
+
+  return '<div class="multi-reg-card" id="mrc-' + idx + '">' +
+    '<div class="multi-reg-card-header">' +
+      '<div class="card-reg-info">' +
+        '<span class="card-reg-name">' + escapeHtml(reg.name) + '</span>' +
+        '<span class="card-reg-addr">' + escapeHtml(reg.address) + '</span>' +
+        '<span class="reg-source">' + escapeHtml(source) + '</span>' +
+        '<span style="font-size:0.75rem;color:var(--text-muted)">' +
+          escapeHtml(reg.fullName || '') +
+        '</span>' +
+      '</div>' +
+      '<div class="card-val-row">' +
+        '<input type="text" class="card-val-input" id="cvi-' + idx + '" ' +
+               'placeholder="' + (valueHex || '0x...') + '" ' +
+               'value="' + valueHex + '" ' +
+               'onkeydown="if(event.key===\'Enter\')applyToCard(' + idx + ')">' +
+        '<button class="btn btn-sm btn-primary" onclick="applyToCard(' + idx + ')">解析</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="multi-reg-card-body">' +
+      '<div class="reg-desc">' + escapeHtml(reg.description) + '</div>' +
+      '<div id="card-value-display-' + idx + '">' +
+        (globalValue !== null
+          ? '<div class="value-display">' +
+              '<div class="value-col">' +
+                '<span class="value-label">十六进制</span>' +
+                '<span class="value-hex">0x' + fmtHex(globalValue, reg.width) + '</span>' +
+              '</div>' +
+              '<div class="value-col">' +
+                '<span class="value-label">二进制</span>' +
+                fmtBinWithIndex(globalValue, reg.width) +
+              '</div>' +
+            '</div>'
+          : '') +
+      '</div>' +
+      '<table class="fields-table">' +
+        '<thead><tr>' +
+          '<th>位域名称</th><th>位范围</th><th>访问</th><th>描述</th><th>当前值</th>' +
+        '</tr></thead>' +
+        '<tbody>' + fieldRows + '</tbody>' +
+      '</table>' +
+    '</div>' +
+  '</div>';
+}
+
+/** 为单个卡片应用其输入框的值 */
+function applyToCard(idx) {
+  var resultContent = document.getElementById('result-content');
+  var entries = resultContent._multiEntries;
+  if (!entries || idx >= entries.length) return;
+
+  var entry = entries[idx];
+  var reg = entry.reg;
+
+  var valInput = document.getElementById('cvi-' + idx);
+  if (!valInput) return;
+  var regValue = parseRegisterValue(valInput.value);
+
+  // 更新十六进制/二进制显示
+  var displayDiv = document.getElementById('card-value-display-' + idx);
+  if (displayDiv) {
+    displayDiv.innerHTML = regValue !== null
+      ? '<div class="value-display">' +
+          '<div class="value-col">' +
+            '<span class="value-label">十六进制</span>' +
+            '<span class="value-hex">0x' + fmtHex(regValue, reg.width) + '</span>' +
+          '</div>' +
+          '<div class="value-col">' +
+            '<span class="value-label">二进制</span>' +
+            fmtBinWithIndex(regValue, reg.width) +
+          '</div>' +
+        '</div>'
+      : '';
+  }
+
+  // 更新位域值
+  reg.fields.forEach(function(field) {
+    var parsed = parseBits(field.bits);
+    var fieldVal = regValue !== null ? extractFieldValue(regValue, field.bits) : null;
+    var cell = document.getElementById('fv-' + idx + '-' + escapeHtml(field.name));
+    if (cell) {
+      cell.textContent = fmtFieldVal(fieldVal, parsed.width);
+    }
+  });
+}
+
+/** 将全局值应用到所有卡片 */
+function applyGlobalToAll() {
+  var gvalInput = document.getElementById('gval-input');
+  var resultContent = document.getElementById('result-content');
+  var entries = resultContent._multiEntries;
+  if (!entries) return;
+
+  var globalValue = parseRegisterValue(gvalInput.value);
+
+  // 同步更新主输入框
+  var mainValInput = document.getElementById('val-input');
+  if (mainValInput) mainValInput.value = gvalInput.value;
+
+  for (var idx = 0; idx < entries.length; idx++) {
+    // 更新卡片输入框
+    var cvi = document.getElementById('cvi-' + idx);
+    if (cvi) {
+      cvi.value = globalValue !== null ? '0x' + fmtHex(globalValue, entries[idx].reg.width) : '';
+    }
+
+    var reg = entries[idx].reg;
+
+    // 更新十六进制/二进制显示
+    var displayDiv = document.getElementById('card-value-display-' + idx);
+    if (displayDiv) {
+      displayDiv.innerHTML = globalValue !== null
+        ? '<div class="value-display">' +
+            '<div class="value-col">' +
+              '<span class="value-label">十六进制</span>' +
+              '<span class="value-hex">0x' + fmtHex(globalValue, reg.width) + '</span>' +
+            '</div>' +
+            '<div class="value-col">' +
+              '<span class="value-label">二进制</span>' +
+              fmtBinWithIndex(globalValue, reg.width) +
+            '</div>' +
+          '</div>'
+        : '';
+    }
+
+    // 更新位域值
+    reg.fields.forEach(function(field) {
+      var parsed = parseBits(field.bits);
+      var fieldVal = globalValue !== null ? extractFieldValue(globalValue, field.bits) : null;
+      var cell = document.getElementById('fv-' + idx + '-' + escapeHtml(field.name));
+      if (cell) {
+        cell.textContent = fmtFieldVal(fieldVal, parsed.width);
+      }
+    });
+  }
+}
+
+// ---------- 事件绑定 ----------
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('search-btn').addEventListener('click', doSearch);
+  document.getElementById('apply-btn').addEventListener('click', applyValue);
+
+  document.getElementById('query-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+  });
+  document.getElementById('val-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') applyValue();
+  });
+
+  initDataLoading();
+});
+</script>
+</body>
+</html>
