@@ -1,6 +1,6 @@
 {
-  "category": "esr",
-  "label": "esr",
+  "category": "cpu",
+  "label": "CPU",
   "description": "Arm A-profile CPU 系统寄存器",
   "registers": [
     {
@@ -8,769 +8,475 @@
       "fullName": "Exception Syndrome Register (EL1)",
       "address": "0x0009",
       "width": 64,
-      "description": "异常综合征寄存器。保存异常被捕获到 EL1 时的综合征信息。EC[31:26]指示异常类别，ISS[24:0]位域含义随EC变化。ISS2[55:32]为扩展ISS。",
+      "description": "Holds syndrome information for an exception taken to EL1.",
       "fields": [
         {
-          "name": "RES0_63_56",
+          "name": "RES0",
           "bits": "63:56",
           "access": "RO",
-          "description": "保留，res0。必须写0，读返回0"
+          "description": "保留，RES0。"
         },
         {
           "name": "ISS2",
           "bits": "55:32",
           "access": "RO",
-          "description": "扩展指令特定综合征。Data Abort: DPOIndex[23:17], OverlayFetch[16], LST2[15:13], Unpriv[12], TPLIM/HDBSSF[11], TnD[10], TagAccess[9], GCS[8], AssuredOnly[7], Overlay[6], DirtyBit[5], Xs[4:0]。Inst Abort: FPOIndex[23:17], OverlayFetch[16], RES0[15:12], HDBSSF[11], RES0[10:8], AssuredOnly[7], Overlay[6], RES0[5:0]。Watchpoint: RES0[23:9], GCS[8], RES0[7:0]。其他异常res0"
+          "description": "ISS2 encoding for an exception, the bit assignments are:"
         },
         {
           "name": "EC",
           "bits": "31:26",
           "access": "RO",
-          "description": "异常类别(Exception Class)。0x00=未知原因 0x01=WF*陷阱 0x03=MCR/MRC陷阱(coproc=0b1111) 0x04=MCRR/MRRC陷阱(coproc=0b1111) 0x05=MCR/MRC陷阱(coproc=0b1110) 0x06=LDC/STC陷阱 0x07=SME/SVE/ASIMD/FP陷阱(CPACR/CPTR) 0x09=Pointer Auth指令陷阱 0x0A=非法指令(不适用其他EC) 0x0C=MRRC陷阱(coproc=0b1110) 0x0D=Branch Target异常 0x0E=非法执行状态 0x11=SVC AArch32 0x14=MSRR/MRRS/128位系统指令陷阱 0x15=SVC AArch64 0x16=HVC AArch64 0x17=SMC AArch64 0x18=MSR/MRS/System指令陷阱 0x19=SVE陷阱(CPACR.ZEN) 0x1A=ERET/ERETAA/ERETAB陷阱 0x1C=PAC Fail 0x1D=SME陷阱 0x20=Instruction Abort(Lower EL) 0x21=Instruction Abort(Same EL) 0x22=PC对齐 0x24=Data Abort(Lower EL) 0x25=Data Abort(Same EL) 0x26=SP对齐 0x27=Memory Operation异常 0x28=FP异常(AArch32) 0x2C=FP异常(AArch64) 0x2D=GCS异常 0x2E=非法TIndex Change 0x2F=SError中断 0x30=Breakpoint(Lower EL) 0x31=Breakpoint(Same EL) 0x32=SW Step(Lower EL) 0x33=SW Step(Same EL) 0x34=Watchpoint(Lower EL) 0x35=Watchpoint(Same EL) 0x38=BKPT(AArch32) 0x3C=BRK(AArch64) 0x3D=Profiling。保留EC值为CONSTRAINED UNPREDICTABLE。复位值为架构UNKNOWN"
+          "description": "异常类别 (Exception Class)。指示该寄存器所保存信息的异常原因。 For each EC value, the table references a subsection that gives information about: Possible values of the EC field are: All other EC values are reserved by Arm, and: The effect of programming this field to a reserved value is that behavior is CONSTRAINED UNPREDICTABLE."
         },
         {
           "name": "IL",
           "bits": "25",
           "access": "RO",
-          "description": "指令长度。0b0=16-bit。0b1=32-bit。SError/Inst Abort/PC对齐/SP对齐/ISV=0的Data Abort/非法执行状态/除BKPT/BRK外调试异常强制为1。BKPT:0=16-bit T32 1=32-bit A32 BKPT或A64 BRK。复位值为架构UNKNOWN"
+          "description": "同步异常的指令长度。 Possible values of this bit are:"
         },
         {
           "name": "ISS",
           "bits": "24:0",
           "access": "RO",
-          "description": "指令特定综合征(Instruction Specific Syndrome)。根据EC字段不同，ISS位域布局不同。常见编码请见ESR_EL1_ISS系列条目。ISS子字段保存寄存器号时返回AArch64视图寄存器编号。AArch32的0b1111映射为0b11111或UNKNOWN值"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_DataAbort",
-      "fullName": "ESR_EL1 ISS Encoding for Data Abort (EC=0x24/0x25)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x24(Lower EL)或0x25(Same EL)时为Data Abort。ISS[24:0]布局: ISV[24], SAS[23:22], SSE[21], SRT[20:16], SF/FnP[15], AR/PFV[14], RES0[13], LST/SET[12:11], FnV[10], EA[9], CM[8], S1PTW[7], WnR[6], DFSC[5:0]。bit[15]和bit[14]的含义取决于ISV值",
-      "fields": [
-        {
-          "name": "ISV",
-          "bits": "24",
-          "access": "RO",
-          "description": "指令综合征有效。0b0=ISS[23:14]无效 0b1=ISS[23:14]含{SAS,SSE,SRT,SF,AR}。ISV=1条件: 非stage-2/stage-1 TTW fault、非同步External abort、单GP寄存器load/store(含Acquire/Release 不含Exclusive/writeback)或AArch32 LDR/LDA/LDRT/STR/STL系列(无寄存器写回 非R15) 且FEAT_EAESR时为stage-1 Trans/Access/Permission fault。ISV=0: MOPS访问/Allocation Tag直接访问/GCS数据访问/VNCR_EL2转换访问/Atomic访问。RAS未实现时stage-2 TTW External abort的ISV实现定义。复位值为架构UNKNOWN"
+          "description": "指令特定综合征 (Instruction Specific Syndrome)。架构上，此字段可为每种异常类别独立定义。 However, in practice, some ISS encodings are used for more than one Exception class. Typically, an ISS encoding has a number of subfields. When an ISS subfield holds a register number, the value returned in that field is the AArch64 view of the register number. For an exception taken from AArch32 state, see 'Mapping of the general-purpose registers between the Execution states'. If the AArch32 register descriptor is 0b1111, then:"
         },
         {
-          "name": "SAS",
+          "name": "CV",
+          "bits": "24",
+          "access": "RO",
+          "description": "Condition code valid. For exceptions taken from AArch64, CV is set to 1. For exceptions taken from AArch32:"
+        },
+        {
+          "name": "RES0",
+          "bits": "24:6",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "24:15",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "24:3",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "24:16",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "24:2",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "DPOIndex",
+          "bits": "23:17",
+          "access": "RO",
+          "description": "[When FEAT_S1POE2 is implemented] DPOIndex for the fault. For a stage 1 Permission fault, if the Overlay field is 1, this field reports the DPOIndex from the translation for the access that generated the fault. This applies whether the Overlay fault was generated as a result of FEAT_S1POE or FEAT_S1POE2 configuration. Otherwise, this field is RES0.；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:9",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:0",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "COND",
+          "bits": "23:20",
+          "access": "RO",
+          "description": "For exceptions taken from AArch64, this field is set to 0b1110. The condition code for the trapped instruction. This field is valid only for exceptions taken from AArch32, and only when the value of CV is 1. For exceptions taken from AArch32:"
+        },
+        {
+          "name": "TFV",
+          "bits": "23",
+          "access": "RO",
+          "description": "Trapped Fault Valid bit. Indicates whether the IDF, IXF, UFF, OFF, DZF, and IOF bits hold valid information about trapped floating-point exceptions. It is IMPLEMENTATION DEFINED whether this field is set to 0 on an exception generated by a trapped floating-point exception from an instruction that is performing floating-point operations on more than one lane of a vector. This is not a requirement. Implementations can set this field to 1 on a trapped floating-point exception from an instruction and return valid information in the {IDF, IXF, UFF, OFF, DZF, IOF} fields."
+        },
+        {
+          "name": "RES0",
+          "bits": "23:16",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
           "bits": "23:22",
           "access": "RO",
-          "description": "综合征访问大小(ISV=1)。0b00=Byte 0b01=Halfword 0b10=Word 0b11=Doubleword。LD64B/ST64B/ST64BV/ST64BV0强制0b11。ISV未知时未知。否则res0。复位值为架构UNKNOWN"
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:11",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:19",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:7",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "WPT",
+          "bits": "23:18",
+          "access": "RO",
+          "description": "[When FEAT_Debugv8p2 is implemented] Watchpoint number. All other values are reserved.；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:2",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Options",
+          "bits": "22:19",
+          "access": "RO",
+          "description": "Options : the Options field of the instruction. For Memory Copy instructions, bits[22:19] forms the Options field, which holds the bits[15:12] of the instruction. For Memory Set instructions, bits[22:19] forms the Options field, where: Bit[22] is: RES0, if FEAT_MOPS_GO is not implemented, or the instruction is a SETM or SETE instruction. 0, if FEAT_MOPS_GO is implemented, and the instruction is a SETGM or SETGE instruction. 1, if FEAT_MOPS_GO is implemented, and the instruction is a SETGOM or SETGOE instruction. Bit[21] is RES0. Bits[20:19] holds the bits[13:12] of the instruction."
+        },
+        {
+          "name": "RES0",
+          "bits": "22:11",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Op0",
+          "bits": "21:20",
+          "access": "RO",
+          "description": "The Op0 value from the issued instruction."
         },
         {
           "name": "SSE",
           "bits": "21",
           "access": "RO",
-          "description": "综合征符号扩展(ISV=1)。0b0=不需要 0b1=需要(byte/halfword/word load)。LD64B/ST64B/ST64BV/ST64BV0强制0。ISV未知时未知。否则res0。复位值为架构UNKNOWN"
+          "description": "[When ISV == '1'] 综合征符号扩展 (Syndrome Sign Extend)。指示数据是否需要符号扩展。 When FEAT_LS64 is implemented, if a memory access generated by an LD64B or ST64B instruction generates a Data Abort for a Translation fault, Access flag fault, or Permission fault, then this field is 0. When FEAT_LS64_V is implemented, if a memory access generated by an ST64BV instruction generates a Data Abort for a Translation fault, Access flag fault, or Permission fault, then this field is 0. When FEAT_LS64_ACCDATA is implemented, if a memory access generated by an ST64BV0 instruction generates a Data Abort for a Translation fault, Access flag fault, or Permission fault, then this field is 0. For all other operations, this field is 0. This field is UNKNOWN when the value of ISV is UNKNOWN.；否则为 RES0"
         },
         {
-          "name": "SRT",
+          "name": "RES0",
           "bits": "20:16",
           "access": "RO",
-          "description": "综合征寄存器传输(ISV=1)。Wt/Xt/Rt寄存器号(5-bit)。AArch32报告AArch64视图寄存器号。ISV未知时未知。ISV=0且FEAT_RASv2且DFSC=010000/01001x/0101xx: bits[4:2]=res0 bits[1:0]=WU(Write Update):0b00=非store或位置可能已更新 0b10=store未更新 0b11=store已更新。否则res0。复位值为架构UNKNOWN"
+          "description": "[When ISV == '0', FEAT_RASv2 is implemented, and GetESR_ELx_DFSC(EL1) IN {'010000', '01001x', '0101xx'}] 保留，RES0。；否则为 RES0"
         },
         {
-          "name": "SF",
-          "bits": "15",
+          "name": "RES0",
+          "bits": "19:10",
           "access": "RO",
-          "description": "64位传输标志(ISV=1)。0b0=32-bit寄存器 0b1=64-bit寄存器(指寄存器宽度 非执行状态)。LD64B/ST64B/ST64BV/ST64BV0强制1。ISV未知时未知。与FnP共享bit[15]"
+          "description": "保留，RES0。"
         },
         {
-          "name": "FnP",
-          "bits": "15",
+          "name": "Op2",
+          "bits": "19:17",
           "access": "RO",
-          "description": "FAR不精确(ISV=0 FEAT_SVE/SME)。0b0=FAR保存精确故障VA 0b1=FAR保存包含故障VA的自然对齐granule内任意VA(SVE连续向量load/store或SME load/store)。复位值为架构UNKNOWN。与SF共享bit[15]"
+          "description": "The Op2 value from the issued instruction."
         },
         {
-          "name": "AR",
-          "bits": "14",
+          "name": "Opc1",
+          "bits": "19:16",
           "access": "RO",
-          "description": "Acquire/Release(ISV=1)。0b0=无acquire/release语义 0b1=有。LD64B/ST64B/ST64BV/ST64BV0强制0。ISV未知时未知。ISV=0且FEAT_PFAR且DFSC=010000/01001x/0101xx: PFV(PFAR Valid) 0b0=PFAR_EL1未知 0b1=PFAR_EL1有效。否则res0。复位值为架构UNKNOWN"
+          "description": "The Opc1 value from the issued instruction."
         },
         {
-          "name": "RES0_13",
-          "bits": "13",
+          "name": "imm8",
+          "bits": "19:12",
           "access": "RO",
-          "description": "保留，res0"
+          "description": "The immediate value from the issued instruction."
         },
         {
-          "name": "LST",
-          "bits": "12:11",
+          "name": "RES0",
+          "bits": "19:0",
           "access": "RO",
-          "description": "Load/Store类型(DFSC=00xxxx/10101x且非0000xx)。0b00=不指定 0b01=ST64BV(FEAT_LS64_V) 0b10=LD64B/ST64B(FEAT_LS64) 0b11=ST64BV0(FEAT_LS64_ACCDATA)。RAS且DFSC=010000: SET(Sync Error Type):0b00=Recoverable(UER) 0b10=Uncontainable(UC) 0b11=Restartable(UEO)。否则res0。复位值为架构UNKNOWN"
+          "description": "保留，RES0。"
         },
         {
-          "name": "FnV",
-          "bits": "10",
+          "name": "RES0",
+          "bits": "19:15",
           "access": "RO",
-          "description": "FAR无效(仅DFSC=010000)。0b0=FAR有效 0b1=FAR无效保存UNKNOWN。其他abort类型res0。复位值为架构UNKNOWN"
-        },
-        {
-          "name": "EA",
-          "bits": "9",
-          "access": "RO",
-          "description": "外部Abort类型。IMPLEMENTATION DEFINED的External abort分类。非External abort为0。复位值为架构UNKNOWN"
-        },
-        {
-          "name": "CM",
-          "bits": "8",
-          "access": "RO",
-          "description": "Cache维护。0b0=非cache maintenance/地址翻译异常 0b1=cache maintenance指令或地址翻译指令同步错误(DC ZVA/GVA/GZVA不计)。复位值为架构UNKNOWN"
-        },
-        {
-          "name": "S1PTW",
-          "bits": "7",
-          "access": "RO",
-          "description": "Stage-1页表遍历(仅stage-2 fault)。0b0=非stage-1 TTW的stage-2 fault 0b1=stage-1 TTW访问上的stage-2 fault。非stage-2 fault时res0。复位值为架构UNKNOWN"
-        },
-        {
-          "name": "WnR",
-          "bits": "6",
-          "access": "RO",
-          "description": "写而非读。0b0=读访问异常 0b1=写访问异常。cache maintenance/地址翻译指令总是1。原子指令:按首次访问判断;stage-2/stage-1 TTW原子指令允许总是0。FEAT_RASv2时WU=0b00的External abort/DFSC=110101(不支持Exclusive/Atomic)/DFSC=110001(不支持原子硬件更新)时UNKNOWN。复位值为架构UNKNOWN"
-        },
-        {
-          "name": "DFSC",
-          "bits": "5:0",
-          "access": "RO",
-          "description": "数据故障状态码。0b000000=地址大小L0 000001=地址大小L1 000010=地址大小L2 000011=地址大小L3 000100=翻译错误L0 000101=翻译错误L1 000110=翻译错误L2 000111=翻译错误L3 001000=AF错误L0(FEAT_LPA2) 001001=AF错误L1 001010=AF错误L2 001011=AF错误L3 001100=权限错误L0(FEAT_LPA2) 001101=权限错误L1 001110=权限错误L2 001111=权限错误L3 010000=同步External abort(非TTW) 010001=同步Tag Check(MTE2/VMTETCE) 010010=同步External abort TTW L-2(FEAT_D128) 010011=同步External abort TTW L-1(FEAT_LPA2) 010100=同步External abort TTW L0 010101=同步External abort TTW L1 010110=同步External abort TTW L2 010111=同步External abort TTW L3 011000=同步奇偶校验错误 110001=不支持原子硬件更新 110101=不支持Exclusive/Atomic。复位值为架构UNKNOWN"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_InstAbort",
-      "fullName": "ESR_EL1 ISS Encoding for Instruction Abort (EC=0x20/0x21)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x20(Lower EL)或0x21(Same EL)时为Instruction Abort。ISS[24:0]简单布局: RES0[24:7], IFSC[6:0]。",
-      "fields": [
-        {
-          "name": "RES0_24_7",
-          "bits": "24:7",
-          "access": "RO",
-          "description": "保留，res0。Inst Abort不提供ISV类指令综合征"
-        },
-        {
-          "name": "IFSC",
-          "bits": "6:0",
-          "access": "RO",
-          "description": "指令故障状态码。000000=地址大小L0 000100=翻译错误L0 000101=翻译错误L1 000110=翻译错误L2 000111=翻译错误L3 001001=AF错误L1 001010=AF错误L2 001011=AF错误L3 001101=权限错误L1 001110=权限错误L2 001111=权限错误L3 010000=同步External abort 010100-010111=同步External abort(TTW各级) 011000=同步奇偶校验。复位值为架构UNKNOWN"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_SError",
-      "fullName": "ESR_EL1 ISS Encoding for SError Interrupt (EC=0x2F)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x2F时为SError中断。ISS[24:0]布局: IDS[24], RES0[23:19], ELS[18], WU[17:16], VFV[15], PFV[14], IESB[13], AET[12:10], EA[9], RES0[8], WnRV[7], WnR[6], DFSC[5:0]。旧版架构中SError也称为SError中断或异步External abort",
-      "fields": [
-        {
-          "name": "IDS",
-          "bits": "24",
-          "access": "RO",
-          "description": "实现定义综合征。0b0=ISS[23:0]为架构定义字段 0b1=ISS[23:0]为实现定义信息。旧称ISV。复位值为架构UNKNOWN"
-        },
-        {
-          "name": "RES0_23_19",
-          "bits": "23:19",
-          "access": "RO",
-          "description": "保留，res0"
+          "description": "保留，RES0。"
         },
         {
           "name": "ELS",
           "bits": "18",
           "access": "RO",
-          "description": "ELR含义(FEAT_RASv2且DFSC=010001)。0b0=异步 不指示触发源 0b1=同步 异常由ELR_ELx处指令触发(非精确也允许)。否则res0"
+          "description": "[When FEAT_RASv2 is implemented and GetESR_ELx_DFSC(EL1) == '010001'] ELR_ELx 含义 (Meaning of ELR_ELx)。 SError exceptions that report this field is 1 are not required to be precise. The ESR_EL1.AET field describes whether the exception is precise or imprecise. Corrected, Recoverable or Restartable exceptions are precise. Unrecoverable or Uncontainable exceptions are imprecise.；否则为 RES0"
         },
         {
-          "name": "WU",
+          "name": "FormatOption",
           "bits": "17:16",
           "access": "RO",
-          "description": "写更新(FEAT_RASv2且DFSC=010001)。0b00=非store/位置可能已更新 0b10=store/翻译表更新未修改 0b11=store/翻译表更新已修改。否则res0。复位值为架构UNKNOWN"
+          "description": "Reports the Option used to encode the initial Xs, Xd, and Xn register values provided to the instruction that generated the exception. For more information, see Memory Copy and Memory Set exceptions. This field was previously presented as two separate bits, WrongOption, bit[17] and OptionA, bit [16], which were already expected to be used together and not individually."
         },
         {
-          "name": "VFV",
+          "name": "WPTV",
+          "bits": "17",
+          "access": "RO",
+          "description": "[When FEAT_Debugv8p2 is implemented] Watchpoint number Valid. If FEAT_Debugv8p9 is implemented, value 0 is not permitted. When a Watchpoint exception is triggered by a watchpoint match:；否则为 RES0"
+        },
+        {
+          "name": "OverlayFetch",
+          "bits": "16",
+          "access": "RO",
+          "description": "[When FEAT_S1POE2 is implemented] Fetch of POE2 table. Indicates whether a fetch of IRT, DPOT, or TTT information generated the fault.；否则为 RES0"
+        },
+        {
+          "name": "Op1",
+          "bits": "16:14",
+          "access": "RO",
+          "description": "The Op1 value from the issued instruction."
+        },
+        {
+          "name": "LST2",
+          "bits": "15:13",
+          "access": "RO",
+          "description": "[When FEAT_EAESR is implemented] Load/Store type 2. Reports the properties of the instruction that caused the Data Abort. All other encodings are reserved. This field is RES0 if any of the following apply:；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "15:12",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "FnP",
           "bits": "15",
           "access": "RO",
-          "description": "FAR有效(FEAT_RASv2且DFSC=010001)。0b0=FAR_EL1无效 0b1=FAR_EL1含有效VA。否则res0。复位值为架构UNKNOWN"
+          "description": "FAR 非精确 (FAR not Precise)。"
         },
         {
-          "name": "PFV",
+          "name": "Comment",
+          "bits": "15:0",
+          "access": "RO",
+          "description": "Set to the instruction comment field value, zero extended as necessary. For the AArch32 BKPT instructions, the comment field is described as the immediate field."
+        },
+        {
+          "name": "Raddr",
+          "bits": "14:10",
+          "access": "RO",
+          "description": "[When GetESR_ELx_ExType(EL1) == '0010'] Indicates the data address register number supplied in the instruction that has been trapped.；否则为 RES0"
+        },
+        {
+          "name": "AR",
           "bits": "14",
           "access": "RO",
-          "description": "PFAR有效(FEAT_PFAR且DFSC=010001)。0b0=PFAR_EL1未知 0b1=PFAR_EL1有效。否则res0。复位值为架构UNKNOWN"
+          "description": "[When ISV == '1'] Acquire/Release 语义。 When FEAT_LS64 is implemented, if a memory access generated by an LD64B or ST64B instruction generates a Data Abort for a Translation fault, Access flag fault, or Permission fault, then this field is 0. When FEAT_LS64_V is implemented, if a memory access generated by an ST64BV instruction generates a Data Abort for a Translation fault, Access flag fault, or Permission fault, then this field is 0. When FEAT_LS64_ACCDATA is implemented, if a memory access generated by an ST64BV0 instruction generates a Data Abort for a Translation fault, Access flag fault, or Permission fault, then this field is 0. This field is UNKNOWN when the value of ISV is UNKNOWN.；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "14:11",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "CRn",
+          "bits": "13:10",
+          "access": "RO",
+          "description": "The CRn value from the issued instruction. For a trapped VMRS access, holds the reg field from the VMRS instruction encoding."
         },
         {
           "name": "IESB",
           "bits": "13",
           "access": "RO",
-          "description": "隐式错误同步事件(FEAT_IESB且DFSC=010001)。0b0=未由隐式错误同步事件同步/未立即/异常return实现选择0 0b1=由隐式错误同步事件同步且立即(异常entry强制1 异常return实现选择0/1)。否则res0。复位值为架构UNKNOWN"
+          "description": "[When FEAT_IESB is implemented and GetESR_ELx_DFSC(EL1) == '010001'] 隐式错误同步事件 (Implicit Error Synchronization event)。 When an SError exception is synchronized by an implicit error synchronization event on exception entry, and the exception is taken immediately after exception entry, this field is set to 1. When an SError exception is synchronized by an implicit error synchronization event on exception return, and the exception is taken immediately before the exception return, this field is set to an IMPLEMENTATION SPECIFIC choice of 0 or 1. For all other SError exceptions, this field is set to 0.；否则为 RES0"
+        },
+        {
+          "name": "Unpriv",
+          "bits": "12",
+          "access": "RO",
+          "description": "[When FEAT_EAESR is implemented] Unprivileged memory access. Reports whether the Data Abort was caused by the execution of an instruction at an Exception level above EL0 that generates an unprivileged memory access. This field is RES0 if any of the following apply:；否则为 RES0"
+        },
+        {
+          "name": "LST",
+          "bits": "12:11",
+          "access": "RO",
+          "description": "[When GetESR_ELx_DFSC(EL1) IN {'00xxxx', '10101x'} and !(GetESR_ELx_DFSC(EL1) IN {'0000xx'})] Load/Store 类型 (Load/Store Type)。当 ISV=1 的 Data Abort 产生时使用。；否则为 RES0"
         },
         {
           "name": "AET",
           "bits": "12:10",
           "access": "RO",
-          "description": "异步错误类型(FEAT_RAS且DFSC=010001)。0b000=Uncontainable(UC) 0b001=Unrecoverable(UEU) 0b010=Restartable(UEO) 0b011=Recoverable(UER) 0b110=Corrected(CE)。其余保留。多错误合并报告总体PE状态。Corrected/Recoverable/Restartable=精确 Uncontainable=非精确。否则res0"
+          "description": "[When FEAT_RAS is implemented and GetESR_ELx_DFSC(EL1) == '010001'] 异步错误类型 (Asynchronous Error Type)。 Describes the PE error state after taking the SError exception. All other values are reserved. If multiple errors are taken as a single SError exception, the overall PE error state is reported. Software can use this information to determine what recovery might be possible. The recovery software must also examine any implemented fault records to determine the location and extent of the error.；否则为 RES0"
+        },
+        {
+          "name": "HDBSSF",
+          "bits": "11",
+          "access": "RO",
+          "description": "[When FEAT_HDBSS is implemented, FEAT_NV is implemented, IsSecondStage(Fault), and GetESR_ELx_DFSC(EL1) IN {'0011xx', '01001x', '0101xx', '10001x', '1001xx'}] Indicates that the fault was caused by the HDBSS. When DFSC indicates a stage 2 Permission fault, this field indicates whether that fault was caused because HDBSS cannot have data appended, because the HDBSS is either full or in an error state. When DFSC indicates a synchronous External abort on translation table walk or hardware update of translation table, this field indicates whether the fault was caused by a write to the HDBSS. When DFSC indicates a Granule Protection Fault on translation table walk or hardware update of translation table, this field indicates whether the fault was caused by a write to the HDBSS. This field only applies for stage 2 Permission faults. For any other fault, this field is RES0.；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "11:10",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "FnV",
+          "bits": "10",
+          "access": "RO",
+          "description": "FAR 无效 (FAR not Valid)，用于同步 External abort other than a synchronous External abort on a translation table walk. This field is valid only if the IFSC code is 0b010000. It is RES0 for all other aborts."
+        },
+        {
+          "name": "RES0",
+          "bits": "10:8",
+          "access": "RO",
+          "description": "保留，RES0。"
         },
         {
           "name": "EA",
           "bits": "9",
           "access": "RO",
-          "description": "外部Abort类型(FEAT_RAS且DFSC=010001)。IMPLEMENTATION DEFINED。否则res0。复位值为架构UNKNOWN"
+          "description": "外部 Abort 类型 (External abort type)。 This bit can provide an IMPLEMENTATION DEFINED classification of External aborts. For any abort other than an External abort this bit returns a value of 0."
         },
         {
-          "name": "RES0_8",
+          "name": "RN",
+          "bits": "9:5",
+          "access": "RO",
+          "description": "[When FEAT_WFxT is implemented] Register Number. Indicates the register number supplied for a WFET or WFIT instruction.；否则为 RES0"
+        },
+        {
+          "name": "Rt",
+          "bits": "9:6",
+          "access": "RO",
+          "description": "The Rt value from the issued instruction, the general-purpose register used for the transfer. This value represents register pair of X[Rt:0], X[Rt:1]."
+        },
+        {
+          "name": "TT",
+          "bits": "9:3",
+          "access": "RO",
+          "description": "Target TIndex. The value of TIndex that the instruction attempted to change to."
+        },
+        {
+          "name": "CM",
           "bits": "8",
           "access": "RO",
-          "description": "保留，res0"
+          "description": "缓存维护 (Cache maintenance)。指示 Data Abort 是否来自缓存维护或地址翻译指令:"
         },
         {
-          "name": "WnRV",
+          "name": "AssuredOnly",
           "bits": "7",
           "access": "RO",
-          "description": "WnR有效(FEAT_RASv2且DFSC=010001)。0b0=WnR无效(已置0) 0b1=WnR有效。否则res0。复位值为架构UNKNOWN"
+          "description": "[When FEAT_THE is implemented and FEAT_NV is implemented] AssuredOnly flag. If EL2 provides information regarding a stage 2 Data Abort to EL1, then this field holds information about the fault. If this field is 1 and ESR_EL1.GCS is also 1, then the AssuredOnly check might have been the result of VTCR_EL2.GCSH configuration. For all other Data Aborts this field is RES0.；否则为 RES0"
         },
         {
-          "name": "WnR",
+          "name": "RES0",
+          "bits": "7:0",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "EX",
           "bits": "6",
           "access": "RO",
-          "description": "写而非读(FEAT_RASv2且DFSC=010001)。WnRV=1：0b0=读取异常 0b1=写入异常。WnRV=0：res0。WU=0b00的Atomic access External abort：UNKNOWN。复位值为架构UNKNOWN"
+          "description": "Exclusive operation. If the ISV bit is set to 1, this bit indicates whether a Load-Exclusive instruction was stepped. Arm deprecates software use of this field. If the ISV bit is set to 0, this bit is RES0, indicating no syndrome data is available."
+        },
+        {
+          "name": "RES0",
+          "bits": "6:5",
+          "access": "RO",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "DirtyBit",
+          "bits": "5",
+          "access": "RO",
+          "description": "[When FEAT_S1PIE is implemented] DirtyBit flag. If a write access to memory generates a Data Abort for a Permission fault using Indirect Permission, then this field holds information about the fault. For any other fault or Access, this field is RES0.；否则为 RES0"
         },
         {
           "name": "DFSC",
           "bits": "5:0",
           "access": "RO",
-          "description": "数据故障状态码(FEAT_RAS)。0b000000=未分类错误 0b010001=异步SError异常。其余保留。否则res0"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_SVC_HVC_SMC",
-      "fullName": "ESR_EL1 ISS Encoding for SVC/HVC/SMC (EC=0x15/0x16/0x17)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x15(SVC AArch64)、0x16(HVC AArch64)或0x17(SMC AArch64)时，ISS[15:0]保存指令中的16-bit立即数。EC=0x01的SVC AArch32类似",
-      "fields": [
-        {
-          "name": "RES0_24_16",
-          "bits": "24:16",
-          "access": "RO",
-          "description": "保留，res0"
+          "description": "数据故障状态码 (Data Fault Status Code)。 All other values are reserved. For more information about the lookup level associated with a fault, see 'The lookup level associated with MMU faults'. If the S1PTW bit is set, then the level refers the level of the stage2 translation that is translating a stage 1 translation walk."
         },
         {
-          "name": "IMM",
-          "bits": "15:0",
+          "name": "FSC",
+          "bits": "5:1",
           "access": "RO",
-          "description": "指令立即数。SVC #imm16 / HVC #imm16 / SMC #imm16"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_MSR_MRS",
-      "fullName": "ESR_EL1 ISS Encoding for MSR/MRS/System Instructions (EC=0x18)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x18时异常由MSR/MRS/System指令(排除EC 0x00/0x01/0x07的编码空间)引起。ISS保存系统指令编码域",
-      "fields": [
-        {
-          "name": "RES0_24_22",
-          "bits": "24:22",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "Opc0",
-          "bits": "21:20",
-          "access": "RO",
-          "description": "指令Op0编码域"
-        },
-        {
-          "name": "Opc2",
-          "bits": "19:17",
-          "access": "RO",
-          "description": "指令Op2编码域"
-        },
-        {
-          "name": "Opc1",
-          "bits": "16:14",
-          "access": "RO",
-          "description": "指令Op1编码域"
-        },
-        {
-          "name": "CRn",
-          "bits": "13:10",
-          "access": "RO",
-          "description": "指令CRn编码域"
-        },
-        {
-          "name": "Rt",
-          "bits": "9:5",
-          "access": "RO",
-          "description": "指令Rt寄存器号(5-bit)"
-        },
-        {
-          "name": "CRm",
-          "bits": "4:1",
-          "access": "RO",
-          "description": "指令CRm编码域"
-        },
-        {
-          "name": "DIR",
-          "bits": "0",
-          "access": "RO",
-          "description": "方向位。0b0=MRS(读取系统寄存器) 0b1=MSR(写入系统寄存器)"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_BRK",
-      "fullName": "ESR_EL1 ISS Encoding for Breakpoint Instruction (EC=0x3C/0x38)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x3C(BRK AArch64)或0x38(BKPT AArch32)时，ISS保存Breakpoint指令中的16-bit立即数",
-      "fields": [
-        {
-          "name": "RES0_24_16",
-          "bits": "24:16",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "IMM",
-          "bits": "15:0",
-          "access": "RO",
-          "description": "BRK/BKPT指令16-bit立即数"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_WFx",
-      "fullName": "ESR_EL1 ISS Encoding for WF* Instruction (EC=0x01)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x01时异常由WFI或WFE指令陷获引起。条件性WF*指令条件码检查失败不产生异常",
-      "fields": [
-        {
-          "name": "RES0_24_2",
-          "bits": "24:2",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "CV",
-          "bits": "1",
-          "access": "RO",
-          "description": "条件码有效。0b0=非条件WF* 0b1=条件WF*(FEAT_WFxT)"
-        },
-        {
-          "name": "TI",
-          "bits": "0",
-          "access": "RO",
-          "description": "陷获指令。0b0=WFE 0b1=WFI"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_MCR_MRC",
-      "fullName": "ESR_EL1 ISS Encoding for MCR/MRC Access (EC=0x03/0x05)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x03(MCR/MRC coproc=0b1111)或0x05(MCR/MRC coproc=0b1110)时，ISS保存协处理器指令编码域",
-      "fields": [
-        {
-          "name": "RES0_24_22",
-          "bits": "24:22",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "CV",
-          "bits": "21",
-          "access": "RO",
-          "description": "条件码有效(AArch32)。0b0=指令非法 0b1=条件码满足或无条件指令"
-        },
-        {
-          "name": "COND",
-          "bits": "20:17",
-          "access": "RO",
-          "description": "指令条件码(AArch32 CV=1时)"
-        },
-        {
-          "name": "Opc2",
-          "bits": "16:14",
-          "access": "RO",
-          "description": "MCR/MRC指令Op2编码域"
-        },
-        {
-          "name": "Opc1",
-          "bits": "13:11",
-          "access": "RO",
-          "description": "MCR/MRC指令Op1编码域"
-        },
-        {
-          "name": "CRn",
-          "bits": "10:7",
-          "access": "RO",
-          "description": "MCR/MRC指令CRn编码域"
-        },
-        {
-          "name": "Rt",
-          "bits": "6:2",
-          "access": "RO",
-          "description": "MCR/MRC指令Rt寄存器号"
-        },
-        {
-          "name": "CRm",
-          "bits": "1:0",
-          "access": "RO",
-          "description": "MCR/MRC指令CRm编码域(低2位;EC=0x03时bit[0]保留)"
-        },
-        {
-          "name": "DIR",
-          "bits": "0",
-          "access": "RO",
-          "description": "方向位(仅EC=0x05)。0b0=MCR写入 0b1=MRC读取。EC=0x03时res0"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_IllegalExec",
-      "fullName": "ESR_EL1 ISS Encoding for Illegal Execution State/PC/SP Alignment (EC=0x0E/0x22/0x26)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x0E(非法执行状态)、0x22(PC对齐错误)或0x26(SP对齐错误)时，ISS[24:0]全为res0",
-      "fields": [
-        {
-          "name": "RES0_24_0",
-          "bits": "24:0",
-          "access": "RO",
-          "description": "保留，res0"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_MCRR_MRRC",
-      "fullName": "ESR_EL1 ISS Encoding for MCRR/MRRC Access (EC=0x04/0x0C)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x04(MCRR/MRRC coproc=0b1111)或0x0C(MRRC coproc=0b1110)时，ISS保存协处理器双寄存器传输指令编码域",
-      "fields": [
-        {
-          "name": "RES0_24_22",
-          "bits": "24:22",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "CV",
-          "bits": "21",
-          "access": "RO",
-          "description": "条件码有效(AArch32)。0b0=指令非法 0b1=条件码有效"
-        },
-        {
-          "name": "COND",
-          "bits": "20:17",
-          "access": "RO",
-          "description": "指令条件码(AArch32 CV=1时)"
-        },
-        {
-          "name": "Opc2",
-          "bits": "16:14",
-          "access": "RO",
-          "description": "MCRR/MRRC指令Op2编码域(通常000)"
-        },
-        {
-          "name": "Opc1",
-          "bits": "13:11",
-          "access": "RO",
-          "description": "MCRR/MRRC指令Op1编码域"
-        },
-        {
-          "name": "CRn",
-          "bits": "10:7",
-          "access": "RO",
-          "description": "MCRR/MRRC指令CRn编码域"
-        },
-        {
-          "name": "Rt",
-          "bits": "6:2",
-          "access": "RO",
-          "description": "MCRR/MRRC指令Rt寄存器号"
-        },
-        {
-          "name": "CRm",
-          "bits": "1:0",
-          "access": "RO",
-          "description": "MCRR/MRRC指令CRm编码域(低2位)"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_LDC_STC",
-      "fullName": "ESR_EL1 ISS Encoding for LDC/STC Instruction (EC=0x06)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x06时异常由LDC或STC指令陷获引起。架构化用途:STC写DBGDTRRXint LDC读DBGDTRTXint",
-      "fields": [
-        {
-          "name": "RES0_24_22",
-          "bits": "24:22",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "CV",
-          "bits": "21",
-          "access": "RO",
-          "description": "条件码有效"
-        },
-        {
-          "name": "COND",
-          "bits": "20:17",
-          "access": "RO",
-          "description": "指令条件码(CV=1时)"
-        },
-        {
-          "name": "Opc1",
-          "bits": "16:14",
-          "access": "RO",
-          "description": "指令Op1编码域"
-        },
-        {
-          "name": "CRn",
-          "bits": "13:10",
-          "access": "RO",
-          "description": "指令CRn编码域"
-        },
-        {
-          "name": "Rt",
-          "bits": "9:5",
-          "access": "RO",
-          "description": "指令Rt寄存器号"
-        },
-        {
-          "name": "CRm",
-          "bits": "4:1",
-          "access": "RO",
-          "description": "指令CRm编码域"
-        },
-        {
-          "name": "DIR",
-          "bits": "0",
-          "access": "RO",
-          "description": "方向位。0b0=STC 0b1=LDC"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_PACFail",
-      "fullName": "ESR_EL1 ISS Encoding for PAC Fail (EC=0x34)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x34时异常由Pointer Authentication Code验证失败引起",
-      "fields": [
-        {
-          "name": "RES0_24_2",
-          "bits": "24:2",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "PAC_ERR_CODE",
-          "bits": "1:0",
-          "access": "RO",
-          "description": "PAC错误码。0b00=返回地址PAC验证失败(ERETAA/ERETAB)"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_GCS",
-      "fullName": "ESR_EL1 ISS Encoding for GCS Exception (EC=0x38)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x38时异常由Guarded Control Stack(GCS)违规引起",
-      "fields": [
-        {
-          "name": "RES0_24_10",
-          "bits": "24:10",
-          "access": "RO",
-          "description": "保留，res0"
+          "description": "Indicates why the Profiling exception was generated."
         },
         {
           "name": "IT",
-          "bits": "9:5",
-          "access": "RO",
-          "description": "指令类型。0b00000=过程返回指令(RET/ERET/ERETAA/ERETAB等) 0b00001=GCSPOPM 0b00010/00011=过程返回(目标X30) 0b00100=GCSSS1 0b00101/01000=UNKNOWN 0b01001=0b11111"
-        },
-        {
-          "name": "REG",
           "bits": "4:0",
           "access": "RO",
-          "description": "寄存器号。IT=00000:返回目标地址所在寄存器。IT=00001:GCSPOPM目标寄存器。IT=00010/00011:0b11110(X30)。IT=00100:GCSSS1输入寄存器。IT=00101/01000:UNKNOWN。IT=01001:0b11111"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_BTI",
-      "fullName": "ESR_EL1 ISS Encoding for Branch Target Exception (EC=0x31)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x31时异常由Branch Target Identification(BTI)违规引起",
-      "fields": [
+          "description": "[When GetESR_ELx_ExType(EL1) == '0000'] Type of the instruction that caused the Guarded Control Stack Data Check Exception. All other values are reserved；否则为 RES0"
+        },
         {
-          "name": "RES0_24_1",
-          "bits": "24:1",
+          "name": "RES0",
+          "bits": "4:3",
           "access": "RO",
-          "description": "保留，res0"
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "CRm",
+          "bits": "4:1",
+          "access": "RO",
+          "description": "The CRm value from the issued instruction. For a trapped VMRS access, holds the value 0b0000."
+        },
+        {
+          "name": "IXF",
+          "bits": "4",
+          "access": "RO",
+          "description": "Inexact floating-point exception trapped bit. If the TFV field is 0, this bit is UNKNOWN. Otherwise, the possible values of this bit are:"
+        },
+        {
+          "name": "AM",
+          "bits": "3:1",
+          "access": "RO",
+          "description": "Addressing mode. The permitted values of this field are: The values 0b101 and 0b111 are reserved. The effect of programming this field to a reserved value is that behavior is CONSTRAINED UNPREDICTABLE, as described in 'Reserved values in System and memory-mapped registers and translation table entries'. Bit [2] in this subfield indicates the instruction form, immediate or literal. Bits [1:0] in this subfield correspond to the bits {P, W} in the instruction encoding."
+        },
+        {
+          "name": "UFF",
+          "bits": "3",
+          "access": "RO",
+          "description": "Underflow floating-point exception trapped bit. If the TFV field is 0, this bit is UNKNOWN. Otherwise, the possible values of this bit are:"
+        },
+        {
+          "name": "OFF",
+          "bits": "2",
+          "access": "RO",
+          "description": "Overflow floating-point exception trapped bit. If the TFV field is 0, this bit is UNKNOWN. Otherwise, the possible values of this bit are:"
         },
         {
           "name": "BTYPE",
+          "bits": "2:0",
+          "access": "RO",
+          "description": "[When FEAT_BTIE is implemented] This field is set to the PSTATE.BTYPE value that generated the Branch Target Exception.；否则为 RES0"
+        },
+        {
+          "name": "TI",
+          "bits": "1:0",
+          "access": "RO",
+          "description": "Trapped instruction. Possible values of this bit are: When FEAT_WFxT is implemented, this is a two bit field as shown. Otherwise, bit[1] is RES0."
+        },
+        {
+          "name": "DZF",
+          "bits": "1",
+          "access": "RO",
+          "description": "Divide by Zero floating-point exception trapped bit. If the TFV field is 0, this bit is UNKNOWN. Otherwise, the possible values of this bit are:"
+        },
+        {
+          "name": "BnA",
           "bits": "0",
           "access": "RO",
-          "description": "分支类型。指示引发BTI异常的具体违规类型"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_SWStep",
-      "fullName": "ESR_EL1 ISS Encoding for Software Step (EC=0x32/0x33)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x32(Lower EL)或0x33(Same EL)时异常由软件单步执行触发",
-      "fields": [
-        {
-          "name": "RES0_24_2",
-          "bits": "24:2",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "EX",
-          "bits": "1:0",
-          "access": "RO",
-          "description": "事件类型/异常级别"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_Watchpoint",
-      "fullName": "ESR_EL1 ISS Encoding for Watchpoint (EC=0x34/0x35)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x34(Lower EL)或0x35(Same EL)时异常由数据观察点(Watchpoint)触发",
-      "fields": [
-        {
-          "name": "RES0_24_7",
-          "bits": "24:7",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "WPT_INDEX",
-          "bits": "3:0",
-          "access": "RO",
-          "description": "观察点索引(0-15)"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_Breakpoint",
-      "fullName": "ESR_EL1 ISS Encoding for Breakpoint/Vector Catch (EC=0x30/0x31)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x30(Lower EL)或0x31(Same EL)时异常由硬件断点或向量捕获(Vector Catch)触发",
-      "fields": [
-        {
-          "name": "RES0_24_5",
-          "bits": "24:5",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "BKPT_INDEX",
-          "bits": "3:0",
-          "access": "RO",
-          "description": "断点/向量捕获索引"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_MOPS",
-      "fullName": "ESR_EL1 ISS Encoding for Memory Operation Exception (EC=0x27)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x27时异常由Memory Copy and Memory Set(FEAT_MOPS)指令引起",
-      "fields": [
-        {
-          "name": "RES0_24_10",
-          "bits": "24:10",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "Opc",
-          "bits": "9:7",
-          "access": "RO",
-          "description": "操作类型。指示具体MOPS操作(CPY/CPYT/SETI等)"
-        },
-        {
-          "name": "DSTREG",
-          "bits": "6:2",
-          "access": "RO",
-          "description": "目标寄存器号"
-        },
-        {
-          "name": "SRCREG",
-          "bits": "1:0",
-          "access": "RO",
-          "description": "源寄存器号(低2位)"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_FP_Trap",
-      "fullName": "ESR_EL1 ISS Encoding for Trapped FP Exception (EC=0x28/0x2C)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x28(AArch32)或0x2C(AArch64)时异常由浮点异常陷获触发。是否支持浮点异常陷获是IMPLEMENTATION DEFINED",
-      "fields": [
-        {
-          "name": "RES0_24_7",
-          "bits": "24:7",
-          "access": "RO",
-          "description": "保留，res0"
-        },
-        {
-          "name": "TFV",
-          "bits": "6",
-          "access": "RO",
-          "description": "陷获浮点有效(FEAT_AFP)。指示精确浮点异常信息是否可用"
-        },
-        {
-          "name": "FPEXC32",
-          "bits": "5:0",
-          "access": "RO",
-          "description": "FPEXC32_EL2相关。反映导致陷获的浮点异常类型(IOF/DZF/OFF/UFF/IXF等)"
-        }
-      ]
-    },
-    {
-      "name": "ESR_EL1_ISS_Unknown",
-      "fullName": "ESR_EL1 ISS Encoding for Unknown Reason (EC=0x00)",
-      "address": "0x0009",
-      "width": 64,
-      "description": "当EC=0x00时异常原因未知。ISS[24:0]全为res0",
-      "fields": [
-        {
-          "name": "RES0_24_0",
-          "bits": "24:0",
-          "access": "RO",
-          "description": "保留，res0"
+          "description": "This field indicates whether the exception is as a result of an A key or a B key."
         }
       ]
     }

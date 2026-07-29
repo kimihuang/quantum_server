@@ -1,0 +1,58 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "ISR_EL1",
+      "fullName": "Interrupt Status Register (EL1)",
+      "address": "0x0012",
+      "width": 64,
+      "description": "中断状态寄存器，显示 IRQ、FIQ 中断和 SError 异常的 pending 状态。只读（仅 MRS 可读取）。当 FEAT_NMI 实现时，还显示 pending 中断是否具有 Superpriority。",
+      "fields": [
+        {
+          "name": "RES0_63_11",
+          "bits": "63:11",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "IS",
+          "bits": "10",
+          "access": "RO",
+          "description": "具有 Superpriority 的 IRQ pending 位 (FEAT_NMI 时)。指示是否有带 Superpriority 的 IRQ 中断处于 pending 状态。0b0=无带 Superpriority 的 pending IRQ ; 0b1=存在带 Superpriority 的 pending IRQ。若 EL2 已实现且在当前安全状态下启用、HCR_EL2.IMO=1 且 PE 在 EL1 执行，则显示虚拟 IRQ 中断的 Superpriority pending 状态；否则显示物理 IRQ 中断的 Superpriority pending 状态。未实现 FEAT_NMI 时此位为 RES0。"
+        },
+        {
+          "name": "FS",
+          "bits": "9",
+          "access": "RO",
+          "description": "具有 Superpriority 的 FIQ pending 位 (FEAT_NMI 时)。指示是否有带 Superpriority 的 FIQ 中断处于 pending 状态。0b0=无带 Superpriority 的 pending FIQ ; 0b1=存在带 Superpriority 的 pending FIQ。若 EL2 已实现且在当前安全状态下启用、HCR_EL2.FMO=1 且 PE 在 EL1 执行，则显示虚拟 FIQ 中断的 Superpriority pending 状态；否则显示物理 FIQ 中断的 Superpriority pending 状态。未实现 FEAT_NMI 时此位为 RES0。"
+        },
+        {
+          "name": "A",
+          "bits": "8",
+          "access": "RO",
+          "description": "SError 异常 pending 位。指示是否有 SError 异常处于 pending 状态。0b0=无 pending SError ; 0b1=存在 pending SError。若 EL2 已实现且在当前安全状态下启用、且满足 HCR_EL2.AMO=1 或 (FEAT_DoubleFault2 实现且 HCRX_EL2.TMEA 有效值为 1)、且 PE 在 EL1 执行，则显示虚拟 SError 的 pending 状态。若 FEAT_E3DSE 实现且 SCR_EL3.EnDSE=1 且 PE 在 EL2/EL1 执行，则显示委托 SError 的 pending 状态。否则显示物理 SError 的 pending 状态。如果物理 SError 为边沿触发，此位在物理 SError 被捕获时清零。"
+        },
+        {
+          "name": "I",
+          "bits": "7",
+          "access": "RO",
+          "description": "IRQ pending 位。指示是否有 IRQ 中断处于 pending 状态。0b0=无 pending IRQ ; 0b1=存在 pending IRQ。注意：此位指示 pending IRQ 的存在性，无论该中断是否具有 Superpriority。若 EL2 已实现且在当前安全状态下启用、HCR_EL2.IMO=1 且 PE 在 EL1 执行，则显示虚拟 IRQ 中断的 pending 状态；否则显示物理 IRQ 中断的 pending 状态。"
+        },
+        {
+          "name": "F",
+          "bits": "6",
+          "access": "RO",
+          "description": "FIQ pending 位。指示是否有 FIQ 中断处于 pending 状态。0b0=无 pending FIQ ; 0b1=存在 pending FIQ。注意：此位指示 pending FIQ 的存在性，无论该中断是否具有 Superpriority。若 EL2 已实现且在当前安全状态下启用、HCR_EL2.FMO=1 且 PE 在 EL1 执行，则显示虚拟 FIQ 中断的 pending 状态；否则显示物理 FIQ 中断的 pending 状态。"
+        },
+        {
+          "name": "RES0_5_0",
+          "bits": "5:0",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        }
+      ]
+    }
+  ]
+}

@@ -1181,8 +1181,13 @@ async function loadSource(filename) {
     const data = await loadJsonWithRetry(url);
     const sourceLabel = data.label || data.category || filename;
 
-    // 存储分组数据（用于侧边栏）
-    sourceGroups.set(sourceLabel, { data, registers: data.registers });
+    // 存储分组数据（用于侧边栏）：相同 label 合并寄存器列表
+    if (sourceGroups.has(sourceLabel)) {
+      const existing = sourceGroups.get(sourceLabel);
+      existing.registers = existing.registers.concat(data.registers);
+    } else {
+      sourceGroups.set(sourceLabel, { data, registers: data.registers.slice() });
+    }
 
     // 扁平化加入全局集合
     for (const reg of data.registers) {
@@ -1191,10 +1196,11 @@ async function loadSource(filename) {
 
     loadedSources++;
 
-    // 更新顶部 badge
+    // 更新顶部 badge（累加计数）
     if (badge) {
       badge.className = 'source-badge loaded';
-      badge.textContent = sourceLabel.toUpperCase() + ' (' + data.registers.length + ')';
+      const groupRegs = sourceGroups.get(sourceLabel).registers;
+      badge.textContent = sourceLabel.toUpperCase() + ' (' + groupRegs.length + ')';
     }
 
     console.log(`[加载完成] ${sourceLabel} — ${data.registers.length} 个寄存器`);

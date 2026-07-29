@@ -4,6 +4,9 @@
     "registers_cpu.json",
     "registers_ddr.json",
     "registers_mmu.json",
-    "registers_esrel1.json"
+    "registers_esrel1.json",
+    "registers_sctrlel1.json",
+    "registers_vbarel1.json",
+    "registers_isrel1.json"
   ]
 }

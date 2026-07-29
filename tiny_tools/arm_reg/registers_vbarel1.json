@@ -1,0 +1,34 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "VBAR_EL1",
+      "fullName": "Vector Base Address Register (EL1)",
+      "address": "0x0011",
+      "width": 64,
+      "description": "保存 EL1 异常向量表的基地址。异常被捕获到 EL1 时，PE 根据异常类型和 VBAR_EL1 的值计算异常向量的入口地址。",
+      "fields": [
+        {
+          "name": "VBA",
+          "bits": "63:11",
+          "access": "RW",
+          "description": "向量基地址 (Vector Base Address)。EL1 异常向量表的基地址，必须按 2KB 对齐。若支持 FEAT_LVA3 且未使用标记地址，则 bits[63:56] 必须相同，否则使用向量地址将导致递归异常。若支持 FEAT_LVA 且使用标记地址，bits[55:52] 必须相同；若未使用标记地址，bits[63:52] 必须相同。不支持 FEAT_LVA 时：使用标记地址则 bits[55:48] 必须相同，未使用则 bits[63:48] 必须相同，否则产生递归异常。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "RES0_10_1",
+          "bits": "10:1",
+          "access": "RES0",
+          "description": "保留，RES0。必须写 0，读返回 0。"
+        },
+        {
+          "name": "UT",
+          "bits": "0",
+          "access": "RW",
+          "description": "每个 TIndex 独立向量 (Unique vector per TIndex)。当 FEAT_TEV 实现时：0b0=VBA 定义的基地址直接用作向量表基址，TENTER/TEXIT 指令在 EL1 为 UNDEFINED；0b1=VBA 加上 TINDEX_EL1.TIndex × 粒度（由 TCR_EL1.TG0/TG1 配置）的偏移量作为向量地址。当 IRTBRP_EL1.POE2=0 时，此字段有效值为 0。若未实现 FEAT_TEV，此位为 RES0。复位值为架构 UNKNOWN。"
+        }
+      ]
+    }
+  ]
+}
