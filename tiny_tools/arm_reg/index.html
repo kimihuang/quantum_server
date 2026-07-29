@@ -1234,6 +1234,19 @@ function findRegisters(query) {
   });
 }
 
+// ---------- 字段排序 ----------
+
+/**
+ * 将 fields 按 bits 高位到低位排序。
+ */
+function sortFieldsByBit(fields) {
+  return [...fields].sort(function(a, b) {
+    var aHigh = parseInt(a.bits.split(':')[0], 10);
+    var bHigh = parseInt(b.bits.split(':')[0], 10);
+    return bHigh - aHigh;
+  });
+}
+
 // ---------- 显示逻辑 ----------
 
 function displayRegister(entry) {
@@ -1252,7 +1265,7 @@ function displayRegister(entry) {
 
   const regValue = parseRegisterValue(valInput.value);
 
-  const bitsHtml = reg.fields.map(field => {
+  const bitsHtml = sortFieldsByBit(reg.fields).map(field => {
     const parsed = parseBits(field.bits);
     const fieldVal = extractFieldValue(regValue, field.bits);
     const accessClass = 'access-' + (field.access || 'RO').toLowerCase();
@@ -1564,7 +1577,7 @@ function renderOneRegCard(entry, idx, globalValue) {
   var source = entry.source;
 
   // 提取当前值（如果有）
-  var fieldRows = reg.fields.map(function(field) {
+  var fieldRows = sortFieldsByBit(reg.fields).map(function(field) {
     var parsed = parseBits(field.bits);
     var fieldVal = globalValue !== null ? extractFieldValue(globalValue, field.bits) : null;
     var accessClass = 'access-' + (field.access || 'RO').toLowerCase();

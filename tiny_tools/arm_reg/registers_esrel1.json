@@ -1,0 +1,778 @@
+{
+  "category": "esr",
+  "label": "esr",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "ESR_EL1",
+      "fullName": "Exception Syndrome Register (EL1)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "异常综合征寄存器。保存异常被捕获到 EL1 时的综合征信息。EC[31:26]指示异常类别，ISS[24:0]位域含义随EC变化。ISS2[55:32]为扩展ISS。",
+      "fields": [
+        {
+          "name": "RES0_63_56",
+          "bits": "63:56",
+          "access": "RO",
+          "description": "保留，res0。必须写0，读返回0"
+        },
+        {
+          "name": "ISS2",
+          "bits": "55:32",
+          "access": "RO",
+          "description": "扩展指令特定综合征。Data Abort: DPOIndex[23:17], OverlayFetch[16], LST2[15:13], Unpriv[12], TPLIM/HDBSSF[11], TnD[10], TagAccess[9], GCS[8], AssuredOnly[7], Overlay[6], DirtyBit[5], Xs[4:0]。Inst Abort: FPOIndex[23:17], OverlayFetch[16], RES0[15:12], HDBSSF[11], RES0[10:8], AssuredOnly[7], Overlay[6], RES0[5:0]。Watchpoint: RES0[23:9], GCS[8], RES0[7:0]。其他异常res0"
+        },
+        {
+          "name": "EC",
+          "bits": "31:26",
+          "access": "RO",
+          "description": "异常类别(Exception Class)。0x00=未知原因 0x01=WF*陷阱 0x03=MCR/MRC陷阱(coproc=0b1111) 0x04=MCRR/MRRC陷阱(coproc=0b1111) 0x05=MCR/MRC陷阱(coproc=0b1110) 0x06=LDC/STC陷阱 0x07=SME/SVE/ASIMD/FP陷阱(CPACR/CPTR) 0x09=Pointer Auth指令陷阱 0x0A=非法指令(不适用其他EC) 0x0C=MRRC陷阱(coproc=0b1110) 0x0D=Branch Target异常 0x0E=非法执行状态 0x11=SVC AArch32 0x14=MSRR/MRRS/128位系统指令陷阱 0x15=SVC AArch64 0x16=HVC AArch64 0x17=SMC AArch64 0x18=MSR/MRS/System指令陷阱 0x19=SVE陷阱(CPACR.ZEN) 0x1A=ERET/ERETAA/ERETAB陷阱 0x1C=PAC Fail 0x1D=SME陷阱 0x20=Instruction Abort(Lower EL) 0x21=Instruction Abort(Same EL) 0x22=PC对齐 0x24=Data Abort(Lower EL) 0x25=Data Abort(Same EL) 0x26=SP对齐 0x27=Memory Operation异常 0x28=FP异常(AArch32) 0x2C=FP异常(AArch64) 0x2D=GCS异常 0x2E=非法TIndex Change 0x2F=SError中断 0x30=Breakpoint(Lower EL) 0x31=Breakpoint(Same EL) 0x32=SW Step(Lower EL) 0x33=SW Step(Same EL) 0x34=Watchpoint(Lower EL) 0x35=Watchpoint(Same EL) 0x38=BKPT(AArch32) 0x3C=BRK(AArch64) 0x3D=Profiling。保留EC值为CONSTRAINED UNPREDICTABLE。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "IL",
+          "bits": "25",
+          "access": "RO",
+          "description": "指令长度。0b0=16-bit。0b1=32-bit。SError/Inst Abort/PC对齐/SP对齐/ISV=0的Data Abort/非法执行状态/除BKPT/BRK外调试异常强制为1。BKPT:0=16-bit T32 1=32-bit A32 BKPT或A64 BRK。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "ISS",
+          "bits": "24:0",
+          "access": "RO",
+          "description": "指令特定综合征(Instruction Specific Syndrome)。根据EC字段不同，ISS位域布局不同。常见编码请见ESR_EL1_ISS系列条目。ISS子字段保存寄存器号时返回AArch64视图寄存器编号。AArch32的0b1111映射为0b11111或UNKNOWN值"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_DataAbort",
+      "fullName": "ESR_EL1 ISS Encoding for Data Abort (EC=0x24/0x25)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x24(Lower EL)或0x25(Same EL)时为Data Abort。ISS[24:0]布局: ISV[24], SAS[23:22], SSE[21], SRT[20:16], SF/FnP[15], AR/PFV[14], RES0[13], LST/SET[12:11], FnV[10], EA[9], CM[8], S1PTW[7], WnR[6], DFSC[5:0]。bit[15]和bit[14]的含义取决于ISV值",
+      "fields": [
+        {
+          "name": "ISV",
+          "bits": "24",
+          "access": "RO",
+          "description": "指令综合征有效。0b0=ISS[23:14]无效 0b1=ISS[23:14]含{SAS,SSE,SRT,SF,AR}。ISV=1条件: 非stage-2/stage-1 TTW fault、非同步External abort、单GP寄存器load/store(含Acquire/Release 不含Exclusive/writeback)或AArch32 LDR/LDA/LDRT/STR/STL系列(无寄存器写回 非R15) 且FEAT_EAESR时为stage-1 Trans/Access/Permission fault。ISV=0: MOPS访问/Allocation Tag直接访问/GCS数据访问/VNCR_EL2转换访问/Atomic访问。RAS未实现时stage-2 TTW External abort的ISV实现定义。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "SAS",
+          "bits": "23:22",
+          "access": "RO",
+          "description": "综合征访问大小(ISV=1)。0b00=Byte 0b01=Halfword 0b10=Word 0b11=Doubleword。LD64B/ST64B/ST64BV/ST64BV0强制0b11。ISV未知时未知。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "SSE",
+          "bits": "21",
+          "access": "RO",
+          "description": "综合征符号扩展(ISV=1)。0b0=不需要 0b1=需要(byte/halfword/word load)。LD64B/ST64B/ST64BV/ST64BV0强制0。ISV未知时未知。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "SRT",
+          "bits": "20:16",
+          "access": "RO",
+          "description": "综合征寄存器传输(ISV=1)。Wt/Xt/Rt寄存器号(5-bit)。AArch32报告AArch64视图寄存器号。ISV未知时未知。ISV=0且FEAT_RASv2且DFSC=010000/01001x/0101xx: bits[4:2]=res0 bits[1:0]=WU(Write Update):0b00=非store或位置可能已更新 0b10=store未更新 0b11=store已更新。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "SF",
+          "bits": "15",
+          "access": "RO",
+          "description": "64位传输标志(ISV=1)。0b0=32-bit寄存器 0b1=64-bit寄存器(指寄存器宽度 非执行状态)。LD64B/ST64B/ST64BV/ST64BV0强制1。ISV未知时未知。与FnP共享bit[15]"
+        },
+        {
+          "name": "FnP",
+          "bits": "15",
+          "access": "RO",
+          "description": "FAR不精确(ISV=0 FEAT_SVE/SME)。0b0=FAR保存精确故障VA 0b1=FAR保存包含故障VA的自然对齐granule内任意VA(SVE连续向量load/store或SME load/store)。复位值为架构UNKNOWN。与SF共享bit[15]"
+        },
+        {
+          "name": "AR",
+          "bits": "14",
+          "access": "RO",
+          "description": "Acquire/Release(ISV=1)。0b0=无acquire/release语义 0b1=有。LD64B/ST64B/ST64BV/ST64BV0强制0。ISV未知时未知。ISV=0且FEAT_PFAR且DFSC=010000/01001x/0101xx: PFV(PFAR Valid) 0b0=PFAR_EL1未知 0b1=PFAR_EL1有效。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "RES0_13",
+          "bits": "13",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "LST",
+          "bits": "12:11",
+          "access": "RO",
+          "description": "Load/Store类型(DFSC=00xxxx/10101x且非0000xx)。0b00=不指定 0b01=ST64BV(FEAT_LS64_V) 0b10=LD64B/ST64B(FEAT_LS64) 0b11=ST64BV0(FEAT_LS64_ACCDATA)。RAS且DFSC=010000: SET(Sync Error Type):0b00=Recoverable(UER) 0b10=Uncontainable(UC) 0b11=Restartable(UEO)。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "FnV",
+          "bits": "10",
+          "access": "RO",
+          "description": "FAR无效(仅DFSC=010000)。0b0=FAR有效 0b1=FAR无效保存UNKNOWN。其他abort类型res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "EA",
+          "bits": "9",
+          "access": "RO",
+          "description": "外部Abort类型。IMPLEMENTATION DEFINED的External abort分类。非External abort为0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "CM",
+          "bits": "8",
+          "access": "RO",
+          "description": "Cache维护。0b0=非cache maintenance/地址翻译异常 0b1=cache maintenance指令或地址翻译指令同步错误(DC ZVA/GVA/GZVA不计)。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "S1PTW",
+          "bits": "7",
+          "access": "RO",
+          "description": "Stage-1页表遍历(仅stage-2 fault)。0b0=非stage-1 TTW的stage-2 fault 0b1=stage-1 TTW访问上的stage-2 fault。非stage-2 fault时res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "WnR",
+          "bits": "6",
+          "access": "RO",
+          "description": "写而非读。0b0=读访问异常 0b1=写访问异常。cache maintenance/地址翻译指令总是1。原子指令:按首次访问判断;stage-2/stage-1 TTW原子指令允许总是0。FEAT_RASv2时WU=0b00的External abort/DFSC=110101(不支持Exclusive/Atomic)/DFSC=110001(不支持原子硬件更新)时UNKNOWN。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "DFSC",
+          "bits": "5:0",
+          "access": "RO",
+          "description": "数据故障状态码。0b000000=地址大小L0 000001=地址大小L1 000010=地址大小L2 000011=地址大小L3 000100=翻译错误L0 000101=翻译错误L1 000110=翻译错误L2 000111=翻译错误L3 001000=AF错误L0(FEAT_LPA2) 001001=AF错误L1 001010=AF错误L2 001011=AF错误L3 001100=权限错误L0(FEAT_LPA2) 001101=权限错误L1 001110=权限错误L2 001111=权限错误L3 010000=同步External abort(非TTW) 010001=同步Tag Check(MTE2/VMTETCE) 010010=同步External abort TTW L-2(FEAT_D128) 010011=同步External abort TTW L-1(FEAT_LPA2) 010100=同步External abort TTW L0 010101=同步External abort TTW L1 010110=同步External abort TTW L2 010111=同步External abort TTW L3 011000=同步奇偶校验错误 110001=不支持原子硬件更新 110101=不支持Exclusive/Atomic。复位值为架构UNKNOWN"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_InstAbort",
+      "fullName": "ESR_EL1 ISS Encoding for Instruction Abort (EC=0x20/0x21)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x20(Lower EL)或0x21(Same EL)时为Instruction Abort。ISS[24:0]简单布局: RES0[24:7], IFSC[6:0]。",
+      "fields": [
+        {
+          "name": "RES0_24_7",
+          "bits": "24:7",
+          "access": "RO",
+          "description": "保留，res0。Inst Abort不提供ISV类指令综合征"
+        },
+        {
+          "name": "IFSC",
+          "bits": "6:0",
+          "access": "RO",
+          "description": "指令故障状态码。000000=地址大小L0 000100=翻译错误L0 000101=翻译错误L1 000110=翻译错误L2 000111=翻译错误L3 001001=AF错误L1 001010=AF错误L2 001011=AF错误L3 001101=权限错误L1 001110=权限错误L2 001111=权限错误L3 010000=同步External abort 010100-010111=同步External abort(TTW各级) 011000=同步奇偶校验。复位值为架构UNKNOWN"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_SError",
+      "fullName": "ESR_EL1 ISS Encoding for SError Interrupt (EC=0x2F)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x2F时为SError中断。ISS[24:0]布局: IDS[24], RES0[23:19], ELS[18], WU[17:16], VFV[15], PFV[14], IESB[13], AET[12:10], EA[9], RES0[8], WnRV[7], WnR[6], DFSC[5:0]。旧版架构中SError也称为SError中断或异步External abort",
+      "fields": [
+        {
+          "name": "IDS",
+          "bits": "24",
+          "access": "RO",
+          "description": "实现定义综合征。0b0=ISS[23:0]为架构定义字段 0b1=ISS[23:0]为实现定义信息。旧称ISV。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "RES0_23_19",
+          "bits": "23:19",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "ELS",
+          "bits": "18",
+          "access": "RO",
+          "description": "ELR含义(FEAT_RASv2且DFSC=010001)。0b0=异步 不指示触发源 0b1=同步 异常由ELR_ELx处指令触发(非精确也允许)。否则res0"
+        },
+        {
+          "name": "WU",
+          "bits": "17:16",
+          "access": "RO",
+          "description": "写更新(FEAT_RASv2且DFSC=010001)。0b00=非store/位置可能已更新 0b10=store/翻译表更新未修改 0b11=store/翻译表更新已修改。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "VFV",
+          "bits": "15",
+          "access": "RO",
+          "description": "FAR有效(FEAT_RASv2且DFSC=010001)。0b0=FAR_EL1无效 0b1=FAR_EL1含有效VA。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "PFV",
+          "bits": "14",
+          "access": "RO",
+          "description": "PFAR有效(FEAT_PFAR且DFSC=010001)。0b0=PFAR_EL1未知 0b1=PFAR_EL1有效。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "IESB",
+          "bits": "13",
+          "access": "RO",
+          "description": "隐式错误同步事件(FEAT_IESB且DFSC=010001)。0b0=未由隐式错误同步事件同步/未立即/异常return实现选择0 0b1=由隐式错误同步事件同步且立即(异常entry强制1 异常return实现选择0/1)。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "AET",
+          "bits": "12:10",
+          "access": "RO",
+          "description": "异步错误类型(FEAT_RAS且DFSC=010001)。0b000=Uncontainable(UC) 0b001=Unrecoverable(UEU) 0b010=Restartable(UEO) 0b011=Recoverable(UER) 0b110=Corrected(CE)。其余保留。多错误合并报告总体PE状态。Corrected/Recoverable/Restartable=精确 Uncontainable=非精确。否则res0"
+        },
+        {
+          "name": "EA",
+          "bits": "9",
+          "access": "RO",
+          "description": "外部Abort类型(FEAT_RAS且DFSC=010001)。IMPLEMENTATION DEFINED。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "RES0_8",
+          "bits": "8",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "WnRV",
+          "bits": "7",
+          "access": "RO",
+          "description": "WnR有效(FEAT_RASv2且DFSC=010001)。0b0=WnR无效(已置0) 0b1=WnR有效。否则res0。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "WnR",
+          "bits": "6",
+          "access": "RO",
+          "description": "写而非读(FEAT_RASv2且DFSC=010001)。WnRV=1：0b0=读取异常 0b1=写入异常。WnRV=0：res0。WU=0b00的Atomic access External abort：UNKNOWN。复位值为架构UNKNOWN"
+        },
+        {
+          "name": "DFSC",
+          "bits": "5:0",
+          "access": "RO",
+          "description": "数据故障状态码(FEAT_RAS)。0b000000=未分类错误 0b010001=异步SError异常。其余保留。否则res0"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_SVC_HVC_SMC",
+      "fullName": "ESR_EL1 ISS Encoding for SVC/HVC/SMC (EC=0x15/0x16/0x17)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x15(SVC AArch64)、0x16(HVC AArch64)或0x17(SMC AArch64)时，ISS[15:0]保存指令中的16-bit立即数。EC=0x01的SVC AArch32类似",
+      "fields": [
+        {
+          "name": "RES0_24_16",
+          "bits": "24:16",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "IMM",
+          "bits": "15:0",
+          "access": "RO",
+          "description": "指令立即数。SVC #imm16 / HVC #imm16 / SMC #imm16"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_MSR_MRS",
+      "fullName": "ESR_EL1 ISS Encoding for MSR/MRS/System Instructions (EC=0x18)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x18时异常由MSR/MRS/System指令(排除EC 0x00/0x01/0x07的编码空间)引起。ISS保存系统指令编码域",
+      "fields": [
+        {
+          "name": "RES0_24_22",
+          "bits": "24:22",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "Opc0",
+          "bits": "21:20",
+          "access": "RO",
+          "description": "指令Op0编码域"
+        },
+        {
+          "name": "Opc2",
+          "bits": "19:17",
+          "access": "RO",
+          "description": "指令Op2编码域"
+        },
+        {
+          "name": "Opc1",
+          "bits": "16:14",
+          "access": "RO",
+          "description": "指令Op1编码域"
+        },
+        {
+          "name": "CRn",
+          "bits": "13:10",
+          "access": "RO",
+          "description": "指令CRn编码域"
+        },
+        {
+          "name": "Rt",
+          "bits": "9:5",
+          "access": "RO",
+          "description": "指令Rt寄存器号(5-bit)"
+        },
+        {
+          "name": "CRm",
+          "bits": "4:1",
+          "access": "RO",
+          "description": "指令CRm编码域"
+        },
+        {
+          "name": "DIR",
+          "bits": "0",
+          "access": "RO",
+          "description": "方向位。0b0=MRS(读取系统寄存器) 0b1=MSR(写入系统寄存器)"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_BRK",
+      "fullName": "ESR_EL1 ISS Encoding for Breakpoint Instruction (EC=0x3C/0x38)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x3C(BRK AArch64)或0x38(BKPT AArch32)时，ISS保存Breakpoint指令中的16-bit立即数",
+      "fields": [
+        {
+          "name": "RES0_24_16",
+          "bits": "24:16",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "IMM",
+          "bits": "15:0",
+          "access": "RO",
+          "description": "BRK/BKPT指令16-bit立即数"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_WFx",
+      "fullName": "ESR_EL1 ISS Encoding for WF* Instruction (EC=0x01)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x01时异常由WFI或WFE指令陷获引起。条件性WF*指令条件码检查失败不产生异常",
+      "fields": [
+        {
+          "name": "RES0_24_2",
+          "bits": "24:2",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "CV",
+          "bits": "1",
+          "access": "RO",
+          "description": "条件码有效。0b0=非条件WF* 0b1=条件WF*(FEAT_WFxT)"
+        },
+        {
+          "name": "TI",
+          "bits": "0",
+          "access": "RO",
+          "description": "陷获指令。0b0=WFE 0b1=WFI"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_MCR_MRC",
+      "fullName": "ESR_EL1 ISS Encoding for MCR/MRC Access (EC=0x03/0x05)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x03(MCR/MRC coproc=0b1111)或0x05(MCR/MRC coproc=0b1110)时，ISS保存协处理器指令编码域",
+      "fields": [
+        {
+          "name": "RES0_24_22",
+          "bits": "24:22",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "CV",
+          "bits": "21",
+          "access": "RO",
+          "description": "条件码有效(AArch32)。0b0=指令非法 0b1=条件码满足或无条件指令"
+        },
+        {
+          "name": "COND",
+          "bits": "20:17",
+          "access": "RO",
+          "description": "指令条件码(AArch32 CV=1时)"
+        },
+        {
+          "name": "Opc2",
+          "bits": "16:14",
+          "access": "RO",
+          "description": "MCR/MRC指令Op2编码域"
+        },
+        {
+          "name": "Opc1",
+          "bits": "13:11",
+          "access": "RO",
+          "description": "MCR/MRC指令Op1编码域"
+        },
+        {
+          "name": "CRn",
+          "bits": "10:7",
+          "access": "RO",
+          "description": "MCR/MRC指令CRn编码域"
+        },
+        {
+          "name": "Rt",
+          "bits": "6:2",
+          "access": "RO",
+          "description": "MCR/MRC指令Rt寄存器号"
+        },
+        {
+          "name": "CRm",
+          "bits": "1:0",
+          "access": "RO",
+          "description": "MCR/MRC指令CRm编码域(低2位;EC=0x03时bit[0]保留)"
+        },
+        {
+          "name": "DIR",
+          "bits": "0",
+          "access": "RO",
+          "description": "方向位(仅EC=0x05)。0b0=MCR写入 0b1=MRC读取。EC=0x03时res0"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_IllegalExec",
+      "fullName": "ESR_EL1 ISS Encoding for Illegal Execution State/PC/SP Alignment (EC=0x0E/0x22/0x26)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x0E(非法执行状态)、0x22(PC对齐错误)或0x26(SP对齐错误)时，ISS[24:0]全为res0",
+      "fields": [
+        {
+          "name": "RES0_24_0",
+          "bits": "24:0",
+          "access": "RO",
+          "description": "保留，res0"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_MCRR_MRRC",
+      "fullName": "ESR_EL1 ISS Encoding for MCRR/MRRC Access (EC=0x04/0x0C)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x04(MCRR/MRRC coproc=0b1111)或0x0C(MRRC coproc=0b1110)时，ISS保存协处理器双寄存器传输指令编码域",
+      "fields": [
+        {
+          "name": "RES0_24_22",
+          "bits": "24:22",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "CV",
+          "bits": "21",
+          "access": "RO",
+          "description": "条件码有效(AArch32)。0b0=指令非法 0b1=条件码有效"
+        },
+        {
+          "name": "COND",
+          "bits": "20:17",
+          "access": "RO",
+          "description": "指令条件码(AArch32 CV=1时)"
+        },
+        {
+          "name": "Opc2",
+          "bits": "16:14",
+          "access": "RO",
+          "description": "MCRR/MRRC指令Op2编码域(通常000)"
+        },
+        {
+          "name": "Opc1",
+          "bits": "13:11",
+          "access": "RO",
+          "description": "MCRR/MRRC指令Op1编码域"
+        },
+        {
+          "name": "CRn",
+          "bits": "10:7",
+          "access": "RO",
+          "description": "MCRR/MRRC指令CRn编码域"
+        },
+        {
+          "name": "Rt",
+          "bits": "6:2",
+          "access": "RO",
+          "description": "MCRR/MRRC指令Rt寄存器号"
+        },
+        {
+          "name": "CRm",
+          "bits": "1:0",
+          "access": "RO",
+          "description": "MCRR/MRRC指令CRm编码域(低2位)"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_LDC_STC",
+      "fullName": "ESR_EL1 ISS Encoding for LDC/STC Instruction (EC=0x06)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x06时异常由LDC或STC指令陷获引起。架构化用途:STC写DBGDTRRXint LDC读DBGDTRTXint",
+      "fields": [
+        {
+          "name": "RES0_24_22",
+          "bits": "24:22",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "CV",
+          "bits": "21",
+          "access": "RO",
+          "description": "条件码有效"
+        },
+        {
+          "name": "COND",
+          "bits": "20:17",
+          "access": "RO",
+          "description": "指令条件码(CV=1时)"
+        },
+        {
+          "name": "Opc1",
+          "bits": "16:14",
+          "access": "RO",
+          "description": "指令Op1编码域"
+        },
+        {
+          "name": "CRn",
+          "bits": "13:10",
+          "access": "RO",
+          "description": "指令CRn编码域"
+        },
+        {
+          "name": "Rt",
+          "bits": "9:5",
+          "access": "RO",
+          "description": "指令Rt寄存器号"
+        },
+        {
+          "name": "CRm",
+          "bits": "4:1",
+          "access": "RO",
+          "description": "指令CRm编码域"
+        },
+        {
+          "name": "DIR",
+          "bits": "0",
+          "access": "RO",
+          "description": "方向位。0b0=STC 0b1=LDC"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_PACFail",
+      "fullName": "ESR_EL1 ISS Encoding for PAC Fail (EC=0x34)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x34时异常由Pointer Authentication Code验证失败引起",
+      "fields": [
+        {
+          "name": "RES0_24_2",
+          "bits": "24:2",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "PAC_ERR_CODE",
+          "bits": "1:0",
+          "access": "RO",
+          "description": "PAC错误码。0b00=返回地址PAC验证失败(ERETAA/ERETAB)"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_GCS",
+      "fullName": "ESR_EL1 ISS Encoding for GCS Exception (EC=0x38)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x38时异常由Guarded Control Stack(GCS)违规引起",
+      "fields": [
+        {
+          "name": "RES0_24_10",
+          "bits": "24:10",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "IT",
+          "bits": "9:5",
+          "access": "RO",
+          "description": "指令类型。0b00000=过程返回指令(RET/ERET/ERETAA/ERETAB等) 0b00001=GCSPOPM 0b00010/00011=过程返回(目标X30) 0b00100=GCSSS1 0b00101/01000=UNKNOWN 0b01001=0b11111"
+        },
+        {
+          "name": "REG",
+          "bits": "4:0",
+          "access": "RO",
+          "description": "寄存器号。IT=00000:返回目标地址所在寄存器。IT=00001:GCSPOPM目标寄存器。IT=00010/00011:0b11110(X30)。IT=00100:GCSSS1输入寄存器。IT=00101/01000:UNKNOWN。IT=01001:0b11111"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_BTI",
+      "fullName": "ESR_EL1 ISS Encoding for Branch Target Exception (EC=0x31)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x31时异常由Branch Target Identification(BTI)违规引起",
+      "fields": [
+        {
+          "name": "RES0_24_1",
+          "bits": "24:1",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "BTYPE",
+          "bits": "0",
+          "access": "RO",
+          "description": "分支类型。指示引发BTI异常的具体违规类型"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_SWStep",
+      "fullName": "ESR_EL1 ISS Encoding for Software Step (EC=0x32/0x33)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x32(Lower EL)或0x33(Same EL)时异常由软件单步执行触发",
+      "fields": [
+        {
+          "name": "RES0_24_2",
+          "bits": "24:2",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "EX",
+          "bits": "1:0",
+          "access": "RO",
+          "description": "事件类型/异常级别"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_Watchpoint",
+      "fullName": "ESR_EL1 ISS Encoding for Watchpoint (EC=0x34/0x35)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x34(Lower EL)或0x35(Same EL)时异常由数据观察点(Watchpoint)触发",
+      "fields": [
+        {
+          "name": "RES0_24_7",
+          "bits": "24:7",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "WPT_INDEX",
+          "bits": "3:0",
+          "access": "RO",
+          "description": "观察点索引(0-15)"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_Breakpoint",
+      "fullName": "ESR_EL1 ISS Encoding for Breakpoint/Vector Catch (EC=0x30/0x31)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x30(Lower EL)或0x31(Same EL)时异常由硬件断点或向量捕获(Vector Catch)触发",
+      "fields": [
+        {
+          "name": "RES0_24_5",
+          "bits": "24:5",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "BKPT_INDEX",
+          "bits": "3:0",
+          "access": "RO",
+          "description": "断点/向量捕获索引"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_MOPS",
+      "fullName": "ESR_EL1 ISS Encoding for Memory Operation Exception (EC=0x27)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x27时异常由Memory Copy and Memory Set(FEAT_MOPS)指令引起",
+      "fields": [
+        {
+          "name": "RES0_24_10",
+          "bits": "24:10",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "Opc",
+          "bits": "9:7",
+          "access": "RO",
+          "description": "操作类型。指示具体MOPS操作(CPY/CPYT/SETI等)"
+        },
+        {
+          "name": "DSTREG",
+          "bits": "6:2",
+          "access": "RO",
+          "description": "目标寄存器号"
+        },
+        {
+          "name": "SRCREG",
+          "bits": "1:0",
+          "access": "RO",
+          "description": "源寄存器号(低2位)"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_FP_Trap",
+      "fullName": "ESR_EL1 ISS Encoding for Trapped FP Exception (EC=0x28/0x2C)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x28(AArch32)或0x2C(AArch64)时异常由浮点异常陷获触发。是否支持浮点异常陷获是IMPLEMENTATION DEFINED",
+      "fields": [
+        {
+          "name": "RES0_24_7",
+          "bits": "24:7",
+          "access": "RO",
+          "description": "保留，res0"
+        },
+        {
+          "name": "TFV",
+          "bits": "6",
+          "access": "RO",
+          "description": "陷获浮点有效(FEAT_AFP)。指示精确浮点异常信息是否可用"
+        },
+        {
+          "name": "FPEXC32",
+          "bits": "5:0",
+          "access": "RO",
+          "description": "FPEXC32_EL2相关。反映导致陷获的浮点异常类型(IOF/DZF/OFF/UFF/IXF等)"
+        }
+      ]
+    },
+    {
+      "name": "ESR_EL1_ISS_Unknown",
+      "fullName": "ESR_EL1 ISS Encoding for Unknown Reason (EC=0x00)",
+      "address": "0x0009",
+      "width": 64,
+      "description": "当EC=0x00时异常原因未知。ISS[24:0]全为res0",
+      "fields": [
+        {
+          "name": "RES0_24_0",
+          "bits": "24:0",
+          "access": "RO",
+          "description": "保留，res0"
+        }
+      ]
+    }
+  ]
+}
