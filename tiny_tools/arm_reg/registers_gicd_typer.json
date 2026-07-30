@@ -1,0 +1,100 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_TYPER",
+      "fullName": "Interrupt Controller Type Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Controller Type Register。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "ESPI_range",
+          "bits": "31:27",
+          "access": "RW",
+          "description": "[当 GICD_TYPER.ESPI == '1'] 指示 maximum INTID in the Extended SPI range. Maximum Extended SPI INTID is (32*(ESPI_range + 1) + 4095). The ESPI_range 字段 only indicates the maximum 的个数 SPIs that the GIC 实现 might support. This value determines the 的个数 instances of the following interrupt 寄存器s: The GIC architecture does not require a GIC 实现 to support a continuous range of SPI interrupt IDs. Software must check which SPI INTIDs are supported, up to the maximum value indicated by GICD_TYPER.ESPI_range. 此字段值为 IMPLEMENTATION DEFINED。；否则为 RES0"
+        },
+        {
+          "name": "RSS",
+          "bits": "26",
+          "access": "RW",
+          "description": "Range Selector Support. [0b0=The IRI supports targeted SGIs with 亲和级别 0 values ; 0b1=The IRI supports targeted SGIs with 亲和级别 0 values ]"
+        },
+        {
+          "name": "No1N",
+          "bits": "25",
+          "access": "RW",
+          "description": "指示是否 1 of N SPI interrupts are supported. [0b0=1 of N SPI interrupts are supported. ; 0b1=1 of N SPI interrupts are not supported.]"
+        },
+        {
+          "name": "A3V",
+          "bits": "24",
+          "access": "RW",
+          "description": "Affinity 3 valid. 指示是否 the Distributor supports nonzero values of 亲和级别 3。 [0b0=The Distributor only supports zero values of Affinity level ; 0b1=The Distributor supports nonzero values of 亲和级别 3。]"
+        },
+        {
+          "name": "IDbits",
+          "bits": "23:19",
+          "access": "RW",
+          "description": "The 的个数 interrupt identifier bits supported, minus one. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "DVIS",
+          "bits": "18",
+          "access": "RW",
+          "description": "[当 GICv4 is implemented] 指示是否 the 实现 supports Direct Virtual LPI injection. [0b0=The 实现 does not support Direct Virtual LPI injec ; 0b1=The 实现 supports Direct Virtual LPI injection.]；否则为 RES0"
+        },
+        {
+          "name": "LPIS",
+          "bits": "17",
+          "access": "RW",
+          "description": "指示是否 the 实现 supports LPIs. [0b0=The 实现 does not support LPIs. ; 0b1=The 实现 supports LPIs.]"
+        },
+        {
+          "name": "MBIS",
+          "bits": "16",
+          "access": "RW",
+          "description": "指示是否 the 实现 supports message-based interrupts by writing to 分发器 寄存器s. [0b0=The 实现 does not support message-based interrupts ; 0b1=The 实现 supports message-based interrupts by writ]"
+        },
+        {
+          "name": "num_LPIs",
+          "bits": "15:11",
+          "access": "RW",
+          "description": "Number of supported LPIs. 0b00000 Number of LPIs as indicated by GICD_TYPER.IDbits. All 其他值 Number of LPIs supported is 2(num_LPIs+1). Available LPI INTIDs are 8192..(8192 + 2(num_LPIs+1) - 1). This 字段 cannot indicate a maximum LPI INTID greater than that indicated by GICD_TYPER.IDbits. 当 the supported INTID width is less than 14 bits, 此字段为 RES0 and no LPIs are supported. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "SecurityExtn",
+          "bits": "10",
+          "access": "RW",
+          "description": "指示是否 the GIC 实现 supports two Security states: 当 GICD_CTLR.DS == 1, this 字段 is RAZ. [0b0=The GIC 实现 supports only a single Security state ; 0b1=The GIC 实现 supports two Security states.]"
+        },
+        {
+          "name": "NMI",
+          "bits": "9",
+          "access": "RW",
+          "description": "Non-maskable Interrupts. [0b0=Non-maskable interrupt property not supported. ; 0b1=Non-maskable interrupt property is supported.]"
+        },
+        {
+          "name": "ESPI",
+          "bits": "8",
+          "access": "RW",
+          "description": "Extended SPI. [0b0=Extended SPI range not implemented. ; 0b1=Extended SPI range implemented.]"
+        },
+        {
+          "name": "CPUNumber",
+          "bits": "7:5",
+          "access": "RW",
+          "description": "Reports the 的个数 PEs that can be used when 亲和路由 is not enabled, minus 1. These PEs must be numbered contiguously from zero, but the relationship between this number and the affinity hierarchy from MPIDR 是 IMPLEMENTATION DEFINED。 If the 实现 does not support ARE being zero, this 字段 is 000. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "ITLinesNumber",
+          "bits": "4:0",
+          "access": "RW",
+          "description": "For the INTID range 32 to 1019, indicates the maximum SPI supported. 若 this 字段 is N, the maximum SPI INTID is 32(N+1) minus 1. For example, 00011 specifies that the maximum SPI INTID is 127. Regardless of the range of INTIDs defined by this 字段, interrupt IDs 1020-1023 are 保留 for special purposes. A value of 0 indicates no SPIs are supported. 此字段值为 IMPLEMENTATION DEFINED。"
+        }
+      ]
+    }
+  ]
+}

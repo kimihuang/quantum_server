@@ -1,0 +1,190 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "SPSR_EL1",
+      "fullName": "Saved Program Status Register (EL1)",
+      "address": "0x0041",
+      "width": 64,
+      "description": "保存的程序状态寄存器 (Saved Program Status Register)。当异常被捕获到 EL1 时，保存 PE 状态 (PSTATE) 的副本，以便异常返回时恢复。使用 AArch64 从 EL1 执行异常返回后，SPSR_EL1 变为 UNKNOWN。寄存器布局取决于异常来源（AArch32 或 AArch64），此条目列出 AArch64 来源的字段（fieldset_1），部分与 AArch32 来源的字段（fieldset_0）有差异。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "RES0_63_37",
+          "bits": "63:37",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "UINJ",
+          "bits": "36",
+          "access": "RW",
+          "description": "注入 Undefined Instruction 异常 (FEAT_UINJ 时)。异常进入 EL1 时清零，异常返回时复制到 PSTATE.UINJ。未实现时为 RES0。"
+        },
+        {
+          "name": "PACM",
+          "bits": "35",
+          "access": "RW",
+          "description": "PAC 返回地址掩码 (FEAT_PAuth_LR 时，仅 AArch64 来源)。保存 PSTATE.PACM 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "EXLOCK",
+          "bits": "34",
+          "access": "RW",
+          "description": "异常返回状态锁定 (FEAT_GCS 时，仅 AArch64 来源)。保存 PSTATE.EXLOCK 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "RES0_33",
+          "bits": "33",
+          "access": "RES0",
+          "description": "保留，RES0 (仅 AArch64 来源)。"
+        },
+        {
+          "name": "PM",
+          "bits": "32",
+          "access": "RW",
+          "description": "Profiling 异常掩码位 (FEAT_EBEP 时，仅 AArch64 来源)。保存 PSTATE.PM 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "N",
+          "bits": "31",
+          "access": "RW",
+          "description": "负条件标志 (Negative)。保存 PSTATE.N 的值，异常返回时恢复。"
+        },
+        {
+          "name": "Z",
+          "bits": "30",
+          "access": "RW",
+          "description": "零条件标志 (Zero)。保存 PSTATE.Z 的值，异常返回时恢复。"
+        },
+        {
+          "name": "C",
+          "bits": "29",
+          "access": "RW",
+          "description": "进位条件标志 (Carry)。保存 PSTATE.C 的值，异常返回时恢复。"
+        },
+        {
+          "name": "V",
+          "bits": "28",
+          "access": "RW",
+          "description": "溢出条件标志 (Overflow)。保存 PSTATE.V 的值，异常返回时恢复。"
+        },
+        {
+          "name": "RES0_27_26",
+          "bits": "27:26",
+          "access": "RES0",
+          "description": "保留，RES0 (仅 AArch64 来源)。"
+        },
+        {
+          "name": "TCO",
+          "bits": "25",
+          "access": "RW",
+          "description": "标记检查覆盖 (Tag Check Override, FEAT_MTE 时，仅 AArch64 来源)。保存 PSTATE.TCO 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "DIT",
+          "bits": "24",
+          "access": "RW",
+          "description": "数据独立时序 (Data Independent Timing, FEAT_DIT 时)。保存 PSTATE.DIT 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "UAO",
+          "bits": "23",
+          "access": "RW",
+          "description": "用户访问覆盖 (User Access Override, FEAT_UAO 时，仅 AArch64 来源)。保存 PSTATE.UAO 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "PAN",
+          "bits": "22",
+          "access": "RW",
+          "description": "Privileged Access Never (FEAT_PAN 时)。保存 PSTATE.PAN 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "SS",
+          "bits": "21",
+          "access": "RW",
+          "description": "软件单步 (Software Step)。保存 PSTATE.SS 的值，异常返回时有条件恢复。"
+        },
+        {
+          "name": "IL",
+          "bits": "20",
+          "access": "RW",
+          "description": "非法执行状态 (Illegal Execution state)。保存 PSTATE.IL 的值，异常返回时恢复。"
+        },
+        {
+          "name": "RES0_19_15",
+          "bits": "19:15",
+          "access": "RES0",
+          "description": "保留，RES0 (仅 AArch64 来源)。"
+        },
+        {
+          "name": "BTYPE2",
+          "bits": "14",
+          "access": "RW",
+          "description": "BTYPE[2] (FEAT_BTIE 时，仅 AArch64 来源)。与 SPSR_EL1.BTYPE 组合构成 BTYPE[2:0]。保存 PSTATE.BTYPE[2]，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "ALLINT",
+          "bits": "13",
+          "access": "RW",
+          "description": "全中断掩码 (FEAT_NMI 时，仅 AArch64 来源)。控制所有 IRQ/FIQ 中断的屏蔽。保存 PSTATE.ALLINT 的值，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "SSBS",
+          "bits": "12",
+          "access": "RW",
+          "description": "投机存储旁路安全 (Speculative Store Bypass, FEAT_SSBS 时)。保存 PSTATE.SSBS 的值，异常返回时恢复。注意：AArch32 来源中 SSBS 在 bit[23]。未实现时为 RES0。"
+        },
+        {
+          "name": "BTYPE",
+          "bits": "11:10",
+          "access": "RW",
+          "description": "BTYPE[1:0] (FEAT_BTI 时，仅 AArch64 来源)。分支类型指示器的低两位。若 FEAT_BTIE 实现，与 BTYPE2 构成 BTYPE[2:0]。保存 PSTATE.BTYPE[1:0]，异常返回时恢复。未实现时为 RES0。"
+        },
+        {
+          "name": "D",
+          "bits": "9",
+          "access": "RW",
+          "description": "调试异常掩码 (Debug mask, 仅 AArch64 来源)。保存 PSTATE.D 的值，异常返回时恢复。注意：AArch32 来源中此位为 E (字节序)。"
+        },
+        {
+          "name": "A",
+          "bits": "8",
+          "access": "RW",
+          "description": "SError 异常掩码。保存 PSTATE.A 的值，异常返回时恢复。"
+        },
+        {
+          "name": "I",
+          "bits": "7",
+          "access": "RW",
+          "description": "IRQ 中断掩码。保存 PSTATE.I 的值，异常返回时恢复。"
+        },
+        {
+          "name": "F",
+          "bits": "6",
+          "access": "RW",
+          "description": "FIQ 中断掩码。保存 PSTATE.F 的值，异常返回时恢复。"
+        },
+        {
+          "name": "RES0_5",
+          "bits": "5",
+          "access": "RES0",
+          "description": "保留，RES0 (仅 AArch64 来源)。"
+        },
+        {
+          "name": "M4",
+          "bits": "4",
+          "access": "RW",
+          "description": "执行状态 (Execution state)。0b0=AArch64 (来自 AArch64 源)。0b1=AArch32 (来自 AArch32 源)。保存 PSTATE.nRW 的值，异常返回时恢复。保留值为非法异常返回事件。"
+        },
+        {
+          "name": "M3_0",
+          "bits": "3:0",
+          "access": "RW",
+          "description": "AArch64 异常级别和选择堆栈指针 (AArch64 来源)。M[3:2]=异常级别:0b00=EL0, 0b01=EL1/SP0, 0b10=EL2, 0b11=EL3。M[1]=未使用(0)。M[0]=SP 选择:0=SP_EL0, 1=SP_ELx。若来自 EL1 且 HCR_EL2.{NV,NV1}={1,0} 或 HCR_EL2.{NV,NV2}={1,1}，则 M[3:2]=0b10。AArch32 来源中此位为 CPSR M[3:0] 模式字段。保留值为非法异常返回事件。"
+        }
+      ]
+    }
+  ]
+}

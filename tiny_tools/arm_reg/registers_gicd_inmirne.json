@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_INMIR<n>E",
+      "fullName": "Non-maskable Interrupt Registers for Extended SPIs, x = 0 to 31",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Non-maskable Interrupt Registers for Extended SPIs, x = 0 to 31。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "NMI<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "Non-maskable property. 若亲和路由禁用 用于 中断安全状态，对应位为 RES0。 对应中断配置为 Group 0 时，此位为 RES0。 [0b0=中断不具有不可屏蔽属性。 ; 0b1=中断具有不可屏蔽属性。]"
+        }
+      ]
+    }
+  ]
+}

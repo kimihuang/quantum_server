@@ -1,0 +1,64 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_PROPBASER",
+      "fullName": "Redistributor Properties Base Address Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Redistributor Properties Base Address Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:59",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "OuterCache",
+          "bits": "58:56",
+          "access": "RW",
+          "description": "指示 Outer Cacheability attributes of 访问 to the LPI 配置表. 此字段是固定值还是可由软件编程是 IMPLEMENTATION DEFINED。 以固定值实现此字段已弃用。 [0b000=内存类型由 InnerCache 字段定义. For Normal memory, ; 0b001=Normal Outer Non-cacheable. ; 0b010=Normal Outer Cacheable, Read-allocate, Write-through。 ; 0b011=Normal Outer Cacheable, Read-allocate, Write-back。 ; 0b100=Normal Outer Cacheable, Write-allocate, Write-through。 ; 0b101=Normal Outer Cacheable, Write-allocate, Write-back。 ; 0b110=Normal Outer Cacheable, Read-allocate, Write-allocate, W ; 0b111=Normal Outer Cacheable, Read-allocate, Write-allocate, W]"
+        },
+        {
+          "name": "RES0",
+          "bits": "55:52",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Physical_Address",
+          "bits": "51:12",
+          "access": "RW",
+          "description": "Bits [51:12] of the 物理地址 containing the LPI 配置表. 在支持少于 52 位物理地址的实现中，未实现的高位为 RES0。"
+        },
+        {
+          "name": "Shareability",
+          "bits": "11:10",
+          "access": "RW",
+          "description": "指示 Shareability attributes of 访问 to the LPI 配置表. 此字段是固定值还是可由软件编程是 IMPLEMENTATION DEFINED。 以固定值实现此字段已弃用。 [0b00=Non-shareable. ; 0b01=Inner Shareable. ; 0b10=Outer Shareable. ; 0b11=保留. Treated as 0b00.]"
+        },
+        {
+          "name": "InnerCache",
+          "bits": "9:7",
+          "access": "RW",
+          "description": "指示 Inner Cacheability attributes of 访问 to the LPI 配置表. [0b000=Device-nGnRnE. ; 0b001=Normal Inner Non-cacheable. ; 0b010=Normal Inner Cacheable, Read-allocate, Write-through。 ; 0b011=Normal Inner Cacheable, Read-allocate, Write-back。 ; 0b100=Normal Inner Cacheable, Write-allocate, Write-through。 ; 0b101=Normal Inner Cacheable, Write-allocate, Write-back。 ; 0b110=Normal Inner Cacheable, Read-allocate, Write-allocate, W ; 0b111=Normal Inner Cacheable, Read-allocate, Write-allocate, W]"
+        },
+        {
+          "name": "RES0",
+          "bits": "6:5",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "IDbits",
+          "bits": "4:0",
+          "access": "RW",
+          "description": "The 位数 of LPI INTID supported, minus one, by the LPI 配置表 starting at Physical_Address. 若 this 字段 is larger than the value of GICD_TYPER.IDbits, the GICD_TYPER.IDbits value applies. 若 this 字段 is less than 0b1101, indicating that the largest INTID is less than 8192 (the smallest LPI interrupt ID), the GIC will behave as if all physical LPIs are out of range."
+        }
+      ]
+    }
+  ]
+}

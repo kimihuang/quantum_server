@@ -1,0 +1,40 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_INVALLR",
+      "fullName": "Redistributor Invalidate All Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Redistributor Invalidate All Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "V",
+          "bits": "63",
+          "access": "RW",
+          "description": "[当 GICv4.1 is implemented] 指示是否 the INTID is virtual or physical. [0b0=针对物理 INTID 的使无效操作。 ; 0b1=针对虚拟 INTID 的使无效操作。]；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "62:48",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "vPEID",
+          "bits": "47:32",
+          "access": "RW",
+          "description": "[当 GICv4.1 is implemented] 当 GICR_INVLPIR.V == 0, this 字段 is RES0 当 GICR_INVLPIR.V == 1, this 字段 is the target vPEID of the invalidate. 此字段大小是 IMPLEMENTATION DEFINED，由 GICD_TYPER2.VIL and GICD_TYPER2.VID 字段s. Unimplemented bits are RES0.；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "保留，RES0。"
+        }
+      ]
+    }
+  ]
+}

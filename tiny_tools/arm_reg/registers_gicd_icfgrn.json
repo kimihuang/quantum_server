@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_ICFGR<n>",
+      "fullName": "Interrupt Configuration Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Configuration Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "Int_config<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "指示中断是电平敏感还是边沿触发。 Int_config[0] (bit [2x]) is RES0. For SGIs, this 字段 always indicates edge-triggered. [0b00=对应中断为电平敏感。 ; 0b10=对应中断为边沿触发。]"
+        }
+      ]
+    }
+  ]
+}

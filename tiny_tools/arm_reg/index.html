@@ -458,7 +458,6 @@ body {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
-  table-layout: fixed;
 }
 .fields-table th {
   background: var(--bg-secondary);
@@ -514,6 +513,8 @@ body {
 .field-desc {
   color: var(--text-secondary);
   line-height: 1.4;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* 空状态 */
@@ -781,9 +782,6 @@ body {
     <header class="app-header">
       <h1>Arm 寄存器查询工具</h1>
       <div class="subtitle">System Register Inspector</div>
-      <div class="source-badges" id="source-badges">
-        <span class="source-badge loading">加载中…</span>
-      </div>
     </header>
 
     <!-- 搜索卡片 -->
@@ -898,6 +896,21 @@ function escapeHtml(raw) {
   const div = document.createElement('div');
   div.textContent = String(raw);
   return div.innerHTML;
+}
+
+/**
+ * 将寄存器描述文本转换为带换行的 HTML。
+ * 在句号、分号、闭合方括号后插入 &lt;br&gt; 使长文本更易阅读。
+ */
+function formatDescription(text) {
+  var html = escapeHtml(text);
+  // 在每个语义分段点之后插入换行
+  html = html.replace(/(。) /g, '。<br>');
+  html = html.replace(/(；) /g, '；<br>');
+  html = html.replace(/(\]) /g, ']<br>');
+  html = html.replace(/(\.) /g, '。<br>');
+  html = html.replace(/ -- /g, '<br>— ');
+  return html;
 }
 
 function fmtHex(value, width) {
@@ -1139,14 +1152,6 @@ async function initDataLoading() {
 
   manifestSources = sources;
 
-  // 动态生成顶部 badges
-  const badgesContainer = document.getElementById('source-badges');
-  badgesContainer.innerHTML = sources.map(src => {
-    const id = src.replace(/^registers_/, '').replace(/\.json$/, '');
-    return '<span class="source-badge loading" id="badge-' + id + '">' +
-           id.toUpperCase() + ' 加载中</span>';
-  }).join('');
-
   // 并行加载所有数据源
   for (const src of sources) {
     loadSource(src);
@@ -1173,8 +1178,6 @@ async function loadJsonWithRetry(url) {
  * @param {string} filename — 文件名，如 "registers_smmu.json"
  */
 async function loadSource(filename) {
-  const categoryId = filename.replace(/^registers_/, '').replace(/\.json$/, '');
-  const badge = document.getElementById('badge-' + categoryId);
   const url = './' + filename;
 
   try {
@@ -1196,20 +1199,9 @@ async function loadSource(filename) {
 
     loadedSources++;
 
-    // 更新顶部 badge（累加计数）
-    if (badge) {
-      badge.className = 'source-badge loaded';
-      const groupRegs = sourceGroups.get(sourceLabel).registers;
-      badge.textContent = sourceLabel.toUpperCase() + ' (' + groupRegs.length + ')';
-    }
-
     console.log(`[加载完成] ${sourceLabel} — ${data.registers.length} 个寄存器`);
   } catch (err) {
     console.error(`[加载失败] ${filename}:`, err);
-    if (badge) {
-      badge.className = 'source-badge error';
-      badge.textContent = categoryId.toUpperCase() + ' 加载失败';
-    }
   }
 
   // 每个源加载完就刷新侧边栏
@@ -1282,7 +1274,7 @@ function displayRegister(entry) {
       '<td><span class="field-access ' + accessClass + '">' +
         escapeHtml(field.access || 'RO') +
       '</span></td>' +
-      '<td class="field-desc">' + escapeHtml(field.description) + '</td>' +
+      '<td class="field-desc">' + formatDescription(field.description) + '</td>' +
       '<td><span class="field-value">' + fmtFieldVal(fieldVal, parsed.width) + '</span></td>' +
       '</tr>';
   }).join('');
@@ -1312,7 +1304,7 @@ function displayRegister(entry) {
           escapeHtml(reg.fullName) + '</span>'
         : '') +
     '</div>' +
-    '<div class="reg-desc">' + escapeHtml(reg.description) + '</div>' +
+    '<div class="reg-desc">' + formatDescription(reg.description) + '</div>' +
     valueSection +
     '<table class="fields-table">' +
       '<thead><tr>' +
@@ -1591,7 +1583,7 @@ function renderOneRegCard(entry, idx, globalValue) {
       '<td><span class="field-name">' + escapeHtml(field.name) + '</span></td>' +
       '<td><span class="field-bits">[' + escapeHtml(field.bits) + ']</span></td>' +
       '<td><span class="field-access ' + accessClass + '">' + escapeHtml(field.access || 'RO') + '</span></td>' +
-      '<td class="field-desc">' + escapeHtml(field.description) + '</td>' +
+      '<td class="field-desc">' + formatDescription(field.description) + '</td>' +
       '<td><span class="field-value" id="fv-' + idx + '-' + escapeHtml(field.name) + '">' +
         fmtFieldVal(fieldVal, parsed.width) +
       '</span></td>' +
@@ -1619,7 +1611,7 @@ function renderOneRegCard(entry, idx, globalValue) {
       '</div>' +
     '</div>' +
     '<div class="multi-reg-card-body">' +
-      '<div class="reg-desc">' + escapeHtml(reg.description) + '</div>' +
+      '<div class="reg-desc">' + formatDescription(reg.description) + '</div>' +
       '<div id="card-value-display-' + idx + '">' +
         (globalValue !== null
           ? '<div class="value-display">' +

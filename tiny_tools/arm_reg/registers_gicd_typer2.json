@@ -1,0 +1,46 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_TYPER2",
+      "fullName": "Interrupt Controller Type Register 2",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Controller Type Register 2。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:9",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "nASSGIcap",
+          "bits": "8",
+          "access": "RW",
+          "description": "指示是否 SGIs can be configured to not have an 活跃状态. This bit is RES0 on 实现 that support two Security states. [0b0=SGIs have an 活跃状态. ; 0b1=SGIs can be globally configured not to have an 活跃状态.]"
+        },
+        {
+          "name": "VIL",
+          "bits": "7",
+          "access": "RW",
+          "description": "[当 GICv4.1 is implemented] 指示是否 16 bits of vPEID are implemented. [0b0=GIC supports 16-bit vPEID. ; 0b1=GIC supports GICD_TYPER2.VID + 1 bits of vPEID.]；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "6:5",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "VID",
+          "bits": "4:0",
+          "access": "RW",
+          "description": "[当 GICD_TYPER2.VIL == '1'] The 位数 vPEID. [0b00000..0b01111=The 的个数 vPEID bits implemented, minus one.]；否则为 RES0"
+        }
+      ]
+    }
+  ]
+}

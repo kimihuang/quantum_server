@@ -1,0 +1,64 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "MAIR_EL1",
+      "fullName": "Memory Attribute Indirection Register (EL1)",
+      "address": "0x00A2",
+      "width": 64,
+      "description": "内存属性间接寄存器 (Memory Attribute Indirection Register)。为 EL1 的 Stage-1 翻译中长描述符格式页表条目的 AttrIndx 值提供对应的内存属性编码。每个 AttrIndx[2:0] 索引到一个 8-bit 属性字段 Attr<n>。AArch32 映射：PRRR+NMRR (TTBCR.EAE=0) 或 MAIR0+MAIR1 (TTBCR.EAE=1)。别名 MAIR_EL12 (FEAT_VHE)。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "Attr7",
+          "bits": "63:56",
+          "access": "RW",
+          "description": "AttrIndx=7 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr6",
+          "bits": "55:48",
+          "access": "RW",
+          "description": "AttrIndx=6 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr5",
+          "bits": "47:40",
+          "access": "RW",
+          "description": "AttrIndx=5 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr4",
+          "bits": "39:32",
+          "access": "RW",
+          "description": "AttrIndx=4 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr3",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "AttrIndx=3 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr2",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "AttrIndx=2 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr1",
+          "bits": "15:8",
+          "access": "RW",
+          "description": "AttrIndx=1 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "Attr0",
+          "bits": "7:0",
+          "access": "RW",
+          "description": "AttrIndx=0 的内存属性。 内存属性编码 (Memory Attribute encoding)，每 8-bit 对应一个 AttrIndx[2:0] 的属性索引值。Attr 编码格式：Device 内存: '0000dd00'={dd:00=Device-nGnRnE, 01=Device-nGnRE, 10=Device-nGRE, 11=Device-GRE}。若 FEAT_XS 实现则 '0000dd01'=Device 内存(XS=0)。'0000dd1x'=UNPREDICTABLE。Normal 内存: 'ooooiiii' (oooo≠0000, iiii≠0000)。oooo=Outer 属性: 00RW=WT Transient, 0100=Non-cacheable, 01RW=WB Transient, 10RW=WT Non-transient, 11RW=WB Non-transient。iiii=Inner 属性: 编码同 oooo。R=Read-Allocate(0=No,1=Yes), W=Write-Allocate(0=No,1=Yes)。若 FEAT_XS 实现: '01000000'=Normal Inner/Outer NC (XS=0), '10100000'=Normal WT/RA/NWA Non-transient (XS=0)。若 FEAT_MTE2 或 FEAT_VMTE 实现: '11110000'=Tagged Normal Inner/Outer WB/RA/WA Non-transient。其它 'xxxx0000' 模式为 UNPREDICTABLE。若 FEAT_AIE 实现且 Stage-1 Attributes Index Extension 使能且 AttrIndx[3]=1，则使用 MAIR2_EL1.Attr。MAIR_EL1 允许在 TLB 中缓存。复位值为架构 UNKNOWN。"
+        }
+      ]
+    }
+  ]
+}

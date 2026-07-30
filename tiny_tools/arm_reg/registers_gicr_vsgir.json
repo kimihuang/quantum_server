@@ -1,0 +1,28 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_VSGIR",
+      "fullName": "Redistributor virtual SGI pending state request register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Redistributor virtual SGI pending state request register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:16",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "vPEID",
+          "bits": "15:0",
+          "access": "RW",
+          "description": "ID of target vPE Writing this 字段 是 CONSTRAINED UNPREDICTABLE，当 GICR_VSGIPENDR.Busy == 1, with either the write ignored or a new query started. Writing a value greater than the configured vPEID width behavior 是 CONSTRAINED UNPREDICTABLE, with either: vPEID is treated as having an UNKNOWN valid value. The write 被忽略. 此字段大小是 IMPLEMENTATION DEFINED，由 GICD_TYPER2.VIL and GICD_TYPER2.VID 字段s. Unimplemented bits are RES0."
+        }
+      ]
+    }
+  ]
+}

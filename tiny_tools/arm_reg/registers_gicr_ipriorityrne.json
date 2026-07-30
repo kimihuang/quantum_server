@@ -1,0 +1,40 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_IPRIORITYR<n>E",
+      "fullName": "Interrupt Priority Registers (extended PPI range)",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Priority Registers (extended PPI range)。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Priority_offset_3B",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED 范围内中断优先级值，字节偏移 3. 优先级值越小，中断优先级越高. 对于配置为不可屏蔽的中断 INTID，此字段为 RES0。"
+        },
+        {
+          "name": "Priority_offset_2B",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED 范围内中断优先级值，字节偏移 2. 优先级值越小，中断优先级越高. 对于配置为不可屏蔽的中断 INTID，此字段为 RES0。"
+        },
+        {
+          "name": "Priority_offset_1B",
+          "bits": "15:8",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED 范围内中断优先级值，字节偏移 1. 优先级值越小，中断优先级越高. 对于配置为不可屏蔽的中断 INTID，此字段为 RES0。"
+        },
+        {
+          "name": "Priority_offset_0B",
+          "bits": "7:0",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED 范围内中断优先级值，字节偏移 0. 优先级值越小，中断优先级越高. 对于配置为不可屏蔽的中断 INTID，此字段为 RES0。"
+        }
+      ]
+    }
+  ]
+}

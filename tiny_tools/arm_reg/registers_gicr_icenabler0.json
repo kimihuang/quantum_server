@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_ICENABLER0",
+      "fullName": "Interrupt Clear-Enable Register 0",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Clear-Enable Register 0。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Clear_enable_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "For PPIs and SGIs, 控制中断号 x 向 CPU 接口的转发。 读写行为如下: [0b0=读取时：指示对应中断的转发 ; 0b1=读取时：指示对应中断的转发]"
+        }
+      ]
+    }
+  ]
+}

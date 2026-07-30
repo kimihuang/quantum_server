@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_SPENDSGIR<n>",
+      "fullName": "SGI Set-Pending Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "SGI Set-Pending Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "SGI_set_pending_bits<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "添加 pending 中断 state to SGI number 4n + x 用于 对应写入位号的 PE。 读写行为如下: [0x00=读取时：指示来自对应 PE 的 SGI ; 0x01=读取时：指示来自对应 PE 的 SGI]"
+        }
+      ]
+    }
+  ]
+}

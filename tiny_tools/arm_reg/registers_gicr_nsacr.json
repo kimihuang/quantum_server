@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_NSACR",
+      "fullName": "Non-secure Access Control Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Non-secure Access Control Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "NS_access<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "配置电平 of Non-secure 访问 permitted when the SGI is in Secure Group 0 or Secure Group 1, as defined from GICR_IGROUPR0 and GICR_IGRPMODR0. A 字段 is provided for each SGI. The possible values of each 2-bit 字段 are: [0b00=Non-secure 写s are not permitted to generate Secure Group ; 0b01=Non-secure 写s are permitted to generate a Secure Group 0 ; 0b10=As 0b01 , but additionally Non-secure 写s to are permitte ; 0b11=保留. If the 字段 is programmed to the 保留 value, ]"
+        }
+      ]
+    }
+  ]
+}

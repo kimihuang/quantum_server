@@ -1,0 +1,130 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "CPSR",
+      "fullName": "Current Program Status Register (AArch32)",
+      "address": "0x0020",
+      "width": 32,
+      "description": "当前程序状态寄存器 (Current Program Status Register)。保存 PE 状态和控制信息，包括条件标志、中断掩码、处理器模式和字节序等。可通过 MRS 读取，通过 MSR (register) 或 MSR (immediate) 写入。仅在 FEAT_AA32 实现时存在。",
+      "fields": [
+        {
+          "name": "N",
+          "bits": "31",
+          "access": "RW",
+          "description": "负条件标志 (Negative condition flag)。设为最近一次标志设置指令结果的 bit[31] 值。若结果视为二进制补码有符号整数，N=1 表示结果为负，N=0 表示结果为正或零。"
+        },
+        {
+          "name": "Z",
+          "bits": "30",
+          "access": "RW",
+          "description": "零条件标志 (Zero condition flag)。若最近一次标志设置指令结果为零则设为 1，否则为 0。零结果通常表示比较结果相等。"
+        },
+        {
+          "name": "C",
+          "bits": "29",
+          "access": "RW",
+          "description": "进位条件标志 (Carry condition flag)。若最近一次标志设置指令产生进位条件则设为 1，例如加法产生无符号溢出。"
+        },
+        {
+          "name": "V",
+          "bits": "28",
+          "access": "RW",
+          "description": "溢出条件标志 (Overflow condition flag)。若最近一次标志设置指令产生溢出条件则设为 1，例如加法产生有符号溢出。"
+        },
+        {
+          "name": "Q",
+          "bits": "27",
+          "access": "RW",
+          "description": "累积饱和位 (Cumulative saturation bit)。设为 1 表示某些指令发生过溢出或饱和现象。"
+        },
+        {
+          "name": "RES0_26_24",
+          "bits": "26:24",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "SSBS",
+          "bits": "23",
+          "access": "RW",
+          "description": "投机存储旁路安全 (Speculative Store Bypass Safe, FEAT_SSBS 时)。禁止可能通过缓存时序侧信道泄露信息的投机加载或存储。0b0=不允许 PE 以可能被投机利用的方式使用投机寄存器值（若投机读取在一致性顺序上早于最新存储到同一VA的条目）。0b1=PE 允许以可能被投机利用的方式使用投机寄存器值。此位在异常时通常设为 SCTLR.DSSBS 的值（Hyp 模式异常时设为 HSCTLR.DSSBS）。复位值为 IMPLEMENTATION DEFINED。未实现 FEAT_SSBS 时此位为 RES0。"
+        },
+        {
+          "name": "PAN",
+          "bits": "22",
+          "access": "RW",
+          "description": "Privileged Access Never (FEAT_PAN 时)。0b0=与 Armv8.0 行为相同。0b1=禁止对 EL0 可访问地址的特权读写访问。异常时通常保留此位值，但以下情况除外：异常目标为 EL1 且 SCTLR.SPAN=0 则设为 1；Secure 状态异常目标为 EL3 且 Secure SCTLR.SPAN=0 则设为 1；Non-secure 状态异常目标为 EL3 则设为 0（无论 SCTLR.SPAN 值）。未实现 FEAT_PAN 时此位为 RES0。"
+        },
+        {
+          "name": "DIT",
+          "bits": "21",
+          "access": "RW",
+          "description": "数据独立时序 (Data Independent Timing, FEAT_DIT 时)。0b0=架构不对任何指令的时序特性做声明。0b1=架构要求数据独立时序代码序列的执行时间独立于所有数据独立时序值。复位值为 0。未实现 FEAT_DIT 时此位为 RES0。"
+        },
+        {
+          "name": "RES0_20",
+          "bits": "20",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "GE",
+          "bits": "19:16",
+          "access": "RW",
+          "description": "大于或等于标志 (Greater than or Equal flags)，用于并行加法和减法 (SIMD) 操作。每 bit 对应一个字节通道的标志。"
+        },
+        {
+          "name": "RES0_15_10",
+          "bits": "15:10",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "E",
+          "bits": "9",
+          "access": "RW",
+          "description": "字节序状态位 (Endianness state bit)。控制数据访问的加载/存储字节序。0b0=小端模式 (Little-endian)。0b1=大端模式 (Big-endian)。指令获取忽略此位。若实现不支持大端，此位为 RES0；不支持小端则此位为 RES1。仅支持 EL0 大端时，异常返回非 EL0 级别时此位为 RES0。复位值由 SCTLR.EE 的配置输入信号决定。"
+        },
+        {
+          "name": "A",
+          "bits": "8",
+          "access": "RW",
+          "description": "SError 异常掩码位 (SError mask)。0b0=异常未屏蔽。0b1=异常被屏蔽。"
+        },
+        {
+          "name": "I",
+          "bits": "7",
+          "access": "RW",
+          "description": "IRQ 中断掩码位 (IRQ mask)。0b0=中断未屏蔽。0b1=中断被屏蔽。"
+        },
+        {
+          "name": "F",
+          "bits": "6",
+          "access": "RW",
+          "description": "FIQ 中断掩码位 (FIQ mask)。0b0=中断未屏蔽。0b1=中断被屏蔽。"
+        },
+        {
+          "name": "RES0_5",
+          "bits": "5",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES1_4",
+          "bits": "4",
+          "access": "RES1",
+          "description": "保留，RES1。必须写 1。"
+        },
+        {
+          "name": "M",
+          "bits": "3:0",
+          "access": "RW",
+          "description": "当前 PE 模式 (Current PE mode)。0b0000=User 0b0001=FIQ 0b0010=IRQ 0b0011=Supervisor 0b0110=Monitor 0b0111=Abort 0b1010=Hyp 0b1011=Undefined 0b1111=System。其余编码保留。"
+        }
+      ]
+    }
+  ]
+}

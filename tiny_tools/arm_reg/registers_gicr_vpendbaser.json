@@ -1,0 +1,106 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_VPENDBASER",
+      "fullName": "Virtual Redistributor LPI Pending Table Base Address Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Virtual Redistributor LPI Pending Table Base Address Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Valid",
+          "bits": "63",
+          "access": "RW",
+          "description": "This bit controls whether a vPE is scheduled: Setting GICR_VPENDBASER.Valid == 1 when the associated CPU interface does not implement FEAT_GICv4 是 UNPREDICTABLE. Software can determine whether a PE supports FEAT_GICv3 or FEAT_GICv4 by reading ID_AA64PFR0_EL1. Writing a new value to any bit of GICR_VPENDBASER, other than GICR_VPENDBASER.Valid, when GICR_VPENDBASER.Valid==1 是 UNPREDICTABLE. Setting GICR_VPENDBASER.Valid to 1 是 UNPREDICTABLE if GICR_VPROPBASER.Valid == 0. [0b0=The 虚拟 LPI Pending 表 is not valid. No vPE is schedu ; 0b1=The 虚拟 LPI Pending 表 is valid. A vPE is scheduled.]"
+        },
+        {
+          "name": "Doorbell",
+          "bits": "62",
+          "access": "RW",
+          "description": "当 GICR_VPENDBASER.Valid is written from 1 to 0, this bit controls whether a default 门铃中断 (doorbell interrupt) is requested 用于 descheduled vPE. 当 GICR_VPENDBASER.Valid is written from 1 to 0, if there are outstanding enabled pending 中断, then this bit is treated as 0. 当 GICR_VPENDBASER.Valid 从 1 写为 0 时，若 GICR_VPENDBASER.PendingLast is written as 1, then this bit is treated as 0. 当 GICR_VPENDBASER.Valid == 1, reads return an UNKNOWN value. [0b0=No default doorbell requested. ; 0b1=Default doorbell requested.]"
+        },
+        {
+          "name": "PendingLast",
+          "bits": "61",
+          "access": "RW",
+          "description": "指示是否 there are pending and enabled interrupts 用于 last scheduled vPE. This value is set by the 实现 when GICR_VPENDBASER.Valid is written from 1 to 0 and is otherwise UNKNOWN. 当 the GICR_VPENDBASER.Valid bit is written from 0 to 1, this bit is RES1. 当 GICR_VPENDBASER.Valid 从 1 写为 0 时，若 GICR_VPENDBASER.PendingLast is written as 1, then this bit is set to an UNKNOWN value. [0b0=There are no pending and enabled interrupts 用于 last sch ; 0b1=There is at least one pending and enabled interrupt 用于 ]"
+        },
+        {
+          "name": "Dirty",
+          "bits": "60",
+          "access": "RW",
+          "description": "[当 GICR_VPENDBASER.Valid == '1'] Read-only. Reports whether the Virtual Pending 表 has been parsed. Writing 0 to GICR_VPENDBASER.Valid 是 UNPREDICTABLE while GICR_VPENDBASER.Dirty == 1. [0b0=Parsing of the Virtual Pending Table is complete. ; 0b1=Parsing of the Virtual Pending Table has not completed.]"
+        },
+        {
+          "name": "RES0",
+          "bits": "59",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "VGrp1En",
+          "bits": "58",
+          "access": "RW",
+          "description": "Enable virtual Group 1 interrupts. Writing a new value to VGrp1En while GICR_VPENDBASER.Valid==1 是 CONSTRAINED UNPREDICTABLE: The update 被忽略. 更新在除直接读取外的所有用途中被忽略。 The virtual group enable is updated. [0b0=Forwarding of virtual Group 1 interrupts disabled. ; 0b1=Forwarding of virtual Group 1 interrupts enabled.]"
+        },
+        {
+          "name": "OuterCache",
+          "bits": "58:56",
+          "access": "RW",
+          "description": "指示 Outer Cacheability attributes of 访问 to 虚拟 LPI Pending 表s of vPEs targeting this 再分发器. 此字段是固定值还是可由软件编程是 IMPLEMENTATION DEFINED。 以固定值实现此字段已弃用。 Cacheability/Outer Cacheability/Shareability 字段用于访问虚拟 LPI Pending 表esident and non-resident vPEs. If the OuterCacheabilty attribute of the 虚拟 LPI Pending 表s that are associated with vPEs targeting the same 再分发器 are different, behavior 是 UNPREDICTABLE. [0b000=内存类型由 InnerCache 字段定义. For Normal memory, ; 0b001=Normal Outer Non-cacheable. ; 0b010=Normal Outer Cacheable, Read-allocate, Write-through。 ; 0b011=Normal Outer Cacheable, Read-allocate, Write-back。 ; 0b100=Normal Outer Cacheable, Write-allocate, Write-through。 ; 0b101=Normal Outer Cacheable, Write-allocate, Write-back。 ; 0b110=Normal Outer Cacheable, Read-allocate, Write-allocate, W ; 0b111=Normal Outer Cacheable, Read-allocate, Write-allocate, W]"
+        },
+        {
+          "name": "RES0",
+          "bits": "57:16",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "55:52",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Physical_Address",
+          "bits": "51:16",
+          "access": "RW",
+          "description": "Bits [51:16] of the 物理地址 containing the 虚拟 LPI Pending 表. 在支持少于 52 位物理地址的实现中，未实现的高位为 RES0。"
+        },
+        {
+          "name": "vPEID",
+          "bits": "15:0",
+          "access": "RW",
+          "description": "当 GICR_VPENDBASER.Valid == 1, ID of scheduled vPE. 当 GICR_VPENDBASER.Valid == 1, if GICR_VPENDBASER.vPEID is set to a value greater than the configured vPEID width, the behavior of this 字段 是 CONSTRAINED UNPREDICTABLE: GICR_VPENDBASER.vPEID is treated as having an UNKNOWN valid value 除以下用途外： a 直接读取 of the 寄存器. GICR_VPENDBASER.Valid is treated as being set to 0 除以下用途外： a 直接读取 of the 寄存器. Writing a new value to vPEID while GICR_VPENDBASER.Valid == 1 是 CONSTRAINED UNPREDICTABLE: The update 被忽略. 更新在除直接读取外的所有用途中被忽略。 The new value is used. 此字段大小是 IMPLEMENTATION DEFINED，由 GICD_TYPER2.VIL and GICD_TYPER2.VID 字段s, unimplemented bits are RES0."
+        },
+        {
+          "name": "RES0",
+          "bits": "15:12",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Shareability",
+          "bits": "11:10",
+          "access": "RW",
+          "description": "指示 Shareability attributes of 访问 to the 虚拟 LPI Pending 表. 此字段是固定值还是可由软件编程是 IMPLEMENTATION DEFINED。 以固定值实现此字段已弃用。 Cacheability/Outer Cacheability/Shareability 字段用于访问虚拟 LPI Pending 表esident and non-resident vPEs. If the Shareability attribute of the 虚拟 LPI Pending 表s that are associated with vPEs targeting the same 再分发器 are different, behavior 是 UNPREDICTABLE. [0b00=Non-shareable. ; 0b01=Inner Shareable. ; 0b10=Outer Shareable. ; 0b11=保留. Treated as 0b00.]"
+        },
+        {
+          "name": "InnerCache",
+          "bits": "9:7",
+          "access": "RW",
+          "description": "指示 Inner Cacheability attributes of 访问 to the 虚拟 LPI Pending 表. Cacheability/Outer Cacheability/Shareability 字段用于访问虚拟 LPI Pending 表esident and non-resident vPEs. If the InnerCacheabilty attribute of the 虚拟 LPI Pending 表s that are associated with vPEs targeting the same 再分发器 are different, behavior 是 UNPREDICTABLE. [0b000=Device-nGnRnE. ; 0b001=Normal Inner Non-cacheable. ; 0b010=Normal Inner Cacheable, Read-allocate, Write-through。 ; 0b011=Normal Inner Cacheable, Read-allocate, Write-back。 ; 0b100=Normal Inner Cacheable, Write-allocate, Write-through。 ; 0b101=Normal Inner Cacheable, Write-allocate, Write-back。 ; 0b110=Normal Inner Cacheable, Read-allocate, Write-allocate, W ; 0b111=Normal Inner Cacheable, Read-allocate, Write-allocate, W]"
+        },
+        {
+          "name": "RES0",
+          "bits": "6:0",
+          "access": "RW",
+          "description": "保留，RES0。"
+        }
+      ]
+    }
+  ]
+}

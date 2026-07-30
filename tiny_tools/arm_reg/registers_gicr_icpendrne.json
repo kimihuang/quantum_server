@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_ICPENDR<n>E",
+      "fullName": "Interrupt Clear-Pending Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Clear-Pending Registers。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Clear_pending_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "对于扩展 PPI，移除中断号 x 的 pending 状态。 读写行为如下: [0b0=读取时：指示对应中断未 pending ; 0b1=读取时：指示对应中断已 pending]"
+        }
+      ]
+    }
+  ]
+}

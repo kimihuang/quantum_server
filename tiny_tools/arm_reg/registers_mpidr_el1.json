@@ -1,0 +1,70 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "MPIDR_EL1",
+      "fullName": "Multiprocessor Affinity Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "多处理器亲和寄存器 (Multiprocessor Affinity Register)。在多处理器系统中提供额外的 PE 标识机制，通过 4 级亲和字段 (Aff3~Aff0) 唯一标识系统中的每个 PE。单处理器系统中每个 Aff<n> 字段应返回 0。AArch32 映射：MPIDR。只读寄存器，复位值为 IMPLEMENTATION DEFINED。",
+      "fields": [
+        {
+          "name": "RES0_63_40",
+          "bits": "63:40",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Aff3",
+          "bits": "39:32",
+          "access": "RO",
+          "description": "亲和级别 3 (Affinity level 3)。4 级亲和层次中的最高级别，与 Aff2/Aff1/Aff0 组合唯一标识系统中的每个 PE。Aff3 在 AArch32 状态不支持。复位值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "RES1_31",
+          "bits": "31",
+          "access": "RES1",
+          "description": "保留，RES1。必须为 1。"
+        },
+        {
+          "name": "U",
+          "bits": "30",
+          "access": "RO",
+          "description": "单处理器标志 (Uniprocessor)。0b0=PE 属于多处理器系统。0b1=PE 属于单处理器系统（区别于多处理器系统中的 PE 0）。复位值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "RES0_29_25",
+          "bits": "29:25",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "MT",
+          "bits": "24",
+          "access": "RO",
+          "description": "多线程标志 (Multi-threading)。指示最低级亲和层次是否由使用相互依赖方式实现的逻辑 PE 组成。0b0=具有相同 Aff1+ 但不同 Aff0 的 PE 性能基本独立。0b1=具有相同 Aff1+ 但不同 Aff0 的 PE 性能高度相互依赖。注意：此字段不指示多线程已实现，也不指示具有不同 Aff0 值和相同 Aff1+ 值的 PE 已实现。复位值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "Aff2",
+          "bits": "23:16",
+          "access": "RO",
+          "description": "亲和级别 2 (Affinity level 2)。参见 Aff0 的描述。复位值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "Aff1",
+          "bits": "15:8",
+          "access": "RO",
+          "description": "亲和级别 1 (Affinity level 1)。参见 Aff0 的描述。复位值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "Aff0",
+          "bits": "7:0",
+          "access": "RO",
+          "description": "亲和级别 0 (Affinity level 0)。最低级亲和层次。MPIDR_EL1.{Aff3,Aff2,Aff1,Aff0} 必须在整个系统内对每个 PE 唯一。通常用 Aff0 表示多核集群内的 CPU 核编号。复位值为 IMPLEMENTATION DEFINED。"
+        }
+      ]
+    }
+  ]
+}

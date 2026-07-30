@@ -1,0 +1,46 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_WAKER",
+      "fullName": "Redistributor Wake Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Redistributor Wake Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "IMPLEMENTATION DEFINED",
+          "bits": "31",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED."
+        },
+        {
+          "name": "RES0",
+          "bits": "30:3",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "ChildrenAsleep",
+          "bits": "2",
+          "access": "RW",
+          "description": "Read-only. 指示是否 the connected PE is quiescent: [0b0=An interface to the connected PE might be active. ; 0b1=All interfaces to the connected PE are quiescent.]"
+        },
+        {
+          "name": "ProcessorSleep",
+          "bits": "1",
+          "access": "RW",
+          "description": "指示是否 the Redistributor can assert the WakeRequest signal: Before powering down a PE, 软件 must set this bit to 1 and wait until ChildrenAsleep == 1. After powering up a PE, or following a failed powerdown, 软件 must set this bit to 0 and wait until ChildrenAsleep == 0. Changing ProcessorSleep from 1 to 0 when ChildrenAsleep is not 1 results in UNPREDICTABLE behavior. Changing ProcessorSleep from 0 to 1 when the Enable for each interrupt group in the associated CPU interface is not 0 results in UNPREDICTABLE behavior. [0b0=This PE is not in, and is not entering, a low power state. ; 0b1=The PE is either in, or is in the process of entering, a low]"
+        },
+        {
+          "name": "IMPLEMENTATION DEFINED",
+          "bits": "0",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED."
+        }
+      ]
+    }
+  ]
+}

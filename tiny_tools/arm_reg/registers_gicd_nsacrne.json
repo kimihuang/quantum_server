@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_NSACR<n>E",
+      "fullName": "Non-secure Access Control Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Non-secure Access Control Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "NS_access<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "控制 ID 为 16n 的中断的 Non-secure 访问 + x. If the corresponding interrupt does not support configurable Non-secure 访问, the 字段 is RAZ/WI. 否则此字段为 RW，决定 Secure 中断允许的 Non-secure 控制级别pt. 若中断为 Non-secure 中断，则忽略此字段。 每个 2-bit 字段的可能取值：: [0b00=不允许 Non-secure 访问与以下相关的字段： ; 0b01=允许 Non-secure 读写访问 set-pending ; 0b10=与 0b01 相同，但额外允许 Non-secure 读写访问 ; 0b11=This encoding is treated as 0b10 , but adds Non-secure 读 ]"
+        }
+      ]
+    }
+  ]
+}

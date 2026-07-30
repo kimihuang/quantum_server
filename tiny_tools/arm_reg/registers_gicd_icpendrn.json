@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_ICPENDR<n>",
+      "fullName": "Interrupt Clear-Pending Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Clear-Pending Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "Clear_pending_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "对于 SPI 和 PPI， removes pending 状态 from 中断号 32n + x. 读写行为如下: [0b0=读取时：指示对应中断未 pending ; 0b1=读取时：指示对应中断已 pending]"
+        }
+      ]
+    }
+  ]
+}

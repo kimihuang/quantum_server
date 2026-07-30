@@ -1,0 +1,22 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "ELR_EL1",
+      "fullName": "Exception Link Register (EL1)",
+      "address": "0x0040",
+      "width": 64,
+      "description": "异常链接寄存器 (Exception Link Register)。当异常被捕获到 EL1 时，保存返回地址。从 EL1 执行 AArch64 异常返回 (ERET) 时，PE 跳转到 ELR_EL1 中保存的地址。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "ADDR",
+          "bits": "63:0",
+          "access": "RW",
+          "description": "返回地址 (Return address)。保存异常被捕获到 EL1 时的返回地址。当使用 AArch64 从 EL1 执行异常返回后，ELR_EL1 变为 UNKNOWN。可通过 MRS 读取，通过 MSR (register) 写入。支持别名 ELR_EL12 (FEAT_VHE)。复位值为架构 UNKNOWN。"
+        }
+      ]
+    }
+  ]
+}

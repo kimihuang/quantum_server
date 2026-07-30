@@ -1,0 +1,274 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "TCR_EL1",
+      "fullName": "Translation Control Register (EL1)",
+      "address": "0x00A1",
+      "width": 64,
+      "description": "翻译控制寄存器 (Translation Control Register)。控制与 EL1&0 翻译制度相关的 Stage-1 地址翻译配置，包括 TTBR0/TTBR1 的页表粒度、地址空间大小、物理地址范围、缓存属性和共享属性。TCR_EL1 允许在 TLB 中缓存。AArch32 映射：TTBCR 和 TTBCR2。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:62",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "MTX1",
+          "bits": "61",
+          "access": "RW",
+          "description": "[当 FEAT_MTE_NO_ADDRESS_TAGS 或 FEAT_MTE_CANONICAL_TAGS 实现时] 扩展内存标记检查。 此字段控制地址生成和规范标记 (Canonical tagging)，当 EL0 and EL1 are using AArch64 where 数据地址将由 TTBR1_EL1 表翻译。 此控制不论 EL1&0 Stage-1 翻译是否使能均有效。 详细信息参见 Logical address tagging and Memory region tagging types. [0b0=规范标记禁用，对地址生成无影响。; 0b1=规范标记使能。 Bits[59:56] of a 64-bit VA hold a Logical Address ]；否则为 RES0"
+        },
+        {
+          "name": "MTX0",
+          "bits": "60",
+          "access": "RW",
+          "description": "[当 FEAT_MTE_NO_ADDRESS_TAGS 或 FEAT_MTE_CANONICAL_TAGS 实现时] 扩展内存标记检查。 此字段控制地址生成和规范标记 (Canonical tagging)，当 EL0 and EL1 are using AArch64 where 数据地址将由 TTBR0_EL1 表翻译。 此控制不论 EL1&0 Stage-1 翻译是否使能均有效。 详细信息参见 Logical address tagging and Memory region tagging types. [0b0=规范标记禁用，对地址生成无影响。; 0b1=规范标记使能。 Bits[59:56] of a 64-bit VA hold a Logical Address ]；否则为 RES0"
+        },
+        {
+          "name": "DS",
+          "bits": "59",
+          "access": "RW",
+          "description": "[当 FEAT_LPA2 实现且 (FEAT_D128 未实现或 TCR2_EL1.D128==0) 时] 此字段影响：4KB/16KB 粒度的页表能否描述 52-bit 输出地址；TCR_EL1.{T0SZ,T1SZ} 的最小值；Block/Page 描述符的可共享性编码方式。64KB 粒度下此字段为 RES0。 [0b0=翻译描述符的 bits[49:48] 为 RES0。Block/Page 描述符的 bits[9:8] ; 0b1=翻译描述符的 bits[49:48] 保存输出地址[49:48]。Block/Page 描述符的 bits[9:8] ]"
+        },
+        {
+          "name": "TCMA1",
+          "bits": "58",
+          "access": "RW",
+          "description": "[当 FEAT_MTE2 或 FEAT_VMTETC 实现时] 控制 EL1 和 EL0 (HCR_EL2.{E2H,TGE}≠{1,1}) 生成 Unchecked 访问，[59:55] = 0b11111. It has an effect whether the EL1&0 translation regime is enabled or not. Software may change this control bit on a context switch. [0b0=This control has no effect on the generation of Unchecked accesses at EL1 or EL0; 0b1=All accesses at EL1 and EL0 are Unchecked.]；否则为 RES0"
+        },
+        {
+          "name": "TCMA0",
+          "bits": "57",
+          "access": "RW",
+          "description": "[当 FEAT_MTE2 或 FEAT_VMTETC 实现时] 控制 EL1 和 EL0 (HCR_EL2.{E2H,TGE}≠{1,1}) 生成 Unchecked 访问，[59:55] = 0b00000. It has an effect whether the EL1&0 translation regime is enabled or not. Software may change this control bit on a context switch. [0b0=This control has no effect on the generation of Unchecked accesses at EL1 or EL0; 0b1=All accesses at EL1 and EL0 are Unchecked.]；否则为 RES0"
+        },
+        {
+          "name": "E0PD1",
+          "bits": "56",
+          "access": "RW",
+          "description": "[当 FEAT_E0PD 实现时] TTBR1_EL1 翻译地址的非特权访问故障控制 (E0PD1)。产生的 Level-0 翻译故障不计入 PMU TLB 缺失。故障产生时间与地址是否在 TLB 中无关，以缓解利用故障时序的攻击。 [0b0=对 TTBR1_EL1 翻译地址的非特权访问不产生 ; 0b1=对 TTBR1_EL1 翻译地址的非特权访问产生 Level-]；否则为 RES0"
+        },
+        {
+          "name": "E0PD0",
+          "bits": "55",
+          "access": "RW",
+          "description": "[当 FEAT_E0PD 实现时] TTBR0_EL1 翻译地址的非特权访问故障控制 (E0PD0)。产生的 Level-0 翻译故障不计入 PMU TLB 缺失。故障产生时间与地址是否在 TLB 中无关，以缓解利用故障时序的攻击。 [0b0=对 TTBR0_EL1 翻译地址的非特权访问不产生 ; 0b1=对 TTBR0_EL1 翻译地址的非特权访问产生 Level-]；否则为 RES0"
+        },
+        {
+          "name": "NFD1",
+          "bits": "54",
+          "access": "RW",
+          "description": "[当 FEAT_SVE 实现时] TTBR1_EL1 非故障翻译时序禁用 (NFD1)。控制 TLB 缺失在非故障非特权访问上的报告方式。若 SVE 实现，受影响的访问类型包括： [0b0=不影响 TTBR1_EL1 翻译访问的 TLB 缺失处理; 0b1=因指定访问类型产生的 TTBR1_EL1 翻译 VA 的 TLB 缺失]；否则为 RES0"
+        },
+        {
+          "name": "NFD0",
+          "bits": "53",
+          "access": "RW",
+          "description": "[当 FEAT_SVE 实现时] TTBR0_EL1 非故障翻译时序禁用 (NFD0)。控制 TLB 缺失在非故障非特权访问上的报告方式。若 SVE 实现，受影响的访问类型包括： [0b0=不影响 TTBR0_EL1 翻译访问的 TLB 缺失处理; 0b1=因指定访问类型产生的 TTBR0_EL1 翻译 VA 的 TLB 缺失]；否则为 RES0"
+        },
+        {
+          "name": "TBID1",
+          "bits": "52",
+          "access": "RW",
+          "description": "[当 FEAT_PAuth 实现时] 控制指令地址顶字节用于地址匹配 (TBID)。所有执行地址翻译的缓存维护/地址翻译指令被视为数据访问。 影响 TTBR1_EL1 表翻译的地址，无论 EL1&0 翻译是否使能均生效。 [0b0=TCR_EL1.TBI1 适用于指令和数据访问。; 0b1=TCR_EL1.TBI1 仅适用于数据访问。]；否则为 RES0"
+        },
+        {
+          "name": "TBID0",
+          "bits": "51",
+          "access": "RW",
+          "description": "[当 FEAT_PAuth 实现时] 控制指令地址顶字节用于地址匹配 (TBID)。所有执行地址翻译的缓存维护/地址翻译指令被视为数据访问。 影响 TTBR0_EL1 表翻译的地址，无论 EL1&0 翻译是否使能均生效。 [0b0=TCR_EL1.TBI0 适用于指令和数据访问。; 0b1=TCR_EL1.TBI0 仅适用于数据访问。]；否则为 RES0"
+        },
+        {
+          "name": "HWU162",
+          "bits": "50",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[62] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR1_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD1 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR1_EL1 , bit[62] of each stage 1 translation table Blo; 0b1=For translations using TTBR1_EL1 , bit[62] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU161",
+          "bits": "49",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[61] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR1_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD1 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR1_EL1 , bit[61] of each stage 1 translation table Blo; 0b1=For translations using TTBR1_EL1 , bit[61] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU160",
+          "bits": "48",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[60] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR1_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD1 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR1_EL1 , bit[60] of each stage 1 translation table Blo; 0b1=For translations using TTBR1_EL1 , bit[60] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU159",
+          "bits": "47",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[59] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR1_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD1 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR1_EL1 , bit[59] of each stage 1 translation table Blo; 0b1=For translations using TTBR1_EL1 , bit[59] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU062",
+          "bits": "46",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[62] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR0_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD0 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR0_EL1 , bit[62] of each stage 1 translation table Blo; 0b1=For translations using TTBR0_EL1 , bit[62] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU061",
+          "bits": "45",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[61] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR0_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD0 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR0_EL1 , bit[61] of each stage 1 translation table Blo; 0b1=For translations using TTBR0_EL1 , bit[61] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU060",
+          "bits": "44",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[60] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR0_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD0 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR0_EL1 , bit[60] of each stage 1 translation table Blo; 0b1=For translations using TTBR0_EL1 , bit[60] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HWU059",
+          "bits": "43",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS2 实现时] 硬件使用 (Hardware Use)：指示 IMPLEMENTATION DEFINED 硬件对 bit[59] 翻译的 Stage-1 页表 Block/Page 条目的 TTBR0_EL1. The Effective value of this field is 0 if the value of TCR_EL1.HPD0 is 0. This field is RES0 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=For translations using TTBR0_EL1 , bit[59] of each stage 1 translation table Blo; 0b1=For translations using TTBR0_EL1 , bit[59] of each stage 1 translation table Blo]；否则为 RES0"
+        },
+        {
+          "name": "HPD1",
+          "bits": "42",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS 实现时] 层次权限禁用 (Hierarchical Permission Disables)。影响以下指向的页表中的层次控制位 (APTable/PXNTable/UXNTable，不含 NSTable)： TTBR1_EL1. When disabled, the permissions are treated as if the bits are zero. This field is RES1 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=Hierarchical permissions are enabled.; 0b1=Hierarchical permissions are disabled.]；否则为 RES0"
+        },
+        {
+          "name": "HPD0",
+          "bits": "41",
+          "access": "RW",
+          "description": "[当 FEAT_HPDS 实现时] 层次权限禁用 (Hierarchical Permission Disables)。影响以下指向的页表中的层次控制位 (APTable/PXNTable/UXNTable，不含 NSTable)： TTBR0_EL1. When disabled, the permissions are treated as if the bits are zero. This field is RES1 when TCR2_EL1.POE2F is 1 and TCR2_EL1.D128 is 0. [0b0=Hierarchical permissions are enabled.; 0b1=Hierarchical permissions are disabled.]；否则为 RES0"
+        },
+        {
+          "name": "HD",
+          "bits": "40",
+          "access": "RW",
+          "description": "[当 FEAT_HAFDBS 实现时] EL0/EL1 Stage-1 翻译硬件脏状态管理 (HD)。当 HA=0 时此字段行为如同 0（除直接读取字段值外）。 [0b0=Stage-1 硬件脏状态管理禁用。; 0b1=Stage-1 硬件脏状态管理使能。]；否则为 RES0"
+        },
+        {
+          "name": "HA",
+          "bits": "39",
+          "access": "RW",
+          "description": "[当 FEAT_HAF 实现时] EL0/EL1 Stage-1 翻译中硬件访问标志更新。 [0b0=Stage-1 Access Flag 更新禁用; 0b1=Stage-1 Access Flag 更新使能]；否则为 RES0"
+        },
+        {
+          "name": "TBI1",
+          "bits": "38",
+          "access": "RW",
+          "description": "顶字节忽略 (TBI1)。指示 TTBR1_EL1 区域的地址顶字节是用于地址匹配还是被忽略。影响 EL0/EL1 AArch64 中由 TTBR1_EL1 翻译的地址。无论 EL1&0 翻译是否使能均生效。若 FEAT_PAuth 实现且 TBID1=1，则仅适用于数据访问。若 TBI1=1 且存入 PC 的目标地址 bit[55]=1，则 bits[63:56] 在存入 PC 前也设为 1，适用于以下情况： [0b0=顶字节用于地址计算。; 0b1=顶字节在地址计算中被忽略。]"
+        },
+        {
+          "name": "TBI0",
+          "bits": "37",
+          "access": "RW",
+          "description": "Top Byte ignored. Indicates whether the top byte of an address is used for address match for the TTBR0_EL1 region, or ignored and used for tagged addresses. This affects addresses generated at EL0 and EL1 using AArch64 where the address would be translated by tables pointed to by TTBR0_EL1. It has an effect whether the EL1&0 translation regime is enabled or not. If FEAT_PAuth is implemented and TCR_EL1.TBID0 is 1, then this field only applies to Data accesses. Otherwise, if the value of TBI0 is 1 and bit [55] of the target address to be stored to the PC is 0, then bits[63:56] of that target address are also set to 0 before the address is stored in the PC, in the following cases: [0b0=顶字节用于地址计算。; 0b1=顶字节在地址计算中被忽略。]"
+        },
+        {
+          "name": "AS",
+          "bits": "36",
+          "access": "RW",
+          "description": "ASID 大小。若实现只有 8-bit ASID，此字段为 RES0。 [0b0=8-bit — 硬件忽略 TTBR0_EL1/TTBR1_EL1 高 8 位 ; 0b1=16 bit - the upper 16 bits of TTBR0_EL1 and TTBR1_EL1 are used for allocation an]"
+        },
+        {
+          "name": "RES0",
+          "bits": "35",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "IPS",
+          "bits": "34:32",
+          "access": "RW",
+          "description": "中间 物理地址大小 (Physical Address Size)。 0b110 和 0b111 根据实现选择和翻译配置表示不同输出地址大小。 The following table captures the output address size represented by the value 0b110: 1 This column represents the value of TCR_EL1.DS. The following table captures the output address size represented by the value 0b111: If 52-bit PA is supported, and the translation table descriptors cannot express an OA larger than 48-bits, then bits[51:48] of every translation table base address are treated as 0b0000 for the stage of translation controlled by TCR_EL1. If 56-bit PA is supported, and the translation table descriptors cannot express an OA larger than 52-bits, then bits[55:52] of every translation table base address are treated as 0b0000 for the stage of translation controlled by TCR_EL1. If the output address size represented by this field is larger than the supported PA size expressed in ID_AA64MMFR0_EL1.PARange, then the output address size is treated as being the same as the supported PA size. Arm strongly recommends that software avoids configuring this field to a value representing an output address size larger than the supported PA size. [0b000=32 bits, 4GB.; 0b001=36 bits, 64GB.; 0b010=40 bits, 1TB.; 0b011=42 bits, 4TB.; 0b100=44 bits, 16TB.; 0b101=48 bits, 256TB.; 0b110=52 bits, 4PB.; 0b111=56 bits, 64PB.]"
+        },
+        {
+          "name": "TG1",
+          "bits": "31:30",
+          "access": "RW",
+          "description": "TTBR1_EL1 的翻译粒度。 其余值保留。若编程为保留值或未实现粒度，硬件在除读取寄存器值外的所有用途中行为如同已编程为 IMPLEMENTATION DEFINED 选择的已实现粒度。读取值返回编程值还是选择值取决于 IMPLEMENTATION DEFINED。 [0b01=16KB.; 0b10=4KB.; 0b11=64KB.]"
+        },
+        {
+          "name": "SH1",
+          "bits": "29:28",
+          "access": "RW",
+          "description": "TTBR1_EL1 页表遍历的内存可共享属性。 其余值保留。编程为保留值的行为是 CONSTRAINED UNPREDICTABLE。 [0b00=非可共享 (Non-shareable)。; 0b10=外部可共享 (Outer Shareable)。; 0b11=内部可共享 (Inner Shareable)。]"
+        },
+        {
+          "name": "ORGN1",
+          "bits": "27:26",
+          "access": "RW",
+          "description": "TTBR1_EL1 页表遍历内存的 Outer 缓存属性。 [0b00=Normal 内存，Outer Non-cacheable。; 0b01=Normal 内存, Outer WB RA WA Cacheable。; 0b10=Normal 内存, Outer WT RA NWA Cacheable。; 0b11=Normal 内存, Outer WB RA NWA Cacheable。]"
+        },
+        {
+          "name": "IRGN1",
+          "bits": "25:24",
+          "access": "RW",
+          "description": "TTBR1_EL1 页表遍历内存的 Inner 缓存属性。 [0b00=Normal 内存，Inner Non-cacheable。; 0b01=Normal 内存, Inner WB RA WA Cacheable。; 0b10=Normal 内存, Inner WT RA NWA Cacheable。; 0b11=Normal 内存, Inner WB RA NWA Cacheable。]"
+        },
+        {
+          "name": "EPD1",
+          "bits": "23",
+          "access": "RW",
+          "description": "TTBR1_EL1 翻译的页表遍历禁用。控制 TLB 缺失时是否执行页表遍历。 [0b0=执行 TTBR1_EL1 页表遍历。; 0b1=TLB 缺失 address that is translated using TTBR1_EL1 generates a Translat]"
+        },
+        {
+          "name": "A1",
+          "bits": "22",
+          "access": "RW",
+          "description": "选择 TTBR0_EL1 还是 TTBR1_EL1 定义 ASID： [0b0=TTBR0_EL1.ASID 定义 ASID; 0b1=TTBR1_EL1.ASID 定义 ASID]"
+        },
+        {
+          "name": "T1SZ",
+          "bits": "21:16",
+          "access": "RW",
+          "description": "TTBR1_EL1 寻址的内存区域大小偏移量。 区域大小为 2^(64-T1SZ) 字节。T1SZ 的最大最小值取决于翻译表级别和内存翻译粒度。 影响 PAC 计算，无论 EL1&0 翻译制度是否使能。 对于 4KB 翻译粒度： if FEAT_LPA2 is implemented, TCR_EL1.DS is 1, and this field is less than 16, the 页表遍历 begins with a level -1 initial lookup. 对于 16KB 翻译粒度： if FEAT_LPA2 is implemented, TCR_EL1.DS is 1, and this field is less than 17, the 页表遍历 begins with a level 0 initial lookup."
+        },
+        {
+          "name": "TG0",
+          "bits": "15:14",
+          "access": "RW",
+          "description": "TTBR0_EL1 的翻译粒度。 其余值保留。若编程为保留值或未实现粒度，硬件在除读取寄存器值外的所有用途中行为如同已编程为 IMPLEMENTATION DEFINED 选择的已实现粒度。读取值返回编程值还是选择值取决于 IMPLEMENTATION DEFINED。 [0b00=4KB; 0b01=64KB; 0b10=16KB]"
+        },
+        {
+          "name": "SH0",
+          "bits": "13:12",
+          "access": "RW",
+          "description": "TTBR0_EL1 页表遍历的内存可共享属性。 其余值保留。编程为保留值的行为是 CONSTRAINED UNPREDICTABLE。 [0b00=Non-shareable; 0b10=Outer Shareable; 0b11=Inner Shareable]"
+        },
+        {
+          "name": "ORGN0",
+          "bits": "11:10",
+          "access": "RW",
+          "description": "TTBR0_EL1 页表遍历内存的 Outer 缓存属性。 [0b00=Normal 内存，Outer Non-cacheable。; 0b01=Normal 内存, Outer WB RA WA Cacheable。; 0b10=Normal 内存, Outer WT RA NWA Cacheable。; 0b11=Normal 内存, Outer WB RA NWA Cacheable。]"
+        },
+        {
+          "name": "IRGN0",
+          "bits": "9:8",
+          "access": "RW",
+          "description": "TTBR0_EL1 页表遍历内存的 Inner 缓存属性。 [0b00=Normal 内存，Inner Non-cacheable。; 0b01=Normal 内存, Inner WB RA WA Cacheable。; 0b10=Normal 内存, Inner WT RA NWA Cacheable。; 0b11=Normal 内存, Inner WB RA NWA Cacheable。]"
+        },
+        {
+          "name": "EPD0",
+          "bits": "7",
+          "access": "RW",
+          "description": "TTBR0_EL1 翻译的页表遍历禁用。控制 TLB 缺失时是否执行页表遍历。 [0b0=执行 TTBR0_EL1 页表遍历。; 0b1=TLB 缺失 address that is translated using TTBR0_EL1 generates a Translat]"
+        },
+        {
+          "name": "RES0",
+          "bits": "6",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "T0SZ",
+          "bits": "5:0",
+          "access": "RW",
+          "description": "TTBR0_EL1 寻址的内存区域大小偏移量。 区域大小为 2^(64-T0SZ) 字节。T0SZ 的最大最小值取决于翻译表级别和内存翻译粒度。 影响 PAC 计算，无论 EL1&0 翻译制度是否使能。 对于 4KB 翻译粒度： if FEAT_LPA2 is implemented, TCR_EL1.DS is 1, and this field is less than 16, the 页表遍历 begins with a level -1 initial lookup. 对于 16KB 翻译粒度： if FEAT_LPA2 is implemented, TCR_EL1.DS is 1, and this field is less than 17, the 页表遍历 begins with a level 0 initial lookup."
+        }
+      ]
+    }
+  ]
+}

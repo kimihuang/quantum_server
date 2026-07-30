@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_INMIR<n>E",
+      "fullName": "Non-maskable Interrupt Registers for Extended PPIs, x = 1 to 2.",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Non-maskable Interrupt Registers for Extended PPIs, x = 1 to 2.。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "nmi<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "不可屏蔽属性。 This bit is RES0 when the corresponding interrupt is configured as Group 0. [0b0=中断不具有不可屏蔽属性。 ; 0b1=中断具有不可屏蔽属性。]"
+        }
+      ]
+    }
+  ]
+}

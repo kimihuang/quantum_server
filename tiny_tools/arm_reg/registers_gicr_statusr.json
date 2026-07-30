@@ -1,0 +1,46 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_STATUSR",
+      "fullName": "Error Reporting Status Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Error Reporting Status Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:4",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "WROD",
+          "bits": "3",
+          "access": "RW",
+          "description": "Write to an RO location. 检测到违规时，软件必须向此寄存器写入 1 来复位。 [0b0=Normal operation. ; 0b1=A write to an RO location has been detected.]"
+        },
+        {
+          "name": "RWOD",
+          "bits": "2",
+          "access": "RW",
+          "description": "Read of a WO location. 检测到违规时，软件必须向此寄存器写入 1 来复位。 [0b0=Normal operation. ; 0b1=A read of a WO location has been detected.]"
+        },
+        {
+          "name": "WRD",
+          "bits": "1",
+          "access": "RW",
+          "description": "Write to a 保留 location. 检测到违规时，软件必须向此寄存器写入 1 来复位。 [0b0=Normal operation. ; 0b1=A write to a 保留 location has been detected.]"
+        },
+        {
+          "name": "RRD",
+          "bits": "0",
+          "access": "RW",
+          "description": "Read of a 保留 location. 检测到违规时，软件必须向此寄存器写入 1 来复位。 [0b0=Normal operation. ; 0b1=A read of a 保留 location has been detected.]"
+        }
+      ]
+    }
+  ]
+}

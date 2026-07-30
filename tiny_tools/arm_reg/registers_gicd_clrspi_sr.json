@@ -1,0 +1,28 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_CLRSPI_SR",
+      "fullName": "Clear Secure SPI Pending Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Clear Secure SPI Pending Register。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:13",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "INTID",
+          "bits": "12:0",
+          "access": "RW",
+          "description": "SPI 的 INTID。"
+        }
+      ]
+    }
+  ]
+}

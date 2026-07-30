@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_IGRPMODR<n>E",
+      "fullName": "Interrupt Group Modifier Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Group Modifier Registers。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Group_modifier_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "分组修饰 bit. 在启用亲和路由的实现中 用于 中断安全状态中，对应中断的 bit 与 GICR_IGROUPR<n>E to form a 2-bit 字段 that defines an interrupt group:"
+        }
+      ]
+    }
+  ]
+}

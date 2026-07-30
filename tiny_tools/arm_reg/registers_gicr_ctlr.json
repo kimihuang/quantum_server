@@ -1,0 +1,76 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_CTLR",
+      "fullName": "Redistributor Control Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Redistributor Control Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "UWP",
+          "bits": "31",
+          "access": "RW",
+          "description": "Upstream Write Pending. Read-only. 指示是否 all upstream writes have been communicated to the 分发器. [0b0=The effects of all upstream writes have been communicated to ; 0b1=Not all the effects of upstream writes, including any Genera]"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:27",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "DPG1S",
+          "bits": "26",
+          "access": "RW",
+          "description": "禁用 Processor 选择 for Group 1 Secure interrupts. 当 GICR_TYPER.DPGS == 1: 当 GICR_TYPER.DPGS == 0 this bit is RAZ/WI. 当 GICD_CTLR.DS==1, this 字段 is RAZ/WI. In GIC 实现 that support two Security states, this 字段 is only 访问ible by Secure 访问, and is RAZ/WI to Non-secure 访问. 这些位是否影响使用 1-of-N 分发的 PE 选择是 IMPLEMENTATION DEFINED model when GICD_CTLR.ARE_S==0. [0b0=A Group 1 Secure SPI configured to use the 1 of N distributi ; 0b1=A Group 1 Secure SPI configured to use the 1 of N distributi]"
+        },
+        {
+          "name": "DPG1NS",
+          "bits": "25",
+          "access": "RW",
+          "description": "禁用 Processor 选择 for Group 1 Non-secure interrupts. 当 GICR_TYPER.DPGS == 1: 当 GICR_TYPER.DPGS == 0 this bit is RAZ/WI. 这些位是否影响使用 1-of-N 分发的 PE 选择是 IMPLEMENTATION DEFINED model when GICD_CTLR.ARE_NS==0. [0b0=A Group 1 Non-secure SPI configured to use the 1 of N distri ; 0b1=A Group 1 Non-secure SPI configured to use the 1 of N distri]"
+        },
+        {
+          "name": "DPG0",
+          "bits": "24",
+          "access": "RW",
+          "description": "禁用 Processor 选择 for Group 0 interrupts. 当 GICR_TYPER.DPGS == 1: 当 GICR_TYPER.DPGS == 0 this bit is RAZ/WI. 当 GICD_CTLR.DS == 1, this 字段 is always 访问ible. In GIC 实现 that support two Security states, this 字段 is RAZ/WI to Non-secure 访问. 这些位是否影响使用 1-of-N 分发的 PE 选择是 IMPLEMENTATION DEFINED model when GICD_CTLR.ARE_S == 0. [0b0=A Group 0 SPI configured to use the 1-of-N 分发 mode ; 0b1=A Group 0 SPI configured to use the 1-of-N 分发 mode]"
+        },
+        {
+          "name": "RES0",
+          "bits": "23:4",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RWP",
+          "bits": "3",
+          "access": "RW",
+          "description": "Register Write Pending. This bit indicates whether a 寄存器 write 用于 current Security state is in progress or not. [0b0=以下寄存器的所有先前写入的效果 ; 0b1=以下寄存器的所有先前写入的效果]"
+        },
+        {
+          "name": "IR",
+          "bits": "2",
+          "access": "RW",
+          "description": "LPI invalidate 寄存器s supported. This bit is read-only. If GICR_TYPER.DirectLPI is 1 or GICR_TYPER.RVPEI is 1, GICR_INVLPIR, GICR_INVALLR, and GICR_SYNCR are always implemented. Arm 建议 实现 report GICR_CTLR.IR as 1 in these cases. [0b0=This bit does not indicate whether the GICR_INVLPIR, GICR_IN ; 0b1=GICR_INVLPIR, GICR_INVALLR and GICR_SYNCR are implemented.]"
+        },
+        {
+          "name": "CES",
+          "bits": "1",
+          "access": "RW",
+          "description": "Clear Enable Supported. This bit is read-only. Implementing GICR_CTLR.EnableLPIs as programmable and not reporting GICR_CLTR.CES == 1 is 已弃用. Implementing GICR_CTLR.EnableLPIs as RES1 once set is 已弃用. 当 GICR_CLTR.CES == 0, 软件 cannot assume that GICR_CTLR.EnableLPIs is programmable without observing the bit being cleared to 0. [0b0=The IRI does not indicate whether GICR_CTLR.EnableLPIs is RE ; 0b1=GICR_CTLR.EnableLPIs is not RES1 once set.]"
+        },
+        {
+          "name": "EnableLPIs",
+          "bits": "0",
+          "access": "RW",
+          "description": "在启用亲和路由的实现中 用于 Security state: If GICR_TYPER.PLPIS == 0, this 字段 is RES0. If GICD_CTLR.ARE_NS is written from 1 to 0 when this bit is 1, behavior is an IMPLEMENTATION DEFINED choice between clearing GICR_CTLR.EnableLPIs to 0 or maintaining its current value. 当 亲和路由 is not enabled 用于 Non-secure state, this bit is RES0. 当 written from 0 to 1, the 再分发器 loads the LPI Pending 表 from memory to check for any pending 中断. After it has been written to 1, it 是 IMPLEMENTATION DEFINED whether the bit becomes RES1 or can be cleared by to 0. Where the bit remains programmable: If one or more ITS is implemented, Arm 强烈建议 that all LPIs are mapped to another Redistributor before GICR_CTLR.EnableLPIs is cleared to 0. [0b0=LPI support is disabled. Any 门铃中断 (doorbell interrupt) generated as ; 0b1=LPI support is enabled.]"
+        }
+      ]
+    }
+  ]
+}

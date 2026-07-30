@@ -1,0 +1,40 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_ITARGETSR<n>",
+      "fullName": "Interrupt Processor Targets Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Processor Targets Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "CPU_targets_offset_3B",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "PE targets for an interrupt, at byte offset 3."
+        },
+        {
+          "name": "CPU_targets_offset_2B",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "PE targets for an interrupt, at byte offset 2."
+        },
+        {
+          "name": "CPU_targets_offset_1B",
+          "bits": "15:8",
+          "access": "RW",
+          "description": "PE targets for an interrupt, at byte offset 1."
+        },
+        {
+          "name": "CPU_targets_offset_0B",
+          "bits": "7:0",
+          "access": "RW",
+          "description": "PE targets for an interrupt, at byte offset 0."
+        }
+      ]
+    }
+  ]
+}

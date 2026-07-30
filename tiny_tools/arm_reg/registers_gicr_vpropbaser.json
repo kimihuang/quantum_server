@@ -1,0 +1,106 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_VPROPBASER",
+      "fullName": "Virtual Redistributor Properties Base Address Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Virtual Redistributor Properties Base Address Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Valid",
+          "bits": "63",
+          "access": "RW",
+          "description": "This bit controls whether the vPE Configuration Table is valid. [0b0=The vPE Configuration 表 is not valid. ; 0b1=The vPE Configuration 表 is valid.]"
+        },
+        {
+          "name": "RES0",
+          "bits": "63:59",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "62",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Entry_Size",
+          "bits": "61:59",
+          "access": "RW",
+          "description": "指定 number 64-bit doublewords per 表 条目, minus one. This bit is read-only."
+        },
+        {
+          "name": "OuterCache",
+          "bits": "58:56",
+          "access": "RW",
+          "description": "指示 Outer Cacheability attributes of 访问 to the 表. 此字段是固定值还是可由软件编程是 IMPLEMENTATION DEFINED。 以固定值实现此字段已弃用。 [0b000=内存类型由 InnerCache 字段定义. For Normal memory, ; 0b001=Normal Outer Non-cacheable. ; 0b010=Normal Outer Cacheable, Read-allocate, Write-through。 ; 0b011=Normal Outer Cacheable, Read-allocate, Write-back。 ; 0b100=Normal Outer Cacheable, Write-allocate, Write-through。 ; 0b101=Normal Outer Cacheable, Write-allocate, Write-back。 ; 0b110=Normal Outer Cacheable, Read-allocate, Write-allocate, W ; 0b111=Normal Outer Cacheable, Read-allocate, Write-allocate, W]"
+        },
+        {
+          "name": "Indirect",
+          "bits": "55",
+          "access": "RW",
+          "description": "This 字段 indicates whether GICR_VPROPBASER specifies a single, flat 表 or a two-level 表 where the first level contains a list of descriptors. This 字段 is RAZ/WI for GIC 实现 that only support flat 表s. If the supported vPEID width indicated by GICD_TYPER2.VIL and GICD_TYPER2.VID, and the smallest page size that is supported result in a single level 表 that requires multiple pages, then implementing this bit as RAZ/WI is 已弃用. [0b0=Single Level. The Size 字段 indicates the 的个数 pages u ; 0b1=Two Level. The Size 字段 indicates the 的个数 pages that]"
+        },
+        {
+          "name": "RES0",
+          "bits": "55:52",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Page_Size",
+          "bits": "54:53",
+          "access": "RW",
+          "description": "The following values indicate the size of page that the translation 表 uses: If the GIC 实现 supports only a single, fixed page size, this 字段 might be RO. [0b00=4KB. ; 0b01=16KB. ; 0b10=64KB. ; 0b11=保留. Treated as 0b10.]"
+        },
+        {
+          "name": "Z",
+          "bits": "52",
+          "access": "RW",
+          "description": "当 GICR_VPROPBASER.Valid is written from 0 to 1, GICR_VPROPBASER.Z indicates whether the vPE Configuration 表 is known to contain all zeros. Setting GICR_VPROPBASER.Z to 0 causes the IRI to reload configuration from memory 当 GICR_VPROPBASER.Valid is written from 0 to 1, if GICR_VPROPBASER.Z==1 behavior 是 UNPREDICTABLE if the allocated memory does not contain all zeros. 此字段为只写 (WO)，读返回 0。 [0b0=The vPE Configuration 表 is not zero, and contains live d ; 0b1=The vPE Configuration 表 is zero.]"
+        },
+        {
+          "name": "Physical_Address",
+          "bits": "51:12",
+          "access": "RW",
+          "description": "Bits [51:12] of the 物理地址 containing the vPE Configuration 表. 在支持少于 52 位物理地址的实现中，未实现的高位为 RES0。"
+        },
+        {
+          "name": "Shareability",
+          "bits": "11:10",
+          "access": "RW",
+          "description": "指示 Shareability attributes of 访问 to the vPE Configuration 表. 此字段是固定值还是可由软件编程是 IMPLEMENTATION DEFINED。 以固定值实现此字段已弃用。 [0b00=Non-shareable. ; 0b01=Inner Shareable. ; 0b10=Outer Shareable. ; 0b11=保留. Treated as 0b00.]"
+        },
+        {
+          "name": "InnerCache",
+          "bits": "9:7",
+          "access": "RW",
+          "description": "指示 Inner Cacheability attributes of 访问 to the vPE Configuration 表. [0b000=Device-nGnRnE. ; 0b001=Normal Inner Non-cacheable. ; 0b010=Normal Inner Cacheable, Read-allocate, Write-through。 ; 0b011=Normal Inner Cacheable, Read-allocate, Write-back。 ; 0b100=Normal Inner Cacheable, Write-allocate, Write-through。 ; 0b101=Normal Inner Cacheable, Write-allocate, Write-back。 ; 0b110=Normal Inner Cacheable, Read-allocate, Write-allocate, W ; 0b111=Normal Inner Cacheable, Read-allocate, Write-allocate, W]"
+        },
+        {
+          "name": "Size",
+          "bits": "6:0",
+          "access": "RW",
+          "description": "The 的个数 pages of physical memory allocated to the 表, minus one. GICR_VPROPBASER.Page_Size specifies the size of each page."
+        },
+        {
+          "name": "RES0",
+          "bits": "6:5",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "IDbits",
+          "bits": "4:0",
+          "access": "RW",
+          "description": "The 位数 of virtual LPI INTID supported, minus one. 若 this 字段 is less than 0b1101, indicating that the largest INTID is less than 8192 (the smallest LPI interrupt ID), the GIC will behave as if all virtual LPIs are out of range."
+        }
+      ]
+    }
+  ]
+}

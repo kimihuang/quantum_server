@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_ISACTIVER0",
+      "fullName": "Interrupt Set-Active Register 0",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Set-Active Register 0。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Set_active_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "添加活跃中断 state to 中断号 x. 读写行为如下: [0b0=读取时：指示对应中断未活跃 ; 0b1=读取时：指示对应中断已活跃]"
+        }
+      ]
+    }
+  ]
+}

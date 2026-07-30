@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_ICFGR0",
+      "fullName": "Interrupt Configuration Register 0",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Configuration Register 0。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Int_config<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "指示是否 the is level-sensitive or edge-triggered. SGIs are always edge-triggered. 当 the interrupt is visible to the current Security state, a read of this bit always returns the correct value to indicate the interrupt triggering method. [0b00=对应中断为电平敏感。 ; 0b10=对应中断为边沿触发。]"
+        }
+      ]
+    }
+  ]
+}

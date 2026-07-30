@@ -1,0 +1,22 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "SP_EL1",
+      "fullName": "Stack Pointer (EL1)",
+      "address": "0x0042",
+      "width": 64,
+      "description": "EL1 的堆栈指针 (Stack Pointer)。保存与 EL1 关联的堆栈指针值。当 SPSel.SP=1 时，此寄存器作为当前堆栈指针使用；当 SPSel.SP=0 时，使用 SP_EL0 作为所有异常级别的当前堆栈指针。SP_EL1 可通过 MRS/MSR 直接读写。仅在 FEAT_AA64 实现时存在。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "StackPointer",
+          "bits": "63:0",
+          "access": "RW",
+          "description": "堆栈指针 (Stack Pointer)。保存 EL1 使用的 64-bit 堆栈指针值。当 SPSel.SP=1 时当前堆栈指针使用此寄存器。复位值为架构 UNKNOWN。"
+        }
+      ]
+    }
+  ]
+}

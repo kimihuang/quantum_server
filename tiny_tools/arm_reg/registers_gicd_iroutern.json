@@ -1,0 +1,58 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_IROUTER<n>",
+      "fullName": "Interrupt Routing Registers",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Interrupt Routing Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:40",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Aff3",
+          "bits": "39:32",
+          "access": "RW",
+          "description": "亲和级别 3。"
+        },
+        {
+          "name": "Interrupt_Routing_Mode",
+          "bits": "31",
+          "access": "RW",
+          "description": "中断路由模式 (IRM)。 定义 SPI 在亲和层次中的路由方式： If GICD_IROUTER<n>.IRM == 0 and the affinity path does not correspond to an implemented PE, then if the corresponding interrupt becomes pending behavior 是 CONSTRAINED UNPREDICTABLE: 中断不转发到任何 PE，直接读取返回写入值。亲和路径被视为 UNKNWN implemented PE, 直接读取s return the UNKNOWN implemented PE The affinity path is treated as an UNKNOWN implemented PE, 直接读取s return the written value 当 GICD_TYPER.No1N=1 时，1-of-N 分发不支持。 将此字段设为 1 是 CONSTRAINED UNPREDICTABLE，允许的行为为: 此字段在所有用途中行为如同 0. 此字段在除直接读取外的所有用途中行为如同 0。 中断被视为不指向任何 PE。 此位为 1 时，GICD_IROUTER<n>.{Aff3, Aff2, Aff1, Aff0} are UNKNOWN. 实现可能选择将 Aff<n> 字段s RO when this 字段 is 1. [0b0=中断路由到由以下指定的 PE：.b.c.d. In this ro ; 0b1=中断路由到任何定义为参与节点的 PE。]"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:24",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Aff2",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "亲和级别 2。"
+        },
+        {
+          "name": "Aff1",
+          "bits": "15:8",
+          "access": "RW",
+          "description": "亲和级别 1。"
+        },
+        {
+          "name": "Aff0",
+          "bits": "7:0",
+          "access": "RW",
+          "description": "亲和级别 0。"
+        }
+      ]
+    }
+  ]
+}

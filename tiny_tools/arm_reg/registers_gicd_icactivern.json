@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_ICACTIVER<n>",
+      "fullName": "Interrupt Clear-Active Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Clear-Active Registers。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "Clear_active_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "移除中断号 32n+x 的活跃状态。 读写行为如下: [0b0=读取时：指示对应中断未活跃 ; 0b1=读取时：指示对应中断已活跃]"
+        }
+      ]
+    }
+  ]
+}

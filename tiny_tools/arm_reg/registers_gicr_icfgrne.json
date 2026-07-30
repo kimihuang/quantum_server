@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_ICFGR<n>E",
+      "fullName": "Interrupt configuration registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt configuration registers。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Int_config<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "指示中断是电平敏感还是边沿触发。 Int_config[0] (bit [2x]) is RES0. [0b00=The corresponding interrupt is level-sensitive. ; 0b10=The corresponding interrupt is edge-triggered.]"
+        }
+      ]
+    }
+  ]
+}

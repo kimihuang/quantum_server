@@ -1,0 +1,70 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "TTBR0_EL1",
+      "fullName": "Translation Table Base Register 0 (EL1)",
+      "address": "0x00A0",
+      "width": 64,
+      "description": "翻译表基址寄存器0 (Translation Table Base Register 0)。保存 EL1&0 翻译制度中低 VA 范围 (TTBR0) 的 Stage-1 翻译表基地址和关联的 ASID。TTBR0_EL1 允许在 TLB 中缓存。AArch32 映射：TTBR0。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "127:88",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "BADDR",
+          "bits": "87:80",
+          "access": "RW",
+          "description": "翻译表基地址 (Translation table base address)。地址位 x 是将翻译表对齐到表大小所需的最小地址位。x 基于 LOG2(StartTableSize) 计算。最小允许值 x=5。BADDR 字段拆分如下："
+        },
+        {
+          "name": "RES0",
+          "bits": "79:64",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "ASID",
+          "bits": "63:48",
+          "access": "RW",
+          "description": "翻译表基地址的 ASID (Address Space Identifier)。TCR_EL1.A1 选择使用 TTBR0_EL1.ASID 或 TTBR1_EL1.ASID。若实现仅 8-bit ASID，此字段高 8 位为 RES0。"
+        },
+        {
+          "name": "BADDR[42:0]",
+          "bits": "47:5",
+          "access": "RW",
+          "description": "此字段为 BADDR[50:0] 的 bits[42:0]。参见 BADDR[50:43] 的描述。"
+        },
+        {
+          "name": "BADDR[47:1]",
+          "bits": "47:1",
+          "access": "RW",
+          "description": "翻译表基地址 (Translation table base address)。地址位 x 是将翻译表对齐到表大小所需的最小地址位。x 基于 TCR_EL1.T0SZ、翻译阶段和翻译粒度计算。 BADDR 表示 52-bit 地址的条件如下：若翻译表少于 8 个条目必须对齐到 64 字节，否则对齐到表大小。 64KB 粒度下若不支持 52-bit PA 且 TCR_EL1.IPS 为 0b110/0b111，则以下 IMPLEMENTATION DEFINED 行为成立： 若 ID_AA64MMFR0_EL1.PARange 指示支持 56-bit PA，则 Stage-1 翻译表基地址的 bits[55:52] 为零。 若使用 TTBR0_EL1 进行页表遍历时，任何定义为 RES0 的 bits[47:1] 为 1，则基地址可能对不齐，行为 CONSTRAINED UNPREDICTABLE。"
+        },
+        {
+          "name": "RES0",
+          "bits": "4:3",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "SKL",
+          "bits": "2:1",
+          "access": "RW",
+          "description": "TTBR0_EL1 页表遍历的跳过级别 (Skip Level)。决定从常规起始级别跳过的页表层数。 [0b00=不跳过 (从常规起始级别开始)。 ; 0b01=跳过 1 级。 ; 0b10=跳过 2 级。 ; 0b11=跳过 3 级。]"
+        },
+        {
+          "name": "CnP",
+          "bits": "0",
+          "access": "RW",
+          "description": "[When FEAT_TTCNP is implemented] 公共非私有 (Common not Private, FEAT_TTCNP)。指示 TTBR0_EL1 指向的条目是否属于可在 Inner Shareable 域内各 PE 间共享的公共集合。 此位允许在 TLB 中缓存。 当 TLB 将 Stage-1 和 Stage-2 翻译合并为单一条目时，仅当两者的 CnP 位均为 1 才能跨 PE 共享。 若同一 Inner Shareable 域中多个 PE 的 CnP=1 但指向不同翻译表条目，翻译结果为 CONSTRAINED UNPREDICTABLE。 [0b0=TTBR0_EL1 指向的翻译表条目对于当前翻译 ; 0b1=TTBR0_EL1 指向的翻译表条目与]；否则为 RES0"
+        }
+      ]
+    }
+  ]
+}

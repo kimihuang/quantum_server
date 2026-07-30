@@ -1,0 +1,34 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_CLRLPIR",
+      "fullName": "Clear LPI Pending Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Clear LPI Pending Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:32",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "IMPLEMENTATION DEFINED",
+          "bits": "63:0",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED."
+        },
+        {
+          "name": "pINTID",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "The INTID of the physical LPI. 此字段大小是 IMPLEMENTATION DEFINED，由 GICD_TYPER.IDbits 字段. Unimplemented bits are RES0."
+        }
+      ]
+    }
+  ]
+}

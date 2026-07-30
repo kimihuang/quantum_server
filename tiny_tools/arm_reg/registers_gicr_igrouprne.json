@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_IGROUPR<n>E",
+      "fullName": "Interrupt Group Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Group Registers。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Group_status_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "Group status bit. [0b0=当 GICD_CTLR.DS==1, the corresponding interrupt is Group ; 0b1=当 GICD_CTLR.DS==1, the corresponding interrupt is Group ]"
+        }
+      ]
+    }
+  ]
+}

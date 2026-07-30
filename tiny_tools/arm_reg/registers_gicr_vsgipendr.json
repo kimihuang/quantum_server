@@ -1,0 +1,34 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_VSGIPENDR",
+      "fullName": "Redistributor virtual SGI pending state register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Redistributor virtual SGI pending state register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Busy",
+          "bits": "31",
+          "access": "RW",
+          "description": "ID of target vPEID [0b0=Query of virtual SGI state not in progress. ; 0b1=Query of virtual SGI state in progress.]"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:16",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Pending",
+          "bits": "15:0",
+          "access": "RW",
+          "description": "Pending state of virtual SGIs for requested vPEID. This 字段 is UNKNOWN when GICR_VSGIPENDR.Busy == 1"
+        }
+      ]
+    }
+  ]
+}

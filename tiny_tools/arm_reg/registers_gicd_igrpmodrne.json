@@ -1,0 +1,22 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_IGRPMODR<n>E",
+      "fullName": "Interrupt Group Modifier Registers (extended SPI range)",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Group Modifier Registers (extended SPI range)。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "Group_modifier_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "分组修饰 bit. In 实现 where 亲和路由 is enabled 用于 中断安全状态中，对应中断的 bit 与 GICD_IGROUPR<n>E to form a 2-bit 字段 that defines an interrupt group:"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_SGIR",
+      "fullName": "Software Generated Interrupt Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Software Generated Interrupt Register。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:26",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "TargetListFilter",
+          "bits": "25:24",
+          "access": "RW",
+          "description": "决定 Distributor 处理请求 SGI 的方式。 [0b00=Forward the 中断到 CPU interfaces specified by GIC ; 0b01=Forward the interrupt to all CPU interfaces except that of t ; 0b10=Forward the interrupt only to the CPU interface of the PE th ; 0b11=保留.]"
+        },
+        {
+          "name": "CPUTargetList",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "当 GICD_SGIR.TargetListFilter is 0b00, this 字段 defines the CPU interfaces to which the 分发器 must forward the interrupt. Each bit of the 字段 refers to the corresponding CPU interface. For example, CPUTargetList[0] corresponds to interface 0. Setting a bit to 1 indicates that the interrupt must be forwarded to the corresponding interface. If this 字段 is 0b00000000 when GICD_SGIR.TargetListFilter is 0b00, the 分发器 does not forward the interrupt to any CPU interface."
+        },
+        {
+          "name": "NSATT",
+          "bits": "15",
+          "access": "RW",
+          "description": "指定 SGI 所需的 group。 仅 Secure 访问可写。 Non-secure 访问 can also generate Group 0 interrupts, if allowed to do so by GICD_NSACR0. Otherwise, Non-secure 写s to GICD_SGIR generate an SGI only if the specified SGI is programmed as Group 1, regardless of the value of bit [15] of the write. [0b0=将 INTID 字段指定的 SGI 转发到特定的 ; 0b1=将 INTID 字段指定的 SGI 转发到特定的 ]"
+        },
+        {
+          "name": "RES0",
+          "bits": "14:4",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "INTID",
+          "bits": "3:0",
+          "access": "RW",
+          "description": "要转发到目标 CPU 接口的 SGI INTID。"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "category": "cpu",
+  "label": "CPU",
+  "description": "Arm A-profile CPU 系统寄存器",
+  "registers": [
+    {
+      "name": "FAR_EL1",
+      "fullName": "Fault Address Register (EL1)",
+      "address": "0x0060",
+      "width": 64,
+      "description": "保存所有同步异常被捕获到 EL1 时的故障虚拟地址，包括：Instruction Abort（EC 0x20/0x21）、Data Abort（EC 0x24/0x25）、PC 对齐故障（EC 0x22）和 Watchpoint（EC 0x34/0x35）。FAR_EL1 是 64 位寄存器，支持 MRS/MSR 读写。AArch64 FAR_EL1[31:0] 架构上映射到 AArch32 DFAR[31:0]；FAR_EL1[63:32] 映射到 AArch32 IFAR[31:0]。FEAT_VHE 实现时存在别名 FAR_EL12。FAULT 为 EL1 时或 EL2 Host 模式下可通过 MSR 直接写入。复位值为架构 UNKNOWN。",
+      "fields": [
+        {
+          "name": "VA",
+          "bits": "63:0",
+          "access": "RO",
+          "description": "被捕获到 EL1 的同步异常的故障虚拟地址（Faulting Virtual Address）。设置 FAR_EL1 的异常包括：Instruction Abort（EC 0x20 或 0x21）、Data Abort（EC 0x24 或 0x25）、PC 对齐故障（EC 0x22）、Watchpoint（EC 0x34 或 0x35）。ESR_EL1.EC 保存异常对应的 EC 综合征值。【同步 External abort 的影响】对于同步 External abort：若产生 abort 的 VA 来自启用了 Address tagging 的地址范围，则 FAR_EL1[63:56] 为 UNKNOWN；若禁用了 Address tagging 但启用了 Logical Address Tagging，则 FAR_EL1[59:56] 为 UNKNOWN。对于非页表遍历产生的同步 External abort，此字段仅在 ESR_EL1.FnV=0 时有效；若 ESR_EL1.FnV=1，则 FAR_EL1 为 UNKNOWN。【Tag Check Fault 与数据缓存维护指令】当 Data Abort 由数据缓存维护（DC）指令产生的 Tag Check Fault 引起时，FAR_EL1 保存的地址为 IMPLEMENTATION DEFINED，可以是以下之一：产生故障的最低地址；由 MMU 故障产生的 DC ZVA 指令的寄存器参数指定的地址。【STZGM 指令】如果 STZGM 指令产生设置 FAR_EL1 的内存故障，则 FAR_EL1 保存的地址为 IMPLEMENTATION DEFINED，可以是：产生故障的最低地址；或寄存器参数指定的地址。如果由数据缓存维护（DC）指令产生非 Tag Check Fault 的内存故障，此字段保存指令的寄存器参数中指定的地址。【AArch32 异常】如果更新 FAR_EL1 的异常来自 AArch32 异常级别，高 32 位通常全为 0；除非故障地址是由从 0xFFFFFFFF 递增的 load/store 指令产生（此行为为 CONSTRAINED UNPREDICTABLE），且实现将递增视为设置 VA[32]=1，则 FAR_EL1 高 32 位为 0x00000001。【FAR 非精确情况（ESR_EL1.FnP）】当 PE 在 Data Abort 异常时将 ESR_EL1.{ISV,FnP} 设为 {0,1} 时，FAR_EL1 被设为包含故障 VA 的自然对齐故障粒度（naturally-aligned fault granule）内的任意地址。当 PE 在 Watchpoint 异常时将 ESR_EL1.{FnV,FnP} 设为 {0,1} 时同理。自然对齐故障粒度定义：若 DFSC=0b010001（同步 Tag Check Fault），为 16 字节 tag 粒度；若 DFSC=0b11010x（IMPLEMENTATION DEFINED 故障），为 IMPLEMENTATION DEFINED 粒度；否则为最小实现的翻译粒度。【FEAT_MOPS】当 FEAT_MOPS 实现时，Memory Copy/Set 指令产生的同步异常中 FAR_EL1 的值如下：MMU 故障（报告为 Data Abort）：值为相关翻译粒度范围内的地址，对齐到该粒度大小，bits[(n-1):0] 为 UNKNOWN；相关翻译粒度：Stage-1 故障时取 Stage-1 翻译粒度；Stage-2 故障时取 Stage-1 和 Stage-2 翻译粒度中的较小者；若 FEAT_RME 实现且为 GPF 导致的 Data Abort，取 Stage-1/Stage-2 粒度和 GPCCR_EL3.PGS 中的最小值；若 MMU 在某级翻译中被禁用，则翻译粒度大小等于 2^64（Stage-1）或 PARange（Stage-2）。Tag Check Fault 产生的 Data Abort：值为 load/store 块大小内产生 Tag Check Fault 的任意地址。Watchpoint 异常：值为 DCZID_EL0.BS 字段定义的地址范围，不一定是触发观察点的元素。其它情况：值为 load/store 块大小内的最低地址。【地址标记 (Address Tagging)】对于 Data Abort 或 Watchpoint 异常，若数据访问的地址启用了地址标记，则此字段包含标记位（tag）。【同步 Tag Check Fault】若 FEAT_MTE_TAGGED_FAR 实现或地址标记被禁用，FAR_EL1 全部位均非 UNKNOWN；若 FEAT_MTE_TAGGED_FAR 未实现且地址标记使能，则 FAR_EL1[63:60] 为 UNKNOWN。【EL0 执行】在 EL0 执行会使 FAR_EL1 变为 UNKNOWN。【异常返回】从 EL1 异常返回时 FAR_EL1 变为 UNKNOWN。【其它异常】对于其它被捕获到 EL1 的异常，FAR_EL1 为 UNKNOWN。注：此字段保存的地址是指令获取或数据访问产生异常时实际访问的地址，报告的是产生故障的较低地址。对于同一指令从不同地址产生不同故障的情况（如跨越页边界的非对齐加载/存储），架构不规定报告哪个故障的优先级。复位值为架构 UNKNOWN。"
+        }
+      ]
+    }
+  ]
+}

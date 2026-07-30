@@ -1,0 +1,100 @@
+{
+  "category": "gicd",
+  "label": "GICD",
+  "description": "GICv3/v4 Distributor 寄存器",
+  "registers": [
+    {
+      "name": "GICD_CTLR",
+      "fullName": "Distributor Control Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Distributor Control Register。GIC Distributor 寄存器",
+      "fields": [
+        {
+          "name": "RWP",
+          "bits": "31",
+          "access": "RW",
+          "description": "寄存器写 pending (RWP)。只读。指示是否有寄存器写操作正在进行： 此字段跟踪以下寄存器的写入： 其他寄存器字段的更新不被跟踪 by this 字段. [0b0=No 寄存器 write in progress. The effects of previous regis ; 0b1=Register write in progress. The effects of previous 寄存器]"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:8",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:5",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:9",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "nASSGIreq",
+          "bits": "8",
+          "access": "RW",
+          "description": "[当 GICD_TYPER2.nASSGIcap == '1'] 控制是否 SGI have an 活跃状态. This bit is WI when any of GICD_CTLR.{EnableGrp0,EnableGrp1} is 1. [0b0=SGIs have an 活跃状态 and must be deactivated. ; 0b1=SGIs do not have an 活跃状态 and do not require deactiva]；否则为 RES0"
+        },
+        {
+          "name": "E1NWF",
+          "bits": "7",
+          "access": "RW",
+          "description": "使能 1-of-N 唤醒功能 (E1NWF)。 It 是 IMPLEMENTATION DEFINED whether this bit is programmable, or RAZ/WI. If it is implemented, then it has the following behavior: [0b0=A PE that is asleep cannot be picked for 1 of N interrupts. ; 0b1=A PE that is asleep can be picked for 1 of N interrupts as d]"
+        },
+        {
+          "name": "DS",
+          "bits": "6",
+          "access": "RW",
+          "description": "禁用安全 (DS)。 若在 ARE_S=1 时将 DS 从 0 写为 1，则 GICD_CTLR.ARE 用于 single Security state is RAO/WI. If the Distributor only supports a single Security state, this bit is RAO/WI. If the Distributor supports two Security states, it IMPLEMENTATION DEFINED whether this bit is programmable or implemented as RAZ/WI. 当 this 字段 is set to 1, all 访问 to GICD_CTLR 访问 the single Security state view, and all bits are 访问ible. 当 set to 1, this 字段 can only be cleared by a 硬件 reset. Writing this bit from 0 to 1 是 UNPREDICTABLE if any of the following is true: [0b0=Non-secure 访问 are not permitted to 访问 and modify r ; 0b1=Non-secure 访问 are permitted to 访问 and modify regis]"
+        },
+        {
+          "name": "ARE_NS",
+          "bits": "5",
+          "access": "RW",
+          "description": "亲和路由使能 (ARE), Non-secure state. 当亲和路由使能时 用于 Secure state, this 字段 is RAO/WI. Changing the ARE_NS settings from 0 to 1 是 UNPREDICTABLE except when GICD_CTLR.EnableGrp1 Non-secure == 0. Changing the ARE_NS settings from 1 to 0 是 UNPREDICTABLE. If GICv2 backward compatibility for Non-secure state is not implemented, this 字段 is RAO/WI. [0b0=Affinity routing disabled for Non-secure state. ; 0b1=Affinity routing enabled for Non-secure state.]"
+        },
+        {
+          "name": "ARE",
+          "bits": "4",
+          "access": "RW",
+          "description": "亲和路由 (ARE) 使能。 将 ARE 设置从 0 改为 1 是 UNPREDICTABLE，除非满足所有以下条件：ollowing apply: Changing ARE from 1 to 0 是 UNPREDICTABLE. If GICv2 backward compatibility is not implemented, this 字段 is RAO/WI. [0b0=亲和路由禁用。 ; 0b1=亲和路由使能。]"
+        },
+        {
+          "name": "RES0",
+          "bits": "3",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RES0",
+          "bits": "3:2",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "EnableGrp1S",
+          "bits": "2",
+          "access": "RW",
+          "description": "使能 Secure Group 1 中断 (EnableGrp1S)。 If GICD_CTLR.ARE_S == 0, this 字段 is RES0. [0b0=Secure Group 1 interrupts are disabled. ; 0b1=Secure Group 1 interrupts are enabled.]"
+        },
+        {
+          "name": "EnableGrp1",
+          "bits": "1",
+          "access": "RW",
+          "description": "使能 Group 1 中断 (EnableGrp1)。 [0b0=Group 1 中断禁用。 ; 0b1=Group 1 中断使能。]"
+        },
+        {
+          "name": "EnableGrp0",
+          "bits": "0",
+          "access": "RW",
+          "description": "使能 Group 0 中断 (EnableGrp0)。 [0b0=Group 0 中断禁用。 ; 0b1=Group 0 中断使能。]"
+        }
+      ]
+    }
+  ]
+}

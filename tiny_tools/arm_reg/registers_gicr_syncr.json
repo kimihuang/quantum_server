@@ -1,0 +1,28 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_SYNCR",
+      "fullName": "Redistributor Synchronize Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Redistributor Synchronize Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:1",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Busy",
+          "bits": "0",
+          "access": "RW",
+          "description": "Indicates completion of invalidation operations This 字段 tracks operations initiated on the same 再分发器. [0b0=No operations are in progress. ; 0b1=A write is in progress to one or more of the following regis]"
+        }
+      ]
+    }
+  ]
+}

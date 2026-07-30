@@ -1,0 +1,22 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_ISACTIVER<n>E",
+      "fullName": "Interrupt Set-Active Registers",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Interrupt Set-Active Registers。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Set_active_bit<x>",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "For the extended PPIs, adds the 活跃状态 to 中断号 x. 读写行为如下: [0b0=读取时：指示对应中断未活跃 ; 0b1=读取时：指示对应中断已活跃]"
+        }
+      ]
+    }
+  ]
+}

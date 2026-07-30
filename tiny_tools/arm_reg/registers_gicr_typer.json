@@ -1,0 +1,112 @@
+{
+  "category": "gicr",
+  "label": "GICR",
+  "description": "GICv3/v4 Redistributor 寄存器",
+  "registers": [
+    {
+      "name": "GICR_TYPER",
+      "fullName": "Redistributor Type Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "Redistributor Type Register。GIC Redistributor (GICR) 寄存器",
+      "fields": [
+        {
+          "name": "Aff3",
+          "bits": "63:56",
+          "access": "RW",
+          "description": "The Affinity level 3 value 用于 Redistributor. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "Aff2",
+          "bits": "55:48",
+          "access": "RW",
+          "description": "The Affinity level 2 value 用于 Redistributor. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "Aff1",
+          "bits": "47:40",
+          "access": "RW",
+          "description": "The Affinity level 1 value 用于 Redistributor. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "Aff0",
+          "bits": "39:32",
+          "access": "RW",
+          "description": "The Affinity level 0 value 用于 Redistributor. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "PPInum",
+          "bits": "31:27",
+          "access": "RW",
+          "description": "[当 GICv3.1 is implemented] The value derived from this 字段 specifies the maximum PPI INTID that a GIC 实现 can support. An 实现 might not implement all PPIs up to this maximum. All 其他值 are 保留. [0b00000=Maximum PPI INTID is 31. ; 0b00001=Maximum PPI INTID is 1087. ; 0b00010=Maximum PPI INTID is 1119.]；否则为 RES0"
+        },
+        {
+          "name": "VSGI",
+          "bits": "26",
+          "access": "RW",
+          "description": "[当 GICv4.1 is implemented] 指示是否 vSGIs are supported. [0b0=Direct injection of SGIs not supported. ; 0b1=Direct injection of SGIs supported.]；否则为 RES0"
+        },
+        {
+          "name": "CommonLPIAff",
+          "bits": "25:24",
+          "access": "RW",
+          "description": "指示 scope of the CommonLPIAff group. 再分发器s in the same CommonLPIAff group must use the same copy of the LPI 配置表, and if GICv4.1 is implemented the same copy of the vPE Configuration 表. [0b00=所有 Redistributor 均为 members of the same CommonLPIAff grou ; 0b01=所有满足条件的 Redistributor the same Aff3 value are members of t ; 0b10=所有满足条件的 Redistributor the same Aff3.Aff2 value are members ; 0b11=所有满足条件的 再分发器 the same Aff3.Aff2.Aff1 value are me]"
+        },
+        {
+          "name": "Processor_Number",
+          "bits": "23:8",
+          "access": "RW",
+          "description": "A unique identifier 用于 PE. 当 GITS_TYPER.PTA == 0, an ITS uses this 字段 to identify the interrupt target. 当 亲和路由 is disabled for a Security state, this 字段 indicates which GICD_ITARGETSR<n> corresponds to this 再分发器. 此字段值为 IMPLEMENTATION DEFINED。"
+        },
+        {
+          "name": "RVPEID",
+          "bits": "7",
+          "access": "RW",
+          "description": "[当 GICv4.1 is implemented] Indicates how the resident vPE is specified. [0b0=GICR_VPENDBASER records the address of the vPE's Virtual Pen ; 0b1=GICR_VPENDBASER records vPEID.]；否则为 RES0"
+        },
+        {
+          "name": "MPAM",
+          "bits": "6",
+          "access": "RW",
+          "description": "[当 GICv3.1 is implemented] MPAM [0b0=MPAM not supported. ; 0b1=MPAM supported.]；否则为 RES0"
+        },
+        {
+          "name": "DPGS",
+          "bits": "5",
+          "access": "RW",
+          "description": "Sets support for GICR_CTLR.DPG* bits. [0b0=GICR_CTLR.DPG* bits are not supported. ; 0b1=GICR_CTLR.DPG* bits are supported.]"
+        },
+        {
+          "name": "Last",
+          "bits": "4",
+          "access": "RW",
+          "description": "指示是否 this 再分发器 is the highest-numbered 再分发器 in a series of contiguous 再分发器 pages. [0b0=This Redistributor is not the highest-numbered Redistributor ; 0b1=This Redistributor is the highest-numbered Redistributor in ]"
+        },
+        {
+          "name": "DirectLPI",
+          "bits": "3",
+          "access": "RW",
+          "description": "指示是否 this 再分发器 supports direct injection of LPIs. [0b0=This Redistributor does not support direct injection of LPIs ; 0b1=This 再分发器 supports direct injection of LPIs. The GI]"
+        },
+        {
+          "name": "Dirty",
+          "bits": "2",
+          "access": "RW",
+          "description": "控制 functionality of GICR_VPENDBASER.Dirty. 当 GICR_TYPER.VLPIS == 0, 此字段为 RES0。 In GICv4p1 实现 this 字段 is RES1. [0b0=GICR_VPENDBASER.Dirty is UNKNOWN when GICR_VPENDBASER.Vali ; 0b1=GICR_VPENDBASER.Dirty indicates when the Virtual Pending Ta]"
+        },
+        {
+          "name": "VLPIS",
+          "bits": "1",
+          "access": "RW",
+          "description": "[当 GICv4 is implemented] 指示是否 the GIC 实现 supports the direct injection of virtual LPIs. [0b1=The 实现 supports direct injection of virtual LPIs]"
+        },
+        {
+          "name": "PLPIS",
+          "bits": "0",
+          "access": "RW",
+          "description": "指示是否 the GIC 实现 supports physical LPIs. [0b0=The 实现 does not support physical LPIs. ; 0b1=The 实现 supports physical LPIs.]"
+        }
+      ]
+    }
+  ]
+}
