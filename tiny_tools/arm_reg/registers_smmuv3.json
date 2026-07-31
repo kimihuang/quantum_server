@@ -1,0 +1,1077 @@
+{
+  "category": "smmu",
+  "label": "SMMUv3",
+  "description": "ARM CoreLink MMU-600AE SMMUv3 架构寄存器 (基于 CoreLink MMU-600AE TRM r1p0)",
+  "registers": [
+    {
+      "name": "SMMU_S_IDR0",
+      "fullName": "SMMU Secure Identification Register 0",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Secure 特性识别寄存器 0。提供 Secure SMMU 实现支持的特性信息。",
+      "fields": [
+        {
+          "name": "S2P",
+          "bits": "0",
+          "access": "RO",
+          "description": "Stage-2 翻译支持。0=不支持。1=支持。"
+        },
+        {
+          "name": "S1P",
+          "bits": "1",
+          "access": "RO",
+          "description": "Stage-1 翻译支持。0=不支持。1=支持。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_IDR1",
+      "fullName": "SMMU Secure Identification Register 1",
+      "address": "0x0004",
+      "width": 32,
+      "description": "Secure 特性识别寄存器 1。提供命令队列、事件队列和 SubstreamID 支持信息。",
+      "fields": [
+        {
+          "name": "CMDQS",
+          "bits": "25:21",
+          "access": "RO",
+          "description": "命令队列条目数 log2 编码。"
+        },
+        {
+          "name": "SSIDSIZE",
+          "bits": "10:6",
+          "access": "RO",
+          "description": "支持的 SubstreamID 位数。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_IDR2",
+      "fullName": "SMMU Secure Identification Register 2",
+      "address": "0x0008",
+      "width": 32,
+      "description": "Secure 特性识别寄存器 2。提供 Secure 翻译支持信息。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_IDR3",
+      "fullName": "SMMU Secure Identification Register 3",
+      "address": "0x000C",
+      "width": 32,
+      "description": "Secure 特性识别寄存器 3。提供额外的 Secure SMMU 实现特性。",
+      "fields": [
+        {
+          "name": "HAD",
+          "bits": "2",
+          "access": "RO",
+          "description": "硬件 Access Flag/Dirty 支持。"
+        },
+        {
+          "name": "RIL",
+          "bits": "10",
+          "access": "RO",
+          "description": "范围无效化支持。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_CR0",
+      "fullName": "Secure Global Control Register 0",
+      "address": "0x0010",
+      "width": 32,
+      "description": "Secure 全局控制寄存器 0。提供 Secure SMMU 的全局配置。",
+      "fields": [
+        {
+          "name": "SMMUEN",
+          "bits": "0",
+          "access": "RW",
+          "description": "SMMU 使能。0=禁用。1=使能。"
+        },
+        {
+          "name": "CMDQEN",
+          "bits": "2",
+          "access": "RW",
+          "description": "命令队列使能。"
+        },
+        {
+          "name": "EVENTQEN",
+          "bits": "3",
+          "access": "RW",
+          "description": "事件队列使能。"
+        },
+        {
+          "name": "PRIQEN",
+          "bits": "4",
+          "access": "RW",
+          "description": "PRI 队列使能。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_CR0ACK",
+      "fullName": "Secure Global Control Register 0 Acknowledge",
+      "address": "0x0014",
+      "width": 32,
+      "description": "Secure CR0 更新确认寄存器。",
+      "fields": [
+        {
+          "name": "SMMUEN_ACK",
+          "bits": "0",
+          "access": "RO",
+          "description": "SMMU_EN 更新确认。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_CR1",
+      "fullName": "Secure Global Control Register 1",
+      "address": "0x0018",
+      "width": 32,
+      "description": "Secure 全局控制寄存器 1。提供 Secure 页表和队列访问属性控制。",
+      "fields": [
+        {
+          "name": "SH",
+          "bits": "5:4",
+          "access": "RW",
+          "description": "可共享属性。"
+        },
+        {
+          "name": "IRN",
+          "bits": "3:2",
+          "access": "RW",
+          "description": "Inner 缓存属性。"
+        },
+        {
+          "name": "ORN",
+          "bits": "1:0",
+          "access": "RW",
+          "description": "Outer 缓存属性。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_CR2",
+      "fullName": "Secure Global Control Register 2",
+      "address": "0x001C",
+      "width": 32,
+      "description": "Secure 全局控制寄存器 2。提供额外全局特性配置。",
+      "fields": [
+        {
+          "name": "PTM",
+          "bits": "1",
+          "access": "RW",
+          "description": "Table walk cache 的 PTW 共享。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_INIT",
+      "fullName": "Secure Initialization Control Register",
+      "address": "0x0020",
+      "width": 32,
+      "description": "Secure 初始化控制寄存器。控制系统初始化时使所有 Secure SMMU 缓存无效。",
+      "fields": [
+        {
+          "name": "INV_ALL",
+          "bits": "0",
+          "access": "WO",
+          "description": "写 1 使所有 Secure 上下文缓存无效。软件必须等待此操作完成。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_GBPA",
+      "fullName": "Secure Global Bypass Attribute Register",
+      "address": "0x0040",
+      "width": 32,
+      "description": "Secure 全局旁路属性寄存器。控制 MMU 禁用时 Secure 流事务的全局旁路属性。",
+      "fields": [
+        {
+          "name": "ABORT",
+          "bits": "0",
+          "access": "RW",
+          "description": "0=允许旁路。1=中止所有旁路事务。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_IRQ_CTRL",
+      "fullName": "Secure Interrupt Control Register",
+      "address": "0x0050",
+      "width": 32,
+      "description": "Secure 中断控制寄存器。包含 SMMU 中断的使能标志。",
+      "fields": [
+        {
+          "name": "GERROR_IRQEN",
+          "bits": "0",
+          "access": "RW",
+          "description": "全局错误中断使能。"
+        },
+        {
+          "name": "EVENTQ_IRQEN",
+          "bits": "2",
+          "access": "RW",
+          "description": "事件队列中断使能。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_IRQ_CTRLACK",
+      "fullName": "Secure IRQ Control Update Acknowledge Register",
+      "address": "0x0054",
+      "width": 32,
+      "description": "Secure IRQ_CTRL 更新确认寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_GERROR",
+      "fullName": "Secure Global Error Status Register",
+      "address": "0x0060",
+      "width": 32,
+      "description": "Secure 全局错误状态寄存器。",
+      "fields": [
+        {
+          "name": "CMDQ_ERR",
+          "bits": "0",
+          "access": "RO",
+          "description": "命令队列错误。"
+        },
+        {
+          "name": "EVENTQ_ERR",
+          "bits": "1",
+          "access": "RO",
+          "description": "事件队列错误。"
+        },
+        {
+          "name": "MSI_GERROR_ERR",
+          "bits": "8",
+          "access": "RO",
+          "description": "MSI GERROR 写入错误。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_GERRORN",
+      "fullName": "Secure Global Error Acknowledgment Register",
+      "address": "0x0064",
+      "width": 32,
+      "description": "Secure 全局错误确认寄存器。写 1 清除对应错误标志。",
+      "fields": [
+        {
+          "name": "CMDQ_ERR",
+          "bits": "0",
+          "access": "W1C",
+          "description": "清除命令队列错误。"
+        },
+        {
+          "name": "EVENTQ_ERR",
+          "bits": "1",
+          "access": "W1C",
+          "description": "清除事件队列错误。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_GERROR_IRQ_CFG0",
+      "fullName": "Secure GERROR IRQ Configuration Register 0",
+      "address": "0x0068",
+      "width": 32,
+      "description": "Secure GERROR IRQ MSI 地址配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_GERROR_IRQ_CFG1",
+      "fullName": "Secure GERROR IRQ Configuration Register 1",
+      "address": "0x006C",
+      "width": 32,
+      "description": "Secure GERROR IRQ MSI 数据配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_GERROR_IRQ_CFG2",
+      "fullName": "Secure GERROR IRQ Configuration Register 2",
+      "address": "0x0070",
+      "width": 32,
+      "description": "Secure GERROR IRQ MSI 属性配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_STRTAB_BASE",
+      "fullName": "Secure Stream Table Base Address Register",
+      "address": "0x0080",
+      "width": 64,
+      "description": "Secure 流表基地址寄存器。",
+      "fields": [
+        {
+          "name": "ADDR",
+          "bits": "51:6",
+          "access": "RW",
+          "description": "流表基地址[51:6]，64 字节对齐。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_STRTAB_BASE_CFG",
+      "fullName": "Secure Stream Table Base Configuration Register",
+      "address": "0x0088",
+      "width": 32,
+      "description": "Secure 流表配置寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_CMDQ_BASE",
+      "fullName": "Secure Command Queue Base Address Register",
+      "address": "0x0090",
+      "width": 64,
+      "description": "Secure 命令队列基地址寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_CMDQ_PROD",
+      "fullName": "Secure Command Queue Producer Index Register",
+      "address": "0x0098",
+      "width": 32,
+      "description": "Secure 命令队列生产者索引。软件写入命令后推进此索引。",
+      "fields": [
+        {
+          "name": "PROD",
+          "bits": "19:0",
+          "access": "RW",
+          "description": "生产者索引。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_CMDQ_CONS",
+      "fullName": "Secure Command Queue Consumer Index Register",
+      "address": "0x009C",
+      "width": 32,
+      "description": "Secure 命令队列消费者索引。硬件自动更新。",
+      "fields": [
+        {
+          "name": "CONS",
+          "bits": "19:0",
+          "access": "RO",
+          "description": "消费者索引。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_EVENTQ_BASE",
+      "fullName": "Secure Event Queue Base Address Register",
+      "address": "0x00A0",
+      "width": 64,
+      "description": "Secure 事件队列基地址寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_EVENTQ_PROD",
+      "fullName": "Secure Event Queue Producer Index Register",
+      "address": "0x00A8",
+      "width": 32,
+      "description": "Secure 事件队列生产者索引。",
+      "fields": [
+        {
+          "name": "PROD",
+          "bits": "19:0",
+          "access": "RW",
+          "description": "生产者索引。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_EVENTQ_CONS",
+      "fullName": "Secure Event Queue Consumer Index Register",
+      "address": "0x00AC",
+      "width": 32,
+      "description": "Secure 事件队列消费者索引。",
+      "fields": [
+        {
+          "name": "CONS",
+          "bits": "19:0",
+          "access": "RO",
+          "description": "消费者索引。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_S_EVENTQ_IRQ_CFG0",
+      "fullName": "Secure Event Queue IRQ Configuration Register 0",
+      "address": "0x00B0",
+      "width": 32,
+      "description": "Secure EVENTQ MSI 地址配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_EVENTQ_IRQ_CFG1",
+      "fullName": "Secure Event Queue IRQ Configuration Register 1",
+      "address": "0x00B4",
+      "width": 32,
+      "description": "Secure EVENTQ MSI 数据配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_S_EVENTQ_IRQ_CFG2",
+      "fullName": "Secure Event Queue IRQ Configuration Register 2",
+      "address": "0x00B8",
+      "width": 32,
+      "description": "Secure EVENTQ MSI 属性配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_IDR0",
+      "fullName": "SMMU Identification Register 0",
+      "address": "0x0100",
+      "width": 32,
+      "description": "SMMU 特性识别寄存器 0。",
+      "fields": [
+        {
+          "name": "S2P",
+          "bits": "0",
+          "access": "RO",
+          "description": "Stage-2 翻译支持。"
+        },
+        {
+          "name": "S1P",
+          "bits": "1",
+          "access": "RO",
+          "description": "Stage-1 翻译支持。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_IDR1",
+      "fullName": "SMMU Identification Register 1",
+      "address": "0x0104",
+      "width": 32,
+      "description": "SMMU 特性识别寄存器 1。",
+      "fields": [
+        {
+          "name": "CMDQS",
+          "bits": "25:21",
+          "access": "RO",
+          "description": "命令队列大小。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_IDR2",
+      "fullName": "SMMU Identification Register 2",
+      "address": "0x0108",
+      "width": 32,
+      "description": "SMMU 特性识别寄存器 2。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_IDR3",
+      "fullName": "SMMU Identification Register 3",
+      "address": "0x010C",
+      "width": 32,
+      "description": "SMMU 特性识别寄存器 3。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_IDR5",
+      "fullName": "SMMU Identification Register 5",
+      "address": "0x0114",
+      "width": 32,
+      "description": "SMMU 特性识别寄存器 5。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_IIDR",
+      "fullName": "Implementation Identification Register",
+      "address": "0x011C",
+      "width": 32,
+      "description": "实现识别寄存器。提供实现者、部件号和修订信息。",
+      "fields": [
+        {
+          "name": "IMPLEMENTER",
+          "bits": "31:24",
+          "access": "RO",
+          "description": "实现者 ID。ARM=0x43B。"
+        },
+        {
+          "name": "PARTNUM",
+          "bits": "15:0",
+          "access": "RO",
+          "description": "部件号。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_AIDR",
+      "fullName": "Architecture Identification Register",
+      "address": "0x0120",
+      "width": 32,
+      "description": "架构识别寄存器。标识 SMMU 架构版本。",
+      "fields": [
+        {
+          "name": "VERSION",
+          "bits": "0",
+          "access": "RO",
+          "description": "SMMUv3.x 版本号。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_CR0",
+      "fullName": "Non-secure Global Control Register 0",
+      "address": "0x0128",
+      "width": 32,
+      "description": "Non-secure 全局控制寄存器 0。",
+      "fields": [
+        {
+          "name": "SMMUEN",
+          "bits": "0",
+          "access": "RW",
+          "description": "SMMU 使能。"
+        },
+        {
+          "name": "CMDQEN",
+          "bits": "2",
+          "access": "RW",
+          "description": "命令队列使能。"
+        },
+        {
+          "name": "EVENTQEN",
+          "bits": "3",
+          "access": "RW",
+          "description": "事件队列使能。"
+        },
+        {
+          "name": "PRIQEN",
+          "bits": "4",
+          "access": "RW",
+          "description": "PRI 队列使能。"
+        },
+        {
+          "name": "ATSCHK",
+          "bits": "5",
+          "access": "RW",
+          "description": "ATS 检查使能。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_CR0ACK",
+      "fullName": "SMMU Global Control Register 0 Acknowledge",
+      "address": "0x012C",
+      "width": 32,
+      "description": "CR0 更新确认寄存器。",
+      "fields": [
+        {
+          "name": "SMMUEN_ACK",
+          "bits": "0",
+          "access": "RO",
+          "description": "SMMUEN 更新确认。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_CR1",
+      "fullName": "Non-secure Global Control Register 1",
+      "address": "0x0130",
+      "width": 32,
+      "description": "Non-secure 全局控制寄存器 1。提供 Non-secure 页表和队列访问属性控制。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_CR2",
+      "fullName": "Non-secure Global Control Register 2",
+      "address": "0x0134",
+      "width": 32,
+      "description": "Non-secure 全局控制寄存器 2。提供额外全局特性配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_GBPA",
+      "fullName": "Non-secure Global Bypass Attribute Register",
+      "address": "0x0140",
+      "width": 32,
+      "description": "Non-secure 全局旁路属性寄存器。",
+      "fields": [
+        {
+          "name": "ABORT",
+          "bits": "0",
+          "access": "RW",
+          "description": "0=允许旁路。1=中止所有旁路事务。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_IRQ_CTRL",
+      "fullName": "Non-secure Interrupt Control Register",
+      "address": "0x0150",
+      "width": 32,
+      "description": "Non-secure 中断控制寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_IRQ_CTRLACK",
+      "fullName": "Non-secure IRQ Control Acknowledge",
+      "address": "0x0154",
+      "width": 32,
+      "description": "IRQ_CTRL 更新确认寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_GERROR",
+      "fullName": "Non-secure Global Error Status Register",
+      "address": "0x0160",
+      "width": 32,
+      "description": "Non-secure 全局错误状态寄存器。",
+      "fields": [
+        {
+          "name": "CMDQ_ERR",
+          "bits": "0",
+          "access": "RO",
+          "description": "命令队列错误。"
+        },
+        {
+          "name": "EVENTQ_ERR",
+          "bits": "1",
+          "access": "RO",
+          "description": "事件队列错误。"
+        },
+        {
+          "name": "PRIQ_ERR",
+          "bits": "2",
+          "access": "RO",
+          "description": "PRI 队列错误。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_GERRORN",
+      "fullName": "Non-secure Global Error Acknowledgment Register",
+      "address": "0x0164",
+      "width": 32,
+      "description": "Non-secure 全局错误确认寄存器。",
+      "fields": [
+        {
+          "name": "CMDQ_ERR",
+          "bits": "0",
+          "access": "W1C",
+          "description": "清除命令队列错误。"
+        }
+      ]
+    },
+    {
+      "name": "SMMU_GERROR_IRQ_CFG0",
+      "fullName": "GERROR IRQ Configuration 0",
+      "address": "0x0168",
+      "width": 32,
+      "description": "GERROR IRQ MSI 地址配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_GERROR_IRQ_CFG1",
+      "fullName": "GERROR IRQ Configuration 1",
+      "address": "0x016C",
+      "width": 32,
+      "description": "GERROR IRQ MSI 数据配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_GERROR_IRQ_CFG2",
+      "fullName": "GERROR IRQ Configuration 2",
+      "address": "0x0170",
+      "width": 32,
+      "description": "GERROR IRQ MSI 属性配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_STRTAB_BASE",
+      "fullName": "Non-secure Stream Table Base Address Register",
+      "address": "0x0180",
+      "width": 64,
+      "description": "Non-secure 流表基地址寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_STRTAB_BASE_CFG",
+      "fullName": "Non-secure Stream Table Configuration Register",
+      "address": "0x0188",
+      "width": 32,
+      "description": "Non-secure 流表配置寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_CMDQ_BASE",
+      "fullName": "Non-secure Command Queue Base Address Register",
+      "address": "0x0190",
+      "width": 64,
+      "description": "Non-secure 命令队列基地址寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_CMDQ_PROD",
+      "fullName": "Non-secure Command Queue Producer Index",
+      "address": "0x0198",
+      "width": 32,
+      "description": "Non-secure 命令队列生产者索引。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_CMDQ_CONS",
+      "fullName": "Non-secure Command Queue Consumer Index",
+      "address": "0x019C",
+      "width": 32,
+      "description": "Non-secure 命令队列消费者索引。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_EVENTQ_BASE",
+      "fullName": "Non-secure Event Queue Base Address Register",
+      "address": "0x01A0",
+      "width": 64,
+      "description": "Non-secure 事件队列基地址寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_EVENTQ_PROD",
+      "fullName": "Non-secure Event Queue Producer Index",
+      "address": "0x01A8",
+      "width": 32,
+      "description": "Non-secure 事件队列生产者索引。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_EVENTQ_CONS",
+      "fullName": "Non-secure Event Queue Consumer Index",
+      "address": "0x01AC",
+      "width": 32,
+      "description": "Non-secure 事件队列消费者索引。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_EVENTQ_IRQ_CFG0",
+      "fullName": "Event Queue IRQ Configuration 0",
+      "address": "0x01B0",
+      "width": 32,
+      "description": "EVENTQ MSI 地址配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_EVENTQ_IRQ_CFG1",
+      "fullName": "Event Queue IRQ Configuration 1",
+      "address": "0x01B4",
+      "width": 32,
+      "description": "EVENTQ MSI 数据配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_EVENTQ_IRQ_CFG2",
+      "fullName": "Event Queue IRQ Configuration 2",
+      "address": "0x01B8",
+      "width": 32,
+      "description": "EVENTQ MSI 属性配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PRIQ_BASE",
+      "fullName": "Non-secure PRI Queue Base Address Register",
+      "address": "0x01C0",
+      "width": 64,
+      "description": "Non-secure PRI 队列基地址寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PRIQ_PROD",
+      "fullName": "Non-secure PRI Queue Producer Index",
+      "address": "0x01C8",
+      "width": 32,
+      "description": "Non-secure PRI 队列生产者索引。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PRIQ_CONS",
+      "fullName": "Non-secure PRI Queue Consumer Index",
+      "address": "0x01CC",
+      "width": 32,
+      "description": "Non-secure PRI 队列消费者索引。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PRIQ_IRQ_CFG0",
+      "fullName": "PRI Queue IRQ Configuration 0",
+      "address": "0x01D0",
+      "width": 32,
+      "description": "PRIQ MSI 地址配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PRIQ_IRQ_CFG1",
+      "fullName": "PRI Queue IRQ Configuration 1",
+      "address": "0x01D4",
+      "width": 32,
+      "description": "PRIQ MSI 数据配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PRIQ_IRQ_CFG2",
+      "fullName": "PRI Queue IRQ Configuration 2",
+      "address": "0x01D8",
+      "width": 32,
+      "description": "PRIQ MSI 属性配置。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVCNTR0",
+      "fullName": "PMCG Event Counter 0",
+      "address": "0x2000",
+      "width": 32,
+      "description": "PMCG 事件计数器 0。包含事件计数值。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVCNTR1",
+      "fullName": "PMCG Event Counter 1",
+      "address": "0x2004",
+      "width": 32,
+      "description": "PMCG 事件计数器 1。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVCNTR2",
+      "fullName": "PMCG Event Counter 2",
+      "address": "0x2008",
+      "width": 32,
+      "description": "PMCG 事件计数器 2。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVCNTR3",
+      "fullName": "PMCG Event Counter 3",
+      "address": "0x200C",
+      "width": 32,
+      "description": "PMCG 事件计数器 3。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVTYPER0",
+      "fullName": "PMCG Event Type Configuration 0",
+      "address": "0x2010",
+      "width": 32,
+      "description": "PMCG 事件类型配置寄存器 0。配置对应计数器的事件类型。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVTYPER1",
+      "fullName": "PMCG Event Type Configuration 1",
+      "address": "0x2014",
+      "width": 32,
+      "description": "PMCG 事件类型配置寄存器 1。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVTYPER2",
+      "fullName": "PMCG Event Type Configuration 2",
+      "address": "0x2018",
+      "width": 32,
+      "description": "PMCG 事件类型配置寄存器 2。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_EVTYPER3",
+      "fullName": "PMCG Event Type Configuration 3",
+      "address": "0x201C",
+      "width": 32,
+      "description": "PMCG 事件类型配置寄存器 3。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_SVR0",
+      "fullName": "PMCG Shadow Value Register 0",
+      "address": "0x2020",
+      "width": 32,
+      "description": "PMCG 影子值寄存器 0。包含对应事件计数器的影子值。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_SVR1",
+      "fullName": "PMCG Shadow Value Register 1",
+      "address": "0x2024",
+      "width": 32,
+      "description": "PMCG 影子值寄存器 1。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_SVR2",
+      "fullName": "PMCG Shadow Value Register 2",
+      "address": "0x2028",
+      "width": 32,
+      "description": "PMCG 影子值寄存器 2。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_SVR3",
+      "fullName": "PMCG Shadow Value Register 3",
+      "address": "0x202C",
+      "width": 32,
+      "description": "PMCG 影子值寄存器 3。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_SMR0",
+      "fullName": "PMCG Stream Match Filter Register",
+      "address": "0x2030",
+      "width": 32,
+      "description": "PMCG 流匹配过滤寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CNTENSET0",
+      "fullName": "PMCG Counter Enable Set Register",
+      "address": "0x2034",
+      "width": 32,
+      "description": "PMCG 计数器使能置位寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CNTENCLR0",
+      "fullName": "PMCG Counter Enable Clear Register",
+      "address": "0x2038",
+      "width": 32,
+      "description": "PMCG 计数器使能清零寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_INTENSET0",
+      "fullName": "PMCG Interrupt Contribution Enable Set Register",
+      "address": "0x203C",
+      "width": 32,
+      "description": "PMCG 中断贡献使能置位寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_INTENCLR0",
+      "fullName": "PMCG Interrupt Contribution Enable Clear Register",
+      "address": "0x2040",
+      "width": 32,
+      "description": "PMCG 中断贡献使能清零寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_OVSCLR0",
+      "fullName": "PMCG Overflow Status Clear Register",
+      "address": "0x2044",
+      "width": 32,
+      "description": "PMCG 溢出状态清零寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_OVSSET0",
+      "fullName": "PMCG Overflow Status Set Register",
+      "address": "0x2048",
+      "width": 32,
+      "description": "PMCG 溢出状态置位寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CAPR",
+      "fullName": "PMCG Counter Shadow Value Capture Register",
+      "address": "0x204C",
+      "width": 32,
+      "description": "PMCG 计数器影子值捕获寄存器。控制影子值捕获机制。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_SCR",
+      "fullName": "PMCG Secure Control Register",
+      "address": "0x2050",
+      "width": 32,
+      "description": "PMCG Secure 控制寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CFGR",
+      "fullName": "PMCG Configuration Information Register",
+      "address": "0x2054",
+      "width": 32,
+      "description": "PMCG 配置信息寄存器。提供 PMCG 实现信息。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CR",
+      "fullName": "PMCG Control Register",
+      "address": "0x2058",
+      "width": 32,
+      "description": "PMCG 控制寄存器。包含性能监视器控制标志。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CEID0",
+      "fullName": "PMCG Common Event ID Register 0",
+      "address": "0x205C",
+      "width": 32,
+      "description": "PMCG 通用事件 ID 位图低 32 位。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_CEID1",
+      "fullName": "PMCG Common Event ID Register 1",
+      "address": "0x2060",
+      "width": 32,
+      "description": "PMCG 通用事件 ID 位图高 32 位。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_IRQ_CTRL",
+      "fullName": "PMCG IRQ Enable Register",
+      "address": "0x2064",
+      "width": 32,
+      "description": "PMCG IRQ 使能寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_IRQ_CTRLACK",
+      "fullName": "PMCG IRQ Enable Acknowledge Register",
+      "address": "0x2068",
+      "width": 32,
+      "description": "PMCG IRQ 使能确认寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_AIDR",
+      "fullName": "PMCG Architecture Identification Register",
+      "address": "0x206C",
+      "width": 32,
+      "description": "PMCG 架构识别寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_ID_REGS",
+      "fullName": "PMCG ID Registers",
+      "address": "0x2070",
+      "width": 32,
+      "description": "PMCG ID 寄存器（IMPLEMENTATION DEFINED）。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_PMAUTHSTATUS",
+      "fullName": "PMU Authentication Status Register",
+      "address": "0x2074",
+      "width": 32,
+      "description": "PMU 认证状态寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_PMDEVARCH",
+      "fullName": "PMU Device Architecture Register",
+      "address": "0x2078",
+      "width": 32,
+      "description": "PMU 设备架构寄存器。",
+      "fields": []
+    },
+    {
+      "name": "SMMU_PMCG_PMDEVTYPE",
+      "fullName": "PMU Device Type Register",
+      "address": "0x207C",
+      "width": 32,
+      "description": "PMU 设备类型寄存器。性能监视器设备类型标识。",
+      "fields": []
+    }
+  ]
+}

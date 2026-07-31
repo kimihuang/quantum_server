@@ -1009,7 +1009,7 @@ function buildSidebarSection(sourceLabel, registers) {
   const colors = sourceColors[sourceLabel] || defaultSourceColor;
   const sectionId = 'sec-' + sourceLabel.replace(/\s+/g, '-');
 
-  return '<div class="source-group" id="' + sectionId + '">' +
+  return '<div class="source-group collapsed" id="' + sectionId + '">' +
     '<div class="source-group-header" onclick="toggleSidebarSection(\'' + sectionId + '\')">' +
       '<span class="group-arrow">&#9660;</span>' +
       '<span class="group-dot" style="background:' + colors.dot + '"></span>' +

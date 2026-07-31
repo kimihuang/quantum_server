@@ -98,6 +98,8 @@
     "registers_gicd_spendsgirn.json",
     "registers_gicd_statusr.json",
     "registers_gicd_typer.json",
-    "registers_gicd_typer2.json"
+    "registers_gicd_typer2.json",
+    "registers_smmuv3.json",
+    "registers_cmn600_hnf.json"
   ]
 }
