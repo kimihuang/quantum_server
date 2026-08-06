@@ -20,55 +20,55 @@
           "name": "Indirect",
           "bits": "62",
           "access": "RW",
-          "description": "This field indicates whether an implemented register specifies a single, flat table or a two-level table where the first level contains a list of descriptors. For more information, see 'The ITS tables' in ARM® Generic Interrupt Controller Architecture Specification, GIC architecture version 3.0 and version 4.0 (ARM IHI 0069). This field is RAZ/WI for GIC implementations that only support flat tables. If the maximum width of the scaling factor that is identified by GITS_BASER<n>.Type and the smallest page size that is supported result in a single level table that requires multiple pages, then implementing this bit as RAZ/WI is DEPRECATED. [0b0=; 0b1=]"
+          "description": "This field indicates whether an implemented register specifies a single, flat table or a two-level table where the first level contains a list of descriptors. For more information, see 'The ITS tables' in ARM® Generic 中断 Controller Architecture Specification, GIC architecture version 3.0 and version 4.0 (ARM IHI 0069). This field is RAZ/WI for GIC implementations that only support flat tables. 若 maximum width of the scaling factor that is identified by GITS_BASER<n>.Type and the smallest 页大小 that is supported result in a single level table that requires multiple pages, then implementing this bit as RAZ/WI is DEPRECATED. [0b0=; 0b1=]"
         },
         {
           "name": "InnerCache",
           "bits": "61:59",
           "access": "RW",
-          "description": "Indicates the Inner Cacheability attributes of accesses to the table. The possible values of this field are: [0b000=; 0b001=; 0b010=; 0b011=; 0b100=; 0b101=; 0b110=; 0b111=]"
+          "description": "Indicates the Inner 可缓存性 attributes of accesses to the table. The possible values of this field are: [0b000=; 0b001=; 0b010=; 0b011=; 0b100=; 0b101=; 0b110=; 0b111=]"
         },
         {
           "name": "Type",
           "bits": "58:56",
           "access": "RW",
-          "description": "Read only. Specifies the type of entity that requires entries in the corresponding table. The possible values of the field are: Other values are reserved. For FEAT_GICv4p1, the registers are allocated as follows: GITS_BASER0.Type is 0b001 (Device). GITS_BASER1.Type is either 0b100 (Collection Table) or 0b000 (Unimplemented). GITS_BASER2.Type is either 0b010 (vPE) or 0b000 (Unimplemented). GITS_BASER<n>.Type, where 'n' is in the range 3 to 7, is 0b000 (Unimplemented). For FEAT_GICv3, FEAT_GICv3p1, and FEAT_GICv4, Arm recommends that the GITS_BASER<n> use the same allocations. Other allocations of Type values are deprecated. [0b000=; 0b001=; 0b010=; 0b100=]"
+          "description": "Read only. 指定 type of entity that requires entries in the corresponding table. The possible values of the field are: Other values are reserved. For FEAT_GICv4p1, the registers are allocated as follows: GITS_BASER0.Type is 0b001 (Device). GITS_BASER1.Type is either 0b100 (集合 Table) or 0b000 (Unimplemented). GITS_BASER2.Type is either 0b010 (vPE) or 0b000 (Unimplemented). GITS_BASER<n>.Type, where 'n' is in the range 3 to 7, is 0b000 (Unimplemented). For FEAT_GICv3, FEAT_GICv3p1, and FEAT_GICv4, Arm recommends that the GITS_BASER<n> use the same allocations. Other allocations of Type values are deprecated. [0b000=; 0b001=; 0b010=; 0b100=]"
         },
         {
           "name": "OuterCache",
           "bits": "55:53",
           "access": "RW",
-          "description": "Indicates the Outer Cacheability attributes of accesses to the table. The possible values of this field are: It is IMPLEMENTATION DEFINED whether this field has a fixed value or can be programmed by software. Implementing this field with a fixed value is deprecated. [0b000=; 0b001=; 0b010=; 0b011=; 0b100=; 0b101=; 0b110=; 0b111=]"
+          "description": "Indicates the Outer 可缓存性 attributes of accesses to the table. The possible values of this field are: It is IMPLEMENTATION DEFINED whether this field has a fixed value or can be programmed by software. Implementing this field with a fixed value is deprecated. [0b000=; 0b001=; 0b010=; 0b011=; 0b100=; 0b101=; 0b110=; 0b111=]"
         },
         {
           "name": "Entry_Size",
           "bits": "52:48",
           "access": "RW",
-          "description": "Read-only. Specifies the number of bytes per table entry, minus one."
+          "description": "Read-only. 指定 number of bytes per table entry, minus one."
         },
         {
           "name": "Physical_Address",
           "bits": "47:12",
           "access": "RW",
-          "description": "Physical Address. When Page_Size is 4KB or 16KB: When Page_Size is 64KB: In implementations that support fewer than 52 bits of physical address, any unimplemented upper bits might be RAZ/WI."
+          "description": "物理 Address. When Page_Size is 4KB or 16KB: When Page_Size is 64KB: In implementations that support fewer than 52 bits of 物理地址, any unimplemented upper bits might be RAZ/WI."
         },
         {
           "name": "Shareability",
           "bits": "11:10",
           "access": "RW",
-          "description": "Indicates the Shareability attributes of accesses to the table. The possible values of this field are: It is IMPLEMENTATION DEFINED whether this field has a fixed value or can be programmed by software. Implementing this field with a fixed value is deprecated. [0b00=; 0b01=; 0b10=; 0b11=]"
+          "description": "Indicates the 可共享性 attributes of accesses to the table. The possible values of this field are: It is IMPLEMENTATION DEFINED whether this field has a fixed value or can be programmed by software. Implementing this field with a fixed value is deprecated. [0b00=; 0b01=; 0b10=; 0b11=]"
         },
         {
           "name": "Page_Size",
           "bits": "9:8",
           "access": "RW",
-          "description": "The size of page that the table uses: If the GIC implementation supports only a single, fixed page size, this field might be RO. [0b00=; 0b01=; 0b10=; 0b11=]"
+          "description": "The size of page that the table uses: 若 GIC implementation supports only a single, fixed 页大小, this field might be RO. [0b00=; 0b01=; 0b10=; 0b11=]"
         },
         {
           "name": "Size",
           "bits": "7:0",
           "access": "RW",
-          "description": "The number of pages of physical memory allocated to the table, minus one. GITS_BASER<n>.Page_Size specifies the size of each page. If GITS_BASER<n>.Type == 0, this field is RAZ/WI."
+          "description": "The number of pages of 物理 memory allocated to the table, minus one. GITS_BASER<n>.Page_Size 指定 size of each page. If GITS_BASER<n>.Type == 0, this field is RAZ/WI."
         }
       ]
     }

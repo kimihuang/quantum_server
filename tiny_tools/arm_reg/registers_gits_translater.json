@@ -5,16 +5,16 @@
   "registers": [
     {
       "name": "GITS_TRANSLATER",
-      "fullName": "ITS Translation Register",
-      "address": "0x0000",
+      "fullName": "ITS Translator Register",
+      "address": "0x0040",
       "width": 32,
-      "description": "ITS Translation Register。GIC ITS 寄存器。",
+      "description": "ITS 翻译器寄存器 (ITS Translator Register)。设备向此寄存器写入 MSI 事务，ITS 根据写入的值查找设备表和中断翻译表，将 MSI 转换为 LPI 中断并转发到目标 Redistributor。64 位访问时 bit[63:32] 必须为 0。",
       "fields": [
         {
           "name": "EventID",
           "bits": "31:0",
-          "access": "RW",
-          "description": "An identifier corresponding to the interrupt to be translated. The size of the EventID is DeviceID specific, and set when the DeviceID is mapped to an ITT (using MAPD). The number of EventID 位数 implemented is reported by GITS_TYPER.ID_bits. If a write specifies nonzero identifiers bits outside this range behavior is a CONSTRAINED UNPREDICTABLE choice between:"
+          "access": "WO",
+          "description": "事件 ID (EventID)。写入此字段的 MSI 数据值。ITS 使用此值与写入地址共同确定目标设备条目和中断翻译表条目，从而生成 LPI。写入值由 ITS 根据 GITS_TYPER.ID_bits 和 GITS_TYPER.Devbits 解码：高 bits[(Devbits-1):0] 用作 DeviceID，低 bits[(ID_bits-1):0] 用作 EventID。"
         }
       ]
     }

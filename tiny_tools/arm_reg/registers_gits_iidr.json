@@ -38,7 +38,7 @@
           "name": "Implementer",
           "bits": "11:0",
           "access": "RW",
-          "description": "Contains the JEP106 manufacturer's identification code of the designer of the ITS. The code identifies the designer of the component, which might not be the same as the implementer of the device containing the component. Zero is not a valid JEP106 identification code, meaning a value of zero for GITS_IIDR indicates this register is not implemented. For an implementation designed by Arm, this field reads as 0x43B. Bits [11:8] contain the JEP106 bank identifier of the designer minus 1. Bit 7 is RES0. Bits [6:0] contain bits [6:0] of the JEP106 manufacturer's identification code of the designer. This field has an IMPLEMENTATION DEFINED value."
+          "description": "包含 JEP106 manufacturer's identification code of the designer of the ITS. The code 标识 the designer of the component, which might not be the same as the implementer of the device containing the component. Zero is not a valid JEP106 identification code, meaning a value of zero for GITS_IIDR indicates this register is not implemented. For an implementation designed by Arm, this field 读为 0x43B. Bits [11:8] contain the JEP106 bank identifier of the designer minus 1. Bit 7 is RES0. Bits [6:0] contain bits [6:0] of the JEP106 manufacturer's identification code of the designer. This field has an IMPLEMENTATION DEFINED value."
         }
       ]
     }

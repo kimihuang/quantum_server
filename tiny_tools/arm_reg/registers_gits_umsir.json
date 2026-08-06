@@ -5,22 +5,22 @@
   "registers": [
     {
       "name": "GITS_UMSIR",
-      "fullName": "ITS Unmapped MSI register",
-      "address": "0x0000",
+      "fullName": "ITS Unmapped MSI Register",
+      "address": "0x0010",
       "width": 64,
-      "description": "ITS Unmapped MSI register。GIC ITS 寄存器。",
+      "description": "ITS 未映射 MSI 寄存器 (ITS Unmapped MSI Register)。当 GITS_STATUSR.UMSI=1 时，软件读取此寄存器获取产生未映射 MSI 事件的 DeviceID 和 EventID。如果检测到多个未映射 MSI，读回的值可能是任何一个未映射 MSI 对应的信息。",
       "fields": [
         {
           "name": "DeviceID",
           "bits": "63:32",
-          "access": "RW",
-          "description": "DeviceID of MSI that set GITS_STATUSR.UMSI to 1. If GITS_STATUSR.UMSI is 0, this field is UNKNOWN."
+          "access": "RO",
+          "description": "设备 ID (DeviceID)。产生未映射 MSI 事件的设备的 DeviceID。"
         },
         {
           "name": "EventID",
           "bits": "31:0",
-          "access": "RW",
-          "description": "EventID of MSI that set GITS_STATUSR.UMSI to 1. If GITS_STATUSR.UMSI is 0, this field is UNKNOWN."
+          "access": "RO",
+          "description": "事件 ID (EventID)。产生未映射 MSI 事件的事件 ID。此值为到达 GITS_TRANSLATER 的 MSI 的原始数据值。"
         }
       ]
     }

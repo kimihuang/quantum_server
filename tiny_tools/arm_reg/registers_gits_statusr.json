@@ -8,55 +8,55 @@
       "fullName": "ITS Error Reporting Status Register",
       "address": "0x0000",
       "width": 32,
-      "description": "ITS Error Reporting Status Register。GIC ITS 寄存器。",
+      "description": "ITS 错误报告状态寄存器 (ITS Error Reporting Status Register)。报告 ITS 检测到的编程接口错误和未映射 MSI 事件。检测到违规时软件写入 1 清零对应位。",
       "fields": [
         {
           "name": "RES0",
           "bits": "31:10",
-          "access": "RW",
+          "access": "RES0",
           "description": "保留，RES0。"
         },
         {
           "name": "Syndrome",
           "bits": "9:6",
-          "access": "RW",
-          "description": "Syndrome for the MSI that set GITS_STATUSR.UMSI to 1. An implementation might not support reporting all syndromes, and might report 0b0000 for any cause. This field is UNKNOWN when GITS_STATUSR.UMSI is 0. [0b0000=; 0b0010=; 0b0011=; 0b0100=; 0b0101=; 0b0111=; 0b1001=]"
+          "access": "RO",
+          "description": "错误综合征码 (Syndrome)。指示导致 UMSI 置位的 MSI 的错误类型。实现可以不全报告所有综合征码，对任何原因报告 0b0000 也是允许的。当 UMSI=0 时此字段为 UNKNOWN。0b0000=未指定（实现未提供详细信息）；0b0010=ITS 检测到 EventID 不在 LPI 配置表或 LPI pending 表映射范围内；0b0011=ITS 未能获取中断翻译表中条目（如无效 PT 条目或遍历过程出现错误）；0b0100=ITS 未能获取集合表 (Collection table) 中的条目；0b0101=ITS 未能获取 vPE 表中的条目；0b0111=ITS 未能获取设备表 (Device table) 中的条目（无有效 ITT）；0b1001=ITS 未能读取 LPI 配置表中的条目。其余编码保留。"
         },
         {
           "name": "Overflow",
           "bits": "5",
           "access": "RW",
-          "description": "Reports whether an unmapped MSI has been received while GITS_STATUSR.UMSI is 1. A software write of 1 to the bit clears it. A write of any other value is ignored. If GITS_TYPER.UMSI is 0, this field is RES0. [0b0=; 0b1=]"
+          "description": "溢出标志 (Overflow)。当 UMSI=1 时若收到另一个未映射 MSI 则置 1。软件写 1 清零此位，写其他值被忽略。若 GITS_TYPER.UMSI=0 时此字段为 RES0。0b0=未接收到未映射 MSI 溢出；0b1=接收到未映射 MSI 溢出。"
         },
         {
           "name": "UMSI",
           "bits": "4",
           "access": "RW",
-          "description": "Reports whether an unmapped MSI has been received An unmapped MSI is defined as an MSI arriving at GITS_TRANSLATER for which there is insufficient mapping information for it to be forwarded to a Redistributor. It is IMPLEMENTATION DEFINED whether an INT command can be reported as an unmapped MSI. A software write of 1 to the bit clears it. A write of any other value is ignored. If GITS_TYPER.UMSI is 0, this field is RES0. [0b0=; 0b1=]"
+          "description": "未映射 MSI 标志 (Unmapped MSI)。指示是否收到未映射 MSI。未映射 MSI 定义为到达 GITS_TRANSLATER 但因映射信息不足而无法转发到 Redistributor 的 MSI。INT 命令是否可报告为未映射 MSI 由 IMPLEMENTATION DEFINED 决定。软件写 1 清零此位，写其他值被忽略。若 GITS_TYPER.UMSI=0 时此字段为 RES0。0b0=未收到未映射 MSI；0b1=收到未映射 MSI。"
         },
         {
           "name": "WROD",
           "bits": "3",
           "access": "RW",
-          "description": "Write to an RO location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+          "description": "只读地址写违规 (Write to Read-Only location)。当检测到对此 ITS 寄存器映射区域的只读地址执行写操作时置 1。检测到违规时软件必须写 1 来复位此位。0b0=未检测到违规；0b1=检测到对只读地址的写操作。"
         },
         {
           "name": "RWOD",
           "bits": "2",
           "access": "RW",
-          "description": "Read of a WO location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+          "description": "只写地址读违规 (Read of Write-Only location)。当检测到对此 ITS 寄存器映射区域的只写地址执行读操作时置 1。检测到违规时软件必须写 1 来复位此位。0b0=未检测到违规；0b1=检测到对只写地址的读操作。"
         },
         {
           "name": "WRD",
           "bits": "1",
           "access": "RW",
-          "description": "Write to a reserved location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+          "description": "保留地址写违规 (Write to Reserved location)。当检测到对此 ITS 寄存器映射区域的保留地址执行写操作时置 1。检测到违规时软件必须写 1 来复位此位。0b0=未检测到违规；0b1=检测到对保留地址的写操作。"
         },
         {
           "name": "RRD",
           "bits": "0",
           "access": "RW",
-          "description": "Read of a reserved location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+          "description": "保留地址读违规 (Read of Reserved location)。当检测到对此 ITS 寄存器映射区域的保留地址执行读操作时置 1。检测到违规时软件必须写 1 来复位此位。0b0=未检测到违规；0b1=检测到对保留地址的读操作。"
         }
       ]
     }

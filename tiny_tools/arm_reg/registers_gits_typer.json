@@ -6,147 +6,147 @@
     {
       "name": "GITS_TYPER",
       "fullName": "ITS Type Register",
-      "address": "0x0000",
+      "address": "0x0008",
       "width": 64,
-      "description": "ITS Type Register。GIC ITS 寄存器。",
+      "description": "ITS 类型寄存器 (ITS Type Register)。提供 ITS 实现的硬件特性和支持的位数信息，软件用于发现和配置 ITS。所有字段只读。",
       "fields": [
         {
           "name": "RES0",
           "bits": "63:47",
-          "access": "RW",
+          "access": "RES0",
           "description": "保留，RES0。"
         },
         {
           "name": "INV",
           "bits": "46",
-          "access": "RW",
-          "description": "ITS cache invalidation behavior on disable. If GITS_TYPER.INV is 1, after the following sequence: There is no cached information from the ITS memory structure pointed to by GITS_BASER<n>. [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "支持 INV 和 INVALL 命令。0b0=不支持。0b1=支持 LPI 的使无效操作。"
         },
         {
           "name": "UMSIirq",
           "bits": "45",
-          "access": "RW",
-          "description": "Indicates support for generating an interrupt on receiving unmapped MSI. If GITS_TYPER.UMSI is 0, this field is RES0. [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "支持 UMSI 中断。0b0=不产生未映射 MSI 中断。0b1=可产生未映射 MSI 中断。"
         },
         {
           "name": "UMSI",
           "bits": "44",
-          "access": "RW",
-          "description": "Indicates support for reporting receipt of unmapped MSIs. [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "支持 GITS_STATUSR.UMSI 和 GITS_STATUSR.Overflow 位。0b0=不支持未映射 MSI 检测。0b1=支持未映射 MSI 检测和溢出报告。"
         },
         {
           "name": "nID",
           "bits": "43",
-          "access": "RW",
-          "description": "[When GICv4.1 is implemented] nID [0b0=; 0b1=]；否则为 RES0"
+          "access": "RO",
+          "description": "不支持 DeviceID 非连续范围。0b0=DeviceID 支持非连续范围。0b1=所有 DeviceID 从 0 到最大值连续。"
         },
         {
           "name": "SVPET",
           "bits": "42:41",
-          "access": "RW",
-          "description": "[When GICv4.1 is implemented] SVPET [0b00=; 0b01=; 0b10=; 0b11=]；否则为 RES0"
+          "access": "RO",
+          "description": "支持的 vPE 表类型。0b00=vPE 表不支持。0b01=vPE 表为内存中的平面表。0b10=vPE 表通过 GITS_BASERn 间接引用（间接表）。0b11=保留。"
         },
         {
           "name": "VMAPP",
           "bits": "40",
-          "access": "RW",
-          "description": "[When GICv4.1 is implemented] VMAPP [0b0=; 0b1=]；否则为 RES0"
+          "access": "RO",
+          "description": "支持 VMAPP 命令。0b0=不支持直接虚拟 LPI 注入。0b1=支持 VMAPP/VMMAPTI 命令用于直接虚拟 LPI。"
         },
         {
           "name": "VSGI",
           "bits": "39",
-          "access": "RW",
-          "description": "[When GICv4.1 is implemented] VSGI [0b0=; 0b1=]；否则为 RES0"
+          "access": "RO",
+          "description": "支持虚拟 SGI。0b0=不支持 VSGI（虚拟软件生成中断）。0b1=支持虚拟 SGI 命令。"
         },
         {
           "name": "MPAM",
           "bits": "38",
-          "access": "RW",
-          "description": "[When GICv3.1 is implemented] MPAM [0b0=; 0b1=]；否则为 RES0"
+          "access": "RO",
+          "description": "支持 MPAM。0b0=不支持 Memory System Resource Partitioning and Monitoring。0b1=支持 MPAM 分区。"
         },
         {
           "name": "VMOVP",
           "bits": "37",
-          "access": "RW",
-          "description": "[When GICv4 is implemented] Indicates the form of the VMOVP command. [0b0=; 0b1=]；否则为 RES0"
+          "access": "RO",
+          "description": "支持 VMOVP 命令。0b0=不支持。0b1=支持虚拟 LPI pending 表重定位命令。"
         },
         {
           "name": "CIL",
           "bits": "36",
-          "access": "RW",
-          "description": "Collection ID Limit. In implementations that do not support Collections in external memory, this bit is RES0 and the number of Collections supported is reported by GITS_TYPER.HCC. [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "支持 CLEAR 命令（物理 LPI 清除 pending 和 active 状态）。0b0=不支持。0b1=支持。"
         },
         {
           "name": "CIDbits",
           "bits": "35:32",
-          "access": "RW",
-          "description": "Number of Collection ID bits. This field has an IMPLEMENTATION DEFINED value."
+          "access": "RO",
+          "description": "Collection ID 位数减 1。支持的 Collection ID 位数为 (CIDbits+1)，即实现支持的最大 Collection 数为 2^(CIDbits+1)。"
         },
         {
           "name": "HCC",
           "bits": "31:24",
-          "access": "RW",
-          "description": "Hardware Collection Count. The number of interrupt collections supported by the ITS without provisioning of external memory. Collections held in hardware are unmapped at reset. This field has an IMPLEMENTATION DEFINED value."
+          "access": "RO",
+          "description": "硬件 Collection 计数 (Hardware Collection Count)。用于 GICv4 直接注入时的硬件集合管理。bits[31:28]=GICv4.1 支持的最大 vPE 数编码；bits[27:24]=软件在前一个 GITS_CWRITER 写操作后产生的命令数，用于 ImDe 行为控制。"
         },
         {
           "name": "RES0",
           "bits": "23:20",
-          "access": "RW",
+          "access": "RES0",
           "description": "保留，RES0。"
         },
         {
           "name": "PTA",
           "bits": "19",
-          "access": "RW",
-          "description": "Physical Target Addresses. Indicates the format of the target address: For more information, see 'RDbase' in ARM® Generic Interrupt Controller Architecture Specification, GIC architecture version 3.0 and version 4.0 (ARM IHI 0069). [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "物理目标地址 (Physical Target Address)。0b0=不支持物理 LPI pending 表的平坦地址格式。0b1=支持物理 LPI 使用 GITS_BASERn 编码中的物理目标地址格式。"
         },
         {
           "name": "SEIS",
           "bits": "18",
-          "access": "RW",
-          "description": "SEI support. Indicates whether the ITS supports generation of SEIs: [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "系统错误中断支持 (System Error Interrupt Support)。0b0=ITS 对于中断翻译错误不产生系统错误中断。0b1=ITS 可配置为在中断翻译错误时产生系统错误中断。"
         },
         {
           "name": "Devbits",
           "bits": "17:13",
-          "access": "RW",
-          "description": "The number of DeviceID 位数 implemented, minus one. This field has an IMPLEMENTATION DEFINED value."
+          "access": "RO",
+          "description": "支持的 DeviceID 位数。DeviceID 支持的最大位数为 (Devbits+1)。该值与 GITS_BASERn 中设备表的条目大小共同决定 GITS_BASERn 可支持的 DeviceID 范围。"
         },
         {
           "name": "ID_bits",
           "bits": "12:8",
-          "access": "RW",
-          "description": "The number of EventID 位数 implemented, minus one. This field has an IMPLEMENTATION DEFINED value."
+          "access": "RO",
+          "description": "支持的 EventID 位数。EventID 支持的最大位数为 (ID_bits+1)，即支持的最大 EventID 为 2^(ID_bits+1)-1。该值决定 GITS_TRANSLATER 的低位位数。"
         },
         {
           "name": "ITT_entry_size",
           "bits": "7:4",
-          "access": "RW",
-          "description": "Read-only. Indicates the number of bytes per translation table entry, minus one. For more information about the ITS command 'MAPD', see MAPD. This field has an IMPLEMENTATION DEFINED value."
+          "access": "RO",
+          "description": "中断翻译表条目大小 (ITT Entry Size)。编码值 N 表示每个 ITT 条目大小为 2^(N+2) 字节。例如：0b0000=4 字节条目（未实现），0b0001=8 字节，最常见值为 0b0111=128 字节。"
         },
         {
-          "name": "IMPLEMENTATION DEFINED",
+          "name": "IMP",
           "bits": "3",
-          "access": "RW",
-          "description": "IMPLEMENTATION DEFINED."
+          "access": "RO",
+          "description": "IMPLEMENTATION DEFINED 位。实现特定含义，由具体 ITS 硬件实现决定。"
         },
         {
           "name": "CCT",
           "bits": "2",
-          "access": "RW",
-          "description": "Cumulative Collection Tables. If GITS_TYPER.HCC == 0, or if memory backed collections are not supported (all GITS_BASER<n>.Type != 100), this bit is RES0. [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "Collection 表类型。0b0=内存中的平面表。0b1=通过 GITS_BASERn 间接引用其基地址的间接表。"
         },
         {
           "name": "Virtual",
           "bits": "1",
-          "access": "RW",
-          "description": "[When GICv4 is implemented] Indicates whether the ITS supports virtual LPIs and direct injection of virtual LPIs: [0b0=; 0b1=]；否则为 RES0"
+          "access": "RO",
+          "description": "支持虚拟 LPI。0b0=不支持虚拟 LPI（无 vPE 表和直接注入）。0b1=支持虚拟 LPI（GICv4 直接虚拟注入）。"
         },
         {
           "name": "Physical",
           "bits": "0",
-          "access": "RW",
-          "description": "Indicates whether the ITS supports 物理 LPIs: This field is RES1, indicating that the ITS supports 物理 LPIs. [0b0=; 0b1=]"
+          "access": "RO",
+          "description": "支持物理 LPI。0b0=不支持物理 LPI。0b1=支持物理 LPI 中断翻译（基本 ITS 功能）。"
         }
       ]
     }
