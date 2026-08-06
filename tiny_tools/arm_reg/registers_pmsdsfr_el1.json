@@ -1,0 +1,22 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSDSFR_EL1",
+      "fullName": "Sampling Data Source Filter Register",
+      "address": "0x00E9",
+      "width": 64,
+      "description": "SPE 数据源过滤寄存器。选择 SPE 记录包含的数据源类型。FEAT_SPE 时存在。",
+      "fields": [
+        {
+          "name": "S<m>",
+          "bits": "63:0",
+          "access": "RW",
+          "description": "S[<m>] is the 数据源 过滤器 for IMPLEMENTATION DEFINED 数据源 <m>. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

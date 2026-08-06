@@ -1,0 +1,46 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_IIDR",
+      "fullName": "ITS Identification Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "ITS Identification Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "ProductID",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "Product Identifier. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "RES0",
+          "bits": "23:20",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Variant",
+          "bits": "19:16",
+          "access": "RW",
+          "description": "Variant number. Typically, this field is used to distinguish product variants, or major revisions of a product. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "Revision",
+          "bits": "15:12",
+          "access": "RW",
+          "description": "Revision number. Typically, this field is used to distinguish minor revisions of a product. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "Implementer",
+          "bits": "11:0",
+          "access": "RW",
+          "description": "Contains the JEP106 manufacturer's identification code of the designer of the ITS. The code identifies the designer of the component, which might not be the same as the implementer of the device containing the component. Zero is not a valid JEP106 identification code, meaning a value of zero for GITS_IIDR indicates this register is not implemented. For an implementation designed by Arm, this field reads as 0x43B. Bits [11:8] contain the JEP106 bank identifier of the designer minus 1. Bit 7 is RES0. Bits [6:0] contain bits [6:0] of the JEP106 manufacturer's identification code of the designer. This field has an IMPLEMENTATION DEFINED value."
+        }
+      ]
+    }
+  ]
+}

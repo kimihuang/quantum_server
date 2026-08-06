@@ -1,0 +1,64 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_STATUSR",
+      "fullName": "ITS Error Reporting Status Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "ITS Error Reporting Status Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:10",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Syndrome",
+          "bits": "9:6",
+          "access": "RW",
+          "description": "Syndrome for the MSI that set GITS_STATUSR.UMSI to 1. An implementation might not support reporting all syndromes, and might report 0b0000 for any cause. This field is UNKNOWN when GITS_STATUSR.UMSI is 0. [0b0000=; 0b0010=; 0b0011=; 0b0100=; 0b0101=; 0b0111=; 0b1001=]"
+        },
+        {
+          "name": "Overflow",
+          "bits": "5",
+          "access": "RW",
+          "description": "Reports whether an unmapped MSI has been received while GITS_STATUSR.UMSI is 1. A software write of 1 to the bit clears it. A write of any other value is ignored. If GITS_TYPER.UMSI is 0, this field is RES0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "UMSI",
+          "bits": "4",
+          "access": "RW",
+          "description": "Reports whether an unmapped MSI has been received An unmapped MSI is defined as an MSI arriving at GITS_TRANSLATER for which there is insufficient mapping information for it to be forwarded to a Redistributor. It is IMPLEMENTATION DEFINED whether an INT command can be reported as an unmapped MSI. A software write of 1 to the bit clears it. A write of any other value is ignored. If GITS_TYPER.UMSI is 0, this field is RES0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "WROD",
+          "bits": "3",
+          "access": "RW",
+          "description": "Write to an RO location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+        },
+        {
+          "name": "RWOD",
+          "bits": "2",
+          "access": "RW",
+          "description": "Read of a WO location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+        },
+        {
+          "name": "WRD",
+          "bits": "1",
+          "access": "RW",
+          "description": "Write to a reserved location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+        },
+        {
+          "name": "RRD",
+          "bits": "0",
+          "access": "RW",
+          "description": "Read of a reserved location. When a violation is detected, software must write 1 to this register to reset it. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

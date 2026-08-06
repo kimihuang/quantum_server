@@ -1,0 +1,58 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_CTLR",
+      "fullName": "ITS Control Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "ITS Control Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "Quiescent",
+          "bits": "31",
+          "access": "RW",
+          "description": "Read-only. Indicates completion of all ITS operations when GITS_CTLR.Enabled == 0. For the ITS to be considered inactive, there must be no transactions in progress. In addition, all operations required to ensure that mapping data is consistent with external memory must be complete. In distributed GIC implementations, this bit is set to 1 only after the ITS forwards any operations that have not yet been completed to the Redistributors and receives confirmation that all such operations have reached the appropriate Redistributor. In FEAT_GICv3, FEAT_GICv3p1, and FEAT_GICv4, when GITS_CTLR.Enabled == 1, the value of GITS_CTLR.Quiescent is UNKNOWN. In FEAT_GICv4p1, when GITS_CTLR.Enabled == 1, the value of GITS_CTLR.Quiescent reads as 1 until the write to Enabled has taken effect and then reads as 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "RES0",
+          "bits": "30:9",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "UMSIirq",
+          "bits": "8",
+          "access": "RW",
+          "description": "Unmapped MSI reporting interrupt enable. If GITS_TYPER.UMSIirq is 0, this field is RES0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "ITS_Number",
+          "bits": "7:4",
+          "access": "RW",
+          "description": "In FEAT_GICv3 implementations this field is RES0. In FEAT_GICv4 implementations with more than one ITS instance, this field indicates the ITS number for use with 'VMOVP GICv4.0' in ARM® Generic Interrupt Controller Architecture Specification, GIC architecture version 3.0 and version 4.0 (ARM IHI 0069). When GITS_TYPER.VMOVP is 1, this field may be implemented as RES0. If this field is programmable, changing this field when GITS_CTLR.Quiescent == 0 or GITS_CTLR.Enabled == 1 is UNPREDICTABLE. It is IMPLEMENTATION DEFINED whether this field is programmable or RO."
+        },
+        {
+          "name": "RES0",
+          "bits": "3:2",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "ImDe",
+          "bits": "1",
+          "access": "RW",
+          "description": "In GICv3 implementations, this bit is RES0. In GICv4 implementations, this bit is IMPLEMENTATION DEFINED."
+        },
+        {
+          "name": "Enabled",
+          "bits": "0",
+          "access": "RW",
+          "description": "Controls whether the ITS is enabled: If a write to this register changes this field from 1 to 0, the ITS must ensure that both: Changing GITS_CTLR.Enabled from 0 to 1 when GITS_CTLR.Quiescent is 0 results in UNPREDICTABLE behavior. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

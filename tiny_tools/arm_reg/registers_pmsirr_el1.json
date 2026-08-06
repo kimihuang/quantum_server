@@ -1,0 +1,40 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSIRR_EL1",
+      "fullName": "Sampling Interval Reload Register",
+      "address": "0x00F0",
+      "width": 64,
+      "description": "SPE 采样间隔寄存器。设置 SPE 采样的最小间隔（以操作数计）。FEAT_SPE 时存在。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:32",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "INTERVAL",
+          "bits": "31:8",
+          "access": "RW",
+          "description": "Bits [31:8] of the PMSICR_EL1 interval 计数er reload value. Software must set this to a nonzero value. If this field is zero, then an UNKNOWN 采样间隔 is used. If PMSIDR_EL1.Interval is nonzero, then it 提供 guidance from the implementer to the smallest 采样间隔 that should be used. Setting this field to a nonzero value smaller than the indicated value is likely to cause a statistically significant number of sample collisions. See Sample collisions. Setting the sample interval to a value greater than or equal to the indicated value does not guarantee a statistically insignificant number of sample collisions, as this is typically dependent on the program being profiled."
+        },
+        {
+          "name": "RES0",
+          "bits": "7:1",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "RND",
+          "bits": "0",
+          "access": "RW",
+          "description": "控制 randomization of the 采样间隔. The random number generator is not architected. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

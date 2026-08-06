@@ -1,0 +1,22 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_TRANSLATER",
+      "fullName": "ITS Translation Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "ITS Translation Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "EventID",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "An identifier corresponding to the interrupt to be translated. The size of the EventID is DeviceID specific, and set when the DeviceID is mapped to an ITT (using MAPD). The number of EventID 位数 implemented is reported by GITS_TYPER.ID_bits. If a write specifies nonzero identifiers bits outside this range behavior is a CONSTRAINED UNPREDICTABLE choice between:"
+        }
+      ]
+    }
+  ]
+}

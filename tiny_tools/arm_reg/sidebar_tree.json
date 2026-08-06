@@ -1,0 +1,212 @@
+[
+  {
+    "name": "CPU 系统寄存器",
+    "icon": "cpu",
+    "children": [
+      {
+        "name": "MMU / 页表",
+        "sources": [
+          "registers_tcr_el1.json",
+          "registers_ttbr0_el1.json",
+          "registers_mair_el1.json"
+        ]
+      },
+      {
+        "name": "异常 / 中断",
+        "sources": [
+          "registers_esrel1.json",
+          "registers_farel1.json",
+          "registers_vbarel1.json",
+          "registers_elrel1.json",
+          "registers_isrel1.json"
+        ]
+      },
+      {
+        "name": "系统控制",
+        "sources": [
+          "registers_sctrlel1.json",
+          "registers_spsr_el1.json"
+        ]
+      },
+      {
+        "name": "处理器状态 / ID",
+        "sources": [
+          "registers_cpsr.json",
+          "registers_spsr_irq.json",
+          "registers_mpidr_el1.json",
+          "registers_sp_el1.json"
+        ]
+      },
+      {
+        "name": "性能分析 / SPE",
+        "sources": [
+          "registers_pmbidr_el1.json",
+          "registers_pmblimitr_el1.json",
+          "registers_pmbptr_el1.json",
+          "registers_pmbsr_el1.json",
+          "registers_pmbsr_el2.json",
+          "registers_pmbsr_el3.json",
+          "registers_pmscr_el1.json",
+          "registers_pmscr_el2.json",
+          "registers_pmsdsfr_el1.json",
+          "registers_pmsevfr_el1.json",
+          "registers_pmsfcr_el1.json",
+          "registers_pmsicr_el1.json",
+          "registers_pmsirr_el1.json",
+          "registers_pmslatfr_el1.json",
+          "registers_pmsnevfr_el1.json"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "SMMU / IOMMU",
+    "icon": "smmu",
+    "children": [
+      {
+        "name": "MMU-600AE SMMUv3 架构寄存器",
+        "sources": [
+          "registers_smmuv3.json"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "CMN 互联",
+    "icon": "cmn",
+    "children": [
+      {
+        "name": "HN-F (Home Node)",
+        "sources": [
+          "registers_cmn600_hnf.json"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "GIC 中断控制器",
+    "icon": "gic",
+    "children": [
+      {
+        "name": "GICD (分发器)",
+        "sources": [
+          "registers_gicd_ctlr.json",
+          "registers_gicd_typer.json",
+          "registers_gicd_typer2.json",
+          "registers_gicd_iidr.json",
+          "registers_gicd_statusr.json",
+          "registers_gicd_sgir.json",
+          "registers_gicd_spendsgirn.json",
+          "registers_gicd_cpendsgirn.json",
+          "registers_gicd_igrouprn.json",
+          "registers_gicd_igrouprne.json",
+          "registers_gicd_igrpmodrn.json",
+          "registers_gicd_igrpmodrne.json",
+          "registers_gicd_isenablern.json",
+          "registers_gicd_isenablerne.json",
+          "registers_gicd_icenablern.json",
+          "registers_gicd_icenablerne.json",
+          "registers_gicd_ispendrn.json",
+          "registers_gicd_ispendrne.json",
+          "registers_gicd_icpendrn.json",
+          "registers_gicd_icpendrne.json",
+          "registers_gicd_isactivern.json",
+          "registers_gicd_isactiverne.json",
+          "registers_gicd_icactivern.json",
+          "registers_gicd_icactiverne.json",
+          "registers_gicd_ipriorityrn.json",
+          "registers_gicd_ipriorityrne.json",
+          "registers_gicd_icfgrn.json",
+          "registers_gicd_icfgrne.json",
+          "registers_gicd_itargetsrn.json",
+          "registers_gicd_iroutern.json",
+          "registers_gicd_irouterne.json",
+          "registers_gicd_nsacrn.json",
+          "registers_gicd_nsacrne.json",
+          "registers_gicd_inmirn.json",
+          "registers_gicd_inmirne.json",
+          "registers_gicd_setspi_nsr.json",
+          "registers_gicd_setspi_sr.json",
+          "registers_gicd_clrspi_nsr.json",
+          "registers_gicd_clrspi_sr.json"
+        ]
+      },
+      {
+        "name": "GICR (再分发器)",
+        "sources": [
+          "registers_gicr_ctlr.json",
+          "registers_gicr_typer.json",
+          "registers_gicr_iidr.json",
+          "registers_gicr_statusr.json",
+          "registers_gicr_syncr.json",
+          "registers_gicr_waker.json",
+          "registers_gicr_igroupr0.json",
+          "registers_gicr_igrouprne.json",
+          "registers_gicr_igrpmodr0.json",
+          "registers_gicr_igrpmodrne.json",
+          "registers_gicr_isenabler0.json",
+          "registers_gicr_isenablerne.json",
+          "registers_gicr_icenabler0.json",
+          "registers_gicr_icenablerne.json",
+          "registers_gicr_ispendr0.json",
+          "registers_gicr_ispendrne.json",
+          "registers_gicr_icpendr0.json",
+          "registers_gicr_icpendrne.json",
+          "registers_gicr_isactiver0.json",
+          "registers_gicr_isactiverne.json",
+          "registers_gicr_icactiver0.json",
+          "registers_gicr_icactiverne.json",
+          "registers_gicr_ipriorityrn.json",
+          "registers_gicr_ipriorityrne.json",
+          "registers_gicr_icfgr0.json",
+          "registers_gicr_icfgr1.json",
+          "registers_gicr_icfgrne.json",
+          "registers_gicr_inmir0.json",
+          "registers_gicr_inmirne.json",
+          "registers_gicr_nsacr.json",
+          "registers_gicr_mpamidr.json",
+          "registers_gicr_partidr.json"
+        ]
+      },
+      {
+        "name": "GICR LPI 配置",
+        "sources": [
+          "registers_gicr_propbaser.json",
+          "registers_gicr_pendbaser.json",
+          "registers_gicr_vpropbaser.json",
+          "registers_gicr_vpendbaser.json",
+          "registers_gicr_invlpir.json",
+          "registers_gicr_invallr.json",
+          "registers_gicr_setlpir.json",
+          "registers_gicr_clrlpir.json"
+        ]
+      },
+      {
+        "name": "GICR 虚拟化",
+        "sources": [
+          "registers_gicr_vsgir.json",
+          "registers_gicr_vsgipendr.json"
+        ]
+      },
+      {
+        "name": "GITS (中断翻译服务)",
+        "sources": [
+          "registers_gits_baser<n>.json",
+          "registers_gits_cbaser.json",
+          "registers_gits_creadr.json",
+          "registers_gits_ctlr.json",
+          "registers_gits_cwriter.json",
+          "registers_gits_iidr.json",
+          "registers_gits_mpamidr.json",
+          "registers_gits_mpidr.json",
+          "registers_gits_partidr.json",
+          "registers_gits_sgir.json",
+          "registers_gits_statusr.json",
+          "registers_gits_translater.json",
+          "registers_gits_typer.json",
+          "registers_gits_umsir.json"
+        ]
+      }
+    ]
+  }
+]

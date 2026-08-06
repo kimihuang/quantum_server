@@ -1,0 +1,40 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_SGIR",
+      "fullName": "ITS SGI Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "ITS SGI Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:48",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "vPEID",
+          "bits": "47:32",
+          "access": "RW",
+          "description": "ID of target vPEID. The size of this field is IMPLEMENTATION DEFINED, and is specified by the GICD_TYPER2.VIL and GICD_TYPER2.VID fields. Unimplemented bits are RES0."
+        },
+        {
+          "name": "RES0",
+          "bits": "31:4",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "vINTID",
+          "bits": "3:0",
+          "access": "RW",
+          "description": "INTID of virtual SGI."
+        }
+      ]
+    }
+  ]
+}

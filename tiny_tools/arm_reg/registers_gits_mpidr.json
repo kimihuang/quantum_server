@@ -1,0 +1,40 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_MPIDR",
+      "fullName": "Report ITS's affinity.",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Report ITS's affinity.。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "Aff3",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "The Affinity level 3 value for the ITS. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "Aff2",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "The Affinity level 2 value for the ITS. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "Aff1",
+          "bits": "15:8",
+          "access": "RW",
+          "description": "The Affinity level 1 value for the ITS. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "RES0",
+          "bits": "7:0",
+          "access": "RW",
+          "description": "保留，RES0。"
+        }
+      ]
+    }
+  ]
+}

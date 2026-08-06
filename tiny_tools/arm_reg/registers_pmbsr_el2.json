@@ -1,0 +1,58 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMBSR_EL2",
+      "fullName": "Profiling Buffer Status Register (EL2)",
+      "address": "0x00E5",
+      "width": 64,
+      "description": "性能分析缓冲区状态寄存器 (Profiling Buffer Status Register, EL2)。EL2 版本，报告 Profiling Buffer 的状态。仅在 FEAT_SPE 实现时存在。",
+      "fields": [
+        {
+          "name": "RES0_63_32",
+          "bits": "63:32",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "DL",
+          "bits": "31",
+          "access": "RO",
+          "description": "数据丢失 (数据丢失)。0b0=无 Profiling Buffer 覆盖、数据丢失或已处理的 SError。0b1=自上次写 PMBSR_ELx 或 PMBSR_ELx.DL 清零以来发生了 Profiling Buffer 覆盖且数据已丢失。当设置为 1 时 PE 不会丢弃 Profiling Buffer 数据。当 PMBLIMITR_EL1.E=0 时此字段 UNKNOWN。"
+        },
+        {
+          "name": "EC",
+          "bits": "30:26",
+          "access": "RO",
+          "description": "错误码 (错误码)。0b00000=无错误；0b10001=Profiling Buffer 管理事件；0b10011=产生 SError 异常。当设置为非零值时 PE 不产生 Profiling Buffer 信息。当 PMBLIMITR_EL1.E=0 时此字段 UNKNOWN。"
+        },
+        {
+          "name": "RES0_25_8",
+          "bits": "25:8",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "MSS",
+          "bits": "7:4",
+          "access": "RO",
+          "description": "管理事件状态码 (Management Event 状态码)。Profiling Buffer 管理事件状态的位掩码。由 SPE 设置，写 1 可清除。bits[7:4] 的位分配：bit[7]=缓冲区内有 SPE 数据；bit[6]=写入 Profiling Buffer 中；bit[5]=Profiling Buffer 满（非空）；bit[4]=Profiling Buffer 管理中断 pending。当 PMBLIMITR_EL1.E=0 时此字段 UNKNOWN。"
+        },
+        {
+          "name": "RES0_3_1",
+          "bits": "3:1",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "S",
+          "bits": "0",
+          "access": "RO",
+          "description": "SPE 服务 (Service)。0b0=未请求 SPE 管理中断。0b1=已请求 SPE 管理中断。"
+        }
+      ]
+    }
+  ]
+}

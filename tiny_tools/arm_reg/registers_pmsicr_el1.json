@@ -1,0 +1,34 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSICR_EL1",
+      "fullName": "Sampling Interval Counter Register",
+      "address": "0x00E12",
+      "width": 64,
+      "description": "SPE 间接控制寄存器。为 SPE 提供间接控制机制。FEAT_SPE 时存在。",
+      "fields": [
+        {
+          "name": "ECOUNT",
+          "bits": "63:56",
+          "access": "RW",
+          "description": "[When FEAT_SPE_ERnd is implemented] Secondary sample interval 计数er. 提供 the secondary 计数er used after the primary 计数er reaches zero. While the secondary 计数er is nonzero and profiling is 使能, the secondary 计数er decrements by 1 for each member of the sample population. The primary 计数er also continues to decrement since it is also nonzero. When the secondary 计数er reaches zero, a member of the sampling population is selected for sampling.；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "55:32",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "COUNT",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "Primary sample interval 计数er. 提供 the primary 计数er used for sampling. When the PE moves from a state or Exception level where profiling is 禁用 to a state or Exception level where profiling is 使能, if 值 this register is zero, then the primary 计数er is loaded from PMSIRR_EL1. While the primary 计数er is nonzero and sampling is 使能, the primary 计数er decrements by 1 for each member of the sample population. The sample interval 计数er 计数s either a number of 操作s or a number of instructions, depending on the IMPLEMENTATION DEFINED value of PMSIDR_EL1.ArchInst. When the 计数er reaches zero, the behavior depends on 值 PMSIRR_EL1.RND and whether FEAT_SPE_ERnd is implemented: The primary 计数er is loaded from PMSIRR_EL1 means: For more information, see Initializing the sample interval 计数ers and Behavior of the sample interval 计数er while profiling is 使能."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_TYPER",
+      "fullName": "ITS Type Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "ITS Type Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:47",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "INV",
+          "bits": "46",
+          "access": "RW",
+          "description": "ITS cache invalidation behavior on disable. If GITS_TYPER.INV is 1, after the following sequence: There is no cached information from the ITS memory structure pointed to by GITS_BASER<n>. [0b0=; 0b1=]"
+        },
+        {
+          "name": "UMSIirq",
+          "bits": "45",
+          "access": "RW",
+          "description": "Indicates support for generating an interrupt on receiving unmapped MSI. If GITS_TYPER.UMSI is 0, this field is RES0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "UMSI",
+          "bits": "44",
+          "access": "RW",
+          "description": "Indicates support for reporting receipt of unmapped MSIs. [0b0=; 0b1=]"
+        },
+        {
+          "name": "nID",
+          "bits": "43",
+          "access": "RW",
+          "description": "[When GICv4.1 is implemented] nID [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "SVPET",
+          "bits": "42:41",
+          "access": "RW",
+          "description": "[When GICv4.1 is implemented] SVPET [0b00=; 0b01=; 0b10=; 0b11=]；否则为 RES0"
+        },
+        {
+          "name": "VMAPP",
+          "bits": "40",
+          "access": "RW",
+          "description": "[When GICv4.1 is implemented] VMAPP [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "VSGI",
+          "bits": "39",
+          "access": "RW",
+          "description": "[When GICv4.1 is implemented] VSGI [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "MPAM",
+          "bits": "38",
+          "access": "RW",
+          "description": "[When GICv3.1 is implemented] MPAM [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "VMOVP",
+          "bits": "37",
+          "access": "RW",
+          "description": "[When GICv4 is implemented] Indicates the form of the VMOVP command. [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "CIL",
+          "bits": "36",
+          "access": "RW",
+          "description": "Collection ID Limit. In implementations that do not support Collections in external memory, this bit is RES0 and the number of Collections supported is reported by GITS_TYPER.HCC. [0b0=; 0b1=]"
+        },
+        {
+          "name": "CIDbits",
+          "bits": "35:32",
+          "access": "RW",
+          "description": "Number of Collection ID bits. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "HCC",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "Hardware Collection Count. The number of interrupt collections supported by the ITS without provisioning of external memory. Collections held in hardware are unmapped at reset. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "RES0",
+          "bits": "23:20",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "PTA",
+          "bits": "19",
+          "access": "RW",
+          "description": "Physical Target Addresses. Indicates the format of the target address: For more information, see 'RDbase' in ARM® Generic Interrupt Controller Architecture Specification, GIC architecture version 3.0 and version 4.0 (ARM IHI 0069). [0b0=; 0b1=]"
+        },
+        {
+          "name": "SEIS",
+          "bits": "18",
+          "access": "RW",
+          "description": "SEI support. Indicates whether the ITS supports generation of SEIs: [0b0=; 0b1=]"
+        },
+        {
+          "name": "Devbits",
+          "bits": "17:13",
+          "access": "RW",
+          "description": "The number of DeviceID 位数 implemented, minus one. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "ID_bits",
+          "bits": "12:8",
+          "access": "RW",
+          "description": "The number of EventID 位数 implemented, minus one. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "ITT_entry_size",
+          "bits": "7:4",
+          "access": "RW",
+          "description": "Read-only. Indicates the number of bytes per translation table entry, minus one. For more information about the ITS command 'MAPD', see MAPD. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "IMPLEMENTATION DEFINED",
+          "bits": "3",
+          "access": "RW",
+          "description": "IMPLEMENTATION DEFINED."
+        },
+        {
+          "name": "CCT",
+          "bits": "2",
+          "access": "RW",
+          "description": "Cumulative Collection Tables. If GITS_TYPER.HCC == 0, or if memory backed collections are not supported (all GITS_BASER<n>.Type != 100), this bit is RES0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "Virtual",
+          "bits": "1",
+          "access": "RW",
+          "description": "[When GICv4 is implemented] Indicates whether the ITS supports virtual LPIs and direct injection of virtual LPIs: [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "Physical",
+          "bits": "0",
+          "access": "RW",
+          "description": "Indicates whether the ITS supports 物理 LPIs: This field is RES1, indicating that the ITS supports 物理 LPIs. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSLATFR_EL1",
+      "fullName": "Sampling Latency Filter Register",
+      "address": "0x00F1",
+      "width": 64,
+      "description": "SPE 延迟过滤寄存器。选择 SPE 记录中包含的最小延迟值。FEAT_SPE 时存在。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:16",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "MINLAT",
+          "bits": "15:0",
+          "access": "RW",
+          "description": "Minimum latency. When PMSFCR_EL1.FL is 1, defines 值 used for 过滤器ing by latency. Samples with a Total latency less than PMSLATFR_EL1.MINLAT are not recorded. If PMSIDR_EL1.CountSize is 0b0010, PMSLATFR_EL1.MINLAT[15:12] is RES0. This field is ignored by the PE when PMSFCR_EL1.FL is 0. For more information, see Filtering by latency."
+        }
+      ]
+    }
+  ]
+}

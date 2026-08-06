@@ -1,0 +1,40 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_CREADR",
+      "fullName": "ITS Read Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "ITS Read Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:20",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Offset",
+          "bits": "19:5",
+          "access": "RW",
+          "description": "Bits [19:5] of the offset from GITS_CBASER. Bits [4:0] of the offset are zero. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "RES0",
+          "bits": "4:1",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Stalled",
+          "bits": "0",
+          "access": "RW",
+          "description": "Reports whether the processing of commands is stalled because of a command error. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

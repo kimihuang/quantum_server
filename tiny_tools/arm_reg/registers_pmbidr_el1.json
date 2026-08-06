@@ -1,0 +1,64 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMBIDR_EL1",
+      "fullName": "Profiling Buffer ID Register",
+      "address": "0x00E0",
+      "width": 64,
+      "description": "性能分析缓冲区 ID 寄存器 (Profiling Buffer ID Register)。向软件提供有关当前异常级别是否可以编程 Profiling Buffer 的信息。仅在 FEAT_SPE 实现时存在。只读寄存器。",
+      "fields": [
+        {
+          "name": "RES0_63_48",
+          "bits": "63:48",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "MaxBuffSize",
+          "bits": "47:32",
+          "access": "RO",
+          "description": "最大支持的 Profiling Buffer 大小 (Maximum Profiling Buffer Size)。预留软件使用。唯一允许的值为 0x0000，表示对最大缓冲区大小无限制。Hypervisor 可能陷获对此寄存器的访问，使用其他值向 Guest OS 描述虚拟化支持的限制：bits[8:0] 编码尾数 M，bits[13:9] 编码指数 E，bits[15:14] 保留。最大缓冲区大小 (字节) = IsZero(E) ? UInt(M:Zeros(12)) : UInt('1':M:Zeros(UInt(E)+11))。例如：0x0001=4KB，0x3FFF=4092TB。读返回 0x0000。"
+        },
+        {
+          "name": "RES0_31_12",
+          "bits": "31:12",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "EA",
+          "bits": "11:8",
+          "access": "RO",
+          "description": "外部 Abort 处理 (External Abort handling)。描述 SPE 单元对 Profiling Buffer 写操作产生的外部 Abort 的管理方式。0b0000=未描述；0b0001=PE 忽略 SPE 写操作的外部 Abort；0b0010=SPE 写操作的外部 Abort 在 PE 产生异步 SError 异常。其余值保留。从 Armv8.8 起 0b0000 不允许。此字段不适用于 SPE 的页表遍历/更新/GPT walk 产生的外部 Abort（通过 PMBSR_ELx 报告为 MMU 故障）。"
+        },
+        {
+          "name": "AddrMode",
+          "bits": "7:6",
+          "access": "RO",
+          "description": "地址模式 (Address Modes, FEAT_SPE_nVM 时)。描述 Profiling Buffer 可用的寻址模式。0b00=仅支持虚拟地址模式；0b01=支持虚拟和物理地址模式；0b11=虚拟化下预留软件使用，指示仅支持物理地址模式。如果 PMSCR_EL2.EnVM=1 且 P=0，则读为 0b01，否则读为 0b00。Hypervisor 可陷获此寄存器以向 Guest OS 描述虚拟化限制。未实现 FEAT_SPE_nVM 时此字段为 RES0。"
+        },
+        {
+          "name": "F",
+          "bits": "5",
+          "access": "RO",
+          "description": "标志更新 (Flag updates)。描述 SPE 执行的地址翻译如何管理 Access Flag 和 dirty 状态。0b0=SPE 访问的硬件 Access Flag 和 dirty 状态管理在所有翻译阶段始终禁用。0b1=SPE 访问的硬件 Access Flag 和 dirty 状态管理与 Profiling Buffer 所属翻译制度中的显式内存访问相同。从 Armv8.8 起 0b0 不允许。如果硬件 Access Flag 在某级翻译中禁用，访问未设置 AF 位的页/块将产生 Access Flag 故障。如果硬件 dirty 状态在某级翻译中禁用，访问将忽略描述符中的 Dirty Bit Modifier 并可能根据访问权限位产生权限故障。"
+        },
+        {
+          "name": "P",
+          "bits": "4",
+          "access": "RO",
+          "description": "不允许编程 (Programming not allowed)。在 EL3 读取时返回 0。否则指示 Profiling Buffer 所属异常级别高于当前级别或所属安全状态非当前安全状态。0b0=允许编程；0b1=不允许编程。读取值取决于当前异常级别和 MDCR_EL3.NSPB/NSPBE 以及 MDCR_EL2.E2PB 的有效值。若 MDCR_EL3.NSPB=0b0x 则从 NS EL1/EL2 及 Realm/Secure 状态读为 1；若 NSPB=0b1x 则从 Secure/Realm 状态读为 1；若 NSPB/NSPBE 为保留组合则为 UNKNOWN。"
+        },
+        {
+          "name": "Align",
+          "bits": "3:0",
+          "access": "RO",
+          "description": "最小对齐约束 (Alignment)。定义对 PMBPTR_EL1 写入的最小对齐约束。0b0000=字节；0b0001=半字；0b0010=字；0b0011=双字；0b0100=16 字节；0b0101=32 字节；0b0110=64 字节；0b0111=128 字节；0b1000=256 字节；0b1001=512 字节；0b1010=1KB；0b1011=2KB。其余值保留。"
+        }
+      ]
+    }
+  ]
+}

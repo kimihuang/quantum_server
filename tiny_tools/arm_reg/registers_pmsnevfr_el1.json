@@ -1,0 +1,310 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSNEVFR_EL1",
+      "fullName": "Sampling Inverted Event Filter Register",
+      "address": "0x00F2",
+      "width": 64,
+      "description": "SPE 嵌套事件过滤寄存器。控制嵌套 SPE 事件行为。FEAT_SPEv1p1 时存在。",
+      "fields": [
+        {
+          "name": "E[63]",
+          "bits": "63",
+          "access": "RW",
+          "description": "[When 事件 63 is implemented and 过滤器ing on 事件 63 is supported] Filter on IMPLEMENTATION DEFINED 事件 63. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[63] is 1, and PMSNEVFR_EL1.E[63] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[62]",
+          "bits": "62",
+          "access": "RW",
+          "description": "[When 事件 62 is implemented and 过滤器ing on 事件 62 is supported] Filter on IMPLEMENTATION DEFINED 事件 62. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[62] is 1, and PMSNEVFR_EL1.E[62] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[61]",
+          "bits": "61",
+          "access": "RW",
+          "description": "[When 事件 61 is implemented and 过滤器ing on 事件 61 is supported] Filter on IMPLEMENTATION DEFINED 事件 61. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[61] is 1, and PMSNEVFR_EL1.E[61] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[60]",
+          "bits": "60",
+          "access": "RW",
+          "description": "[When 事件 60 is implemented and 过滤器ing on 事件 60 is supported] Filter on IMPLEMENTATION DEFINED 事件 60. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[60] is 1, and PMSNEVFR_EL1.E[60] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[59]",
+          "bits": "59",
+          "access": "RW",
+          "description": "[When 事件 59 is implemented and 过滤器ing on 事件 59 is supported] Filter on IMPLEMENTATION DEFINED 事件 59. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[59] is 1, and PMSNEVFR_EL1.E[59] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[58]",
+          "bits": "58",
+          "access": "RW",
+          "description": "[When 事件 58 is implemented and 过滤器ing on 事件 58 is supported] Filter on IMPLEMENTATION DEFINED 事件 58. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[58] is 1, and PMSNEVFR_EL1.E[58] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[57]",
+          "bits": "57",
+          "access": "RW",
+          "description": "[When 事件 57 is implemented and 过滤器ing on 事件 57 is supported] Filter on IMPLEMENTATION DEFINED 事件 57. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[57] is 1, and PMSNEVFR_EL1.E[57] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[56]",
+          "bits": "56",
+          "access": "RW",
+          "description": "[When 事件 56 is implemented and 过滤器ing on 事件 56 is supported] Filter on IMPLEMENTATION DEFINED 事件 56. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[56] is 1, and PMSNEVFR_EL1.E[56] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[55]",
+          "bits": "55",
+          "access": "RW",
+          "description": "[When 事件 55 is implemented and 过滤器ing on 事件 55 is supported] Filter on IMPLEMENTATION DEFINED 事件 55. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[55] is 1, and PMSNEVFR_EL1.E[55] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[54]",
+          "bits": "54",
+          "access": "RW",
+          "description": "[When 事件 54 is implemented and 过滤器ing on 事件 54 is supported] Filter on IMPLEMENTATION DEFINED 事件 54. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[54] is 1, and PMSNEVFR_EL1.E[54] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[53]",
+          "bits": "53",
+          "access": "RW",
+          "description": "[When 事件 53 is implemented and 过滤器ing on 事件 53 is supported] Filter on IMPLEMENTATION DEFINED 事件 53. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[53] is 1, and PMSNEVFR_EL1.E[53] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[52]",
+          "bits": "52",
+          "access": "RW",
+          "description": "[When 事件 52 is implemented and 过滤器ing on 事件 52 is supported] Filter on IMPLEMENTATION DEFINED 事件 52. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[52] is 1, and PMSNEVFR_EL1.E[52] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[51]",
+          "bits": "51",
+          "access": "RW",
+          "description": "[When 事件 51 is implemented and 过滤器ing on 事件 51 is supported] Filter on IMPLEMENTATION DEFINED 事件 51. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[51] is 1, and PMSNEVFR_EL1.E[51] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[50]",
+          "bits": "50",
+          "access": "RW",
+          "description": "[When 事件 50 is implemented and 过滤器ing on 事件 50 is supported] Filter on IMPLEMENTATION DEFINED 事件 50. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[50] is 1, and PMSNEVFR_EL1.E[50] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[49]",
+          "bits": "49",
+          "access": "RW",
+          "description": "[When 事件 49 is implemented and 过滤器ing on 事件 49 is supported] Filter on IMPLEMENTATION DEFINED 事件 49. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[49] is 1, and PMSNEVFR_EL1.E[49] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[48]",
+          "bits": "48",
+          "access": "RW",
+          "description": "[When 事件 48 is implemented and 过滤器ing on 事件 48 is supported] Filter on IMPLEMENTATION DEFINED 事件 48. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[48] is 1, and PMSNEVFR_EL1.E[48] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "RAZ/WI",
+          "bits": "47:32",
+          "access": "RW",
+          "description": "Reserved, RAZ/WI."
+        },
+        {
+          "name": "E[31]",
+          "bits": "31",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is not implemented, 事件 31 is implemented, and 过滤器ing on 事件 31 is supported] Filter on IMPLEMENTATION DEFINED 事件 31. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[31] is 1, and PMSNEVFR_EL1.E[31] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[30]",
+          "bits": "30",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is not implemented, 事件 30 is implemented, and 过滤器ing on 事件 30 is supported] Filter on IMPLEMENTATION DEFINED 事件 30. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[30] is 1, and PMSNEVFR_EL1.E[30] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[29]",
+          "bits": "29",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is not implemented, 事件 29 is implemented, and 过滤器ing on 事件 29 is supported] Filter on IMPLEMENTATION DEFINED 事件 29. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[29] is 1, and PMSNEVFR_EL1.E[29] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[28]",
+          "bits": "28",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is not implemented, 事件 28 is implemented, and 过滤器ing on 事件 28 is supported] Filter on IMPLEMENTATION DEFINED 事件 28. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[28] is 1, and PMSNEVFR_EL1.E[28] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[27]",
+          "bits": "27",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is not implemented, 事件 27 is implemented, and 过滤器ing on 事件 27 is supported] Filter on IMPLEMENTATION DEFINED 事件 27. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[27] is 1, and PMSNEVFR_EL1.E[27] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[26]",
+          "bits": "26",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is not implemented, 事件 26 is implemented, and 过滤器ing on 事件 26 is supported] Filter on IMPLEMENTATION DEFINED 事件 26. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[26] is 1, and PMSNEVFR_EL1.E[26] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[25]",
+          "bits": "25",
+          "access": "RW",
+          "description": "[When (FEAT_SPE_SME is implemented or FEAT_SPEv1p5 is implemented) and 事件 25 is implemented] Filter on the 'Shared resource' 事件, Events packet.E[25], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[25] is 1, and PMSNEVFR_EL1.E[25] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[24]",
+          "bits": "24",
+          "access": "RW",
+          "description": "[When FEAT_SPE_SME is implemented] Filter on the 'Streaming SVE mode' 事件, Events packet.E[24], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[24] is 1, and PMSNEVFR_EL1.E[24] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[23]",
+          "bits": "23",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented and 事件 23 is implemented] Filter on the 'Data snooped' 事件, Events packet.E[23], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[23] is 1, and PMSNEVFR_EL1.E[23] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[22]",
+          "bits": "22",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented and 事件 22 is implemented] Filter on the 'Recently fetched' 事件, Events packet.E[22], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[22] is 1, and PMSNEVFR_EL1.E[22] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[21]",
+          "bits": "21",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented and 事件 21 is implemented] Filter on the 'Cache data modified' 事件, Events packet.E[21], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[21] is 1, and PMSNEVFR_EL1.E[21] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[20]",
+          "bits": "20",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented and 事件 20 is implemented] Filter on the 'Level 2 data cache miss' 事件, Events packet.E[20], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[20] is 1, and PMSNEVFR_EL1.E[20] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[19]",
+          "bits": "19",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented and 事件 19 is implemented] Filter on the 'Level 2 data cache access' 事件, Events packet.E[19], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[19] is 1, and PMSNEVFR_EL1.E[19] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[18]",
+          "bits": "18",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p1 is implemented and (FEAT_SVE is implemented or FEAT_SME is implemented)] Filter on the 'Empty predicate' 事件, Events packet.E[18], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[18] is 1, and PMSNEVFR_EL1.E[18] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[17]",
+          "bits": "17",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p1 is implemented and (FEAT_SVE is implemented or FEAT_SME is implemented)] Filter on the 'Partial or empty predicate' 事件, Events packet.E[17], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[17] is 1, and PMSNEVFR_EL1.E[17] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "RAZ/WI",
+          "bits": "16",
+          "access": "RW",
+          "description": "Reserved, RAZ/WI."
+        },
+        {
+          "name": "E[15]",
+          "bits": "15",
+          "access": "RW",
+          "description": "[When 事件 15 is implemented and 过滤器ing on 事件 15 is supported] Filter on IMPLEMENTATION DEFINED 事件 15. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[15] is 1, and PMSNEVFR_EL1.E[15] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[14]",
+          "bits": "14",
+          "access": "RW",
+          "description": "[When 事件 14 is implemented and 过滤器ing on 事件 14 is supported] Filter on IMPLEMENTATION DEFINED 事件 14. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[14] is 1, and PMSNEVFR_EL1.E[14] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[13]",
+          "bits": "13",
+          "access": "RW",
+          "description": "[When 事件 13 is implemented and 过滤器ing on 事件 13 is supported] Filter on IMPLEMENTATION DEFINED 事件 13. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[13] is 1, and PMSNEVFR_EL1.E[13] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[12]",
+          "bits": "12",
+          "access": "RW",
+          "description": "[When 事件 12 is implemented and 过滤器ing on 事件 12 is supported] Filter on IMPLEMENTATION DEFINED 事件 12. An IMPLEMENTATION DEFINED 事件 might be recorded as a multi-bit field. In this case, the corresponding bits of PMSNEVFR_EL1 define an IMPLEMENTATION DEFINED 过滤器 for the 事件. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[12] is 1, and PMSNEVFR_EL1.E[12] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0 [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[11]",
+          "bits": "11",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p1 is implemented] Filter on the 'Misalignment' 事件, Events packet.E[11], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[11] is 1, and PMSNEVFR_EL1.E[11] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[10]",
+          "bits": "10",
+          "access": "RW",
+          "description": "[When (FEAT_SPEv1p4 is implemented or 过滤器ing on 事件 10 is optionally supported) and 事件 10 is implemented] Filter on the 'Remote access' 事件, Events packet.E[10], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[10] is 1, and PMSNEVFR_EL1.E[10] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[9]",
+          "bits": "9",
+          "access": "RW",
+          "description": "[When (FEAT_SPEv1p4 is implemented or 过滤器ing on 事件 9 is optionally supported) and 事件 9 is implemented] Filter on the 'Last-level cache miss' 事件, Events packet.E[9], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[9] is 1, and PMSNEVFR_EL1.E[9] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[8]",
+          "bits": "8",
+          "access": "RW",
+          "description": "[When (FEAT_SPEv1p4 is implemented or 过滤器ing on 事件 8 is optionally supported) and 事件 8 is implemented] Filter on the 'Last-level cache access' 事件, Events packet.E[8], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[8] is 1, and PMSNEVFR_EL1.E[8] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[7]",
+          "bits": "7",
+          "access": "RW",
+          "description": "Filter on the 'Mispredicted' 事件, Events packet.E[7], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[7] is 1, and PMSNEVFR_EL1.E[7] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[6]",
+          "bits": "6",
+          "access": "RW",
+          "description": "[When FEAT_SPE_FnE is implemented] Filter on the 'Not taken' 事件, Events packet.E[6], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[6] is 1, and PMSNEVFR_EL1.E[6] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[5]",
+          "bits": "5",
+          "access": "RW",
+          "description": "Filter on the 'TLB walk' 事件, Events packet.E[5], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[5] is 1, and PMSNEVFR_EL1.E[5] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[4]",
+          "bits": "4",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented or 过滤器ing on 事件 4 is optionally supported] Filter on the 'TLB access' 事件, Events packet.E[4], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[4] is 1, and PMSNEVFR_EL1.E[4] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[3]",
+          "bits": "3",
+          "access": "RW",
+          "description": "Filter on the 'Level 1 data cache miss' 事件, Events packet.E[3], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[3] is 1, and PMSNEVFR_EL1.E[3] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[2]",
+          "bits": "2",
+          "access": "RW",
+          "description": "[When FEAT_SPEv1p4 is implemented or 过滤器ing on 事件 2 is optionally supported] Filter on the 'Level 1 data cache access' 事件, Events packet.E[2], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[2] is 1, and PMSNEVFR_EL1.E[2] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E[1]",
+          "bits": "1",
+          "access": "RW",
+          "description": "[When the PE supports sampling of speculative instructions] Filter on the 'Retired' 事件, Events packet.E[1], set. If PMSFCR_EL1.FnE is 1, PMSFCR_EL1.FE is 1, PMSEVFR_EL1.E[1] is 1, and PMSNEVFR_EL1.E[1] is 1, then, for each sampled operation, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded, and it is CONSTRAINED UNPREDICTABLE whether the SAMPLE_FEED_EVENT PMU 事件 is generated. This field is ignored by the PE when PMSFCR_EL1.FnE is 0. 若 PE does not support the sampling of speculative instructions, or always discards the sample record for speculative instructions, this bit reads as an UNKNOWN value and the PE 忽略 its value. [0b0=; 0b1=]"
+        },
+        {
+          "name": "RAZ/WI",
+          "bits": "0",
+          "access": "RW",
+          "description": "Reserved, RAZ/WI."
+        }
+      ]
+    }
+  ]
+}

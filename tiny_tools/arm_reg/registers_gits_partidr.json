@@ -1,0 +1,34 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_PARTIDR",
+      "fullName": "Set PARTID and PMG Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Set PARTID and PMG Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "PMG",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "PMG value used when ITS accesses memory. Bits not needed to represent PMG values in the range 0 to PMG_MAX are RES0."
+        },
+        {
+          "name": "PARTID",
+          "bits": "15:0",
+          "access": "RW",
+          "description": "PARTID value used when ITS accesses memory. Bits not needed to represent PARTID values in the range 0 to PARTID_MAX are RES0."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_CWRITER",
+      "fullName": "ITS Write Register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "ITS Write Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:20",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Offset",
+          "bits": "19:5",
+          "access": "RW",
+          "description": "Bits [19:5] of the offset from GITS_CBASER. Bits [4:0] of the offset are zero."
+        },
+        {
+          "name": "RES0",
+          "bits": "4:1",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Retry",
+          "bits": "0",
+          "access": "RW",
+          "description": "Writing this bit has the following effects: When read, this bit is RES0. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSCR_EL1",
+      "fullName": "Statistical Profiling Control Register (EL1)",
+      "address": "0x00E7",
+      "width": 64,
+      "description": "SPE 控制寄存器 EL1。控制 Statistical Profiling Extension 在 EL1 的使能和配置。FEAT_SPE 时存在。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:12",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "EnVM",
+          "bits": "11",
+          "access": "RW",
+          "description": "[When FEAT_SPE_nVM is implemented and FEAT_NV is implemented] Reserved for software use in nested virtualization. See also PMSCR_EL2.EnVM.；否则为 RES0"
+        },
+        {
+          "name": "KE",
+          "bits": "10",
+          "access": "RW",
+          "description": "[When FEAT_SPE_EXC is implemented] Kernel exception enable for SPE Profiling exceptions taken to EL1. [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "EE",
+          "bits": "9:8",
+          "access": "RW",
+          "description": "[When FEAT_SPE_EXC is implemented] Exception 使能. For more information on 值s reserved for software use in nested virtualization, see PMSCR_EL2.EE. 若 Effective value of PMSCR_EL2.EE is 0b00, then the Effective value of PMSCR_EL1.EE is 0b00. [0b00=; 0b01=; 0b10=; 0b11=]；否则为 RES0"
+        },
+        {
+          "name": "PCT",
+          "bits": "7:6",
+          "access": "RW",
+          "description": "[When EL2 is implemented] Physical Timestamp. If timestamp sampling is 使能 and the Profiling Buffer owning Exception level is EL1, requests which timestamp 计数er value is collected. If FEAT_ECV is implemented, this is a two-bit field as shown. 否则, bit[7] is RES0. When EL2 is implemented, all of the following apply: [0b00=; 0b01=; 0b11=]"
+        },
+        {
+          "name": "TS",
+          "bits": "5",
+          "access": "RW",
+          "description": "Timestamp packet sample enable. 使能s recording of Timestamp packets when the Profiling Buffer owning Exception level is EL1. 若 Profiling Buffer owning Exception level is EL2, then this field is ignored by the PE. For more information, see Controlling the data that is collected. When Timestamp packet recording is 使能, recording of End packets is 禁用. [0b0=; 0b1=]"
+        },
+        {
+          "name": "PA",
+          "bits": "4",
+          "access": "RW",
+          "description": "Physical Address packet sample enable. 使能s recording of Physical Address packets when the Profiling Buffer owning Exception level is EL1. When EL2 is implemented, all of the following apply: For more information, see Controlling the data that is collected. [0b0=; 0b1=]"
+        },
+        {
+          "name": "CX",
+          "bits": "3",
+          "access": "RW",
+          "description": "CONTEXTIDR_EL1 Context packet sample enable. 使能s recording of Context packets containing 值 CONTEXTIDR_EL1. The PE 忽略 值 this field and CONTEXTIDR_EL1 Context packets are not recorded when any of the following apply: For more information, see Controlling the data that is collected. [0b0=; 0b1=]"
+        },
+        {
+          "name": "RES0",
+          "bits": "2",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "E1SPE",
+          "bits": "1",
+          "access": "RW",
+          "description": "EL1 SPE 使能。 若 Effective value of HCR_EL2.TGE is 1, then this field is ignored by the PE. [0b0=; 0b1=]"
+        },
+        {
+          "name": "E0SPE",
+          "bits": "0",
+          "access": "RW",
+          "description": "EL0 SPE 使能。 控制 sampling at EL0 when the Effective value of HCR_EL2.TGE is 0 or if EL2 is 禁用 or not implemented. 若 Effective value of HCR_EL2.TGE is 1, then this field is ignored by the PE. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}

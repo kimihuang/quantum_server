@@ -1,0 +1,34 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_MPAMIDR",
+      "fullName": "Report maximum PARTID and PMG Register",
+      "address": "0x0000",
+      "width": 32,
+      "description": "Report maximum PARTID and PMG Register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "31:24",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "PMGmax",
+          "bits": "23:16",
+          "access": "RW",
+          "description": "Maximum PMG value supported. This field has an IMPLEMENTATION DEFINED value."
+        },
+        {
+          "name": "PARTIDmax",
+          "bits": "15:0",
+          "access": "RW",
+          "description": "Maximum PARTID value supported. This field has an IMPLEMENTATION DEFINED value."
+        }
+      ]
+    }
+  ]
+}

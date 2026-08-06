@@ -1,0 +1,76 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_CBASER",
+      "fullName": "ITS Command Queue Descriptor",
+      "address": "0x0000",
+      "width": 64,
+      "description": "ITS Command Queue Descriptor。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "Valid",
+          "bits": "63",
+          "access": "RW",
+          "description": "Indicates whether software has allocated memory for the command queue: [0b0=; 0b1=]"
+        },
+        {
+          "name": "RES0",
+          "bits": "62",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "InnerCache",
+          "bits": "61:59",
+          "access": "RW",
+          "description": "Indicates the Inner Cacheability attributes of accesses to the command queue. The possible values of this field are: [0b000=; 0b001=; 0b010=; 0b011=; 0b100=; 0b101=; 0b110=; 0b111=]"
+        },
+        {
+          "name": "RES0",
+          "bits": "58:56",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "OuterCache",
+          "bits": "55:53",
+          "access": "RW",
+          "description": "Indicates the Outer Cacheability attributes of accesses to the command queue. The possible values of this field are: It is IMPLEMENTATION DEFINED whether this field has a fixed value or can be programmed by software. Implementing this field with a fixed value is deprecated. [0b000=; 0b001=; 0b010=; 0b011=; 0b100=; 0b101=; 0b110=; 0b111=]"
+        },
+        {
+          "name": "RES0",
+          "bits": "52",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Physical_Address",
+          "bits": "51:12",
+          "access": "RW",
+          "description": "Bits [51:12] of the base physical address of the command queue. Bits [11:0] of the base address are 0. In implementations supporting fewer than 52 bits of physical address, unimplemented upper bits are RES0. If bits [15:12] are not all zeros, behavior is a CONSTRAINED UNPREDICTABLE choice:"
+        },
+        {
+          "name": "Shareability",
+          "bits": "11:10",
+          "access": "RW",
+          "description": "Indicates the Shareability attributes of accesses to the command queue. The possible values of this field are: It is IMPLEMENTATION DEFINED whether this field has a fixed value or can be programmed by software. Implementing this field with a fixed value is deprecated. [0b00=; 0b01=; 0b10=; 0b11=]"
+        },
+        {
+          "name": "RES0",
+          "bits": "9:8",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "Size",
+          "bits": "7:0",
+          "access": "RW",
+          "description": "The number of 4KB pages of physical memory allocated to the command queue, minus one."
+        }
+      ]
+    }
+  ]
+}

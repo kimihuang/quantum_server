@@ -1,0 +1,22 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMBPTR_EL1",
+      "fullName": "Profiling Buffer Write Pointer Register",
+      "address": "0x00E3",
+      "width": 64,
+      "description": "性能分析缓冲区写指针寄存器 (Profiling Buffer Write Pointer Register)。定义 Profiling Buffer 的当前写地址。仅在 FEAT_SPE 实现时存在。",
+      "fields": [
+        {
+          "name": "PTR",
+          "bits": "63:0",
+          "access": "RW",
+          "description": "当前写地址 (Current 写地址)。定义下一个将写入 Profiling Buffer 的条目的虚拟地址。若 PMBIDR_EL1.Align 非零，bits[M-1:0] 是 RES0 还是可读写为 IMPLEMENTATION DEFINED（M 在 1 到 PMBIDR_EL1.Align 之间）。当 SPU 非丢弃模式时，架构对软件可写入指针的值有限制。管理中断时 PMBPTR_EL1 被冻结。复位值为架构 UNKNOWN。"
+        }
+      ]
+    }
+  ]
+}

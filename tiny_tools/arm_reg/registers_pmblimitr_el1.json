@@ -1,0 +1,64 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMBLIMITR_EL1",
+      "fullName": "Profiling Buffer Limit Address Register",
+      "address": "0x00E1",
+      "width": 64,
+      "description": "性能分析缓冲区限制地址寄存器 (Profiling Buffer Limit Address Register)。定义 Profiling Buffer 的上限地址并使能 Profiling Buffer。仅在 FEAT_SPE 实现时存在。",
+      "fields": [
+        {
+          "name": "LIMIT",
+          "bits": "63:12",
+          "access": "RW",
+          "description": "限制地址 (Limit address)。PMBLIMITR_EL1.LIMIT:Zeros(12) 是 Profiling Buffer 最后字节之后第一个字节的内存地址。若最小实现的翻译粒度非 4KB，则 bits[N-1:12] 为 RES0，其中 N 为 IMPLEMENTATION DEFINED 值 Log2(最小翻译粒度)。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "RES0_11_8",
+          "bits": "11:8",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "nVM",
+          "bits": "7",
+          "access": "RW",
+          "description": "地址模式 (Address Mode, FEAT_SPE_nVM 时)。0b0=Profiling Buffer 指针为虚拟地址。0b1=Profiling Buffer 指针为物理地址（所属翻译制度无 Stage-2 翻译时）或中间物理地址（有 Stage-2 翻译时）。若 PMSCR_EL2.EnVM=0，PE 忽略此字段值，指针始终为虚拟地址。若 FGDT 和 S1POE2 实现且 nTT=1，此字段为 RO。未实现 FEAT_SPE_nVM 时为 RES0。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "RES0_6",
+          "bits": "6",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "PMFZ",
+          "bits": "5",
+          "access": "RW",
+          "description": "SPE 事件时冻结 PMU (Freeze PMU on SPE event, FEAT_SPEv1p2 时)。0b0=不冻结 PMU 事件计数器；0b1=当 PMBSR_EL1.S=1 时冻结 PMU 事件计数器。受 PMCR_EL0.FZS 和 MDCR_EL2.HPMFZS 控制。未实现时 RES0。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "RES0_4_3",
+          "bits": "4:3",
+          "access": "RES0",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "FM",
+          "bits": "2:1",
+          "access": "RW",
+          "description": "填充模式 (Fill mode)。0b00=填充模式：缓冲区满时停止采集并产生维护中断。0b10=丢弃模式 (FEAT_SPEv1p2)：丢弃所有输出。其余值保留。复位值为架构 UNKNOWN。"
+        },
+        {
+          "name": "E",
+          "bits": "0",
+          "access": "RW",
+          "description": "使能 (Enable)。0b0=禁用 Profiling Buffer。0b1=使能 Profiling Buffer。"
+        }
+      ]
+    }
+  ]
+}

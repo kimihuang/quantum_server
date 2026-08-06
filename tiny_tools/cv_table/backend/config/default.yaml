@@ -1,0 +1,54 @@
+# CV Table 默认配置
+app:
+  name: "CV Table"
+  version: "1.0.0"
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+
+database:
+  url: "sqlite:///./data/cv_table.db"
+
+case:
+  priorities:
+    - value: "P0"
+      label: "P0"
+      color: "#dc2626"
+    - value: "P1"
+      label: "P1"
+      color: "#f59e0b"
+    - value: "P2"
+      label: "P2"
+      color: "#6b7280"
+
+  statuses:
+    - value: "not_run"
+      label: "未执行"
+      color: "#9ca3af"
+    - value: "pass"
+      label: "通过"
+      color: "#16a34a"
+    - value: "fail"
+      label: "失败"
+      color: "#dc2626"
+    - value: "blocked"
+      label: "阻塞"
+      color: "#f59e0b"
+    - value: "skip"
+      label: "跳过"
+      color: "#6b7280"
+
+  status_transitions:
+    not_run: ["pass", "fail", "blocked", "skip"]
+    pass: ["fail", "blocked"]
+    fail: ["pass", "blocked"]
+    blocked: ["pass", "fail", "skip"]
+    skip: ["not_run"]
+
+pagination:
+  default_page_size: 20
+  max_page_size: 100
+
+logging:
+  level: "INFO"

@@ -1,0 +1,28 @@
+{
+  "category": "its",
+  "label": "ITS",
+  "description": "GIC ITS (Interrupt Translation Service) 寄存器",
+  "registers": [
+    {
+      "name": "GITS_UMSIR",
+      "fullName": "ITS Unmapped MSI register",
+      "address": "0x0000",
+      "width": 64,
+      "description": "ITS Unmapped MSI register。GIC ITS 寄存器。",
+      "fields": [
+        {
+          "name": "DeviceID",
+          "bits": "63:32",
+          "access": "RW",
+          "description": "DeviceID of MSI that set GITS_STATUSR.UMSI to 1. If GITS_STATUSR.UMSI is 0, this field is UNKNOWN."
+        },
+        {
+          "name": "EventID",
+          "bits": "31:0",
+          "access": "RW",
+          "description": "EventID of MSI that set GITS_STATUSR.UMSI to 1. If GITS_STATUSR.UMSI is 0, this field is UNKNOWN."
+        }
+      ]
+    }
+  ]
+}

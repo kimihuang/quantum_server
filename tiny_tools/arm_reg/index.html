@@ -146,6 +146,90 @@ body {
   max-height: 0 !important;
 }
 
+/* ===== 树形导航节点 ===== */
+.tree-node { }
+.tree-node-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  transition: background 0.08s;
+  border-radius: var(--radius-sm);
+  user-select: none;
+}
+.tree-node-header:hover { background: var(--bg-secondary); }
+.tree-node-header .tree-arrow {
+  font-size: 0.5625rem;
+  width: 14px;
+  text-align: center;
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+.tree-node.collapsed > .tree-node-header .tree-arrow {
+  transform: rotate(-90deg);
+}
+.tree-node.collapsed > .tree-children {
+  display: none;
+}
+
+.tree-node-level-0 > .tree-node-header {
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+.tree-node-level-1 > .tree-node-header {
+  padding: 5px 12px 5px 24px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.tree-node-level-2 > .tree-node-header {
+  padding: 4px 12px 4px 36px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.tree-children {
+  /* container for child nodes */
+}
+.tree-leaf-items {
+  /* container for register items */
+}
+
+/* 树形叶子节点 (寄存器条目) */
+.tree-reg-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px 4px 48px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.71875rem;
+  color: var(--text-secondary);
+  transition: background 0.08s, color 0.08s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-reg-item:hover {
+  background: var(--bg-secondary);
+  color: var(--primary);
+}
+.tree-reg-item.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+.tree-reg-addr {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
 .side-reg-item {
   display: flex;
   align-items: center;
@@ -989,172 +1073,222 @@ function fmtFieldVal(val, fieldWidth) {
 
 // ---------- 侧边栏渲染 ----------
 
-/** 侧边栏来源配色 */
-const sourceColors = {
-  'SMMUv3':       { dot: '#2563eb', light: '#dbeafe' },
-  'CPU':          { dot: '#16a34a', light: '#dcfce7' },
-  'DDR 控制器':   { dot: '#d97706', light: '#fef3c7' },
-  'MMU':          { dot: '#7c3aed', light: '#ede9fe' }
-};
+/** 侧边栏树形数据 */
+let sidebarTreeData = [];
 
-/** 默认颜色（未知来源时使用） */
-const defaultSourceColor = { dot: '#6b7280', light: '#f5f7fa' };
+/** 侧边栏节点图标配色 */
+const iconColors = {
+  'cpu': { dot: '#16a34a', light: '#dcfce7' },
+  'smmu': { dot: '#2563eb', light: '#dbeafe' },
+  'cmn': { dot: '#7c3aed', light: '#ede9fe' },
+  'gic': { dot: '#d97706', light: '#fef3c7' }
+};
+const defaultIconColor = { dot: '#6b7280', light: '#f5f7fa' };
 
 /**
- * 为一个数据源构建侧边栏分组区域。
- * @param {string} sourceLabel — 来源名称
- * @param {Array} registers — 该来源的寄存器数组
+ * 递归收集树中所有 source 文件名。
  */
-function buildSidebarSection(sourceLabel, registers) {
-  const colors = sourceColors[sourceLabel] || defaultSourceColor;
-  const sectionId = 'sec-' + sourceLabel.replace(/\s+/g, '-');
-
-  return '<div class="source-group collapsed" id="' + sectionId + '">' +
-    '<div class="source-group-header" onclick="toggleSidebarSection(\'' + sectionId + '\')">' +
-      '<span class="group-arrow">&#9660;</span>' +
-      '<span class="group-dot" style="background:' + colors.dot + '"></span>' +
-      '<span class="group-label">' + escapeHtml(sourceLabel) + '</span>' +
-      '<span class="group-count">' + registers.length + '</span>' +
-    '</div>' +
-    '<div class="group-body">' +
-      registers.map(reg =>
-        '<div class="side-reg-item" data-name="' + escapeHtml(reg.name) + '" ' +
-             'data-source="' + escapeHtml(sourceLabel) + '" ' +
-             'onclick="onSidebarRegClick(\'' + escapeHtml(reg.name) + '\', \'' + escapeHtml(sourceLabel) + '\')">' +
-          '<span class="side-reg-addr">' + escapeHtml(reg.address) + '</span>' +
-          escapeHtml(reg.name) +
-        '</div>'
-      ).join('') +
-    '</div>' +
-  '</div>';
+function collectTreeSources(nodes, result) {
+  for (const node of nodes) {
+    if (node.sources && Array.isArray(node.sources)) {
+      for (const s of node.sources) {
+        if (!result.includes(s)) result.push(s);
+      }
+    }
+    if (node.children) collectTreeSources(node.children, result);
+  }
 }
 
 /**
- * 将所有已加载数据源渲染到侧边栏。
+ * 构建树形侧边栏 HTML。
+ */
+function buildSidebarTree(nodes, level) {
+  return nodes.map(function(node, idx) {
+    var nodeId = 'tn-' + level + '-' + idx + '-' + node.name.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
+    var iconColorsVar = iconColors[node.icon] || defaultIconColor;
+    var hasChildren = node.children && node.children.length > 0;
+    var dot = iconColorsVar.dot;
+
+    var header = '<div class="tree-node-header" onclick="toggleTreeNode(\'' + nodeId + '\')">' +
+      '<span class="tree-arrow">&#9660;</span>' +
+      '<span class="group-dot" style="background:' + dot + '"></span>' +
+      '<span>' + escapeHtml(node.name) + '</span>' +
+      '</div>';
+
+    var body = '';
+    if (hasChildren || node.sources) {
+      body = '<div class="tree-children">';
+      if (hasChildren) {
+        body += buildSidebarTree(node.children, level + 1);
+      }
+      if (node.sources) {
+        body += '<div class="tree-leaf-items">';
+        for (var si = 0; si < node.sources.length; si++) {
+          var src = node.sources[si];
+          var srcLabel = src.replace(/^registers_/, '').replace(/\.json$/, '').toUpperCase();
+          var srcRegs = [];
+          for (var ai = 0; ai < allRegisters.length; ai++) {
+            if (allRegisters[ai]._srcFile === src) {
+              srcRegs.push(allRegisters[ai]);
+            }
+          }
+          if (srcRegs.length > 0) {
+            body += '<div class="tree-reg-item" ' +
+              'onclick="onTreeRegClick(event, \'' + src + '\')"' +
+              'data-src="' + escapeHtml(src) + '">' +
+              '<span class="tree-reg-addr">' + escapeHtml(srcLabel) + '</span>' +
+              escapeHtml(srcRegs[0].reg.name) +
+              (srcRegs.length > 1 ? ' <span style="font-size:0.625rem;opacity:0.5">...+' + (srcRegs.length-1) + '</span>' : '') +
+              '</div>';
+          }
+        }
+        body += '</div>';
+      }
+      body += '</div>';
+    }
+
+    return '<div class="tree-node tree-node-level-' + level + ' collapsed" id="' + nodeId + '">' +
+      header + body + '</div>';
+  }).join('');
+}
+
+/**
+ * 刷新侧边栏树。
  */
 function renderSidebar() {
-  const tree = document.getElementById('sidebar-tree');
+  var tree = document.getElementById('sidebar-tree');
   if (!tree) return;
 
-  let html = '';
-
-  // 按固定顺序渲染
-  const order = ['SMMUv3', 'CPU', 'DDR 控制器'];
-  for (const label of order) {
-    if (sourceGroups.has(label)) {
-      const group = sourceGroups.get(label);
-      html += buildSidebarSection(label, group.registers);
-    }
+  // 如果有树形数据则重绘（每次源文件加载完成后更新）
+  if (sidebarTreeData.length > 0) {
+    var html = buildSidebarTree(sidebarTreeData, 0);
+    tree.innerHTML = html;
   }
-
-  // 未在固定顺序中的来源追加在后面
-  for (const [label, group] of sourceGroups) {
-    if (!order.includes(label)) {
-      html += buildSidebarSection(label, group.registers);
-    }
-  }
-
-  tree.innerHTML = html;
   sidebarReady = true;
 
-  // 更新统计
-  const stats = document.getElementById('sidebar-stats');
+  var stats = document.getElementById('sidebar-stats');
   if (stats) {
-    stats.textContent = allRegisters.length + ' 个寄存器 / ' + sourceGroups.size + ' 个来源';
+    stats.textContent = allRegisters.length + ' 个寄存器';
   }
 }
 
 /**
- * 展开/收起侧边栏分组。
+ * 展开/收起树节点。
  */
-function toggleSidebarSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  if (!section) return;
-  section.classList.toggle('collapsed');
+function toggleTreeNode(nodeId) {
+  var node = document.getElementById(nodeId);
+  if (!node) return;
+  node.classList.toggle('collapsed');
 }
 
 /**
- * 侧边栏寄存器项点击事件。
+ * 树形叶子节点点击事件。
  */
-function onSidebarRegClick(regName, sourceLabel) {
-  const entry = allRegisters.find(e =>
-    e.reg.name === regName && e.source === sourceLabel
-  );
-  if (!entry) return;
-
-  // 高亮侧边栏项
-  document.querySelectorAll('.side-reg-item.active').forEach(el => el.classList.remove('active'));
-  const item = document.querySelector('.side-reg-item[data-name="' + escapeHtml(regName) + '"][data-source="' + escapeHtml(sourceLabel) + '"]');
-  if (item) {
-    item.classList.add('active');
-    // 确保可见（滚动到视图内）
-    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+function onTreeRegClick(event, srcFile) {
+  event.stopPropagation();
+  var regs = [];
+  for (var i = 0; i < allRegisters.length; i++) {
+    if (allRegisters[i]._srcFile === srcFile) {
+      regs.push(allRegisters[i]);
+    }
   }
 
-  displayRegister(entry);
+  // Expand parent tree nodes
+  var el = event.target;
+  while (el && el.id !== 'sidebar-tree') {
+    if (el.classList.contains('tree-node') && el.classList.contains('collapsed')) {
+      el.classList.remove('collapsed');
+    }
+    el = el.parentElement;
+  }
 
-  // 移动端：隐藏侧边栏后将焦点移到主区域
-  if (window.innerWidth <= 768) {
-    document.getElementById('result-card')?.scrollIntoView({ behavior: 'smooth' });
+  // Highlight
+  document.querySelectorAll('.tree-reg-item.active').forEach(function(it) { it.classList.remove('active'); });
+  event.target.closest('.tree-reg-item').classList.add('active');
+
+  if (regs.length === 1) {
+    displayRegister(regs[0]);
+  } else if (regs.length > 1) {
+    var resultCard = document.getElementById('result-card');
+    var emptyCard = document.getElementById('empty-card');
+    var resultContent = document.getElementById('result-content');
+    var resultTitle = document.getElementById('result-title');
+    resultCard.style.display = 'block';
+    emptyCard.style.display = 'none';
+    var srcLabel = srcFile.replace(/^registers_/, '').replace(/\.json$/, '');
+    resultTitle.textContent = srcLabel.toUpperCase() + ' (' + regs.length + ' 个寄存器)';
+
+    resultContent.innerHTML = regs.map(function(entry) {
+      var r = entry.reg;
+      return '<div class="reg-list-item" style="cursor:pointer" onclick="displayRegister(allRegisters.find(function(e){return e.reg.name===\'' + escapeHtml(r.name) + '\'&&e._srcFile===\'' + escapeHtml(srcFile) + '\'}))">' +
+        '<span style="font-family:var(--font-mono);font-weight:600;min-width:200px">' + escapeHtml(r.name) + '</span>' +
+        '<span style="font-family:var(--font-mono);color:var(--primary);min-width:100px">' + escapeHtml(r.address) + '</span>' +
+        '<span style="font-size:0.8125rem;color:var(--text-secondary);flex:1">' + escapeHtml(r.description) + '</span>' +
+        '</div>';
+    }).join('');
   }
 }
 
 /**
- * 清除侧边栏中的高亮。
- */
-function clearSidebarHighlight() {
-  document.querySelectorAll('.side-reg-item.active').forEach(el => el.classList.remove('active'));
-}
-
-// ---------- 数据加载 ----------
-
-function onAllSourcesLoaded() {
-  const emptyCard = document.getElementById('empty-card');
-  const emptyText = document.getElementById('empty-text');
-  const footer = document.getElementById('footer-info');
-  const sideFooter = document.getElementById('sidebar-footer');
-
-  if (allRegisters.length === 0) {
-    emptyText.textContent = '没有加载到任何寄存器定义。请检查 JSON 文件是否存在。';
-    return;
-  }
-
-  emptyText.textContent = '在左侧目录选择寄存器，或输入名称/地址搜索';
-  footer.textContent = '共 ' + allRegisters.length + ' 个寄存器，来自 ' + sourceGroups.size + ' 个数据源';
-  sideFooter.textContent = '共 ' + allRegisters.length + ' 个寄存器';
-}
-
-/**
- * 初始化：从 manifest.json 读取文件列表，再依次加载。
+ * 初始化：从 sidebar_tree.json 读取树结构，再从 manifest.json 加载文件。
  */
 async function initDataLoading() {
-  // 首先尝试加载 manifest.json
+  // 1. 先加载树形结构（必须先完成，否则 renderSidebar 没有数据）
+  try {
+    var resp = await fetch('./sidebar_tree.json', { cache: 'no-cache' });
+    if (resp.ok) {
+      sidebarTreeData = await resp.json();
+    }
+  } catch (e) {
+    console.warn('[sidebar_tree] 未找到 sidebar_tree.json:', e);
+  }
+
+  // 2. 从 manifest.json 加载文件列表
   let sources = [];
   try {
-    const resp = await fetch('./manifest.json', { cache: 'no-cache' });
-    if (resp.ok) {
-      const manifest = await resp.json();
+    var resp2 = await fetch('./manifest.json', { cache: 'no-cache' });
+    if (resp2.ok) {
+      var manifest = await resp2.json();
       if (manifest && Array.isArray(manifest.sources)) {
         sources = manifest.sources;
       }
     }
   } catch (e) {
-    console.warn('[manifest] 未找到 manifest.json，尝试默认列表:', e);
+    console.warn('[manifest] 未找到 manifest.json:', e);
   }
 
-  // 回退：如果没有 manifest.json，尝试扫描常见的 register 文件
+  // 回退：从树结构中收集
+  if (sources.length === 0 && sidebarTreeData.length > 0) {
+    collectTreeSources(sidebarTreeData, sources);
+  }
   if (sources.length === 0) {
-    const candidates = ['smmu', 'cpu', 'ddr', 'mmu'];
-    for (const name of candidates) {
-      sources.push('registers_' + name + '.json');
+    var candidates = ['smmu', 'cpu', 'ddr', 'mmu'];
+    for (var i = 0; i < candidates.length; i++) {
+      sources.push('registers_' + candidates[i] + '.json');
     }
   }
 
   manifestSources = sources;
 
-  // 并行加载所有数据源
-  for (const src of sources) {
-    loadSource(src);
+  // 3. 如果树数据已加载，先渲染空树（显示分组结构，等待寄存器数据填充）
+  if (sidebarTreeData.length > 0) {
+    var tree = document.getElementById('sidebar-tree');
+    if (tree) {
+      tree.innerHTML = buildSidebarTree(sidebarTreeData, 0);
+      var stats = document.getElementById('sidebar-stats');
+      if (stats) stats.textContent = '正在加载寄存器…';
+    }
+  } else {
+    // 树数据加载失败，显示提示
+    var tree = document.getElementById('sidebar-tree');
+    if (tree) tree.innerHTML = '<div style="padding:16px;color:var(--text-secondary);font-size:0.8125rem">无法加载目录结构</div>';
+    var stats = document.getElementById('sidebar-stats');
+    if (stats) stats.textContent = '加载失败';
+  }
+
+  // 4. 并行加载所有数据源
+  for (var j = 0; j < sources.length; j++) {
+    loadSource(sources[j]);
   }
 }
 
@@ -1192,9 +1326,9 @@ async function loadSource(filename) {
       sourceGroups.set(sourceLabel, { data, registers: data.registers.slice() });
     }
 
-    // 扁平化加入全局集合
+    // 扁平化加入全局集合（附带源文件名，用于树形侧边栏索引）
     for (const reg of data.registers) {
-      allRegisters.push({ reg, source: sourceLabel });
+      allRegisters.push({ reg, source: sourceLabel, _srcFile: filename });
     }
 
     loadedSources++;
@@ -1211,6 +1345,10 @@ async function loadSource(filename) {
   if (manifestSources.length > 0 && loadedSources >= manifestSources.length) {
     onAllSourcesLoaded();
   }
+}
+
+function clearSidebarHighlight() {
+  document.querySelectorAll('.tree-reg-item.active').forEach(function(el) { el.classList.remove('active'); });
 }
 
 // ---------- 查询逻辑 ----------
@@ -1324,16 +1462,24 @@ function displayRegister(entry) {
  * 同步侧边栏高亮：移除所有 active，为当前寄存器项添加 active。
  */
 function syncSidebarHighlight(regName, sourceLabel) {
-  document.querySelectorAll('.side-reg-item.active').forEach(el => el.classList.remove('active'));
-  const item = document.querySelector(
-    '.side-reg-item[data-name="' + escapeHtml(regName) + '"][data-source="' + escapeHtml(sourceLabel) + '"]'
-  );
-  if (item) {
-    item.classList.add('active');
-    // 确保该分组展开
-    const group = item.closest('.source-group');
-    if (group) group.classList.remove('collapsed');
-    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  // 树形侧边栏中按源文件高亮对应的叶子节点
+  document.querySelectorAll('.tree-reg-item.active').forEach(function(el) { el.classList.remove('active'); });
+  // 查找对应条目并展开父节点
+  var items = document.querySelectorAll('.tree-reg-item');
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i];
+    // 尝试匹配 data-src 属性
+    if (item.getAttribute('data-src')) {
+      var parent = item.closest('.tree-node');
+      while (parent) {
+        if (parent.classList.contains('collapsed')) {
+          parent.classList.remove('collapsed');
+        }
+        parent = parent.parentElement.closest('.tree-node');
+      }
+      // 如果只显示单个寄存器，高亮该项
+      break;
+    }
   }
 }
 

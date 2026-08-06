@@ -1,0 +1,82 @@
+{
+  "category": "spe",
+  "label": "SPE",
+  "description": "Arm Statistical Profiling Extension (SPE) 寄存器",
+  "registers": [
+    {
+      "name": "PMSFCR_EL1",
+      "fullName": "Sampling Filter Control Register",
+      "address": "0x00E11",
+      "width": 64,
+      "description": "SPE 软件过滤控制寄存器。控制 Profiling Buffer 中指令计数的包含/排除。FEAT_SPE 时存在。",
+      "fields": [
+        {
+          "name": "RES0",
+          "bits": "63:53",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "TYPEm",
+          "bits": "52:48",
+          "access": "RW",
+          "description": ""
+        },
+        {
+          "name": "RES0",
+          "bits": "47:21",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "TYPE",
+          "bits": "20:16",
+          "access": "RW",
+          "description": ""
+        },
+        {
+          "name": "RES0",
+          "bits": "15:5",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "FDS",
+          "bits": "4",
+          "access": "RW",
+          "description": "[When FEAT_SPE_FDS is implemented] Filter by 数据源. If PMSFCR_EL1.FDS is 1 and PMSDSFR_EL1 is zero, then no load 操作s with a 数据源 will be recorded. Load 操作s without a 数据源 and other sampled 操作s are unaffected by this field. [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "RES0",
+          "bits": "4:0",
+          "access": "RW",
+          "description": "保留，RES0。"
+        },
+        {
+          "name": "FP",
+          "bits": "3",
+          "access": "RW",
+          "description": "[When FEAT_SPE_EFT is implemented] Floating-point 过滤器 enable. This field is ignored by the PE and no records are removed by this 过滤器 when any of the following apply: For 过滤器ing purposes, floating-point 操作s means all scalar, Advanced SIMD, SVE, and SME floating-point 操作s, as defined by the FP_SPEC 事件. [0b0=; 0b1=]；否则为 RES0"
+        },
+        {
+          "name": "FL",
+          "bits": "2",
+          "access": "RW",
+          "description": "Filter by latency. If PMSFCR_EL1.FL is 1 and PMSLATFR_EL1.MINLAT is zero, then for each sampled 操作, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded or the PE behaves as if PMSFCR_EL1.FL is 0. [0b0=; 0b1=]"
+        },
+        {
+          "name": "FT",
+          "bits": "1",
+          "access": "RW",
+          "description": "Filter by type. The 过滤器 is controlled by the TYPE and, if FEAT_SPE_EFT is implemented, TYPEm fields. Type 过滤器ing 过滤器s according to the type of the sampled 操作. If FEAT_SPE_EFT is not implemented, PMSFCR_EL1.FT is 1, and the PMSFCR_EL1.{ST, LD, B} bits are all zero, then for each sampled 操作, it is CONSTRAINED UNPREDICTABLE whether the sample is discarded or the PE behaves as if PMSFCR_EL1.FT is 0. For more information, see Filtering by 操作 type. [0b0=; 0b1=]"
+        },
+        {
+          "name": "B",
+          "bits": "0",
+          "access": "RW",
+          "description": "Branch 过滤器 enable. This field is ignored by the PE and no records are removed by this 过滤器 when any of the following apply: For 过滤器ing purposes, branch 操作s includes exception returns. [0b0=; 0b1=]"
+        }
+      ]
+    }
+  ]
+}
