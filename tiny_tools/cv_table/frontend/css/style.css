@@ -123,7 +123,7 @@ body {
 
 .tree-toggle { width: 20px; font-size: 0.7rem; color: var(--text-muted); flex-shrink: 0; text-align: center; }
 .tree-indent { width: 12px; flex-shrink: 0; }
-.tree-name { font-weight: 600; flex: 1; }
+.tree-name { font-weight: 600; }
 .sys-name { font-size: 0.9375rem; color: var(--primary); }
 .ip-name { font-size: 0.875rem; }
 .tree-count { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
@@ -147,3 +147,29 @@ body {
     .tree-stats { flex-wrap: wrap; gap: 8px; }
     .case-table-wrapper { margin-left: 0; overflow-x: auto; }
 }
+
+/* ========== Column Manager ========== */
+.column-manager {
+    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 16px; box-shadow: var(--shadow-sm);
+}
+.column-manager-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-secondary);
+}
+.column-manager-header h4 { font-size: 0.9375rem; margin: 0; }
+.column-manager-body { padding: 12px 16px; }
+.column-table { width: 100%; font-size: 0.8125rem; }
+.column-table th, .column-table td { padding: 6px 10px; text-align: left; }
+.type-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;
+    background: #f3f4f6; color: #374151;
+}
+.type-text { background: #eff6ff; color: #2563eb; }
+.type-number { background: #f0fdf4; color: #16a34a; }
+.type-select { background: #fefce8; color: #ca8a04; }
+.cf-select {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    background: #fefce8; color: #854d0e; font-size: 0.75rem;
+}
+.editing-row td { background: #fffbeb; }

@@ -130,6 +130,20 @@ class TreeView extends Component {
         if (action === 'delete-case' && caseId) { this._deleteCase(caseId); return; }
 
         // 导入/导出
+        if (id === 'btn-manage-columns') {
+            appStore.state.showColumnManager = !appStore.state.showColumnManager;
+            this.render();
+            // 初始化 ColumnManager 组件
+            if (appStore.state.showColumnManager && !this._columnManager) {
+                const container = document.getElementById('column-manager-container');
+                if (container) {
+                    this._columnManager = new ColumnManager(container);
+                    container.innerHTML = this._columnManager.template();
+                    this._columnManager.afterRender();
+                }
+            }
+            return;
+        }
         if (id === 'btn-import-tree') {
             document.getElementById('import-file-input')?.click();
             return;
@@ -174,12 +188,24 @@ class TreeView extends Component {
         if (isNaN(ipId)) return;
         const name = document.getElementById(`add-case-name-${ipId}`)?.value?.trim();
         if (!name) { showToast('请输入Case名称', 'warning'); return; }
+
+        // 收集自定义字段值
+        const customFields = {};
+        const cols = appStore.state.customColumns || [];
+        for (const col of cols) {
+            const el = document.getElementById(`add-case-cf-${col.field_key}-${ipId}`);
+            if (el && el.value !== '' && el.value !== undefined) {
+                customFields[col.field_key] = el.value;
+            }
+        }
+
         try {
             await API.createCase({
                 name,
                 ip_id: ipId,
                 owner: document.getElementById(`add-case-owner-${ipId}`)?.value?.trim() || '',
                 priority: document.getElementById(`add-case-pri-${ipId}`)?.value || 'P2',
+                custom_fields: customFields,
             });
             this._addingCase = null;
             showToast('添加成功', 'success');
@@ -210,11 +236,13 @@ class TreeView extends Component {
                 <div class="tree-header">
                     <div class="tree-stats" id="tree-stats">${this._renderStats()}</div>
                     <div class="tree-actions">
+                        <button class="btn btn-outline btn-sm" id="btn-manage-columns">列管理</button>
                         <button class="btn btn-outline btn-sm" id="btn-import-tree">导入CSV</button>
                         <button class="btn btn-outline btn-sm" id="btn-export-tree">导出CSV</button>
                         <button class="btn btn-primary btn-sm" id="btn-add-sys">+ 添加_SYS</button>
                     </div>
                 </div>
+                <div id="column-manager-container"></div>
                 ${this._addingSys ? this._renderAddSysForm() : ''}
                 <div class="tree-body" id="tree-body">
                     ${systems.map(sys => this._renderSysNode(sys, ips, expanded_sys, expanded_ip, cases_by_ip)).join('')}
@@ -254,11 +282,27 @@ class TreeView extends Component {
     _renderAddCaseForm(ipId) {
         const priorities = (appStore.state.priorityConfig || {}).priorities || [];
         const priOpts = priorities.map(p => `<option value="${p.value}">${p.label}</option>`).join('');
+
+        // 自定义列输入框
+        const cols = appStore.state.customColumns || [];
+        const cfInputs = cols.map(col => {
+            const req = col.is_required ? ' required' : '';
+            if (col.column_type === 'select') {
+                const opts = (col.options || []).map(o => `<option value="${o}">${o}</option>`).join('');
+                return `<select id="add-case-cf-${col.field_key}-${ipId}" class="form-select" style="width:100px"${req}><option value="">--</option>${opts}</select>`;
+            }
+            if (col.column_type === 'number') {
+                return `<input type="number" id="add-case-cf-${col.field_key}-${ipId}" class="form-input" placeholder="${escapeHtml(col.name)}" style="width:90px"${req}>`;
+            }
+            return `<input type="text" id="add-case-cf-${col.field_key}-${ipId}" class="form-input" placeholder="${escapeHtml(col.name)}" style="width:120px"${req}>`;
+        }).join('');
+
         return `
             <div class="inline-form" style="margin-left:20px; flex-wrap:wrap">
                 <input type="text" id="add-case-name-${ipId}" class="form-input" placeholder="Case名称" autofocus style="width:200px">
                 <input type="text" id="add-case-owner-${ipId}" class="form-input" placeholder="负责人" style="width:100px">
                 <select id="add-case-pri-${ipId}" class="form-select" style="width:80px">${priOpts}</select>
+                ${cfInputs}
                 <button class="btn btn-primary btn-sm" id="confirm-add-case-${ipId}">添加</button>
                 <button class="btn btn-secondary btn-sm" id="cancel-add-case-${ipId}">取消</button>
             </div>`;
@@ -274,8 +318,8 @@ class TreeView extends Component {
                 <div class="tree-row tree-row-sys" data-sys-id="${sys.id}">
                     <span class="tree-toggle">${arrow}</span>
                     <span class="tree-name sys-name">${escapeHtml(sys.name)}</span>
+                    <button class="btn btn-sm btn-outline add-ip-btn" data-sys-id="${sys.id}" style="margin-left:6px">+ IP</button>
                     <span class="tree-count">${sys.ip_count || 0} IPs, ${sys.case_count || 0} Cases</span>
-                    <button class="btn btn-sm btn-outline add-ip-btn" data-sys-id="${sys.id}">+ IP</button>
                 </div>
                 ${isExpanded ? `
                     <div class="tree-children">
@@ -297,8 +341,8 @@ class TreeView extends Component {
                     <span class="tree-indent"></span>
                     <span class="tree-toggle">${arrow}</span>
                     <span class="tree-name ip-name">${escapeHtml(ip.name)}</span>
+                    <button class="btn btn-sm btn-outline add-case-btn" data-ip-id="${ip.id}" style="margin-left:6px">+ Case</button>
                     <span class="tree-count">${ip.case_count || 0} Cases</span>
-                    <button class="btn btn-sm btn-outline add-case-btn" data-ip-id="${ip.id}">+ Case</button>
                 </div>
                 ${isExpanded ? `
                     <div class="tree-children">
@@ -310,12 +354,14 @@ class TreeView extends Component {
     }
 
     _renderCaseTable(cases) {
+        const cols = appStore.state.customColumns || [];
+        const customHeaders = cols.map(c => `<th>${escapeHtml(c.name)}</th>`).join('');
         return `
             <div class="case-table-wrapper">
                 <table class="data-table">
                     <thead><tr>
                         <th>Case名称</th><th style="width:60px">优先级</th><th style="width:70px">状态</th>
-                        <th style="width:70px">负责人</th><th style="width:130px">更新时间</th><th style="width:160px">操作</th>
+                        <th style="width:70px">负责人</th>${customHeaders}<th style="width:130px">更新时间</th><th style="width:160px">操作</th>
                     </tr></thead>
                     <tbody>${cases.map(c => this._renderCaseRow(c)).join('')}</tbody>
                 </table>
@@ -327,12 +373,24 @@ class TreeView extends Component {
         const priCfg = (APP_CONFIG.priorities || []).find(p => p.value === c.priority) || {};
         const sc = statusCfg.color || '#9ca3af';
         const pc = priCfg.color || '#6b7280';
+
+        // 自定义列单元格
+        const cf = c.custom_fields || {};
+        const cols = appStore.state.customColumns || [];
+        const customCells = cols.map(col => {
+            const val = cf[col.field_key];
+            if (val === undefined || val === null) return '<td>-</td>';
+            if (col.column_type === 'select') return `<td><span class="cf-select">${escapeHtml(String(val))}</span></td>`;
+            if (col.column_type === 'number') return `<td style="text-align:right">${val}</td>`;
+            return `<td>${escapeHtml(String(val))}</td>`;
+        }).join('');
+
         return `
             <tr>
                 <td><strong>${escapeHtml(c.name)}</strong></td>
                 <td><span class="priority-badge" style="background:${hexToRgba(pc,0.15)};color:${pc};border:1px solid ${hexToRgba(pc,0.3)}">${priCfg.label || c.priority}</span></td>
                 <td><span class="status-badge" style="background:${hexToRgba(sc,0.15)};color:${sc};border:1px solid ${hexToRgba(sc,0.3)}">${statusCfg.label || c.status}</span></td>
-                <td>${escapeHtml(c.owner || '-')}</td>
+                <td>${escapeHtml(c.owner || '-')}</td>${customCells}
                 <td><small>${formatDateTime(c.updated_at)}</small></td>
                 <td class="action-cell">
                     <button class="btn btn-sm btn-outline" data-action="exec" data-case-id="${c.id}">执行</button>
@@ -357,12 +415,14 @@ class TreeView extends Component {
 
     async refreshAll() {
         try {
-            const [systems, ips, config, stats] = await Promise.all([
+            const [systems, ips, config, stats, columns] = await Promise.all([
                 API.getSystems(), API.getIPs(null), API.getConfig(), API.getStats(),
+                API.getColumns().catch(() => []),  // 兼容旧版本
             ]);
             appStore.state.systems = systems || [];
             appStore.state.ips = ips || [];
             appStore.state.stats = stats || {};
+            appStore.state.customColumns = columns || [];
             if (config) {
                 if (config.statuses) appStore.state.statusConfig = config.statuses;
                 if (config.priorities) appStore.state.priorityConfig = config.priorities;
@@ -423,20 +483,47 @@ class TreeView extends Component {
                 `<option value="${p.value}" ${p.value === item.priority ? 'selected' : ''}>${p.label}</option>`
             ).join('');
 
+            // 自定义列编辑字段
+            const cf = item.custom_fields || {};
+            const cols = appStore.state.customColumns || [];
+            const cfFields = cols.map(col => {
+                const val = cf[col.field_key] !== undefined ? escapeHtml(String(cf[col.field_key])) : '';
+                if (col.column_type === 'select') {
+                    const opts = (col.options || []).map(o => `<option value="${o}" ${o == cf[col.field_key] ? 'selected' : ''}>${o}</option>`).join('');
+                    return `<div class="form-field"><label>${escapeHtml(col.name)}</label><select id="edit-case-cf-${col.field_key}" class="form-select"><option value="">--</option>${opts}</select></div>`;
+                }
+                if (col.column_type === 'number') {
+                    return `<div class="form-field"><label>${escapeHtml(col.name)}</label><input type="number" id="edit-case-cf-${col.field_key}" class="form-input" value="${val}"></div>`;
+                }
+                return `<div class="form-field"><label>${escapeHtml(col.name)}</label><input type="text" id="edit-case-cf-${col.field_key}" class="form-input" value="${val}"></div>`;
+            }).join('');
+
             const body = `
                 <div class="form-field"><label>Case名称</label><input type="text" id="edit-case-name" class="form-input" value="${escapeHtml(item.name)}"></div>
                 <div class="form-field"><label>负责人</label><input type="text" id="edit-case-owner" class="form-input" value="${escapeHtml(item.owner || '')}"></div>
                 <div class="form-field"><label>优先级</label><select id="edit-case-pri" class="form-select">${priOpts}</select></div>
+                ${cfFields}
                 <div class="form-field"><label>描述</label><textarea id="edit-case-desc" class="form-textarea" rows="2">${escapeHtml(item.description || '')}</textarea></div>`;
 
             Modal.confirm('编辑 Case', body, async () => {
                 const name = document.getElementById('edit-case-name')?.value?.trim();
                 if (!name) { showToast('请输入Case名称', 'warning'); return; }
+
+                // 收集自定义字段值
+                const customFields = {};
+                for (const col of cols) {
+                    const el = document.getElementById(`edit-case-cf-${col.field_key}`);
+                    if (el && el.value !== '' && el.value !== undefined) {
+                        customFields[col.field_key] = col.column_type === 'number' ? parseFloat(el.value) : el.value;
+                    }
+                }
+
                 await API.updateCase(caseId, {
                     name,
                     owner: document.getElementById('edit-case-owner')?.value?.trim() || '',
                     priority: document.getElementById('edit-case-pri')?.value || 'P2',
                     description: document.getElementById('edit-case-desc')?.value?.trim() || '',
+                    custom_fields: customFields,
                 });
                 showToast('更新成功', 'success');
                 await this.refreshAll();

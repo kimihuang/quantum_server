@@ -160,6 +160,12 @@ class CaseService:
                 if not ip:
                     ip = self.ip_repo.create(db, IPModel(name=ip_name, sys_id=sys.id))
 
+                # 检查重复：同一 IP 下同名 Case 不导入
+                existing_case = self.repo.get_by_name_and_ip(db, name, ip.id)
+                if existing_case:
+                    skipped += 1
+                    continue
+
                 case = Case(
                     name=name, ip_id=ip.id,
                     priority=row.get("优先级", "P2").strip(),

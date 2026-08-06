@@ -76,6 +76,7 @@ class Modal extends Component {
 
     close() {
         appStore.state.modal = { open: false, title: '', body: '', onConfirm: null };
+        bus.emit('modal:close');
         this.render();
     }
 
@@ -91,6 +92,7 @@ class Modal extends Component {
             confirmText: options.confirmText || '确认',
             cancelText: options.cancelText || '取消',
         };
+        bus.emit('modal:open');
     }
 
     /**
@@ -103,5 +105,6 @@ class Modal extends Component {
             body,
             onConfirm: null,
         };
+        bus.emit('modal:open');
     }
 }

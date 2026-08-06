@@ -15,6 +15,7 @@ from .api.v1.systems import router as systems_router
 from .api.v1.ips import router as ips_router
 from .api.v1.cases import router as cases_router
 from .api.v1.stats import router as stats_router
+from .api.v1.columns import router as columns_router
 
 # ─── 配置 ────────────────────────────────────
 config.load()
@@ -90,6 +91,7 @@ app.include_router(systems_router, prefix=API_PREFIX)
 app.include_router(ips_router, prefix=API_PREFIX)
 app.include_router(cases_router, prefix=API_PREFIX)
 app.include_router(stats_router, prefix=API_PREFIX)
+app.include_router(columns_router, prefix=API_PREFIX)
 
 
 # ─── 静态文件（前端） ────────────────────────────────────

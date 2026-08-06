@@ -32,6 +32,6 @@ def get_db() -> Session:
 def init_db() -> None:
     """初始化数据库表。"""
     from ..models.base import Base
-    from ..models import sys, ip, case, case_execution  # noqa: F401
+    from ..models import sys, ip, case, case_execution, custom_column  # noqa: F401
 
     Base.metadata.create_all(bind=engine)

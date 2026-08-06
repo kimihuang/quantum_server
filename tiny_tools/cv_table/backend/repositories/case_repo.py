@@ -52,6 +52,9 @@ class CaseRepository:
     def get_by_id(self, db: Session, case_id: int) -> Case | None:
         return self._base_query(db).filter(Case.id == case_id).first()
 
+    def get_by_name_and_ip(self, db: Session, name: str, ip_id: int) -> Case | None:
+        return db.query(Case).filter(Case.name == name, Case.ip_id == ip_id).first()
+
     def get_by_ids(self, db: Session, ids: list[int]) -> list[Case]:
         return db.query(Case).filter(Case.id.in_(ids)).all()
 

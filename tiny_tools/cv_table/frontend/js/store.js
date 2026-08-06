@@ -43,6 +43,8 @@ const appStore = new Store({
     cases_by_ip: {},        // { ip_id: [Case数组] }
     expanded_sys: {},       // { sys_id: bool }
     expanded_ip: {},        // { ip_id: bool }
+    customColumns: [],      // 自定义列定义列表
+    showColumnManager: false, // 是否显示列管理面板
     stats: { total: 0, pass_count: 0, fail_count: 0, not_run_count: 0, blocked_count: 0, skip_count: 0, pass_rate: 0 },
     statusConfig: APP_CONFIG.statuses,
     priorityConfig: APP_CONFIG.priorities,

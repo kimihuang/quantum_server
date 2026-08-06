@@ -31,12 +31,19 @@ const API = {
     deleteIP: (id) => request('/ips/' + id, { method: 'DELETE' }),
 
     // Cases
+    getCase: (id) => request('/cases/' + id),
     getCases: (params) => request('/cases?' + getQuery(params)),
     createCase: (data) => request('/cases', { method: 'POST', body: JSON.stringify(data) }),
     updateCase: (id, data) => request('/cases/' + id, { method: 'PUT', body: JSON.stringify(data) }),
     deleteCase: (id) => request('/cases/' + id, { method: 'DELETE' }),
     updateCaseStatus: (id, data) => request('/cases/' + id + '/status', { method: 'PUT', body: JSON.stringify(data) }),
     getExecutions: (id) => request('/cases/' + id + '/executions'),
+
+    // Custom Columns
+    getColumns: () => request('/columns'),
+    createColumn: (data) => request('/columns', { method: 'POST', body: JSON.stringify(data) }),
+    updateColumn: (id, data) => request('/columns/' + id, { method: 'PUT', body: JSON.stringify(data) }),
+    deleteColumn: (id) => request('/columns/' + id, { method: 'DELETE' }),
 
     // Stats
     getConfig: () => request('/stats/config'),
